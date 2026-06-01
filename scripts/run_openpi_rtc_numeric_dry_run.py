@@ -51,6 +51,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--repo-id", default="robochallenge_table30v2_aloha_short", help="本地 LeRobot repo_id。")
     parser.add_argument("--batch-size", type=int, default=1, help="batch size。")
     parser.add_argument("--num-workers", type=int, default=1, help="dataloader worker 数。")
+    parser.add_argument("--paligemma-variant", default=None, help="覆盖 model.paligemma_variant，例如 gemma_2b_lora。")
+    parser.add_argument(
+        "--action-expert-variant",
+        default=None,
+        help="覆盖 model.action_expert_variant，例如 gemma_300m_lora。",
+    )
     parser.add_argument("--max-token-len", type=int, default=None, help="覆盖 model.max_token_len，用于低显存 smoke。")
     parser.add_argument("--action-horizon", type=int, default=None, help="覆盖 model.action_horizon，用于低显存 smoke。")
     parser.add_argument(
@@ -136,6 +142,8 @@ def make_config(
     num_workers: int,
     params_path: Path,
     random_action_offset_copies: int | None,
+    paligemma_variant: str | None,
+    action_expert_variant: str | None,
     max_token_len: int | None,
     action_horizon: int | None,
 ):
@@ -144,10 +152,17 @@ def make_config(
 
     cfg = train_config.get_config(config_name)
     model = cfg.model
+    variant_overridden = paligemma_variant is not None or action_expert_variant is not None
+    if paligemma_variant is not None:
+        model = dataclasses.replace(model, paligemma_variant=paligemma_variant)
+    if action_expert_variant is not None:
+        model = dataclasses.replace(model, action_expert_variant=action_expert_variant)
     if max_token_len is not None:
         model = dataclasses.replace(model, max_token_len=max_token_len)
     if action_horizon is not None:
         model = dataclasses.replace(model, action_horizon=action_horizon)
+    freeze_filter = model.get_freeze_filter() if variant_overridden else cfg.freeze_filter
+    ema_decay = None if variant_overridden and "lora" in f"{model.paligemma_variant} {model.action_expert_variant}" else cfg.ema_decay
     data = dataclasses.replace(cfg.data, repo_id=repo_id)
     if random_action_offset_copies is not None:
         data = dataclasses.replace(
@@ -162,6 +177,8 @@ def make_config(
         cfg,
         exp_name=f"robochallenge_{repo_id}_numeric_dry_run",
         model=model,
+        freeze_filter=freeze_filter,
+        ema_decay=ema_decay,
         data=data,
         weight_loader=weight_loaders.CheckpointWeightLoader(str(params_path)),
         batch_size=batch_size,
@@ -215,7 +232,14 @@ def expected_param_shape(cfg):
         _, model_rng = jax.random.split(rng)
         model = cfg.model.create(model_rng)
         params = nnx.state(model)
-        return nnx_utils.state_map(params, cfg.freeze_filter, lambda p: p.replace(p.value.astype(jnp.bfloat16)))
+
+        def cast_bf16_if_array(param):
+            value = param.value
+            if hasattr(value, "astype"):
+                return param.replace(value.astype(jnp.bfloat16))
+            return param
+
+        return nnx_utils.state_map(params, cfg.freeze_filter, cast_bf16_if_array)
 
     return jax.eval_shape(init, jax.random.key(cfg.seed))
 
@@ -415,6 +439,8 @@ def write_report(status: dict[str, Any], report_path: Path) -> None:
         f"- 本轮模式：`{status['mode']}`。",
         f"- 本轮状态：`passed={status['passed']}`。",
         f"- 使用权重：`{status['checkpoint']['params_path']}`。",
+        f"- 模型变体：`{status.get('effective_model', {}).get('paligemma_variant', 'unknown')}` + "
+        f"`{status.get('effective_model', {}).get('action_expert_variant', 'unknown')}`。",
         f"- GPU 状态：`{status['gpu_before'].get('stdout', '').splitlines()[0] if status['gpu_before'].get('stdout') else 'unknown'}`。",
         "",
         "## 已验证",
@@ -477,6 +503,8 @@ def main() -> int:
         },
         "compute_param_dtype": args.compute_param_dtype,
         "random_action_offset_copies_override": args.random_action_offset_copies,
+        "paligemma_variant_override": args.paligemma_variant,
+        "action_expert_variant_override": args.action_expert_variant,
         "max_token_len_override": args.max_token_len,
         "action_horizon_override": args.action_horizon,
         "gpu_before": run_text(
@@ -497,9 +525,17 @@ def main() -> int:
             args.num_workers,
             args.params_path,
             args.random_action_offset_copies,
+            args.paligemma_variant,
+            args.action_expert_variant,
             args.max_token_len,
             args.action_horizon,
         )
+        status["effective_model"] = {
+            "paligemma_variant": cfg.model.paligemma_variant,
+            "action_expert_variant": cfg.model.action_expert_variant,
+            "pi05": getattr(cfg.model, "pi05", None),
+            "ema_decay": cfg.ema_decay,
+        }
         status["effective_random_action_offset_copies"] = cfg.data.base_config.random_action_offset_copies
         status["effective_max_token_len"] = cfg.model.max_token_len
         status["effective_action_horizon"] = cfg.model.action_horizon

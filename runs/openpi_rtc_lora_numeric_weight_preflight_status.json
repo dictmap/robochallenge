@@ -8,11 +8,11 @@
     "params_size_bytes": 12441721931
   },
   "compute_param_dtype": "float32",
-  "random_action_offset_copies_override": null,
-  "paligemma_variant_override": null,
-  "action_expert_variant_override": null,
-  "max_token_len_override": null,
-  "action_horizon_override": null,
+  "random_action_offset_copies_override": 1,
+  "paligemma_variant_override": "gemma_2b_lora",
+  "action_expert_variant_override": "gemma_300m_lora",
+  "max_token_len_override": 64,
+  "action_horizon_override": 10,
   "gpu_before": {
     "available": true,
     "cmd": [
@@ -26,35 +26,31 @@
   },
   "passed": true,
   "effective_model": {
-    "paligemma_variant": "gemma_2b",
-    "action_expert_variant": "gemma_300m",
+    "paligemma_variant": "gemma_2b_lora",
+    "action_expert_variant": "gemma_300m_lora",
     "pi05": true,
-    "ema_decay": 0.99
+    "ema_decay": null
   },
-  "effective_random_action_offset_copies": 5,
-  "effective_max_token_len": 200,
-  "effective_action_horizon": 50,
+  "effective_random_action_offset_copies": 1,
+  "effective_max_token_len": 64,
+  "effective_action_horizon": 10,
   "dataloader": {
     "state_shape": [
       1,
-      5,
       32
     ],
     "actions_shape": [
       1,
-      5,
-      50,
+      10,
       32
     ],
     "tokenized_prompt_shape": [
       1,
-      5,
-      200
+      64
     ],
     "tokenized_prompt_mask_shape": [
       1,
-      5,
-      200
+      64
     ],
     "image_keys": [
       "base_0_rgb",
@@ -65,12 +61,13 @@
   "weight_preflight": {
     "passed": true,
     "params_path": "/home/yjl/.cache/openpi/openpi-assets/checkpoints/pi05_base/params",
-    "load_seconds": 3.894,
+    "load_seconds": 6.22,
     "expected": {
-      "leaf_count": 53,
-      "total_elements": 3353434897,
+      "leaf_count": 73,
+      "total_elements": 3403422481,
       "dtype_counts": {
-        "float32": 53
+        "float32": 53,
+        "bfloat16": 20
       },
       "sample_leaves": [
         {
@@ -196,10 +193,11 @@
       ]
     },
     "loaded": {
-      "leaf_count": 53,
-      "total_elements": 3353434897,
+      "leaf_count": 73,
+      "total_elements": 3403422481,
       "dtype_counts": {
-        "float32": 53
+        "float32": 53,
+        "bfloat16": 20
       },
       "sample_leaves": [
         {
@@ -328,7 +326,8 @@
       "leaf_count": 51,
       "total_elements": 3353433872,
       "dtype_counts": {
-        "float32": 51
+        "float32": 31,
+        "bfloat16": 20
       },
       "sample_leaves": [
         {
@@ -453,17 +452,32 @@
         }
       ]
     },
-    "removed_shape_dtype_struct_count": 2,
+    "removed_shape_dtype_struct_count": 22,
     "removed_shape_dtype_struct_sample": [
-      "knob_dir",
-      "knob_scale"
+      "PaliGemma/llm/layers/attn/attn_vec_einsum/lora_a",
+      "PaliGemma/llm/layers/attn/attn_vec_einsum/lora_b",
+      "PaliGemma/llm/layers/attn/attn_vec_einsum_1/lora_a",
+      "PaliGemma/llm/layers/attn/attn_vec_einsum_1/lora_b",
+      "PaliGemma/llm/layers/attn/kv_einsum/lora_a",
+      "PaliGemma/llm/layers/attn/kv_einsum/lora_b",
+      "PaliGemma/llm/layers/attn/kv_einsum_1/lora_a",
+      "PaliGemma/llm/layers/attn/kv_einsum_1/lora_b",
+      "PaliGemma/llm/layers/attn/q_einsum/lora_a",
+      "PaliGemma/llm/layers/attn/q_einsum/lora_b",
+      "PaliGemma/llm/layers/attn/q_einsum_1/lora_a",
+      "PaliGemma/llm/layers/attn/q_einsum_1/lora_b",
+      "PaliGemma/llm/layers/mlp/gating_einsum_lora_a",
+      "PaliGemma/llm/layers/mlp/gating_einsum_lora_b",
+      "PaliGemma/llm/layers/mlp/linear_lora_a",
+      "PaliGemma/llm/layers/mlp/linear_lora_b"
     ]
   },
   "compute_params": {
     "leaf_count": 51,
     "total_elements": 3353433872,
     "dtype_counts": {
-      "float32": 51
+      "float32": 31,
+      "bfloat16": 20
     },
     "sample_leaves": [
       {

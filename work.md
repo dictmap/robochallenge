@@ -379,3 +379,33 @@
 
 - P0：将 LoRA 变体参数接入 `scripts/run_openpi_rtc_numeric_dry_run.py`，先跑 LoRA 版 `weight_preflight`，再尝试低显存 `forward`。
 - P1：若 LoRA `forward` 仍失败，记录为新的数值 blocker，并转向 FSDP/offload 或等待用户授权释放 GPU。
+
+## 2026-06-02 第十四轮：openpi_rtc LoRA reduced 数值 forward smoke
+
+### 已完成
+
+- 将 `scripts/run_openpi_rtc_numeric_dry_run.py` 扩展为支持 `--paligemma-variant` 和 `--action-expert-variant`，可直接指定 `gemma_2b_lora` 与 `gemma_300m_lora`。
+- 修复 LoRA 场景下 `expected_param_shape` 对 `ShapeDtypeStruct` 占位 leaf 直接 `.astype` 的兼容问题。
+- 运行 LoRA reduced `weight_preflight`：`random_action_offset_copies=1`、`max_token_len=64`、`action_horizon=10`。
+- 运行 LoRA reduced `forward`：`compute_param_dtype=bfloat16`、`random_action_offset_copies=1`、`max_token_len=64`、`action_horizon=10`。
+- 生成 `reports/openpi_rtc_lora_numeric_weight_preflight.md`、`runs/openpi_rtc_lora_numeric_weight_preflight_status.json`、`reports/openpi_rtc_lora_numeric_forward_reduced.md` 和 `runs/openpi_rtc_lora_numeric_forward_reduced_status.json`。
+- 已将 LoRA numeric preflight 与 reduced forward smoke 纳入 `scripts/validate_repro_workspace.py`。
+
+### 验证结果
+
+- LoRA reduced 权重预检：`passed=true`。
+- LoRA reduced dataloader shape：state=`[1, 32]`、actions=`[1, 10, 32]`、tokenized prompt=`[1, 64]`。
+- LoRA 权重结构：loaded leaf=`73`、partial params leaf=`51`、过滤 `ShapeDtypeStruct` leaf=`22`。
+- LoRA reduced forward：`passed=true`，loss=`0.0`，耗时约 `17.519` 秒。
+- 本地 `python scripts/validate_repro_workspace.py` 已通过。
+
+### 当前边界
+
+- 本轮只证明 LoRA reduced 数值前向链路能跑通，不代表已经完成 LoRA 训练或 checkpoint。
+- 现有 `grad` 模式仍会对完整 state 求梯度，不能冒充 LoRA trainable-filter grad。
+- LoRA forward 运行中 GPU 占用接近 21GB，后续 LoRA grad 仍可能触发显存或 XLA blocker。
+
+### 下一步
+
+- P0：新增 LoRA trainable-filter `lora_grad` 或等价 scoped grad/checkpoint dry-run，只更新 LoRA/非冻结参数并写 scoped checkpoint。
+- P1：若 LoRA grad 失败，保存 blocker 报告并转向 FSDP/offload 或等待用户授权释放 GPU。

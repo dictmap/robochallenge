@@ -482,23 +482,23 @@
   "weight_preflight": {
     "passed": true,
     "params_path": "/home/yjl/.cache/openpi/openpi-assets/checkpoints/pi05_base/params",
-    "load_seconds": 4.066,
+    "load_seconds": 4.009,
     "loaded_leaf_count": 73,
     "loaded_lora_leaf_count": 20,
     "loaded_knob_leaf_count": 2,
     "loaded_lora_sample": [
       "PaliGemma/llm/layers/attn/attn_vec_einsum/lora_a",
       "PaliGemma/llm/layers/attn/attn_vec_einsum/lora_b",
-      "PaliGemma/llm/layers/attn/attn_vec_einsum_1/lora_b",
       "PaliGemma/llm/layers/attn/attn_vec_einsum_1/lora_a",
-      "PaliGemma/llm/layers/attn/kv_einsum/lora_b",
+      "PaliGemma/llm/layers/attn/attn_vec_einsum_1/lora_b",
       "PaliGemma/llm/layers/attn/kv_einsum/lora_a",
-      "PaliGemma/llm/layers/attn/kv_einsum_1/lora_b",
+      "PaliGemma/llm/layers/attn/kv_einsum/lora_b",
       "PaliGemma/llm/layers/attn/kv_einsum_1/lora_a",
+      "PaliGemma/llm/layers/attn/kv_einsum_1/lora_b",
       "PaliGemma/llm/layers/attn/q_einsum/lora_a",
       "PaliGemma/llm/layers/attn/q_einsum/lora_b",
-      "PaliGemma/llm/layers/attn/q_einsum_1/lora_b",
-      "PaliGemma/llm/layers/attn/q_einsum_1/lora_a"
+      "PaliGemma/llm/layers/attn/q_einsum_1/lora_a",
+      "PaliGemma/llm/layers/attn/q_einsum_1/lora_b"
     ]
   }
 }

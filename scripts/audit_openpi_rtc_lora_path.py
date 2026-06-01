@@ -193,8 +193,8 @@ def main() -> int:
     loaded = cfg.weight_loader.load(params_shape.to_pure_dict())
     at.check_pytree_equality(expected=params_shape.to_pure_dict(), got=loaded, check_shapes=True, check_dtypes=True)
     flat_loaded = flax.traverse_util.flatten_dict(loaded)
-    loaded_lora = [key for key in flat_loaded if "lora" in "/".join(map(str, key))]
-    loaded_knob = [key for key in flat_loaded if "knob_" in "/".join(map(str, key))]
+    loaded_lora = sorted(key for key in flat_loaded if "lora" in "/".join(map(str, key)))
+    loaded_knob = sorted(key for key in flat_loaded if "knob_" in "/".join(map(str, key)))
     status["weight_preflight"] = {
         "passed": True,
         "params_path": str(args.params_path),

@@ -31,6 +31,8 @@ REQUIRED = [
     "reports/openpi_rtc_numeric_head_grad.md",
     "reports/openpi_rtc_numeric_head_grad_reduced.md",
     "reports/openpi_rtc_lora_path_audit.md",
+    "reports/openpi_rtc_lora_numeric_weight_preflight.md",
+    "reports/openpi_rtc_lora_numeric_forward_reduced.md",
     "runs/pi05_base_probe_status.json",
     "runs/pi06_pi07_public_audit.json",
     "runs/table30v2_aloha_mapping_audit.json",
@@ -44,6 +46,8 @@ REQUIRED = [
     "runs/openpi_rtc_numeric_head_grad_status.json",
     "runs/openpi_rtc_numeric_head_grad_reduced_status.json",
     "runs/openpi_rtc_lora_path_audit.json",
+    "runs/openpi_rtc_lora_numeric_weight_preflight_status.json",
+    "runs/openpi_rtc_lora_numeric_forward_reduced_status.json",
     "scripts/probe_pi05_base_model.sh",
     "scripts/audit_pi06_pi07_public_release.py",
     "scripts/audit_table30v2_aloha_mapping.py",
@@ -280,6 +284,63 @@ def main() -> int:
     ):
         print("openpi_rtc LoRA 低显存路线审计未通过")
         return 1
+    lora_weight = json.loads(
+        (ROOT / "runs/openpi_rtc_lora_numeric_weight_preflight_status.json").read_text(encoding="utf-8")
+    )
+    lora_weight_model = lora_weight.get("effective_model", {})
+    lora_weight_data = lora_weight.get("dataloader", {})
+    lora_weight_status = lora_weight.get("weight_preflight", {})
+    if not all(
+        [
+            lora_weight.get("mode") == "weight_preflight",
+            lora_weight.get("passed"),
+            lora_weight_model.get("paligemma_variant") == "gemma_2b_lora",
+            lora_weight_model.get("action_expert_variant") == "gemma_300m_lora",
+            lora_weight_model.get("pi05") is True,
+            lora_weight_model.get("ema_decay") is None,
+            lora_weight.get("effective_random_action_offset_copies") == 1,
+            lora_weight.get("effective_max_token_len") == 64,
+            lora_weight.get("effective_action_horizon") == 10,
+            lora_weight_data.get("state_shape") == [1, 32],
+            lora_weight_data.get("actions_shape") == [1, 10, 32],
+            lora_weight_data.get("tokenized_prompt_shape") == [1, 64],
+            lora_weight_status.get("passed"),
+            lora_weight_status.get("loaded", {}).get("leaf_count") == 73,
+            lora_weight_status.get("partial_params", {}).get("leaf_count") == 51,
+            lora_weight_status.get("removed_shape_dtype_struct_count") == 22,
+        ]
+    ):
+        print("openpi_rtc LoRA 数值权重预检未通过")
+        return 1
+    lora_forward = json.loads(
+        (ROOT / "runs/openpi_rtc_lora_numeric_forward_reduced_status.json").read_text(encoding="utf-8")
+    )
+    lora_forward_model = lora_forward.get("effective_model", {})
+    lora_forward_data = lora_forward.get("dataloader", {})
+    lora_forward_result = lora_forward.get("forward", {})
+    if not all(
+        [
+            lora_forward.get("mode") == "forward",
+            lora_forward.get("passed"),
+            lora_forward_model.get("paligemma_variant") == "gemma_2b_lora",
+            lora_forward_model.get("action_expert_variant") == "gemma_300m_lora",
+            lora_forward_model.get("pi05") is True,
+            lora_forward.get("compute_param_dtype") == "bfloat16",
+            lora_forward.get("effective_random_action_offset_copies") == 1,
+            lora_forward.get("effective_max_token_len") == 64,
+            lora_forward.get("effective_action_horizon") == 10,
+            lora_forward_data.get("state_shape") == [1, 32],
+            lora_forward_data.get("actions_shape") == [1, 10, 32],
+            lora_forward_data.get("tokenized_prompt_shape") == [1, 64],
+            lora_forward.get("weight_preflight", {}).get("passed"),
+            lora_forward.get("weight_preflight", {}).get("loaded", {}).get("leaf_count") == 73,
+            lora_forward.get("weight_preflight", {}).get("removed_shape_dtype_struct_count") == 22,
+            lora_forward_result.get("passed"),
+            isinstance(lora_forward_result.get("loss"), (int, float)),
+        ]
+    ):
+        print("openpi_rtc LoRA reduced forward smoke 未通过")
+        return 1
 
     print("工作区最低交接材料检查通过")
     print(f"根目录: {ROOT}")
@@ -293,6 +354,7 @@ def main() -> int:
     print("openpi_rtc 训练入口 shape smoke 已通过")
     print("openpi_rtc pi05_base 权重预检已通过，全量 grad 与小头部 grad blocker 已记录")
     print("openpi_rtc LoRA 低显存路线权重合并预检已通过")
+    print("openpi_rtc LoRA reduced 数值 forward smoke 已通过")
     return 0
 
 

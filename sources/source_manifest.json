@@ -56,6 +56,34 @@
       "type": "target_repo",
       "local_snapshot": null,
       "note": "用户提供的提交仓库，目前公开页面显示为空仓库。"
+    },
+    {
+      "name": "Physical Intelligence pi*0.6 paper",
+      "url": "https://www.physicalintelligence.company/download/pistar06.pdf",
+      "type": "paper",
+      "local_snapshot": null,
+      "note": "pi*0.6 / RECAP ???????????????? checkpoint?"
+    },
+    {
+      "name": "Physical Intelligence pi0.7 blog",
+      "url": "https://www.pi.website/blog/pi07",
+      "type": "blog",
+      "local_snapshot": null,
+      "note": "pi0.7 ??????? steerable generalist??????subgoal/metadata conditioning?"
+    },
+    {
+      "name": "OpenPI issue 789 pi0.6 release request",
+      "url": "https://github.com/Physical-Intelligence/openpi/issues/789",
+      "type": "issue",
+      "local_snapshot": null,
+      "note": "???? pi0.6 ??????????? release ???"
+    },
+    {
+      "name": "OpenPI issue 860 pi0.6 star mental model",
+      "url": "https://github.com/Physical-Intelligence/openpi/issues/860",
+      "type": "issue",
+      "local_snapshot": null,
+      "note": "???? pi0.6 star ???? pi0.5 checkpoint ???"
     }
   ]
 }

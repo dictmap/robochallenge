@@ -1,0 +1,87 @@
+{
+  "official_sources": [
+    {
+      "name": "Physical-Intelligence/openpi",
+      "url": "https://github.com/Physical-Intelligence/openpi",
+      "note": "公开 OpenPI 仓库当前列出的模型族为 pi0、pi0-FAST、pi0.5。"
+    },
+    {
+      "name": "pi*0.6 paper",
+      "url": "https://www.physicalintelligence.company/download/pistar06.pdf",
+      "note": "pi*0.6 / RECAP 论文，描述从经验和奖励反馈改进 VLA 的方法。"
+    },
+    {
+      "name": "pi0.7 blog",
+      "url": "https://www.pi.website/blog/pi07",
+      "note": "pi0.7 博客，发布于 2026-04-16，描述 steerable generalist 和组合泛化。"
+    },
+    {
+      "name": "openpi issue 789",
+      "url": "https://github.com/Physical-Intelligence/openpi/issues/789",
+      "note": "社区询问 pi0.6 是否会发布的公开 issue。"
+    },
+    {
+      "name": "openpi issue 860",
+      "url": "https://github.com/Physical-Intelligence/openpi/issues/860",
+      "note": "社区讨论 pi0.6 star 是否可从 pi0.5 checkpoint 实现的公开 issue。"
+    }
+  ],
+  "openpi_scan": {
+    "root": "/home/yjl/robochallenge/openpi",
+    "scanned_files": 113,
+    "matches": []
+  },
+  "gcs_prefixes": [
+    {
+      "prefix": "checkpoints/pi06",
+      "object_count": 0,
+      "sample": []
+    },
+    {
+      "prefix": "checkpoints/pi07",
+      "object_count": 0,
+      "sample": []
+    },
+    {
+      "prefix": "checkpoints/pi0_6",
+      "object_count": 0,
+      "sample": []
+    },
+    {
+      "prefix": "checkpoints/pi0_7",
+      "object_count": 0,
+      "sample": []
+    },
+    {
+      "prefix": "checkpoints/pi06_base",
+      "object_count": 0,
+      "sample": []
+    },
+    {
+      "prefix": "checkpoints/pi07_base",
+      "object_count": 0,
+      "sample": []
+    },
+    {
+      "prefix": "checkpoints/pi0.6",
+      "object_count": 0,
+      "sample": []
+    },
+    {
+      "prefix": "checkpoints/pi0.7",
+      "object_count": 0,
+      "sample": []
+    },
+    {
+      "prefix": "checkpoints/pistar06",
+      "object_count": 0,
+      "sample": []
+    },
+    {
+      "prefix": "checkpoints/pi_star06",
+      "object_count": 0,
+      "sample": []
+    }
+  ],
+  "public_checkpoint_found": false
+}

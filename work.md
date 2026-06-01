@@ -113,3 +113,23 @@
 
 - P0：基于 `pi05_base` 和现有 Table30v2 数据，补最小任务分片的数据字段、norm stats、动作维度和 prompt 映射。
 - P1：优先把 ALOHA 或 UR5 的一个 Table30v2 分片接到 OpenPI finetune/eval 配置。
+
+## 2026-06-02 第五轮：补查 pi0.6 / pi0.7
+
+### 已完成
+
+- 按用户提醒补查 `pi0.6`、`pi0.7`。
+- 新增 `scripts/audit_pi06_pi07_public_release.py`：扫描本地 OpenPI 配置、查询 `openpi-assets` 公共 checkpoint 前缀，并生成审计报告。
+- 官方 OpenPI 当前公开仓库只列 `pi0`、`pi0-FAST`、`pi0.5` 三类模型；本地代码未命中可用 `pi06/pi07/pi0.6/pi0.7` config。
+- 已查询 `checkpoints/pi06`、`checkpoints/pi07`、`checkpoints/pi0_6`、`checkpoints/pi0_7`、`checkpoints/pi06_base`、`checkpoints/pi07_base`、`checkpoints/pi0.6`、`checkpoints/pi0.7`、`checkpoints/pistar06`、`checkpoints/pi_star06` 等公共 GCS 前缀，当前对象数均为 0。
+- 生成 `reports/pi06_pi07_public_release_audit.md` 和 `runs/pi06_pi07_public_audit.json`。
+
+### 结论
+
+- `pi*0.6` 和 `pi0.7` 有公开论文/博客，可作为方法参考，但没有发现可像 `pi05_base` 一样下载并加载的公开 OpenPI checkpoint。
+- 当前不能声称“复现 pi0.6/pi0.7 模型本体”；可执行路线仍是先用 `pi05_base` 和 RoboChallenge/Table30v2 baseline。
+
+### 下一步
+
+- P0：把 `pi*0.6` 的 RECAP 思路拆成可在 RoboChallenge 上落地的后续优化项：成功/失败标签、失败轨迹、reward bin/value function、优势加权再训练。
+- P1：把 `pi0.7` 的 steerable prompt/subtask/visual subgoal/metadata conditioning 思路记录为后续 prompt 与分层策略优化方向。

@@ -6,6 +6,7 @@
 
 - OpenPI `pi05_base` 基模已经在 Linux 上复现：29 个 GCS 对象下载到 `/home/yjl/.cache/openpi/openpi-assets/checkpoints/pi05_base`，大小校验通过。
 - `pi05_base` 参数读取 smoke 已通过：51 个参数 leaf，约 3.353B 参数元素，见 `runs/pi05_base_probe_status.json` 和 `reports/pi05_base_repro.md`。
+- 已审计 `pi0.6 / pi0.7` 公开可复现性：当前 OpenPI 公开代码和 `openpi-assets` bucket 未发现可下载 checkpoint/config，见 `reports/pi06_pi07_public_release_audit.md`。
 - Linux 上已有 RoboChallenge pi0.5 多任务 baseline：`/home/yjl/yjl/RoboChallenge/baseline_pi05_multitask`。
 - 已有 ALOHA checkpoint：`/home/yjl/yjl/RoboChallenge/checkpoints/table30v2_multitask_baseline_aloha`。
 - 核心操作已经写入中文 Jupyter：`notebooks/robochallenge_pi05_submit_cn.ipynb`。
@@ -32,8 +33,10 @@
 - `configs/repro_targets.json`：复现目标和执行环境约束。
 - `reports/initial_repro_assessment.md`：第一轮复现评估。
 - `reports/pi05_base_repro.md`：pi0.5 基模下载、配置核对和参数读取 smoke 结果。
+- `reports/pi06_pi07_public_release_audit.md`：pi0.6/pi0.7 是否能公开复现的审计结果。
 - `scripts/collect_hf_manifest.py`：轻量拉取 Hugging Face repo manifest。
 - `scripts/probe_pi05_base_model.sh`：探测/下载/校验 `pi05_base`，可选读取参数树。
+- `scripts/audit_pi06_pi07_public_release.py`：审计 pi0.6/pi0.7 是否已有公开 OpenPI 配置或 checkpoint。
 - `scripts/run_pi05_base_download_background.sh`：后台下载 `pi05_base` 的辅助脚本。
 - `scripts/run_pi05_base_load_smoke_background.sh`：后台执行参数读取 smoke 的辅助脚本。
 - `scripts/validate_repro_workspace.py`：检查本工作区是否具备后续迭代的最低材料。

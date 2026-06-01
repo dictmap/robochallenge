@@ -20,8 +20,11 @@ REQUIRED = [
     "baseline/official_table30v2_readme.md",
     "reports/initial_repro_assessment.md",
     "reports/pi05_base_repro.md",
+    "reports/pi06_pi07_public_release_audit.md",
     "runs/pi05_base_probe_status.json",
+    "runs/pi06_pi07_public_audit.json",
     "scripts/probe_pi05_base_model.sh",
+    "scripts/audit_pi06_pi07_public_release.py",
 ]
 
 
@@ -48,11 +51,16 @@ def main() -> int:
     if not pi05_status.get("load_params_smoke", {}).get("loaded"):
         print("pi05_base 参数读取 smoke 未通过")
         return 1
+    pi06_pi07_status = json.loads((ROOT / "runs/pi06_pi07_public_audit.json").read_text(encoding="utf-8"))
+    if pi06_pi07_status.get("public_checkpoint_found"):
+        print("pi0.6/pi0.7 发现公开 checkpoint，请更新复现路线")
+        return 1
 
     print("工作区最低交接材料检查通过")
     print(f"根目录: {ROOT}")
     print(f"来源数量: {len(manifest['sources'])}")
     print("pi05_base 基模缓存与参数读取 smoke 已通过")
+    print("pi0.6/pi0.7 公开 checkpoint 审计已完成")
     return 0
 
 

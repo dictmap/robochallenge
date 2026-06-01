@@ -23,15 +23,18 @@ REQUIRED = [
     "reports/pi06_pi07_public_release_audit.md",
     "reports/table30v2_aloha_mapping.md",
     "reports/table30v2_aloha_dry_run_converter.md",
+    "reports/table30v2_aloha_short_lerobot.md",
     "runs/pi05_base_probe_status.json",
     "runs/pi06_pi07_public_audit.json",
     "runs/table30v2_aloha_mapping_audit.json",
     "runs/table30v2_aloha_dry_run_status.json",
     "runs/table30v2_aloha_dry_run_samples.jsonl",
+    "runs/table30v2_aloha_short_lerobot_status.json",
     "scripts/probe_pi05_base_model.sh",
     "scripts/audit_pi06_pi07_public_release.py",
     "scripts/audit_table30v2_aloha_mapping.py",
     "scripts/dry_run_table30v2_aloha_converter.py",
+    "scripts/write_table30v2_aloha_short_lerobot.py",
 ]
 
 
@@ -81,6 +84,21 @@ def main() -> int:
     ):
         print("Table30v2 ALOHA dry-run transform 形状校验未全部通过")
         return 1
+    short_status = json.loads((ROOT / "runs/table30v2_aloha_short_lerobot_status.json").read_text(encoding="utf-8"))
+    if not short_status.get("passed"):
+        print("Table30v2 ALOHA 短 episode LeRobot writer 或 dataloader smoke 未通过")
+        return 1
+    short_smoke = short_status.get("dataloader_smoke", {})
+    if not all(
+        [
+            short_smoke.get("state_shape") == [1, 5, 32],
+            short_smoke.get("actions_shape") == [1, 5, 50, 32],
+            short_smoke.get("image_keys") == ["base_0_rgb", "left_wrist_0_rgb", "right_wrist_0_rgb"],
+            short_smoke.get("tokenized_prompt_shape") == [1, 5, 200],
+        ]
+    ):
+        print("Table30v2 ALOHA 短 episode dataloader smoke 形状校验未全部通过")
+        return 1
 
     print("工作区最低交接材料检查通过")
     print(f"根目录: {ROOT}")
@@ -89,6 +107,7 @@ def main() -> int:
     print("pi0.6/pi0.7 公开 checkpoint 审计已完成")
     print("Table30v2 ALOHA 最小分片字段映射已通过")
     print("Table30v2 ALOHA dry-run converter 已通过")
+    print("Table30v2 ALOHA 短 episode LeRobot writer 与 dataloader smoke 已通过")
     return 0
 
 

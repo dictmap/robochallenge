@@ -1,0 +1,164 @@
+{
+  "dataset": {
+    "repo_id": "robochallenge_table30v2_aloha_short",
+    "repo_root": "/home/yjl/.cache/huggingface/lerobot/robochallenge_table30v2_aloha_short",
+    "fps": 30,
+    "frame_count": 64,
+    "prompt": "Put the toothbrush and toothpaste into the toiletries case in sequence, close the case, and then place it into the basket."
+  },
+  "dataloader_smoke": {
+    "config_name": "cvpr_multitask_aloha_rtc",
+    "repo_id": "robochallenge_table30v2_aloha_short",
+    "model_action_dim": 32,
+    "action_horizon": 50,
+    "observation_summary": {
+      "state": {
+        "shape": [
+          1,
+          5,
+          32
+        ],
+        "dtype": "float32"
+      },
+      "action_is_pad": {
+        "shape": [
+          1,
+          5,
+          50
+        ],
+        "dtype": "bool"
+      },
+      "action_prefill_len": {
+        "shape": [
+          1,
+          5
+        ],
+        "dtype": "int32"
+      },
+      "actions": {
+        "shape": [
+          1,
+          5,
+          50,
+          32
+        ],
+        "dtype": "float32"
+      },
+      "adarms_knob": {
+        "type": "NoneType",
+        "value": null
+      },
+      "tokenized_prompt": {
+        "shape": [
+          1,
+          5,
+          200
+        ],
+        "dtype": "int64"
+      },
+      "tokenized_prompt_mask": {
+        "shape": [
+          1,
+          5,
+          200
+        ],
+        "dtype": "bool"
+      },
+      "token_ar_mask": {
+        "type": "NoneType",
+        "value": null
+      },
+      "token_loss_mask": {
+        "type": "NoneType",
+        "value": null
+      },
+      "image": {
+        "base_0_rgb": {
+          "shape": [
+            1,
+            224,
+            224,
+            3
+          ],
+          "dtype": "float32"
+        },
+        "left_wrist_0_rgb": {
+          "shape": [
+            1,
+            224,
+            224,
+            3
+          ],
+          "dtype": "float32"
+        },
+        "right_wrist_0_rgb": {
+          "shape": [
+            1,
+            224,
+            224,
+            3
+          ],
+          "dtype": "float32"
+        }
+      },
+      "image_mask": {
+        "base_0_rgb": {
+          "shape": [
+            1
+          ],
+          "dtype": "bool"
+        },
+        "left_wrist_0_rgb": {
+          "shape": [
+            1
+          ],
+          "dtype": "bool"
+        },
+        "right_wrist_0_rgb": {
+          "shape": [
+            1
+          ],
+          "dtype": "bool"
+        }
+      }
+    },
+    "actions_summary": {
+      "shape": [
+        1,
+        5,
+        50,
+        32
+      ],
+      "dtype": "float32"
+    },
+    "state_shape": [
+      1,
+      5,
+      32
+    ],
+    "actions_shape": [
+      1,
+      5,
+      50,
+      32
+    ],
+    "observation_actions_shape": [
+      1,
+      5,
+      50,
+      32
+    ],
+    "image_keys": [
+      "base_0_rgb",
+      "left_wrist_0_rgb",
+      "right_wrist_0_rgb"
+    ],
+    "tokenized_prompt_shape": [
+      1,
+      5,
+      200
+    ],
+    "passed": true
+  },
+  "passed": true
+}

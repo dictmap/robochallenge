@@ -190,3 +190,35 @@
 
 - P0：把 dry-run converter 扩展为可选小 episode LeRobot writer，先只写一个短 episode 并运行 dataloader smoke。
 - P1：小 episode 成功后，再准备微调/评测命令模板和提交打包清单。
+
+## 2026-06-02 第八轮：短 episode LeRobot writer 与 dataloader smoke
+
+### 已完成
+
+- 新增 `scripts/write_table30v2_aloha_short_lerobot.py`，从 `pack_the_toothbrush_holder` ALOHA 样例写出 64 帧本地 LeRobot repo。
+- 输出 repo_id：`robochallenge_table30v2_aloha_short`。
+- 输出路径：`/home/yjl/.cache/huggingface/lerobot/robochallenge_table30v2_aloha_short`。
+- 写入字段：`observation.images.front_image`、`observation.images.left_image`、`observation.images.right_image`、`observation.state`、`action` 和 task prompt。
+- 使用 `cvpr_multitask_aloha_rtc` 的 `LeRobotW1DualDataConfig` 读取本地 repo，完成 OpenPI dataloader smoke。
+- 已生成 `reports/table30v2_aloha_short_lerobot.md` 和 `runs/table30v2_aloha_short_lerobot_status.json`。
+- 已将短 episode writer 和 dataloader smoke 纳入 `scripts/validate_repro_workspace.py`。
+
+### 验证结果
+
+- LeRobot 写出帧数：64，fps：30。
+- dataloader 后 state shape：`[1, 5, 32]`。
+- dataloader 后 actions shape：`[1, 5, 50, 32]`。
+- dataloader 后 image keys：`base_0_rgb`、`left_wrist_0_rgb`、`right_wrist_0_rgb`。
+- prompt tokenizer shape：`[1, 5, 200]`。
+- `passed=true`。
+
+### 当前阻塞
+
+- 真实 RoboChallenge 提交仍需要用户申请并提供 `user_token` 与 `submission_id`。
+- 当前只写了一个短 episode，本轮没有做全量 Table30v2 转换，也没有做长时间训练。
+- 原始 `Table30` 仍未等同于当前 Table30v2 ALOHA 分片；若正式入口要求原始 Table30，需要补对应数据与配置。
+
+### 下一步
+
+- P0：把短 episode writer 扩展为可控分片 writer，支持指定 task、robot 和 frame_count，并保留本地 repo 不覆盖选项。
+- P1：跑小步数训练 dry-run，验证训练入口、loss 前向和 checkpoint 写出。

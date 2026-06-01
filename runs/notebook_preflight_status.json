@@ -9,5 +9,5 @@
   "policy_smoke_requested": false,
   "has_user_token_env": false,
   "has_submission_id_env": false,
-  "next_p0": "把 Table30v2 ALOHA dry-run converter 扩展为短 episode LeRobot writer，并运行 dataloader smoke。"
+  "next_p0": "把短 episode writer 扩展为可控分片 writer，并跑小步数训练 dry-run。"
 }

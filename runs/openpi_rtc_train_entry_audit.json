@@ -1,0 +1,445 @@
+{
+  "source_audit": {
+    "baseline": "/home/yjl/yjl/RoboChallenge/baseline_pi05_multitask",
+    "openpi_root": "/home/yjl/yjl/RoboChallenge/baseline_pi05_multitask/openpi",
+    "train_candidates": [
+      "train.py",
+      "train_pytorch.py",
+      "train_test.py"
+    ],
+    "standard_train_path": "/home/yjl/yjl/RoboChallenge/baseline_pi05_multitask/openpi/scripts/train.py",
+    "rtc_train_path": "/home/yjl/yjl/RoboChallenge/baseline_pi05_multitask/openpi/scripts/train_rtc.py",
+    "rtc_train_entry_exists": false,
+    "standard_train_uses_openpi_training": true,
+    "standard_train_uses_openpi_rtc_training": false,
+    "weight_loader_uses_standard_model_namespace": true,
+    "weight_loader_uses_rtc_model_namespace": false,
+    "compute_loss_has_multi_offset_branch": true,
+    "compute_loss_requires_prompt_chunk_mask": true
+  },
+  "dataloader_preflight": {
+    "repo_id": "robochallenge_table30v2_aloha_short",
+    "config_name": "cvpr_multitask_aloha_rtc",
+    "model_type": "ModelType.PI05",
+    "model_action_dim": 32,
+    "action_horizon": 50,
+    "max_token_len": 200,
+    "random_action_offset": true,
+    "random_action_offset_copies": 5,
+    "random_action_offset_max": 15,
+    "observation_summary": {
+      "state": {
+        "shape": [
+          1,
+          5,
+          32
+        ],
+        "dtype": "float32"
+      },
+      "action_is_pad": {
+        "shape": [
+          1,
+          5,
+          50
+        ],
+        "dtype": "bool"
+      },
+      "action_prefill_len": {
+        "shape": [
+          1,
+          5
+        ],
+        "dtype": "int32"
+      },
+      "actions": {
+        "shape": [
+          1,
+          5,
+          50,
+          32
+        ],
+        "dtype": "float32"
+      },
+      "adarms_knob": {
+        "type": "NoneType",
+        "value": null
+      },
+      "tokenized_prompt": {
+        "shape": [
+          1,
+          5,
+          200
+        ],
+        "dtype": "int64"
+      },
+      "tokenized_prompt_mask": {
+        "shape": [
+          1,
+          5,
+          200
+        ],
+        "dtype": "bool"
+      },
+      "token_ar_mask": {
+        "type": "NoneType",
+        "value": null
+      },
+      "token_loss_mask": {
+        "type": "NoneType",
+        "value": null
+      },
+      "image": {
+        "base_0_rgb": {
+          "shape": [
+            1,
+            224,
+            224,
+            3
+          ],
+          "dtype": "float32"
+        },
+        "left_wrist_0_rgb": {
+          "shape": [
+            1,
+            224,
+            224,
+            3
+          ],
+          "dtype": "float32"
+        },
+        "right_wrist_0_rgb": {
+          "shape": [
+            1,
+            224,
+            224,
+            3
+          ],
+          "dtype": "float32"
+        }
+      },
+      "image_mask": {
+        "base_0_rgb": {
+          "shape": [
+            1
+          ],
+          "dtype": "bool"
+        },
+        "left_wrist_0_rgb": {
+          "shape": [
+            1
+          ],
+          "dtype": "bool"
+        },
+        "right_wrist_0_rgb": {
+          "shape": [
+            1
+          ],
+          "dtype": "bool"
+        }
+      }
+    },
+    "actions_summary": {
+      "shape": [
+        1,
+        5,
+        50,
+        32
+      ],
+      "dtype": "float32"
+    },
+    "state_shape": [
+      1,
+      5,
+      32
+    ],
+    "actions_shape": [
+      1,
+      5,
+      50,
+      32
+    ],
+    "image_keys": [
+      "base_0_rgb",
+      "left_wrist_0_rgb",
+      "right_wrist_0_rgb"
+    ],
+    "tokenized_prompt_shape": [
+      1,
+      5,
+      200
+    ],
+    "tokenized_prompt_mask_shape": [
+      1,
+      5,
+      200
+    ],
+    "action_is_pad_shape": [
+      1,
+      5,
+      50
+    ],
+    "passed": true
+  },
+  "train_step_shape_smoke": {
+    "passed": true,
+    "mode": "jax.eval_shape",
+    "meaning": "验证 openpi_rtc train_step 的前向 loss 与反向梯度图形状，不加载 pi05_base 权重，不执行数值训练。",
+    "train_state_shape": {
+      "leaf_count": 215,
+      "sample_leaves": [
+        {
+          "shape": [],
+          "dtype": "int32"
+        },
+        {
+          "shape": [
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            4304
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            1152,
+            4304
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            4304,
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            16,
+            72
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            1152,
+            16,
+            72
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            16,
+            72,
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            16,
+            72
+          ],
+          "dtype": "float32"
+        }
+      ]
+    },
+    "new_state_shape": {
+      "leaf_count": 215,
+      "sample_leaves": [
+        {
+          "shape": [],
+          "dtype": "int32"
+        },
+        {
+          "shape": [
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            4304
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            1152,
+            4304
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            4304,
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            16,
+            72
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            1152,
+            16,
+            72
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            16,
+            72,
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            16,
+            72
+          ],
+          "dtype": "float32"
+        }
+      ]
+    },
+    "info_shape": {
+      "grad_norm": {
+        "shape": [],
+        "dtype": "float32"
+      },
+      "loss": {
+        "shape": [],
+        "dtype": "float32"
+      },
+      "param_norm": {
+        "shape": [],
+        "dtype": "float32"
+      }
+    }
+  },
+  "passed": true,
+  "numeric_train_step_done": false,
+  "numeric_train_step_blocker": "尚未加载 pi05_base 权重执行真实 1-step；下一轮在 GPU 上做真实 loss/grad/checkpoint dry-run。"
+}

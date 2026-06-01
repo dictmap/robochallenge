@@ -250,3 +250,37 @@
 
 - P0：定位或搭建 `openpi_rtc` 训练 dry-run 入口，使用本地短分片做 1-step loss 前向/反向验证。
 - P1：若训练入口需要较大显存或权重加载许可，明确记录阻塞和可替代的 lightweight forward smoke。
+
+## 2026-06-02 第十轮：openpi_rtc 训练入口 shape smoke
+
+### 已完成
+
+- 新增 `scripts/audit_openpi_rtc_train_entry.py`，不改 baseline 源码，专门审计 `openpi_rtc` 训练入口和本地短分片训练形状。
+- 确认 baseline 现有训练候选脚本只有 `train.py`、`train_pytorch.py`、`train_test.py`，没有现成 `train_rtc.py`。
+- 确认标准 `openpi/scripts/train.py` 绑定 `openpi.training.*`，没有导入 `openpi_rtc.training.*`，不能直接用于当前 RoboChallenge RTC 配置。
+- 确认 `openpi_rtc.models.pi0.compute_loss` 已有 `actions.ndim == 4` 的 multi-offset 分支，能够接收当前 dataloader 产生的 `[batch, 5, 50, 32]` actions。
+- 用本地短分片 `robochallenge_table30v2_aloha_short` 和 `cvpr_multitask_aloha_rtc` 完成 dataloader preflight。
+- 用 `jax.eval_shape` 完成抽象 `train_step` 前向 loss 与反向梯度 shape smoke，不加载 `pi05_base` 大权重，不写真实 checkpoint。
+- 生成 `reports/openpi_rtc_train_entry_audit.md` 和 `runs/openpi_rtc_train_entry_audit.json`。
+- 已将该审计纳入 `scripts/validate_repro_workspace.py` 的最低交接检查。
+
+### 验证结果
+
+- dataloader state shape：`[1, 5, 32]`。
+- dataloader actions shape：`[1, 5, 50, 32]`。
+- tokenized prompt shape：`[1, 5, 200]`。
+- image keys：`base_0_rgb`、`left_wrist_0_rgb`、`right_wrist_0_rgb`。
+- 抽象 `train_step` shape smoke：`passed=true`。
+- `info_shape.loss`、`info_shape.grad_norm`、`info_shape.param_norm` 均为标量。
+- 本地 `python scripts/validate_repro_workspace.py` 已通过。
+
+### 当前边界
+
+- 本轮验证的是训练图和维度闭合，不是数值训练；尚未加载 `pi05_base` 权重跑真实 loss。
+- `openpi_rtc.training.weight_loaders.py` 仍引用标准 `openpi.models.model` 和 `openpi.shared.download`，真实权重加载前需要继续核对是否会造成 namespace 风险。
+- 真实 RoboChallenge 提交仍需要用户申请并提供网站 `user_token` 与 `submission_id`。
+
+### 下一步
+
+- P0：固化最小 `openpi_rtc` 数值训练脚本，在 Linux GPU 上加载 `pi05_base` 权重跑真实 1-step loss/grad/checkpoint dry-run。
+- P1：如果真实 1-step 因显存或权重 namespace 失败，先修复 `openpi_rtc` weight loader 的 namespace 风险，再重跑。

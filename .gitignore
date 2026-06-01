@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.env
+
+# 本地大文件和敏感文件
+checkpoints/
+data/
+20260413/
+*.tar
+*.tar.part-*
+*.mp4
+*.log
+mylogfile.log
+runs/*.pid
+runs/*.log
+
+# Jupyter
+.ipynb_checkpoints/
+notebooks/*.executed.ipynb
+
+# 系统
+.DS_Store

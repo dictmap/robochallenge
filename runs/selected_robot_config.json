@@ -1,0 +1,8 @@
+{
+  "robot_type": "aloha",
+  "robot_tag": "aloha",
+  "record_data_dir": "../20260413/aloha/pack_the_toothbrush_holder",
+  "checkpoint": "/home/yjl/yjl/RoboChallenge/checkpoints/table30v2_multitask_baseline_aloha",
+  "checkpoint_exists": true,
+  "prompt": "Put the toothbrush and toothpaste into the toiletries case in sequence, close the case, and then place it into the basket."
+}

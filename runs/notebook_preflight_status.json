@@ -1,0 +1,13 @@
+{
+  "robot_type": "aloha",
+  "baseline_dir": "/home/yjl/yjl/RoboChallenge/baseline_pi05_multitask",
+  "baseline_python_exists": true,
+  "checkpoint": "/home/yjl/yjl/RoboChallenge/checkpoints/table30v2_multitask_baseline_aloha",
+  "checkpoint_exists": true,
+  "mock_settings_written": true,
+  "mock_server_started": false,
+  "policy_smoke_requested": false,
+  "has_user_token_env": false,
+  "has_submission_id_env": false,
+  "next_p0": "先用 ALOHA checkpoint 跑 mock smoke；随后根据网站 submission_id 执行 demo.py。"
+}

@@ -1,0 +1,54 @@
+{
+  "created_at": "2026-06-02",
+  "sources": [
+    {
+      "name": "RoboChallenge benchmark_detail",
+      "url": "https://robochallenge.ai/benchmark_detail",
+      "type": "benchmark_page",
+      "local_snapshot": null,
+      "note": "动态页面；搜索缓存显示 Table30 任务、pi0.5/rc_baseline 榜单和任务列表。"
+    },
+    {
+      "name": "RoboChallenge homepage",
+      "url": "https://robochallenge.ai/",
+      "type": "competition_index",
+      "local_snapshot": null,
+      "note": "包含 ICRA 2026、CVPR 2026 Workshop Competition 和榜单入口。"
+    },
+    {
+      "name": "RoboChallenge Hugging Face org",
+      "url": "https://huggingface.co/RoboChallenge",
+      "type": "hf_org",
+      "local_snapshot": null,
+      "note": "列出 Table30v2、ICRA WBC 数据集和 baseline 模型。"
+    },
+    {
+      "name": "RoboChallenge/Table30v2",
+      "url": "https://huggingface.co/datasets/RoboChallenge/Table30v2",
+      "type": "dataset",
+      "local_snapshot": "sources/hf_table30v2_api.json",
+      "note": "30 个任务，4 类 embodiment，含 convert_to_lerobot.py。"
+    },
+    {
+      "name": "RoboChallenge/icra_wbc",
+      "url": "https://huggingface.co/datasets/RoboChallenge/icra_wbc",
+      "type": "dataset",
+      "local_snapshot": "sources/hf_icra_wbc_api.json",
+      "note": "Agibot G2 全身移动操作数据，约 2800 episodes。"
+    },
+    {
+      "name": "Physical-Intelligence/openpi",
+      "url": "https://github.com/Physical-Intelligence/openpi",
+      "type": "code",
+      "local_snapshot": null,
+      "note": "pi0/pi0-FAST/pi0.5 官方开源实现，要求 Ubuntu 22.04 和 NVIDIA GPU。"
+    },
+    {
+      "name": "dictmap/robochallenge",
+      "url": "https://github.com/dictmap/robochallenge",
+      "type": "target_repo",
+      "local_snapshot": null,
+      "note": "用户提供的提交仓库，目前公开页面显示为空仓库。"
+    }
+  ]
+}

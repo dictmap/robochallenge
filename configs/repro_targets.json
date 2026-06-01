@@ -1,0 +1,39 @@
+{
+  "primary_target": {
+    "name": "RoboChallenge Table30 benchmark_detail",
+    "url": "https://robochallenge.ai/benchmark_detail",
+    "reason": "用户给出的页面；公开榜单包含 pi0.5/rc_baseline 结果。"
+  },
+  "candidate_competition_targets": [
+    {
+      "name": "RoboChallenge Table30 V2 / CVPR Competition Benchmark",
+      "dataset": "RoboChallenge/Table30v2",
+      "baseline_models": [
+        "RoboChallenge/table30v2_multitask_baseline_ur5",
+        "RoboChallenge/table30v2_multitask_baseline_arx5",
+        "RoboChallenge/table30v2_multitask_baseline_aloha",
+        "RoboChallenge/table30v2_multitask_baseline_w1"
+      ]
+    },
+    {
+      "name": "RoboChallenge ICRA WBC",
+      "dataset": "RoboChallenge/icra_wbc",
+      "baseline_models": [
+        "RoboChallenge/icra_wbc_baseline"
+      ]
+    }
+  ],
+  "execution": {
+    "windows_role": "资料抓取、轻量脚本、repo 管理",
+    "linux_role": "openpi 环境、GPU smoke test、训练/推理、数据转换",
+    "linux_host_alias": "light-47022",
+    "linux_gpu": "NVIDIA GeForce RTX 4090 24564 MiB",
+    "local_gpu_blocker": "Windows 本机 MX550 2048 MiB，不满足 openpi 要求"
+  },
+  "submission_blockers": [
+    "需要 RoboChallenge 账号和提交权限",
+    "需要确认目标是 Table30、Table30v2 CVPR 还是 ICRA WBC",
+    "需要确认最终提交形式：模型 checkpoint、policy server、代码包或平台 API",
+    "需要确认 GitHub deploy key 已加入 dictmap/robochallenge 并按需勾选写权限"
+  ]
+}

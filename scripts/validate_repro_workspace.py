@@ -30,6 +30,7 @@ REQUIRED = [
     "reports/openpi_rtc_numeric_grad_attempt.md",
     "reports/openpi_rtc_numeric_head_grad.md",
     "reports/openpi_rtc_numeric_head_grad_reduced.md",
+    "reports/openpi_rtc_lora_path_audit.md",
     "runs/pi05_base_probe_status.json",
     "runs/pi06_pi07_public_audit.json",
     "runs/table30v2_aloha_mapping_audit.json",
@@ -42,6 +43,7 @@ REQUIRED = [
     "runs/openpi_rtc_numeric_grad_attempt_status.json",
     "runs/openpi_rtc_numeric_head_grad_status.json",
     "runs/openpi_rtc_numeric_head_grad_reduced_status.json",
+    "runs/openpi_rtc_lora_path_audit.json",
     "scripts/probe_pi05_base_model.sh",
     "scripts/audit_pi06_pi07_public_release.py",
     "scripts/audit_table30v2_aloha_mapping.py",
@@ -49,6 +51,7 @@ REQUIRED = [
     "scripts/write_table30v2_aloha_short_lerobot.py",
     "scripts/audit_openpi_rtc_train_entry.py",
     "scripts/run_openpi_rtc_numeric_dry_run.py",
+    "scripts/audit_openpi_rtc_lora_path.py",
 ]
 
 
@@ -254,6 +257,29 @@ def main() -> int:
     if (ROOT / "runs/openpi_rtc_head_grad_checkpoint/metadata.json").exists():
         print("检测到 head_grad checkpoint metadata，但当前已验证状态并未成功写出 checkpoint")
         return 1
+    lora_audit = json.loads((ROOT / "runs/openpi_rtc_lora_path_audit.json").read_text(encoding="utf-8"))
+    lora_model = lora_audit.get("model", {})
+    lora_counts = lora_audit.get("param_counts", {})
+    lora_weight = lora_audit.get("weight_preflight", {})
+    if not all(
+        [
+            lora_audit.get("passed"),
+            lora_model.get("paligemma_variant") == "gemma_2b_lora",
+            lora_model.get("action_expert_variant") == "gemma_300m_lora",
+            lora_model.get("pi05") is True,
+            lora_audit.get("ema_decay") is None,
+            lora_counts.get("all", {}).get("leaf_count") == 73,
+            lora_counts.get("lora", {}).get("leaf_count") == 20,
+            lora_counts.get("lora", {}).get("total_elements") == 49987584,
+            lora_counts.get("trainable", {}).get("leaf_count") == 53,
+            lora_weight.get("passed"),
+            lora_weight.get("loaded_leaf_count") == 73,
+            lora_weight.get("loaded_lora_leaf_count") == 20,
+            lora_weight.get("loaded_knob_leaf_count") == 2,
+        ]
+    ):
+        print("openpi_rtc LoRA 低显存路线审计未通过")
+        return 1
 
     print("工作区最低交接材料检查通过")
     print(f"根目录: {ROOT}")
@@ -266,6 +292,7 @@ def main() -> int:
     print("Table30v2 ALOHA 可控分片 writer CLI smoke 已通过")
     print("openpi_rtc 训练入口 shape smoke 已通过")
     print("openpi_rtc pi05_base 权重预检已通过，全量 grad 与小头部 grad blocker 已记录")
+    print("openpi_rtc LoRA 低显存路线权重合并预检已通过")
     return 0
 
 

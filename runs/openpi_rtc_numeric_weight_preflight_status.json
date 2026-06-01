@@ -19,7 +19,7 @@
       "--format=csv,noheader"
     ],
     "returncode": 0,
-    "stdout": "NVIDIA GeForce RTX 4090, 24564 MiB, 5595 MiB, 18487 MiB",
+    "stdout": "NVIDIA GeForce RTX 4090, 24564 MiB, 2514 MiB, 21568 MiB",
     "stderr": ""
   },
   "passed": true,
@@ -57,7 +57,7 @@
   "weight_preflight": {
     "passed": true,
     "params_path": "/home/yjl/.cache/openpi/openpi-assets/checkpoints/pi05_base/params",
-    "load_seconds": 4.001,
+    "load_seconds": 4.031,
     "expected": {
       "leaf_count": 53,
       "total_elements": 3353434897,
@@ -588,7 +588,7 @@
       "--format=csv,noheader"
     ],
     "returncode": 0,
-    "stdout": "NVIDIA GeForce RTX 4090, 24564 MiB, 5995 MiB, 18087 MiB",
+    "stdout": "NVIDIA GeForce RTX 4090, 24564 MiB, 2914 MiB, 21168 MiB",
     "stderr": ""
   }
 }

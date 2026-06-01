@@ -13,6 +13,7 @@
 - 已将短 episode writer 扩展为可控分片 CLI：已验证 `start_index=10`、`frame_count=80`、独立 repo `robochallenge_table30v2_aloha_short_offset10`，见 `reports/table30v2_aloha_short_lerobot_cli.md`。
 - 已完成 `openpi_rtc` 训练入口审计和抽象 `train_step` shape smoke：确认标准 `openpi/scripts/train.py` 不能直接复用，已用短分片验证前向 loss 与反向梯度图形状闭合，见 `reports/openpi_rtc_train_entry_audit.md`。
 - 已完成 `openpi_rtc` 数值权重预检：`pi05_base` 12.44GB 参数能接入 RTC 模型结构，51 个实际注入 leaf、过滤 2 个 `ShapeDtypeStruct` knob leaf；全量 grad 和小头部 `head_grad` 在 24GB 4090 当前占用下仍被 XLA/GPU 阻塞，见 `reports/openpi_rtc_numeric_weight_preflight.md`、`reports/openpi_rtc_numeric_grad_attempt.md`、`reports/openpi_rtc_numeric_head_grad.md` 和 `reports/openpi_rtc_numeric_head_grad_reduced.md`。
+- 已完成 `openpi_rtc` LoRA 低显存路线审计：`gemma_2b_lora + gemma_300m_lora` 保持 `pi05=True`，`pi05_base` 权重可合并 20 个 LoRA leaf 和 2 个 knob leaf，见 `reports/openpi_rtc_lora_path_audit.md`。
 - Linux 上已有 RoboChallenge pi0.5 多任务 baseline：`/home/yjl/yjl/RoboChallenge/baseline_pi05_multitask`。
 - 已有 ALOHA checkpoint：`/home/yjl/yjl/RoboChallenge/checkpoints/table30v2_multitask_baseline_aloha`。
 - 核心操作已经写入中文 Jupyter：`notebooks/robochallenge_pi05_submit_cn.ipynb`。
@@ -50,6 +51,7 @@
 - `reports/openpi_rtc_numeric_forward_bf16_1copy.md`：当前外部显存占用下，`bfloat16` 参数和 1-copy offset 前向仍 OOM 的失败日志。
 - `reports/openpi_rtc_numeric_head_grad.md`：只训练 `action_in_proj/action_out_proj/knob_*` 小头部的反向尝试及 CUDA OOM blocker 记录。
 - `reports/openpi_rtc_numeric_head_grad_reduced.md`：缩短 token/action horizon 后的小头部反向尝试及 XLA blocker 记录。
+- `reports/openpi_rtc_lora_path_audit.md`：LoRA 低显存路线的配置、参数树和 `pi05_base` 权重合并预检结果。
 - `runs/table30v2_aloha_dry_run_status.json`：dry-run converter 的机器可读状态。
 - `runs/table30v2_aloha_dry_run_samples.jsonl`：5 帧抽样的 LeRobot-like schema 与数值摘要。
 - `runs/table30v2_aloha_short_lerobot_status.json`：短 episode writer 与 dataloader smoke 的机器可读状态。
@@ -60,6 +62,7 @@
 - `runs/openpi_rtc_numeric_forward_bf16_1copy_status.json`：低显存 forward OOM 尝试的机器可读状态。
 - `runs/openpi_rtc_numeric_head_grad_status.json`：小头部 `head_grad` OOM blocker 机器可读状态。
 - `runs/openpi_rtc_numeric_head_grad_reduced_status.json`：缩短序列 `head_grad` XLA blocker 机器可读状态。
+- `runs/openpi_rtc_lora_path_audit.json`：LoRA 低显存路线审计机器可读状态。
 - `scripts/collect_hf_manifest.py`：轻量拉取 Hugging Face repo manifest。
 - `scripts/probe_pi05_base_model.sh`：探测/下载/校验 `pi05_base`，可选读取参数树。
 - `scripts/audit_pi06_pi07_public_release.py`：审计 pi0.6/pi0.7 是否已有公开 OpenPI 配置或 checkpoint。
@@ -68,6 +71,7 @@
 - `scripts/write_table30v2_aloha_short_lerobot.py`：按 task、robot、repo_id、start_index、frame_count 写出 ALOHA 短 LeRobot 分片，并运行 OpenPI dataloader smoke。
 - `scripts/audit_openpi_rtc_train_entry.py`：审计 `openpi_rtc` 训练入口并运行抽象 `train_step` 前向/反向 shape smoke。
 - `scripts/run_openpi_rtc_numeric_dry_run.py`：分阶段运行 `openpi_rtc` 数值 dry-run，支持权重预检、forward、grad、head_grad 和低显存覆盖参数。
+- `scripts/audit_openpi_rtc_lora_path.py`：审计 `openpi_rtc` LoRA 低显存路线并验证 `pi05_base` 权重合并。
 - `scripts/run_pi05_base_download_background.sh`：后台下载 `pi05_base` 的辅助脚本。
 - `scripts/run_pi05_base_load_smoke_background.sh`：后台执行参数读取 smoke 的辅助脚本。
 - `scripts/validate_repro_workspace.py`：检查本工作区是否具备后续迭代的最低材料。
@@ -75,6 +79,6 @@
 
 ## 下一轮 P0
 
-1. 先由用户授权释放或隔离非 RoboChallenge GPU 进程，再重跑 `forward` 和 `head_grad`；当前没有成功写出 head-grad checkpoint。
-2. 若不能释放 GPU，则改为 LoRA 配置、FSDP/多卡、CPU/offload 或更小模型状态，先拿到 1-step grad/checkpoint，再考虑长训。
+1. 将已通过权重合并的 LoRA 配置接入 `run_openpi_rtc_numeric_dry_run.py`，先尝试 LoRA 版 `weight_preflight/forward`，再判断是否能做 1-step grad。
+2. 若 LoRA 数值 dry-run 仍受当前 GPU 阻塞，则需要用户授权释放非 RoboChallenge GPU 进程，或改用 FSDP/多卡、CPU/offload 或更小模型状态。
 3. 明确 RoboChallenge 提交流程需要的账号/API token/模型包格式；涉及登录和提交动作必须等用户凭据或授权。

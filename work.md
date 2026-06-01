@@ -348,3 +348,34 @@
 
 - P0：同步更新中文 Notebook 的可选 `head_grad` 入口并运行 notebook preflight，确保默认只跑安全的 `weight_preflight`。
 - P1：若用户授权释放 GPU，重跑 `forward` 和 `head_grad`；若不能释放 GPU，则改为 LoRA/FSDP/offload 或更小模型状态。
+
+## 2026-06-02 第十三轮：openpi_rtc LoRA 低显存路线审计
+
+### 已完成
+
+- 新增 `scripts/audit_openpi_rtc_lora_path.py`，专门审计 `cvpr_multitask_aloha_rtc` 是否能切到 pi0.5 LoRA 低显存路线。
+- 使用 LoRA 变体 `paligemma_variant=gemma_2b_lora` 与 `action_expert_variant=gemma_300m_lora`，并确认 `pi05=True` 保持不变。
+- 用 `model.get_freeze_filter()` 设置 LoRA 冻结规则，并关闭 EMA：`ema_decay=None`。
+- 用 `pi05_base` 本地权重 `/home/yjl/.cache/openpi/openpi-assets/checkpoints/pi05_base/params` 运行权重合并预检。
+- 生成 `reports/openpi_rtc_lora_path_audit.md` 和 `runs/openpi_rtc_lora_path_audit.json`。
+- 已将 LoRA 审计纳入 `scripts/validate_repro_workspace.py`。
+
+### 验证结果
+
+- LoRA 总参数 leaf：`73`，元素数：`3,403,422,481`。
+- LoRA 参数 leaf：`20`，元素数：`49,987,584`。
+- 冻结参数 leaf：`20`，元素数：`2,936,464,384`。
+- 可训练参数 leaf：`53`，元素数：`466,958,097`。
+- `pi05_base` 权重合并通过：合并后 leaf=`73`，补入 LoRA leaf=`20`，补入 knob leaf=`2`。
+- 本地 `python scripts/validate_repro_workspace.py` 已通过。
+
+### 当前边界
+
+- 本轮只验证 LoRA 配置、参数树和权重合并，不代表已经完成 LoRA 数值 forward/grad。
+- 当前 GPU 上仍有非本轮 RoboChallenge 进程占用显存；在未获用户授权前不停止这些进程。
+- LoRA 可训练元素数仍约 4.67 亿，是否能在当前 4090 占用下完成数值 forward/grad 需要下一轮实测。
+
+### 下一步
+
+- P0：将 LoRA 变体参数接入 `scripts/run_openpi_rtc_numeric_dry_run.py`，先跑 LoRA 版 `weight_preflight`，再尝试低显存 `forward`。
+- P1：若 LoRA `forward` 仍失败，记录为新的数值 blocker，并转向 FSDP/offload 或等待用户授权释放 GPU。

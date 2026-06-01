@@ -5,7 +5,7 @@
 - 本轮模式：`weight_preflight`。
 - 本轮状态：`passed=True`。
 - 使用权重：`/home/yjl/.cache/openpi/openpi-assets/checkpoints/pi05_base/params`。
-- GPU 状态：`NVIDIA GeForce RTX 4090, 24564 MiB, 5595 MiB, 18487 MiB`。
+- GPU 状态：`NVIDIA GeForce RTX 4090, 24564 MiB, 2514 MiB, 21568 MiB`。
 
 ## 已验证
 
@@ -13,7 +13,7 @@
 - dataloader actions shape：`[1, 5, 50, 32]`。
 - tokenized prompt shape：`[1, 5, 200]`。
 - 权重结构校验：`passed=True`。
-- 权重加载耗时：`4.001` 秒。
+- 权重加载耗时：`4.031` 秒。
 - 权重 leaf 数：`53`。
 - 可实际注入的 partial params leaf 数：`51`。
 - 已过滤 `ShapeDtypeStruct` leaf 数：`2`。

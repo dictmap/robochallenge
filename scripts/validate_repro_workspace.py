@@ -24,12 +24,14 @@ REQUIRED = [
     "reports/table30v2_aloha_mapping.md",
     "reports/table30v2_aloha_dry_run_converter.md",
     "reports/table30v2_aloha_short_lerobot.md",
+    "reports/table30v2_aloha_short_lerobot_cli.md",
     "runs/pi05_base_probe_status.json",
     "runs/pi06_pi07_public_audit.json",
     "runs/table30v2_aloha_mapping_audit.json",
     "runs/table30v2_aloha_dry_run_status.json",
     "runs/table30v2_aloha_dry_run_samples.jsonl",
     "runs/table30v2_aloha_short_lerobot_status.json",
+    "runs/table30v2_aloha_short_lerobot_cli_status.json",
     "scripts/probe_pi05_base_model.sh",
     "scripts/audit_pi06_pi07_public_release.py",
     "scripts/audit_table30v2_aloha_mapping.py",
@@ -99,6 +101,25 @@ def main() -> int:
     ):
         print("Table30v2 ALOHA 短 episode dataloader smoke 形状校验未全部通过")
         return 1
+    short_dataset = short_status.get("dataset", {})
+    if short_dataset.get("frame_count") != 64 or short_dataset.get("start_index") != 0:
+        print("Table30v2 ALOHA 默认短 episode writer 参数不符合预期")
+        return 1
+    cli_status = json.loads((ROOT / "runs/table30v2_aloha_short_lerobot_cli_status.json").read_text(encoding="utf-8"))
+    cli_dataset = cli_status.get("dataset", {})
+    cli_smoke = cli_status.get("dataloader_smoke", {})
+    if not all(
+        [
+            cli_status.get("passed"),
+            cli_dataset.get("repo_id") == "robochallenge_table30v2_aloha_short_offset10",
+            cli_dataset.get("frame_count") == 80,
+            cli_dataset.get("start_index") == 10,
+            cli_smoke.get("state_shape") == [1, 5, 32],
+            cli_smoke.get("actions_shape") == [1, 5, 50, 32],
+        ]
+    ):
+        print("Table30v2 ALOHA 可控分片 writer CLI smoke 未通过")
+        return 1
 
     print("工作区最低交接材料检查通过")
     print(f"根目录: {ROOT}")
@@ -108,6 +129,7 @@ def main() -> int:
     print("Table30v2 ALOHA 最小分片字段映射已通过")
     print("Table30v2 ALOHA dry-run converter 已通过")
     print("Table30v2 ALOHA 短 episode LeRobot writer 与 dataloader smoke 已通过")
+    print("Table30v2 ALOHA 可控分片 writer CLI smoke 已通过")
     return 0
 
 

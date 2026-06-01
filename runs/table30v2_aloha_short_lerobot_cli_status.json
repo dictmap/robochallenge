@@ -1,20 +1,20 @@
 {
   "dataset": {
-    "repo_id": "robochallenge_table30v2_aloha_short",
-    "repo_root": "/home/yjl/.cache/huggingface/lerobot/robochallenge_table30v2_aloha_short",
+    "repo_id": "robochallenge_table30v2_aloha_short_offset10",
+    "repo_root": "/home/yjl/.cache/huggingface/lerobot/robochallenge_table30v2_aloha_short_offset10",
     "task": "pack_the_toothbrush_holder",
     "robot": "aloha",
     "episode_dir": "/home/yjl/yjl/RoboChallenge/baseline_pi05_multitask/20260413/aloha/pack_the_toothbrush_holder",
     "task_info": "/home/yjl/yjl/RoboChallenge/datasets/Table30v2_extracted/pack_the_toothbrush_holder/meta/task_info.json",
     "fps": 30,
-    "frame_count": 64,
-    "start_index": 0,
+    "frame_count": 80,
+    "start_index": 10,
     "overwrite": true,
     "prompt": "Put the toothbrush and toothpaste into the toiletries case in sequence, close the case, and then place it into the basket."
   },
   "dataloader_smoke": {
     "config_name": "cvpr_multitask_aloha_rtc",
-    "repo_id": "robochallenge_table30v2_aloha_short",
+    "repo_id": "robochallenge_table30v2_aloha_short_offset10",
     "model_action_dim": 32,
     "action_horizon": 50,
     "observation_summary": {

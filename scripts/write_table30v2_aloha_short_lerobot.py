@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import argparse
 import dataclasses
 import json
 import os
@@ -42,11 +43,31 @@ TASK_INFO = Path(
 CONFIG_NAME = os.environ.get("CONFIG_NAME", "cvpr_multitask_aloha_rtc")
 REPO_ID = os.environ.get("SHORT_REPO_ID", "robochallenge_table30v2_aloha_short")
 FRAME_COUNT = int(os.environ.get("FRAME_COUNT", "64"))
+START_INDEX = int(os.environ.get("START_INDEX", "0"))
 OVERWRITE = os.environ.get("OVERWRITE_SHORT_REPO", "1") == "1"
 RUNS_DIR = ROOT / "runs"
 REPORTS_DIR = ROOT / "reports"
 STATUS_PATH = RUNS_DIR / "table30v2_aloha_short_lerobot_status.json"
 REPORT_PATH = REPORTS_DIR / "table30v2_aloha_short_lerobot.md"
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="写出 Table30v2 ALOHA 短 LeRobot 分片，并用 OpenPI dataloader 做 smoke。"
+    )
+    parser.add_argument("--task", default=TASK, help="Table30v2 task 名称。")
+    parser.add_argument("--robot", default=ROBOT, help="机器人类型，当前已验证 aloha。")
+    parser.add_argument("--episode-dir", type=Path, default=EPISODE_DIR, help="原始 episode 目录。")
+    parser.add_argument("--task-info", type=Path, default=TASK_INFO, help="task_info.json 路径。")
+    parser.add_argument("--config-name", default=CONFIG_NAME, help="OpenPI RTC config 名称。")
+    parser.add_argument("--repo-id", default=REPO_ID, help="写入的本地 LeRobot repo_id。")
+    parser.add_argument("--frame-count", type=int, default=FRAME_COUNT, help="写入帧数。")
+    parser.add_argument("--start-index", type=int, default=START_INDEX, help="从原始 episode 的第几帧开始。")
+    parser.add_argument("--overwrite", dest="overwrite", action="store_true", default=OVERWRITE, help="覆盖已有 repo。")
+    parser.add_argument("--no-overwrite", dest="overwrite", action="store_false", help="已有 repo 时直接失败。")
+    parser.add_argument("--status-path", type=Path, default=STATUS_PATH, help="状态 JSON 输出路径。")
+    parser.add_argument("--report-path", type=Path, default=REPORT_PATH, help="中文报告输出路径。")
+    return parser.parse_args()
 
 
 def load_json(path: Path) -> dict:
@@ -89,7 +110,7 @@ def write_short_dataset() -> dict:
     task_info = load_json(TASK_INFO)
     prompt = task_info["task_desc"]["prompt"]
     fps = int(round(float(task_info.get("video_info", {}).get("fps", 30))))
-    required_rows = FRAME_COUNT + 1
+    required_rows = START_INDEX + FRAME_COUNT + 1
     left_rows = load_jsonl(EPISODE_DIR / "states/left_states.jsonl", limit=required_rows)
     right_rows = load_jsonl(EPISODE_DIR / "states/right_states.jsonl", limit=required_rows)
     if len(left_rows) < required_rows or len(right_rows) < required_rows:
@@ -102,6 +123,8 @@ def write_short_dataset() -> dict:
         raise RuntimeError(f"拒绝删除非本项目 LeRobot 路径: {repo_root}")
     if OVERWRITE and repo_root.exists():
         shutil.rmtree(repo_root)
+    if not OVERWRITE and repo_root.exists():
+        raise RuntimeError(f"LeRobot repo 已存在且 --no-overwrite 生效: {repo_root}")
 
     features = {
         "observation.images.front_image": {
@@ -144,8 +167,11 @@ def write_short_dataset() -> dict:
         "left": open_video(videos_dir / "cam_left_wrist_rgb.mp4"),
         "right": open_video(videos_dir / "cam_right_wrist_rgb.mp4"),
     }
+    for cap in caps.values():
+        cap.set(cv2.CAP_PROP_POS_FRAMES, START_INDEX)
     try:
-        for idx in range(FRAME_COUNT):
+        for offset in range(FRAME_COUNT):
+            idx = START_INDEX + offset
             dataset.add_frame(
                 {
                     "observation.images.front_image": read_next_rgb(caps["front"], "cam_high_rgb.mp4", idx),
@@ -168,8 +194,14 @@ def write_short_dataset() -> dict:
     return {
         "repo_id": REPO_ID,
         "repo_root": str(repo_root),
+        "task": TASK,
+        "robot": ROBOT,
+        "episode_dir": str(EPISODE_DIR),
+        "task_info": str(TASK_INFO),
         "fps": fps,
         "frame_count": FRAME_COUNT,
+        "start_index": START_INDEX,
+        "overwrite": OVERWRITE,
         "prompt": prompt,
     }
 
@@ -248,7 +280,8 @@ def write_report(status: dict) -> None:
         f"- 写出状态：`passed={status['passed']}`。",
         f"- LeRobot repo_id：`{status['dataset']['repo_id']}`。",
         f"- 本地路径：`{status['dataset']['repo_root']}`。",
-        f"- 写入帧数：`{status['dataset']['frame_count']}`，fps=`{status['dataset']['fps']}`。",
+        f"- task/robot：`{status['dataset']['task']}` / `{status['dataset']['robot']}`。",
+        f"- 写入帧段：start_index=`{status['dataset']['start_index']}`，frame_count=`{status['dataset']['frame_count']}`，fps=`{status['dataset']['fps']}`。",
         "- 写入字段：三路图像、14D `observation.state`、14D `action`、任务 prompt。",
         "",
         "## dataloader smoke",
@@ -268,8 +301,23 @@ def write_report(status: dict) -> None:
 
 
 def main() -> int:
-    RUNS_DIR.mkdir(exist_ok=True)
-    REPORTS_DIR.mkdir(exist_ok=True)
+    global TASK, ROBOT, EPISODE_DIR, TASK_INFO, CONFIG_NAME, REPO_ID, FRAME_COUNT, START_INDEX, OVERWRITE
+    global STATUS_PATH, REPORT_PATH
+    args = parse_args()
+    TASK = args.task
+    ROBOT = args.robot
+    EPISODE_DIR = args.episode_dir
+    TASK_INFO = args.task_info
+    CONFIG_NAME = args.config_name
+    REPO_ID = args.repo_id
+    FRAME_COUNT = args.frame_count
+    START_INDEX = args.start_index
+    OVERWRITE = args.overwrite
+    STATUS_PATH = args.status_path
+    REPORT_PATH = args.report_path
+
+    STATUS_PATH.parent.mkdir(exist_ok=True, parents=True)
+    REPORT_PATH.parent.mkdir(exist_ok=True, parents=True)
     dataset_status = write_short_dataset()
     smoke = smoke_openpi_dataloader(dataset_status["repo_id"])
     status = {

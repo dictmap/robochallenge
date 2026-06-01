@@ -9,5 +9,5 @@
   "policy_smoke_requested": false,
   "has_user_token_env": false,
   "has_submission_id_env": false,
-  "next_p0": "把短 episode writer 扩展为可控分片 writer，并跑小步数训练 dry-run。"
+  "next_p0": "定位或搭建 openpi_rtc 训练 dry-run 入口，验证 1-step loss 前向/反向。"
 }

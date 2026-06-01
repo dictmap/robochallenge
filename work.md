@@ -222,3 +222,31 @@
 
 - P0：把短 episode writer 扩展为可控分片 writer，支持指定 task、robot 和 frame_count，并保留本地 repo 不覆盖选项。
 - P1：跑小步数训练 dry-run，验证训练入口、loss 前向和 checkpoint 写出。
+
+## 2026-06-02 第九轮：可控分片 writer CLI
+
+### 已完成
+
+- 将 `scripts/write_table30v2_aloha_short_lerobot.py` 扩展为显式 CLI。
+- 新增可控参数：`--task`、`--robot`、`--episode-dir`、`--task-info`、`--config-name`、`--repo-id`、`--frame-count`、`--start-index`、`--overwrite/--no-overwrite`、`--status-path`、`--report-path`。
+- 保留安全删除限制：只允许删除 Hugging Face LeRobot cache 下、且 repo_id 以 `robochallenge_` 开头的本项目 repo。
+- 用默认参数重跑 64 帧短分片，保持标准状态文件不变。
+- 用非默认参数跑通可控分片：`repo_id=robochallenge_table30v2_aloha_short_offset10`、`start_index=10`、`frame_count=80`。
+- 生成 CLI 证据：`reports/table30v2_aloha_short_lerobot_cli.md` 和 `runs/table30v2_aloha_short_lerobot_cli_status.json`。
+- 已将默认 writer smoke 和 CLI writer smoke 都纳入 `scripts/validate_repro_workspace.py`。
+
+### 验证结果
+
+- 默认 writer：`start_index=0`、`frame_count=64`，dataloader smoke 通过。
+- CLI writer：`start_index=10`、`frame_count=80`，dataloader smoke 通过。
+- 两条 smoke 的关键形状一致：state=`[1, 5, 32]`，actions=`[1, 5, 50, 32]`，tokenized prompt=`[1, 5, 200]`。
+
+### 当前阻塞
+
+- `openpi/scripts/train.py` 导入的是标准 `openpi.training.config`，而 RoboChallenge 已验证配置在 `openpi_rtc.training.config`；不能直接误用标准训练入口声称完成训练 dry-run。
+- 真实 RoboChallenge 提交仍需要用户申请并提供 `user_token` 与 `submission_id`。
+
+### 下一步
+
+- P0：定位或搭建 `openpi_rtc` 训练 dry-run 入口，使用本地短分片做 1-step loss 前向/反向验证。
+- P1：若训练入口需要较大显存或权重加载许可，明确记录阻塞和可替代的 lightweight forward smoke。

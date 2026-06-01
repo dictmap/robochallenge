@@ -3,10 +3,10 @@
 ## 结论
 
 - 写出状态：`passed=True`。
-- LeRobot repo_id：`robochallenge_table30v2_aloha_short`。
-- 本地路径：`/home/yjl/.cache/huggingface/lerobot/robochallenge_table30v2_aloha_short`。
+- LeRobot repo_id：`robochallenge_table30v2_aloha_short_offset10`。
+- 本地路径：`/home/yjl/.cache/huggingface/lerobot/robochallenge_table30v2_aloha_short_offset10`。
 - task/robot：`pack_the_toothbrush_holder` / `aloha`。
-- 写入帧段：start_index=`0`，frame_count=`64`，fps=`30`。
+- 写入帧段：start_index=`10`，frame_count=`80`，fps=`30`。
 - 写入字段：三路图像、14D `observation.state`、14D `action`、任务 prompt。
 
 ## dataloader smoke

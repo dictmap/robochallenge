@@ -34,6 +34,7 @@ REQUIRED = [
     "reports/openpi_rtc_lora_numeric_weight_preflight.md",
     "reports/openpi_rtc_lora_numeric_forward_reduced.md",
     "reports/openpi_rtc_lora_numeric_grad_reduced.md",
+    "reports/openpi_rtc_lora_checkpoint_restore_audit.md",
     "runs/pi05_base_probe_status.json",
     "runs/pi06_pi07_public_audit.json",
     "runs/table30v2_aloha_mapping_audit.json",
@@ -50,6 +51,7 @@ REQUIRED = [
     "runs/openpi_rtc_lora_numeric_weight_preflight_status.json",
     "runs/openpi_rtc_lora_numeric_forward_reduced_status.json",
     "runs/openpi_rtc_lora_numeric_grad_reduced_status.json",
+    "runs/openpi_rtc_lora_checkpoint_restore_audit.json",
     "scripts/probe_pi05_base_model.sh",
     "scripts/audit_pi06_pi07_public_release.py",
     "scripts/audit_table30v2_aloha_mapping.py",
@@ -58,6 +60,7 @@ REQUIRED = [
     "scripts/audit_openpi_rtc_train_entry.py",
     "scripts/run_openpi_rtc_numeric_dry_run.py",
     "scripts/audit_openpi_rtc_lora_path.py",
+    "scripts/audit_openpi_rtc_lora_checkpoint_restore.py",
 ]
 
 
@@ -350,6 +353,44 @@ def main() -> int:
     lora_grad_data = lora_grad.get("dataloader", {})
     lora_grad_result = lora_grad.get("lora_grad", {})
     lora_grad_summary = lora_grad_result.get("trainable_param_summary", {})
+    lora_restore = json.loads(
+        (ROOT / "runs/openpi_rtc_lora_checkpoint_restore_audit.json").read_text(encoding="utf-8")
+    )
+    lora_restore_model = lora_restore.get("model", {})
+    lora_restore_checkpoint = lora_restore.get("checkpoint", {})
+    lora_restore_metadata = lora_restore_checkpoint.get("metadata", {})
+    lora_restore_merge = lora_restore.get("merge_audit", {})
+    if not all(
+        [
+            lora_restore.get("passed"),
+            lora_restore_model.get("paligemma_variant") == "gemma_2b_lora",
+            lora_restore_model.get("action_expert_variant") == "gemma_300m_lora",
+            lora_restore_model.get("pi05") is True,
+            lora_restore.get("ema_decay") is None,
+            lora_restore_checkpoint.get("checkpoint_npz")
+            == "runs/openpi_rtc_lora_grad_checkpoint/trainable_params_step1.npz",
+            lora_restore_checkpoint.get("metadata_path") == "runs/openpi_rtc_lora_grad_checkpoint/metadata.json",
+            lora_restore_metadata.get("kind") == "scoped_trainable_checkpoint",
+            lora_restore_metadata.get("scope") == "cfg.trainable_filter",
+            lora_restore_merge.get("expected_leaf_count") == 73,
+            lora_restore_merge.get("base_loaded_leaf_count") == 73,
+            lora_restore_merge.get("trainable_filter_key_count") == 53,
+            lora_restore_merge.get("checkpoint_key_count") == 53,
+            lora_restore_merge.get("checkpoint_lora_key_count") == 20,
+            lora_restore_merge.get("checkpoint_knob_key_count") == 2,
+            lora_restore_merge.get("placeholder_before_count") == 22,
+            lora_restore_merge.get("overwritten_leaf_count") == 53,
+            lora_restore_merge.get("placeholder_after_count") == 0,
+            lora_restore_merge.get("missing_checkpoint_keys") == [],
+            lora_restore_merge.get("unexpected_checkpoint_keys") == [],
+            lora_restore_merge.get("checkpoint_not_trainable_keys") == [],
+            lora_restore_merge.get("shape_mismatches") == [],
+            lora_restore_merge.get("tree_check_passed"),
+            lora_restore_merge.get("state_replace_passed"),
+        ]
+    ):
+        print("openpi_rtc LoRA scoped checkpoint restore/merge audit 鏈€氳繃")
+        return 1
     if not all(
         [
             lora_grad.get("mode") == "lora_grad",
@@ -394,6 +435,7 @@ def main() -> int:
     print("openpi_rtc LoRA 低显存路线权重合并预检已通过")
     print("openpi_rtc LoRA reduced 数值 forward smoke 已通过")
     print("openpi_rtc LoRA reduced trainable-filter grad/checkpoint smoke 已通过")
+    print("openpi_rtc LoRA scoped checkpoint restore/merge audit 已通过")
     return 0
 
 

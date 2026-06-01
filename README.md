@@ -87,6 +87,13 @@
 
 ## 下一轮 P0
 
-1. 基于已写出的 LoRA scoped checkpoint，补齐最小推理/打包路径审计：明确该 scoped checkpoint 如何和 `pi05_base` 合并用于 policy restore，不能把它当完整 checkpoint 提交。
-2. 继续准备 RoboChallenge 提交包清单；真实提交仍需要用户提供网站 `user_token` 与 `submission_id`。
-3. 明确 RoboChallenge 提交流程需要的账号/API token/模型包格式；涉及登录和提交动作必须等用户凭据或授权。
+1. 准备 RoboChallenge 提交包清单：入口脚本、依赖、模型恢复材料、Table30/Table30v2 目标说明、不可伪造的 token/submission_id 缺口。
+2. 把 `pi05_base + LoRA scoped trainable params` 的恢复步骤整理成最小推理/提交模板，避免把 scoped checkpoint 当完整 checkpoint 单独提交。
+3. 继续明确 RoboChallenge 提交流程需要的账号/API token/模型包格式；涉及登录和提交动作必须等用户凭据或授权。
+
+## 2026-06-02 恢复审计更新
+
+- 已新增 `scripts/audit_openpi_rtc_lora_checkpoint_restore.py`，用于审计 `pi05_base + LoRA scoped trainable checkpoint` 的恢复/合并链路。
+- 已生成 `reports/openpi_rtc_lora_checkpoint_restore_audit.md` 和 `runs/openpi_rtc_lora_checkpoint_restore_audit.json`。
+- 审计结论：53 个 checkpoint key 严格匹配 `cfg.trainable_filter`；合并前 22 个 `ShapeDtypeStruct` LoRA/knob 占位，合并后剩余 0 个；参数树 shape/dtype 校验和 NNX state replace smoke 均通过。
+- 该 checkpoint 仍然不是完整 policy checkpoint；推理或提交时必须同时携带相同 config、相同 LoRA variant、`pi05_base` 基础权重和 scoped trainable params。

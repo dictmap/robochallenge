@@ -61,7 +61,7 @@
   "weight_preflight": {
     "passed": true,
     "params_path": "/home/yjl/.cache/openpi/openpi-assets/checkpoints/pi05_base/params",
-    "load_seconds": 6.16,
+    "load_seconds": 6.155,
     "expected": {
       "leaf_count": 73,
       "total_elements": 3403422481,

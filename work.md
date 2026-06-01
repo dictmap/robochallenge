@@ -443,3 +443,34 @@
 
 - P0：补齐 LoRA scoped checkpoint restore/merge 审计，明确提交或推理时如何加载 `pi05_base + scoped trainable params`。
 - P1：准备 RoboChallenge 提交包清单和 token/submission_id 缺口说明。
+
+## 2026-06-02 第十六轮：LoRA scoped checkpoint 恢复/合并审计
+
+### 已完成
+
+- 新增 `scripts/audit_openpi_rtc_lora_checkpoint_restore.py`，专门审计 `pi05_base + LoRA scoped trainable checkpoint` 的恢复/合并链路。
+- 修复 scoped checkpoint 读取时的 bfloat16 兼容点：`np.savez` 写出的 bfloat16 在 `np.load` 中显示为 `|V2`，恢复时需要先按 `ml_dtypes.bfloat16` 复原视图，再转换为目标 dtype。
+- 生成 `reports/openpi_rtc_lora_checkpoint_restore_audit.md` 和 `runs/openpi_rtc_lora_checkpoint_restore_audit.json`。
+- 已将 restore/merge 审计纳入 `scripts/validate_repro_workspace.py`。
+- 更新 `README.md` 的当前 P0，避免继续把 restore 审计列为未完成事项。
+
+### 验证结果
+
+- restore 审计：`passed=true`。
+- LoRA 模型 leaf：`73`；`pi05_base` 合并后 leaf：`73`。
+- `cfg.trainable_filter` key：`53`；checkpoint key：`53`；二者严格匹配，没有缺失 key、额外 key 或非 trainable key。
+- checkpoint 中 LoRA key：`20`；`knob_*` key：`2`。
+- 合并前 `ShapeDtypeStruct` 占位：`22`；scoped 覆盖 leaf：`53`；合并后剩余占位：`0`。
+- 参数树 shape/dtype 校验通过；NNX state replace smoke 通过。
+- 远端 `python3 scripts/validate_repro_workspace.py` 已通过。
+
+### 当前边界
+
+- scoped checkpoint 不是完整 policy checkpoint；恢复时必须同时使用相同 config、相同 LoRA variant、`pi05_base` 基础权重和 scoped trainable params。
+- 本轮只验证恢复/合并链路，不代表策略质量提升，也没有完成 RoboChallenge 真实提交。
+- 真实 RoboChallenge 提交仍需要用户提供网站 `user_token` 与 `submission_id`。
+
+### 下一步
+
+- P0：准备 RoboChallenge 提交包清单和最小提交模板，明确入口脚本、依赖、模型恢复材料、Table30/Table30v2 目标说明与 token/submission_id 缺口。
+- P1：把 `pi05_base + LoRA scoped trainable params` 的恢复步骤整理成最小推理模板，供后续真实提交入口复用。

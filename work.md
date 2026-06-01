@@ -409,3 +409,37 @@
 
 - P0：新增 LoRA trainable-filter `lora_grad` 或等价 scoped grad/checkpoint dry-run，只更新 LoRA/非冻结参数并写 scoped checkpoint。
 - P1：若 LoRA grad 失败，保存 blocker 报告并转向 FSDP/offload 或等待用户授权释放 GPU。
+
+## 2026-06-02 第十五轮：openpi_rtc LoRA trainable-filter grad/checkpoint dry-run
+
+### 已完成
+
+- 将 `scripts/run_openpi_rtc_numeric_dry_run.py` 扩展为 `lora_grad` 模式，使用 `config.trainable_filter` 求梯度，区别于旧的全量 `grad` 模式。
+- 将运行时 checkpoint 目录加入 `.gitignore`：`runs/*checkpoint*/`，避免误提交大文件。
+- 运行 LoRA reduced `lora_grad`：`compute_param_dtype=bfloat16`、`random_action_offset_copies=1`、`max_token_len=64`、`action_horizon=10`。
+- 写出远端 scoped checkpoint：`runs/openpi_rtc_lora_grad_checkpoint/trainable_params_step1.npz` 和 `runs/openpi_rtc_lora_grad_checkpoint/metadata.json`。
+- 生成 `reports/openpi_rtc_lora_numeric_grad_reduced.md` 和 `runs/openpi_rtc_lora_numeric_grad_reduced_status.json`。
+- 已将 LoRA trainable-filter grad/checkpoint smoke 纳入 `scripts/validate_repro_workspace.py`。
+- 中文 Notebook 第 18 节新增可选 `RUN_OPENPI_RTC_LORA_NUMERIC_GRAD`，默认关闭，避免预检反复写约 1GB checkpoint。
+
+### 验证结果
+
+- LoRA reduced `lora_grad`：`passed=true`。
+- dataloader shape：state=`[1, 32]`、actions=`[1, 10, 32]`、tokenized prompt=`[1, 64]`。
+- 权重结构：loaded leaf=`73`、partial params leaf=`51`、过滤 `ShapeDtypeStruct` leaf=`22`。
+- `lora_grad` loss=`0.0`，grad_norm=`0.0`，耗时约 `59.893` 秒。
+- scoped trainable 参数摘要：leaf=`53`，元素数=`466,958,097`。
+- 远端 checkpoint 目录大小约 `987MB`；该目录已被 `.gitignore` 排除，不会进入 Git。
+- 本地 `python scripts/validate_repro_workspace.py` 已通过。
+
+### 当前边界
+
+- 这是 LoRA reduced 的单步反向与 scoped checkpoint 写出链路，不是完整训练，也不是可直接提交的完整 policy checkpoint。
+- scoped checkpoint 只包含 `config.trainable_filter` 选中的 trainable params；下一步必须审计它如何与 `pi05_base` base params 合并恢复。
+- loss 与 grad_norm 都是 `0.0`，只能说明链路可跑通，不能说明策略质量。
+- 真实 RoboChallenge 提交仍需要用户提供网站 `user_token` 与 `submission_id`。
+
+### 下一步
+
+- P0：补齐 LoRA scoped checkpoint restore/merge 审计，明确提交或推理时如何加载 `pi05_base + scoped trainable params`。
+- P1：准备 RoboChallenge 提交包清单和 token/submission_id 缺口说明。

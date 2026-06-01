@@ -17,6 +17,7 @@ runs/*.pid
 runs/*.log
 runs/*.done
 runs/*.exit
+runs/*checkpoint*/
 
 # Jupyter
 .ipynb_checkpoints/

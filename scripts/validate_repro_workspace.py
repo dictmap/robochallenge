@@ -33,6 +33,7 @@ REQUIRED = [
     "reports/openpi_rtc_lora_path_audit.md",
     "reports/openpi_rtc_lora_numeric_weight_preflight.md",
     "reports/openpi_rtc_lora_numeric_forward_reduced.md",
+    "reports/openpi_rtc_lora_numeric_grad_reduced.md",
     "runs/pi05_base_probe_status.json",
     "runs/pi06_pi07_public_audit.json",
     "runs/table30v2_aloha_mapping_audit.json",
@@ -48,6 +49,7 @@ REQUIRED = [
     "runs/openpi_rtc_lora_path_audit.json",
     "runs/openpi_rtc_lora_numeric_weight_preflight_status.json",
     "runs/openpi_rtc_lora_numeric_forward_reduced_status.json",
+    "runs/openpi_rtc_lora_numeric_grad_reduced_status.json",
     "scripts/probe_pi05_base_model.sh",
     "scripts/audit_pi06_pi07_public_release.py",
     "scripts/audit_table30v2_aloha_mapping.py",
@@ -341,6 +343,42 @@ def main() -> int:
     ):
         print("openpi_rtc LoRA reduced forward smoke 未通过")
         return 1
+    lora_grad = json.loads(
+        (ROOT / "runs/openpi_rtc_lora_numeric_grad_reduced_status.json").read_text(encoding="utf-8")
+    )
+    lora_grad_model = lora_grad.get("effective_model", {})
+    lora_grad_data = lora_grad.get("dataloader", {})
+    lora_grad_result = lora_grad.get("lora_grad", {})
+    lora_grad_summary = lora_grad_result.get("trainable_param_summary", {})
+    if not all(
+        [
+            lora_grad.get("mode") == "lora_grad",
+            lora_grad.get("passed"),
+            lora_grad_model.get("paligemma_variant") == "gemma_2b_lora",
+            lora_grad_model.get("action_expert_variant") == "gemma_300m_lora",
+            lora_grad_model.get("pi05") is True,
+            lora_grad_model.get("ema_decay") is None,
+            lora_grad.get("compute_param_dtype") == "bfloat16",
+            lora_grad.get("effective_random_action_offset_copies") == 1,
+            lora_grad.get("effective_max_token_len") == 64,
+            lora_grad.get("effective_action_horizon") == 10,
+            lora_grad_data.get("state_shape") == [1, 32],
+            lora_grad_data.get("actions_shape") == [1, 10, 32],
+            lora_grad_data.get("tokenized_prompt_shape") == [1, 64],
+            lora_grad.get("weight_preflight", {}).get("passed"),
+            lora_grad.get("weight_preflight", {}).get("loaded", {}).get("leaf_count") == 73,
+            lora_grad.get("weight_preflight", {}).get("removed_shape_dtype_struct_count") == 22,
+            lora_grad_result.get("passed"),
+            isinstance(lora_grad_result.get("loss"), (int, float)),
+            isinstance(lora_grad_result.get("grad_norm"), (int, float)),
+            lora_grad_summary.get("leaf_count") == 53,
+            lora_grad_summary.get("total_elements") == 466958097,
+            lora_grad_result.get("checkpoint_npz") == "runs/openpi_rtc_lora_grad_checkpoint/trainable_params_step1.npz",
+            lora_grad_result.get("checkpoint_metadata") == "runs/openpi_rtc_lora_grad_checkpoint/metadata.json",
+        ]
+    ):
+        print("openpi_rtc LoRA reduced trainable-filter grad/checkpoint smoke 未通过")
+        return 1
 
     print("工作区最低交接材料检查通过")
     print(f"根目录: {ROOT}")
@@ -355,6 +393,7 @@ def main() -> int:
     print("openpi_rtc pi05_base 权重预检已通过，全量 grad 与小头部 grad blocker 已记录")
     print("openpi_rtc LoRA 低显存路线权重合并预检已通过")
     print("openpi_rtc LoRA reduced 数值 forward smoke 已通过")
+    print("openpi_rtc LoRA reduced trainable-filter grad/checkpoint smoke 已通过")
     return 0
 
 

@@ -15,6 +15,7 @@
 - 已完成 `openpi_rtc` 数值权重预检：`pi05_base` 12.44GB 参数能接入 RTC 模型结构，51 个实际注入 leaf、过滤 2 个 `ShapeDtypeStruct` knob leaf；全量 grad 和小头部 `head_grad` 在 24GB 4090 当前占用下仍被 XLA/GPU 阻塞，见 `reports/openpi_rtc_numeric_weight_preflight.md`、`reports/openpi_rtc_numeric_grad_attempt.md`、`reports/openpi_rtc_numeric_head_grad.md` 和 `reports/openpi_rtc_numeric_head_grad_reduced.md`。
 - 已完成 `openpi_rtc` LoRA 低显存路线审计：`gemma_2b_lora + gemma_300m_lora` 保持 `pi05=True`，`pi05_base` 权重可合并 20 个 LoRA leaf 和 2 个 knob leaf，见 `reports/openpi_rtc_lora_path_audit.md`。
 - 已跑通 LoRA reduced 数值前向：`bfloat16`、1-copy、`max_token_len=64`、`action_horizon=10` 下 `forward.passed=true`，见 `reports/openpi_rtc_lora_numeric_forward_reduced.md`。
+- 已跑通 LoRA reduced trainable-filter 反向与 scoped checkpoint dry-run：`lora_grad.passed=true`，远端写出 `runs/openpi_rtc_lora_grad_checkpoint/trainable_params_step1.npz`，见 `reports/openpi_rtc_lora_numeric_grad_reduced.md`。
 - Linux 上已有 RoboChallenge pi0.5 多任务 baseline：`/home/yjl/yjl/RoboChallenge/baseline_pi05_multitask`。
 - 已有 ALOHA checkpoint：`/home/yjl/yjl/RoboChallenge/checkpoints/table30v2_multitask_baseline_aloha`。
 - 核心操作已经写入中文 Jupyter：`notebooks/robochallenge_pi05_submit_cn.ipynb`。
@@ -55,6 +56,7 @@
 - `reports/openpi_rtc_lora_path_audit.md`：LoRA 低显存路线的配置、参数树和 `pi05_base` 权重合并预检结果。
 - `reports/openpi_rtc_lora_numeric_weight_preflight.md`：LoRA reduced 数值 dry-run 的权重预检结果。
 - `reports/openpi_rtc_lora_numeric_forward_reduced.md`：LoRA reduced 数值 forward smoke 结果。
+- `reports/openpi_rtc_lora_numeric_grad_reduced.md`：LoRA reduced trainable-filter grad 与 scoped checkpoint dry-run 结果。
 - `runs/table30v2_aloha_dry_run_status.json`：dry-run converter 的机器可读状态。
 - `runs/table30v2_aloha_dry_run_samples.jsonl`：5 帧抽样的 LeRobot-like schema 与数值摘要。
 - `runs/table30v2_aloha_short_lerobot_status.json`：短 episode writer 与 dataloader smoke 的机器可读状态。
@@ -68,6 +70,7 @@
 - `runs/openpi_rtc_lora_path_audit.json`：LoRA 低显存路线审计机器可读状态。
 - `runs/openpi_rtc_lora_numeric_weight_preflight_status.json`：LoRA reduced 权重预检机器可读状态。
 - `runs/openpi_rtc_lora_numeric_forward_reduced_status.json`：LoRA reduced forward smoke 机器可读状态。
+- `runs/openpi_rtc_lora_numeric_grad_reduced_status.json`：LoRA reduced trainable-filter grad/checkpoint smoke 机器可读状态。
 - `scripts/collect_hf_manifest.py`：轻量拉取 Hugging Face repo manifest。
 - `scripts/probe_pi05_base_model.sh`：探测/下载/校验 `pi05_base`，可选读取参数树。
 - `scripts/audit_pi06_pi07_public_release.py`：审计 pi0.6/pi0.7 是否已有公开 OpenPI 配置或 checkpoint。
@@ -84,6 +87,6 @@
 
 ## 下一轮 P0
 
-1. 基于已通过的 LoRA reduced forward，新增 LoRA trainable-filter grad/checkpoint dry-run；不要用现有 `grad` 模式冒充 LoRA 训练，因为它仍是全量梯度。
-2. 若 LoRA grad 仍受当前 GPU 阻塞，则需要用户授权释放非 RoboChallenge GPU 进程，或改用 FSDP/多卡、CPU/offload 或更小模型状态。
+1. 基于已写出的 LoRA scoped checkpoint，补齐最小推理/打包路径审计：明确该 scoped checkpoint 如何和 `pi05_base` 合并用于 policy restore，不能把它当完整 checkpoint 提交。
+2. 继续准备 RoboChallenge 提交包清单；真实提交仍需要用户提供网站 `user_token` 与 `submission_id`。
 3. 明确 RoboChallenge 提交流程需要的账号/API token/模型包格式；涉及登录和提交动作必须等用户凭据或授权。

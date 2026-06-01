@@ -68,9 +68,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--params-path", type=Path, default=DEFAULT_PARAMS, help="pi05_base params 路径。")
     parser.add_argument(
         "--mode",
-        choices=["weight_preflight", "forward", "grad", "head_grad"],
+        choices=["weight_preflight", "forward", "grad", "head_grad", "lora_grad"],
         default="weight_preflight",
-        help="weight_preflight 只加载并校验权重；forward 算一次 loss；grad 算全量梯度；head_grad 只训练小头部参数。",
+        help=(
+            "weight_preflight 只加载并校验权重；forward 算一次 loss；grad 算全量梯度；"
+            "head_grad 只训练小头部参数；lora_grad 按 config.trainable_filter 训练 LoRA/非冻结参数。"
+        ),
     )
     parser.add_argument(
         "--compute-param-dtype",
@@ -84,7 +87,7 @@ def parse_args() -> argparse.Namespace:
         "--checkpoint-dir",
         type=Path,
         default=RUNS_DIR / "openpi_rtc_head_grad_checkpoint",
-        help="head_grad scoped checkpoint 输出目录。",
+        help="head_grad/lora_grad scoped checkpoint 输出目录。",
     )
     return parser.parse_args()
 
@@ -430,6 +433,70 @@ def numeric_head_grad(cfg, loaded_params, observation, actions, checkpoint_dir: 
     }
 
 
+def numeric_lora_grad(cfg, loaded_params, observation, actions, checkpoint_dir: Path) -> dict[str, Any]:
+    import jax
+    import jax.numpy as jnp
+    from flax import nnx
+    from flax import traverse_util
+    import optax
+
+    import openpi_rtc.models.model as _model
+    import openpi_rtc.shared.array_typing as at
+
+    graphdef, state = build_loaded_graph(cfg, loaded_params)
+    model = nnx.merge(graphdef, state)
+    model.train()
+    obs = jax.tree.map(jnp.asarray, observation)
+    act = jax.tree.map(jnp.asarray, actions)
+
+    @at.typecheck
+    def loss_fn(model: _model.BaseModel, rng, obs_value: _model.Observation, act_value: _model.Actions):
+        return jnp.mean(model.compute_loss(rng, obs_value, act_value, train=True))
+
+    start = time.time()
+    diff_state = nnx.DiffState(0, cfg.trainable_filter)
+    with at.disable_typechecking():
+        loss, grads = nnx.value_and_grad(loss_fn, argnums=diff_state)(model, jax.random.key(cfg.seed + 4), obs, act)
+    loss.block_until_ready()
+    grad_norm = optax.global_norm(grads)
+    grad_norm.block_until_ready()
+
+    trainable_params = nnx.state(model, cfg.trainable_filter)
+    tx = optax.sgd(1e-6)
+    updates, _ = tx.update(grads, tx.init(trainable_params), trainable_params)
+    updated_params = optax.apply_updates(trainable_params, updates)
+    nnx.update(model, updated_params)
+
+    checkpoint_dir.mkdir(parents=True, exist_ok=True)
+    flat_params = traverse_util.flatten_dict(updated_params.to_pure_dict(), sep="/")
+    npz_path = checkpoint_dir / "trainable_params_step1.npz"
+    np.savez(
+        npz_path,
+        **{key: np.asarray(value) for key, value in flat_params.items() if hasattr(value, "shape")},
+    )
+    metadata = {
+        "kind": "scoped_trainable_checkpoint",
+        "scope": "cfg.trainable_filter",
+        "step": 1,
+        "loss": float(np.asarray(loss)),
+        "grad_norm": float(np.asarray(grad_norm)),
+        "trainable_param_summary": summarize_tree(updated_params),
+        "npz_path": str(npz_path),
+    }
+    metadata_path = checkpoint_dir / "metadata.json"
+    metadata_path.write_text(json.dumps(metadata, ensure_ascii=False, indent=2), encoding="utf-8")
+    return {
+        "passed": bool(np.isfinite(np.asarray(loss)) and np.isfinite(np.asarray(grad_norm)) and npz_path.exists()),
+        "loss": float(np.asarray(loss)),
+        "grad_norm": float(np.asarray(grad_norm)),
+        "seconds": round(time.time() - start, 3),
+        "checkpoint_dir": str(checkpoint_dir),
+        "checkpoint_npz": str(npz_path),
+        "checkpoint_metadata": str(metadata_path),
+        "trainable_param_summary": summarize_tree(updated_params),
+    }
+
+
 def write_report(status: dict[str, Any], report_path: Path) -> None:
     lines = [
         "# openpi_rtc 数值训练 dry-run",
@@ -470,6 +537,16 @@ def write_report(status: dict[str, Any], report_path: Path) -> None:
                 "- 该 checkpoint 只包含 `action_in_proj`、`action_out_proj`、`knob_*` 的 scoped trainable params，不是完整 OpenPI 发布 checkpoint。",
             ]
         )
+    if status.get("lora_grad"):
+        lines.extend(
+            [
+                "",
+                "## LoRA 反向",
+                "",
+                f"- 结果：`{status['lora_grad']}`。",
+                "- 该 checkpoint 只包含 `config.trainable_filter` 选中的 scoped trainable params，不是完整 OpenPI 发布 checkpoint。",
+            ]
+        )
     if status.get("error"):
         lines.extend(["", "## 错误", "", f"- 类型：`{status['error']['type']}`。", f"- 信息：`{status['error']['message']}`。"])
     lines.extend(
@@ -480,6 +557,7 @@ def write_report(status: dict[str, Any], report_path: Path) -> None:
             "- `weight_preflight` 只证明 `openpi_rtc` 参数结构能接上 `pi05_base` 权重，不代表已经完成训练。",
             "- `forward` 才代表真实数值 loss 前向；`grad` 才代表真实反向梯度。",
             "- `head_grad` 是冻结大模型、只更新小头部参数的低显存 dry-run，用于验证反向和 checkpoint 写出链路。",
+            "- `lora_grad` 使用 `config.trainable_filter`，用于验证 LoRA/非冻结参数的反向和 scoped checkpoint 写出链路。",
             "- 全量 `grad` 可能超过 24GB 显存；失败时应优先改成 LoRA/冻结层 dry-run，而不是假装完成。",
         ]
     )
@@ -556,6 +634,9 @@ def main() -> int:
         if args.mode == "head_grad":
             status["head_grad"] = numeric_head_grad(cfg, compute_params, observation, actions, args.checkpoint_dir)
             status["passed"] = bool(status["passed"] and status["head_grad"].get("passed"))
+        if args.mode == "lora_grad":
+            status["lora_grad"] = numeric_lora_grad(cfg, compute_params, observation, actions, args.checkpoint_dir)
+            status["passed"] = bool(status["passed"] and status["lora_grad"].get("passed"))
     except Exception as exc:  # noqa: BLE001
         status["error"] = {
             "type": type(exc).__name__,

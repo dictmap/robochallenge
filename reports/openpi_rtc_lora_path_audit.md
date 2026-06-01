@@ -19,7 +19,7 @@
 
 - `pi05_base` 路径：`/home/yjl/.cache/openpi/openpi-assets/checkpoints/pi05_base/params`。
 - 合并校验：`passed=True`。
-- 加载并合并耗时：`4.009` 秒。
+- 加载并合并耗时：`3.848` 秒。
 - 合并后 leaf：`73`。
 - 从模型初始化补入的 LoRA leaf：`20`。
 - 从模型初始化补入的 knob leaf：`2`。

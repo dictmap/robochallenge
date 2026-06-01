@@ -1,5 +1,5 @@
 {
-  "mode": "weight_preflight",
+  "mode": "lora_grad",
   "config_name": "cvpr_multitask_aloha_rtc",
   "repo_id": "robochallenge_table30v2_aloha_short",
   "checkpoint": {
@@ -7,7 +7,7 @@
     "params_exists": true,
     "params_size_bytes": 12441721931
   },
-  "compute_param_dtype": "float32",
+  "compute_param_dtype": "bfloat16",
   "random_action_offset_copies_override": 1,
   "paligemma_variant_override": "gemma_2b_lora",
   "action_expert_variant_override": "gemma_300m_lora",
@@ -61,7 +61,7 @@
   "weight_preflight": {
     "passed": true,
     "params_path": "/home/yjl/.cache/openpi/openpi-assets/checkpoints/pi05_base/params",
-    "load_seconds": 6.16,
+    "load_seconds": 6.061,
     "expected": {
       "leaf_count": 73,
       "total_elements": 3403422481,
@@ -476,56 +476,55 @@
     "leaf_count": 51,
     "total_elements": 3353433872,
     "dtype_counts": {
-      "float32": 31,
-      "bfloat16": 20
+      "bfloat16": 51
     },
     "sample_leaves": [
       {
         "shape": [
           1152
         ],
-        "dtype": "float32"
+        "dtype": "bfloat16"
       },
       {
         "shape": [
           1152
         ],
-        "dtype": "float32"
-      },
-      {
-        "shape": [
-          27,
-          1152
-        ],
-        "dtype": "float32"
+        "dtype": "bfloat16"
       },
       {
         "shape": [
           27,
           1152
         ],
-        "dtype": "float32"
+        "dtype": "bfloat16"
       },
       {
         "shape": [
           27,
           1152
         ],
-        "dtype": "float32"
+        "dtype": "bfloat16"
       },
       {
         "shape": [
           27,
           1152
         ],
-        "dtype": "float32"
+        "dtype": "bfloat16"
+      },
+      {
+        "shape": [
+          27,
+          1152
+        ],
+        "dtype": "bfloat16"
       },
       {
         "shape": [
           27,
           4304
         ],
-        "dtype": "float32"
+        "dtype": "bfloat16"
       },
       {
         "shape": [
@@ -533,14 +532,14 @@
           1152,
           4304
         ],
-        "dtype": "float32"
+        "dtype": "bfloat16"
       },
       {
         "shape": [
           27,
           1152
         ],
-        "dtype": "float32"
+        "dtype": "bfloat16"
       },
       {
         "shape": [
@@ -548,7 +547,7 @@
           4304,
           1152
         ],
-        "dtype": "float32"
+        "dtype": "bfloat16"
       },
       {
         "shape": [
@@ -556,7 +555,7 @@
           16,
           72
         ],
-        "dtype": "float32"
+        "dtype": "bfloat16"
       },
       {
         "shape": [
@@ -565,14 +564,14 @@
           16,
           72
         ],
-        "dtype": "float32"
+        "dtype": "bfloat16"
       },
       {
         "shape": [
           27,
           1152
         ],
-        "dtype": "float32"
+        "dtype": "bfloat16"
       },
       {
         "shape": [
@@ -581,7 +580,7 @@
           72,
           1152
         ],
-        "dtype": "float32"
+        "dtype": "bfloat16"
       },
       {
         "shape": [
@@ -589,7 +588,7 @@
           16,
           72
         ],
-        "dtype": "float32"
+        "dtype": "bfloat16"
       },
       {
         "shape": [
@@ -598,9 +597,148 @@
           16,
           72
         ],
-        "dtype": "float32"
+        "dtype": "bfloat16"
       }
     ]
+  },
+  "lora_grad": {
+    "passed": true,
+    "loss": 0.0,
+    "grad_norm": 0.0,
+    "seconds": 59.893,
+    "checkpoint_dir": "runs/openpi_rtc_lora_grad_checkpoint",
+    "checkpoint_npz": "runs/openpi_rtc_lora_grad_checkpoint/trainable_params_step1.npz",
+    "checkpoint_metadata": "runs/openpi_rtc_lora_grad_checkpoint/metadata.json",
+    "trainable_param_summary": {
+      "leaf_count": 53,
+      "total_elements": 466958097,
+      "dtype_counts": {
+        "bfloat16": 31,
+        "float32": 22
+      },
+      "sample_leaves": [
+        {
+          "shape": [
+            1152
+          ],
+          "dtype": "bfloat16"
+        },
+        {
+          "shape": [
+            1152
+          ],
+          "dtype": "bfloat16"
+        },
+        {
+          "shape": [
+            27,
+            1152
+          ],
+          "dtype": "bfloat16"
+        },
+        {
+          "shape": [
+            27,
+            1152
+          ],
+          "dtype": "bfloat16"
+        },
+        {
+          "shape": [
+            27,
+            1152
+          ],
+          "dtype": "bfloat16"
+        },
+        {
+          "shape": [
+            27,
+            1152
+          ],
+          "dtype": "bfloat16"
+        },
+        {
+          "shape": [
+            27,
+            4304
+          ],
+          "dtype": "bfloat16"
+        },
+        {
+          "shape": [
+            27,
+            1152,
+            4304
+          ],
+          "dtype": "bfloat16"
+        },
+        {
+          "shape": [
+            27,
+            1152
+          ],
+          "dtype": "bfloat16"
+        },
+        {
+          "shape": [
+            27,
+            4304,
+            1152
+          ],
+          "dtype": "bfloat16"
+        },
+        {
+          "shape": [
+            27,
+            16,
+            72
+          ],
+          "dtype": "bfloat16"
+        },
+        {
+          "shape": [
+            27,
+            1152,
+            16,
+            72
+          ],
+          "dtype": "bfloat16"
+        },
+        {
+          "shape": [
+            27,
+            1152
+          ],
+          "dtype": "bfloat16"
+        },
+        {
+          "shape": [
+            27,
+            16,
+            72,
+            1152
+          ],
+          "dtype": "bfloat16"
+        },
+        {
+          "shape": [
+            27,
+            16,
+            72
+          ],
+          "dtype": "bfloat16"
+        },
+        {
+          "shape": [
+            27,
+            1152,
+            16,
+            72
+          ],
+          "dtype": "bfloat16"
+        }
+      ]
+    }
   },
   "gpu_after": {
     "available": true,
@@ -610,7 +748,7 @@
       "--format=csv,noheader"
     ],
     "returncode": 0,
-    "stdout": "NVIDIA GeForce RTX 4090, 24564 MiB, 2914 MiB, 21168 MiB",
+    "stdout": "NVIDIA GeForce RTX 4090, 24564 MiB, 21010 MiB, 3072 MiB",
     "stderr": ""
   }
 }

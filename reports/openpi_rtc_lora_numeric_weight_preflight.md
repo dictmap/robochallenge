@@ -14,7 +14,7 @@
 - dataloader actions shape：`[1, 10, 32]`。
 - tokenized prompt shape：`[1, 64]`。
 - 权重结构校验：`passed=True`。
-- 权重加载耗时：`6.22` 秒。
+- 权重加载耗时：`6.16` 秒。
 - 权重 leaf 数：`73`。
 - 可实际注入的 partial params leaf 数：`51`。
 - 已过滤 `ShapeDtypeStruct` leaf 数：`22`。
@@ -26,4 +26,5 @@
 - `weight_preflight` 只证明 `openpi_rtc` 参数结构能接上 `pi05_base` 权重，不代表已经完成训练。
 - `forward` 才代表真实数值 loss 前向；`grad` 才代表真实反向梯度。
 - `head_grad` 是冻结大模型、只更新小头部参数的低显存 dry-run，用于验证反向和 checkpoint 写出链路。
+- `lora_grad` 使用 `config.trainable_filter`，用于验证 LoRA/非冻结参数的反向和 scoped checkpoint 写出链路。
 - 全量 `grad` 可能超过 24GB 显存；失败时应优先改成 LoRA/冻结层 dry-run，而不是假装完成。

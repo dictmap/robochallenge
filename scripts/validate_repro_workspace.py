@@ -19,6 +19,9 @@ REQUIRED = [
     "baseline/official_table30v2_convert_to_lerobot.py",
     "baseline/official_table30v2_readme.md",
     "reports/initial_repro_assessment.md",
+    "reports/pi05_base_repro.md",
+    "runs/pi05_base_probe_status.json",
+    "scripts/probe_pi05_base_model.sh",
 ]
 
 
@@ -38,10 +41,18 @@ def main() -> int:
     if len(manifest.get("sources", [])) < 5:
         print("source_manifest 来源过少")
         return 1
+    pi05_status = json.loads((ROOT / "runs/pi05_base_probe_status.json").read_text(encoding="utf-8"))
+    if not pi05_status.get("local_complete"):
+        print("pi05_base 本地缓存尚未完整")
+        return 1
+    if not pi05_status.get("load_params_smoke", {}).get("loaded"):
+        print("pi05_base 参数读取 smoke 未通过")
+        return 1
 
     print("工作区最低交接材料检查通过")
     print(f"根目录: {ROOT}")
     print(f"来源数量: {len(manifest['sources'])}")
+    print("pi05_base 基模缓存与参数读取 smoke 已通过")
     return 0
 
 

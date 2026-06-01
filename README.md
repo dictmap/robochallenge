@@ -4,6 +4,8 @@
 
 ## 最新状态
 
+- OpenPI `pi05_base` 基模已经在 Linux 上复现：29 个 GCS 对象下载到 `/home/yjl/.cache/openpi/openpi-assets/checkpoints/pi05_base`，大小校验通过。
+- `pi05_base` 参数读取 smoke 已通过：51 个参数 leaf，约 3.353B 参数元素，见 `runs/pi05_base_probe_status.json` 和 `reports/pi05_base_repro.md`。
 - Linux 上已有 RoboChallenge pi0.5 多任务 baseline：`/home/yjl/yjl/RoboChallenge/baseline_pi05_multitask`。
 - 已有 ALOHA checkpoint：`/home/yjl/yjl/RoboChallenge/checkpoints/table30v2_multitask_baseline_aloha`。
 - 核心操作已经写入中文 Jupyter：`notebooks/robochallenge_pi05_submit_cn.ipynb`。
@@ -16,8 +18,9 @@
 - 已创建 5 分钟一次的线程 heartbeat 自动化：`RoboChallenge pi0.5 复现提交迭代`。
 - Windows 本机只能做资料整理和轻量脚本验证，GPU 为 MX550 2GB，不满足 openpi pi0.5 推理或 LoRA 微调。
 - Linux 机器 `y12` 可用，环境为 Ubuntu 22.04 + RTX 4090 24GB，后续训练、推理、baseline smoke test 优先放到 Linux 上。
-- GitHub 仓库 `dictmap/robochallenge` 目前为空；已生成 deploy key，等待用户在 GitHub 页面添加后即可拉取/推送。
+- GitHub 仓库 `dictmap/robochallenge` 已配置 deploy key，当前代码已可从 Linux 推送。
 - RoboChallenge 官方 Hugging Face 数据规模很大：Table30v2 约 1.46TB，ICRA WBC 约 1.61TB；不能盲目全量下载，先按任务/机器人形态做分片抽样和转换验证。
+- `pi05_base` 是 Fine-Tuning 基模，不是 RoboChallenge 可直接提交的任务 policy；提交仍应走 Table30/Table30v2 任务数据、机器人配置和官方评测入口。
 
 ## 目录
 
@@ -28,13 +31,16 @@
 - `sources/source_manifest.json`：本轮使用的来源清单。
 - `configs/repro_targets.json`：复现目标和执行环境约束。
 - `reports/initial_repro_assessment.md`：第一轮复现评估。
+- `reports/pi05_base_repro.md`：pi0.5 基模下载、配置核对和参数读取 smoke 结果。
 - `scripts/collect_hf_manifest.py`：轻量拉取 Hugging Face repo manifest。
+- `scripts/probe_pi05_base_model.sh`：探测/下载/校验 `pi05_base`，可选读取参数树。
+- `scripts/run_pi05_base_download_background.sh`：后台下载 `pi05_base` 的辅助脚本。
+- `scripts/run_pi05_base_load_smoke_background.sh`：后台执行参数读取 smoke 的辅助脚本。
 - `scripts/validate_repro_workspace.py`：检查本工作区是否具备后续迭代的最低材料。
 - `work.md`：自动化迭代工作日志。
 
 ## 下一轮 P0
 
-1. 等 deploy key 加到 `dictmap/robochallenge` 后，在 Linux 4090 上 clone 空仓库并同步本工作区骨架。
-2. 在 Linux 上 clone `Physical-Intelligence/openpi`，只做依赖/配置 smoke test，不先下载大 checkpoint。
-3. 选择一个最小 Table30v2 任务分片，验证官方 `convert_to_lerobot.py` 与 openpi 数据配置的字段匹配。
-4. 明确 RoboChallenge 提交流程需要的账号/API token/模型包格式；涉及登录和提交动作必须等用户凭据或授权。
+1. 基于已复现的 `pi05_base` 和现有 Table30v2 数据，补最小 Table30v2 -> LeRobot -> OpenPI 训练/评测配置映射。
+2. 优先选 ALOHA 或 UR5 的一个小任务分片，验证数据字段、norm stats、动作维度和 prompt 映射。
+3. 明确 RoboChallenge 提交流程需要的账号/API token/模型包格式；涉及登录和提交动作必须等用户凭据或授权。

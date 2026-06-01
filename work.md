@@ -133,3 +133,27 @@
 
 - P0：把 `pi*0.6` 的 RECAP 思路拆成可在 RoboChallenge 上落地的后续优化项：成功/失败标签、失败轨迹、reward bin/value function、优势加权再训练。
 - P1：把 `pi0.7` 的 steerable prompt/subtask/visual subgoal/metadata conditioning 思路记录为后续 prompt 与分层策略优化方向。
+
+## 2026-06-02 第六轮：Table30v2 ALOHA 最小分片映射
+
+### 已完成
+
+- 新增 `scripts/audit_table30v2_aloha_mapping.py`，审计 `pack_the_toothbrush_holder` ALOHA 分片的视频、状态字段、任务描述、OpenPI 配置和 checkpoint norm stats。
+- 确认官方 `convert_to_lerobot.py` 是单臂模板，不能直接用于当前 ALOHA 双臂分片。
+- 确认当前样例分片实际结构是 `left_states.jsonl`、`right_states.jsonl` 和三路视频：`cam_high_rgb.mp4`、`cam_left_wrist_rgb.mp4`、`cam_right_wrist_rgb.mp4`。
+- 确认 `cvpr_multitask_aloha_rtc` 使用 `LeRobotW1DualDataConfig(repo_id='cvpr_multitask_aloha')`，pi0.5 模型 `action_dim=32`、`action_horizon=50`。
+- 确认 checkpoint `cvpr_multitask_aloha` 的 `state/actions` norm stats 都是 14 维，和双臂 ALOHA 数据一致。
+- 生成 `reports/table30v2_aloha_mapping.md` 和 `runs/table30v2_aloha_mapping_audit.json`。
+
+### 验证结果
+
+- 左臂状态帧数：1100，右臂状态帧数：1100。
+- 三路视频均为 1100 帧、30fps、640x480。
+- 推荐数据映射：`state=concat(left.master_qpos, right.master_qpos)`，`action=下一帧 concat(left.master_qpos, right.master_qpos)`，均为 14 维。
+- OpenPI 桥接方式：训练时 14 维 state/action pad 到 pi0.5 的 32 维；推理输出用 `AlohaDualOutputs` 截取前 14 维。
+- `ready_for_dry_run_converter=true`。
+
+### 下一步
+
+- P0：写 ALOHA 最小分片 dry-run converter，先只抽样 2-5 帧生成 LeRobot-like feature schema 并校验，不写全量数据。
+- P1：dry-run 通过后，再扩展到可选小 episode 输出和 OpenPI dataloader smoke。

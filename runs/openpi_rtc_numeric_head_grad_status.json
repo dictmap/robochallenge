@@ -1,5 +1,5 @@
 {
-  "mode": "weight_preflight",
+  "mode": "head_grad",
   "config_name": "cvpr_multitask_aloha_rtc",
   "repo_id": "robochallenge_table30v2_aloha_short",
   "checkpoint": {
@@ -7,10 +7,8 @@
     "params_exists": true,
     "params_size_bytes": 12441721931
   },
-  "compute_param_dtype": "float32",
-  "random_action_offset_copies_override": null,
-  "max_token_len_override": null,
-  "action_horizon_override": null,
+  "compute_param_dtype": "bfloat16",
+  "random_action_offset_copies_override": 1,
   "gpu_before": {
     "available": true,
     "cmd": [
@@ -22,30 +20,24 @@
     "stdout": "NVIDIA GeForce RTX 4090, 24564 MiB, 5595 MiB, 18487 MiB",
     "stderr": ""
   },
-  "passed": true,
-  "effective_random_action_offset_copies": 5,
-  "effective_max_token_len": 200,
-  "effective_action_horizon": 50,
+  "passed": false,
+  "effective_random_action_offset_copies": 1,
   "dataloader": {
     "state_shape": [
       1,
-      5,
       32
     ],
     "actions_shape": [
       1,
-      5,
       50,
       32
     ],
     "tokenized_prompt_shape": [
       1,
-      5,
       200
     ],
     "tokenized_prompt_mask_shape": [
       1,
-      5,
       200
     ],
     "image_keys": [
@@ -57,7 +49,7 @@
   "weight_preflight": {
     "passed": true,
     "params_path": "/home/yjl/.cache/openpi/openpi-assets/checkpoints/pi05_base/params",
-    "load_seconds": 4.001,
+    "load_seconds": 4.043,
     "expected": {
       "leaf_count": 53,
       "total_elements": 3353434897,
@@ -455,55 +447,55 @@
     "leaf_count": 51,
     "total_elements": 3353433872,
     "dtype_counts": {
-      "float32": 51
+      "bfloat16": 51
     },
     "sample_leaves": [
       {
         "shape": [
           1152
         ],
-        "dtype": "float32"
+        "dtype": "bfloat16"
       },
       {
         "shape": [
           1152
         ],
-        "dtype": "float32"
-      },
-      {
-        "shape": [
-          27,
-          1152
-        ],
-        "dtype": "float32"
+        "dtype": "bfloat16"
       },
       {
         "shape": [
           27,
           1152
         ],
-        "dtype": "float32"
+        "dtype": "bfloat16"
       },
       {
         "shape": [
           27,
           1152
         ],
-        "dtype": "float32"
+        "dtype": "bfloat16"
       },
       {
         "shape": [
           27,
           1152
         ],
-        "dtype": "float32"
+        "dtype": "bfloat16"
+      },
+      {
+        "shape": [
+          27,
+          1152
+        ],
+        "dtype": "bfloat16"
       },
       {
         "shape": [
           27,
           4304
         ],
-        "dtype": "float32"
+        "dtype": "bfloat16"
       },
       {
         "shape": [
@@ -511,14 +503,14 @@
           1152,
           4304
         ],
-        "dtype": "float32"
+        "dtype": "bfloat16"
       },
       {
         "shape": [
           27,
           1152
         ],
-        "dtype": "float32"
+        "dtype": "bfloat16"
       },
       {
         "shape": [
@@ -526,7 +518,7 @@
           4304,
           1152
         ],
-        "dtype": "float32"
+        "dtype": "bfloat16"
       },
       {
         "shape": [
@@ -534,7 +526,7 @@
           16,
           72
         ],
-        "dtype": "float32"
+        "dtype": "bfloat16"
       },
       {
         "shape": [
@@ -543,14 +535,14 @@
           16,
           72
         ],
-        "dtype": "float32"
+        "dtype": "bfloat16"
       },
       {
         "shape": [
           27,
           1152
         ],
-        "dtype": "float32"
+        "dtype": "bfloat16"
       },
       {
         "shape": [
@@ -559,7 +551,7 @@
           72,
           1152
         ],
-        "dtype": "float32"
+        "dtype": "bfloat16"
       },
       {
         "shape": [
@@ -567,7 +559,7 @@
           16,
           72
         ],
-        "dtype": "float32"
+        "dtype": "bfloat16"
       },
       {
         "shape": [
@@ -576,9 +568,14 @@
           16,
           72
         ],
-        "dtype": "float32"
+        "dtype": "bfloat16"
       }
     ]
+  },
+  "error": {
+    "type": "XlaRuntimeError",
+    "message": "RESOURCE_EXHAUSTED: Failed to get module function: CUDA_ERROR_OUT_OF_MEMORY: out of memory",
+    "traceback": "Traceback (most recent call last):\n  File \"/home/yjl/robochallenge/repo/scripts/run_openpi_rtc_numeric_dry_run.py\", line 505, in main\n    status[\"head_grad\"] = numeric_head_grad(cfg, compute_params, observation, actions, args.checkpoint_dir)\n                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/yjl/robochallenge/repo/scripts/run_openpi_rtc_numeric_dry_run.py\", line 358, in numeric_head_grad\n    loss, grads = nnx.value_and_grad(loss_fn, argnums=diff_state)(model, jax.random.key(cfg.seed + 3), obs, act)\n                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/yjl/yjl/RoboChallenge/baseline_pi05_multitask/.venv/lib/python3.11/site-packages/flax/nnx/graph.py\", line 1081, in update_context_manager_wrapper\n    return f(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^\n  File \"/home/yjl/yjl/RoboChallenge/baseline_pi05_multitask/.venv/lib/python3.11/site-packages/flax/nnx/transforms/autodiff.py\", line 164, in grad_wrapper\n    fn_out = gradded_fn(*pure_args)\n             ^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/yjl/yjl/RoboChallenge/baseline_pi05_multitask/.venv/lib/python3.11/site-packages/flax/nnx/transforms/autodiff.py\", line 86, in __call__\n    out = self.f(*args)\n          ^^^^^^^^^^^^^\n  File \"/home/yjl/robochallenge/repo/scripts/run_openpi_rtc_numeric_dry_run.py\", line 353, in loss_fn\n    return jnp.mean(model.compute_loss(rng, obs_value, act_value, train=True))\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/yjl/yjl/RoboChallenge/baseline_pi05_multitask/openpi/src/openpi_rtc/models/pi0.py\", line 365, in compute_loss\n    (prefix_out, suffix_out), _ = self.PaliGemma.llm(\n                                  ^^^^^^^^^^^^^^^^^^^\n  File \"/home/yjl/yjl/RoboChallenge/baseline_pi05_multitask/.venv/lib/python3.11/site-packages/flax/nnx/bridge/wrappers.py\", line 164, in __call__\n    out = self.module.apply(variables, *args, rngs=_rngs, method=method, **kwargs)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/yjl/yjl/RoboChallenge/baseline_pi05_multitask/openpi/src/openpi_rtc/models/gemma.py\", line 415, in __call__\n    embedded, kv_cache = self.layers(embedded, kv_cache, positions, mask, adarms_cond, deterministic)\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/yjl/yjl/RoboChallenge/baseline_pi05_multitask/.venv/lib/python3.11/site-packages/flax/core/axes_scan.py\", line 166, in scan_fn\n    c, ys = lax.scan(\n            ^^^^^^^^^\njaxlib.xla_extension.XlaRuntimeError: RESOURCE_EXHAUSTED: Failed to get module function: CUDA_ERROR_OUT_OF_MEMORY: out of memory\n--------------------\nFor simplicity, JAX has removed its internal frames from the traceback of the following exception. Set JAX_TRACEBACK_FILTERING=off to include these.\n"
   },
   "gpu_after": {
     "available": true,
@@ -588,7 +585,7 @@
       "--format=csv,noheader"
     ],
     "returncode": 0,
-    "stdout": "NVIDIA GeForce RTX 4090, 24564 MiB, 5995 MiB, 18087 MiB",
+    "stdout": "NVIDIA GeForce RTX 4090, 24564 MiB, 24079 MiB, 3 MiB",
     "stderr": ""
   }
 }

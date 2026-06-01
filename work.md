@@ -318,3 +318,33 @@
 
 - P0：做 LoRA/冻结层 `openpi_rtc` 1-step grad/checkpoint dry-run，避免全量参数反向 OOM。
 - P1：在用户确认可释放 GPU 进程后，重跑官方 5-copy forward 并保存通过状态文件。
+
+## 2026-06-02 第十二轮：openpi_rtc 小头部反向 blocker 固化
+
+### 已完成
+
+- 将 `scripts/run_openpi_rtc_numeric_dry_run.py` 扩展为支持 `head_grad` 模式，只对 `action_in_proj`、`action_out_proj`、`knob_*` 小头部参数求梯度并计划写 scoped checkpoint。
+- 新增低显存覆盖参数：`--max-token-len` 和 `--action-horizon`，用于缩短 prompt token 和 action horizon 做 smoke。
+- 运行完整小头部反向：`random_action_offset_copies=1`、`bfloat16` 参数、默认 token/action 设置。
+- 运行缩短版小头部反向：`random_action_offset_copies=1`、`max_token_len=64`、`action_horizon=10`。
+- 生成 `reports/openpi_rtc_numeric_head_grad.md`、`runs/openpi_rtc_numeric_head_grad_status.json`、`reports/openpi_rtc_numeric_head_grad_reduced.md` 和 `runs/openpi_rtc_numeric_head_grad_reduced_status.json`。
+- 已将两份小头部反向失败证据纳入 `scripts/validate_repro_workspace.py`，并增加检查：当前状态没有成功写出 `runs/openpi_rtc_head_grad_checkpoint/metadata.json`。
+
+### 验证结果
+
+- 小头部完整反向的权重预检通过，dataloader shape 为 state=`[1, 32]`、actions=`[1, 50, 32]`、tokenized prompt=`[1, 200]`。
+- 小头部完整反向失败：`XlaRuntimeError: CUDA_ERROR_OUT_OF_MEMORY`。
+- 小头部缩短版权重预检通过，dataloader shape 为 state=`[1, 32]`、actions=`[1, 10, 32]`、tokenized prompt=`[1, 64]`。
+- 小头部缩短版失败：`XlaRuntimeError: INTERNAL: an internal operation failed`。
+- 本地 `python scripts/validate_repro_workspace.py` 已通过。
+
+### 当前阻塞
+
+- 当前 GPU 上仍有非本轮 RoboChallenge 进程占用显存；在未获用户授权前不停止这些进程。
+- 本轮没有成功写出 head-grad checkpoint，因此不能声称完成 1-step 数值训练。
+- 真实 RoboChallenge 提交仍需要用户申请并提供网站 `user_token` 与 `submission_id`。
+
+### 下一步
+
+- P0：同步更新中文 Notebook 的可选 `head_grad` 入口并运行 notebook preflight，确保默认只跑安全的 `weight_preflight`。
+- P1：若用户授权释放 GPU，重跑 `forward` 和 `head_grad`；若不能释放 GPU，则改为 LoRA/FSDP/offload 或更小模型状态。

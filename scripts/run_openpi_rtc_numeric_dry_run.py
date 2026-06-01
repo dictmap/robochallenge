@@ -51,6 +51,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--repo-id", default="robochallenge_table30v2_aloha_short", help="本地 LeRobot repo_id。")
     parser.add_argument("--batch-size", type=int, default=1, help="batch size。")
     parser.add_argument("--num-workers", type=int, default=1, help="dataloader worker 数。")
+    parser.add_argument("--max-token-len", type=int, default=None, help="覆盖 model.max_token_len，用于低显存 smoke。")
+    parser.add_argument("--action-horizon", type=int, default=None, help="覆盖 model.action_horizon，用于低显存 smoke。")
     parser.add_argument(
         "--random-action-offset-copies",
         type=int,
@@ -60,9 +62,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--params-path", type=Path, default=DEFAULT_PARAMS, help="pi05_base params 路径。")
     parser.add_argument(
         "--mode",
-        choices=["weight_preflight", "forward", "grad"],
+        choices=["weight_preflight", "forward", "grad", "head_grad"],
         default="weight_preflight",
-        help="weight_preflight 只加载并校验权重；forward 继续算一次 loss；grad 继续算一次全量梯度。",
+        help="weight_preflight 只加载并校验权重；forward 算一次 loss；grad 算全量梯度；head_grad 只训练小头部参数。",
     )
     parser.add_argument(
         "--compute-param-dtype",
@@ -72,6 +74,12 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--status-path", type=Path, default=DEFAULT_STATUS, help="状态 JSON 输出路径。")
     parser.add_argument("--report-path", type=Path, default=DEFAULT_REPORT, help="中文报告输出路径。")
+    parser.add_argument(
+        "--checkpoint-dir",
+        type=Path,
+        default=RUNS_DIR / "openpi_rtc_head_grad_checkpoint",
+        help="head_grad scoped checkpoint 输出目录。",
+    )
     return parser.parse_args()
 
 
@@ -128,11 +136,18 @@ def make_config(
     num_workers: int,
     params_path: Path,
     random_action_offset_copies: int | None,
+    max_token_len: int | None,
+    action_horizon: int | None,
 ):
     from openpi_rtc.training import config as train_config
     from openpi_rtc.training import weight_loaders
 
     cfg = train_config.get_config(config_name)
+    model = cfg.model
+    if max_token_len is not None:
+        model = dataclasses.replace(model, max_token_len=max_token_len)
+    if action_horizon is not None:
+        model = dataclasses.replace(model, action_horizon=action_horizon)
     data = dataclasses.replace(cfg.data, repo_id=repo_id)
     if random_action_offset_copies is not None:
         data = dataclasses.replace(
@@ -146,6 +161,7 @@ def make_config(
     cfg = dataclasses.replace(
         cfg,
         exp_name=f"robochallenge_{repo_id}_numeric_dry_run",
+        model=model,
         data=data,
         weight_loader=weight_loaders.CheckpointWeightLoader(str(params_path)),
         batch_size=batch_size,
@@ -321,6 +337,75 @@ def numeric_grad(cfg, loaded_params, observation, actions) -> dict[str, Any]:
     }
 
 
+def numeric_head_grad(cfg, loaded_params, observation, actions, checkpoint_dir: Path) -> dict[str, Any]:
+    import jax
+    import jax.numpy as jnp
+    from flax import nnx
+    from flax import traverse_util
+    import optax
+
+    import openpi_rtc.models.model as _model
+    import openpi_rtc.shared.array_typing as at
+    import openpi_rtc.shared.nnx_utils as nnx_utils
+
+    graphdef, state = build_loaded_graph(cfg, loaded_params)
+    model = nnx.merge(graphdef, state)
+    model.train()
+    obs = jax.tree.map(jnp.asarray, observation)
+    act = jax.tree.map(jnp.asarray, actions)
+    trainable_filter = nnx.All(
+        nnx.Param,
+        nnx_utils.PathRegex(r".*(action_in_proj|action_out_proj|knob_).*"),
+    )
+
+    @at.typecheck
+    def loss_fn(model: _model.BaseModel, rng, obs_value: _model.Observation, act_value: _model.Actions):
+        return jnp.mean(model.compute_loss(rng, obs_value, act_value, train=True))
+
+    start = time.time()
+    diff_state = nnx.DiffState(0, trainable_filter)
+    with at.disable_typechecking():
+        loss, grads = nnx.value_and_grad(loss_fn, argnums=diff_state)(model, jax.random.key(cfg.seed + 3), obs, act)
+    loss.block_until_ready()
+    grad_norm = optax.global_norm(grads)
+    grad_norm.block_until_ready()
+
+    trainable_params = nnx.state(model, trainable_filter)
+    tx = optax.sgd(1e-6)
+    updates, _ = tx.update(grads, tx.init(trainable_params), trainable_params)
+    updated_params = optax.apply_updates(trainable_params, updates)
+    nnx.update(model, updated_params)
+
+    checkpoint_dir.mkdir(parents=True, exist_ok=True)
+    flat_params = traverse_util.flatten_dict(updated_params.to_pure_dict(), sep="/")
+    npz_path = checkpoint_dir / "trainable_params_step1.npz"
+    np.savez(
+        npz_path,
+        **{key: np.asarray(value) for key, value in flat_params.items() if hasattr(value, "shape")},
+    )
+    metadata = {
+        "kind": "scoped_trainable_checkpoint",
+        "scope": "action_in_proj|action_out_proj|knob_",
+        "step": 1,
+        "loss": float(np.asarray(loss)),
+        "grad_norm": float(np.asarray(grad_norm)),
+        "trainable_param_summary": summarize_tree(updated_params),
+        "npz_path": str(npz_path),
+    }
+    metadata_path = checkpoint_dir / "metadata.json"
+    metadata_path.write_text(json.dumps(metadata, ensure_ascii=False, indent=2), encoding="utf-8")
+    return {
+        "passed": bool(np.isfinite(np.asarray(loss)) and np.isfinite(np.asarray(grad_norm)) and npz_path.exists()),
+        "loss": float(np.asarray(loss)),
+        "grad_norm": float(np.asarray(grad_norm)),
+        "seconds": round(time.time() - start, 3),
+        "checkpoint_dir": str(checkpoint_dir),
+        "checkpoint_npz": str(npz_path),
+        "checkpoint_metadata": str(metadata_path),
+        "trainable_param_summary": summarize_tree(updated_params),
+    }
+
+
 def write_report(status: dict[str, Any], report_path: Path) -> None:
     lines = [
         "# openpi_rtc 数值训练 dry-run",
@@ -349,6 +434,16 @@ def write_report(status: dict[str, Any], report_path: Path) -> None:
         lines.extend(["", "## 数值前向", "", f"- 结果：`{status['forward']}`。"])
     if status.get("grad"):
         lines.extend(["", "## 数值反向", "", f"- 结果：`{status['grad']}`。"])
+    if status.get("head_grad"):
+        lines.extend(
+            [
+                "",
+                "## 小头部反向",
+                "",
+                f"- 结果：`{status['head_grad']}`。",
+                "- 该 checkpoint 只包含 `action_in_proj`、`action_out_proj`、`knob_*` 的 scoped trainable params，不是完整 OpenPI 发布 checkpoint。",
+            ]
+        )
     if status.get("error"):
         lines.extend(["", "## 错误", "", f"- 类型：`{status['error']['type']}`。", f"- 信息：`{status['error']['message']}`。"])
     lines.extend(
@@ -358,6 +453,7 @@ def write_report(status: dict[str, Any], report_path: Path) -> None:
             "",
             "- `weight_preflight` 只证明 `openpi_rtc` 参数结构能接上 `pi05_base` 权重，不代表已经完成训练。",
             "- `forward` 才代表真实数值 loss 前向；`grad` 才代表真实反向梯度。",
+            "- `head_grad` 是冻结大模型、只更新小头部参数的低显存 dry-run，用于验证反向和 checkpoint 写出链路。",
             "- 全量 `grad` 可能超过 24GB 显存；失败时应优先改成 LoRA/冻结层 dry-run，而不是假装完成。",
         ]
     )
@@ -381,6 +477,8 @@ def main() -> int:
         },
         "compute_param_dtype": args.compute_param_dtype,
         "random_action_offset_copies_override": args.random_action_offset_copies,
+        "max_token_len_override": args.max_token_len,
+        "action_horizon_override": args.action_horizon,
         "gpu_before": run_text(
             ["nvidia-smi", "--query-gpu=name,memory.total,memory.used,memory.free", "--format=csv,noheader"]
         ),
@@ -399,8 +497,12 @@ def main() -> int:
             args.num_workers,
             args.params_path,
             args.random_action_offset_copies,
+            args.max_token_len,
+            args.action_horizon,
         )
         status["effective_random_action_offset_copies"] = cfg.data.base_config.random_action_offset_copies
+        status["effective_max_token_len"] = cfg.model.max_token_len
+        status["effective_action_horizon"] = cfg.model.action_horizon
         observation, actions, dataloader = load_batch(cfg)
         status["dataloader"] = dataloader
         params_shape = expected_param_shape(cfg)
@@ -415,6 +517,9 @@ def main() -> int:
         if args.mode == "grad":
             status["grad"] = numeric_grad(cfg, compute_params, observation, actions)
             status["passed"] = bool(status["passed"] and status["grad"].get("passed"))
+        if args.mode == "head_grad":
+            status["head_grad"] = numeric_head_grad(cfg, compute_params, observation, actions, args.checkpoint_dir)
+            status["passed"] = bool(status["passed"] and status["head_grad"].get("passed"))
     except Exception as exc:  # noqa: BLE001
         status["error"] = {
             "type": type(exc).__name__,

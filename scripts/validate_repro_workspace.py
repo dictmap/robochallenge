@@ -28,6 +28,8 @@ REQUIRED = [
     "reports/openpi_rtc_train_entry_audit.md",
     "reports/openpi_rtc_numeric_weight_preflight.md",
     "reports/openpi_rtc_numeric_grad_attempt.md",
+    "reports/openpi_rtc_numeric_head_grad.md",
+    "reports/openpi_rtc_numeric_head_grad_reduced.md",
     "runs/pi05_base_probe_status.json",
     "runs/pi06_pi07_public_audit.json",
     "runs/table30v2_aloha_mapping_audit.json",
@@ -38,6 +40,8 @@ REQUIRED = [
     "runs/openpi_rtc_train_entry_audit.json",
     "runs/openpi_rtc_numeric_weight_preflight_status.json",
     "runs/openpi_rtc_numeric_grad_attempt_status.json",
+    "runs/openpi_rtc_numeric_head_grad_status.json",
+    "runs/openpi_rtc_numeric_head_grad_reduced_status.json",
     "scripts/probe_pi05_base_model.sh",
     "scripts/audit_pi06_pi07_public_release.py",
     "scripts/audit_table30v2_aloha_mapping.py",
@@ -201,6 +205,55 @@ def main() -> int:
     ):
         print("openpi_rtc 全量 grad 尝试未记录为预期 CUDA OOM blocker")
         return 1
+    head_grad = json.loads(
+        (ROOT / "runs/openpi_rtc_numeric_head_grad_status.json").read_text(encoding="utf-8")
+    )
+    head_data = head_grad.get("dataloader", {})
+    head_error = head_grad.get("error", {})
+    if not all(
+        [
+            head_grad.get("mode") == "head_grad",
+            not head_grad.get("passed"),
+            head_grad.get("weight_preflight", {}).get("passed"),
+            head_grad.get("effective_random_action_offset_copies") == 1,
+            head_data.get("state_shape") == [1, 32],
+            head_data.get("actions_shape") == [1, 50, 32],
+            head_data.get("tokenized_prompt_shape") == [1, 200],
+            head_error.get("type") == "XlaRuntimeError",
+            "CUDA_ERROR_OUT_OF_MEMORY" in head_error.get("message", ""),
+        ]
+    ):
+        print("openpi_rtc 小头部 head_grad 尝试未记录为预期 CUDA OOM blocker")
+        return 1
+    head_grad_reduced = json.loads(
+        (ROOT / "runs/openpi_rtc_numeric_head_grad_reduced_status.json").read_text(encoding="utf-8")
+    )
+    reduced_data = head_grad_reduced.get("dataloader", {})
+    reduced_error = head_grad_reduced.get("error", {})
+    reduced_error_message = reduced_error.get("message", "")
+    if not all(
+        [
+            head_grad_reduced.get("mode") == "head_grad",
+            not head_grad_reduced.get("passed"),
+            head_grad_reduced.get("weight_preflight", {}).get("passed"),
+            head_grad_reduced.get("effective_random_action_offset_copies") == 1,
+            head_grad_reduced.get("effective_max_token_len") == 64,
+            head_grad_reduced.get("effective_action_horizon") == 10,
+            reduced_data.get("state_shape") == [1, 32],
+            reduced_data.get("actions_shape") == [1, 10, 32],
+            reduced_data.get("tokenized_prompt_shape") == [1, 64],
+            reduced_error.get("type") == "XlaRuntimeError",
+            (
+                "INTERNAL: an internal operation failed" in reduced_error_message
+                or "CUDA_ERROR_OUT_OF_MEMORY" in reduced_error_message
+            ),
+        ]
+    ):
+        print("openpi_rtc 缩短序列 head_grad 尝试未记录为预期 XLA blocker")
+        return 1
+    if (ROOT / "runs/openpi_rtc_head_grad_checkpoint/metadata.json").exists():
+        print("检测到 head_grad checkpoint metadata，但当前已验证状态并未成功写出 checkpoint")
+        return 1
 
     print("工作区最低交接材料检查通过")
     print(f"根目录: {ROOT}")
@@ -212,7 +265,7 @@ def main() -> int:
     print("Table30v2 ALOHA 短 episode LeRobot writer 与 dataloader smoke 已通过")
     print("Table30v2 ALOHA 可控分片 writer CLI smoke 已通过")
     print("openpi_rtc 训练入口 shape smoke 已通过")
-    print("openpi_rtc pi05_base 权重预检已通过，全量 grad OOM blocker 已记录")
+    print("openpi_rtc pi05_base 权重预检已通过，全量 grad 与小头部 grad blocker 已记录")
     return 0
 
 

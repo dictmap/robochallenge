@@ -2,23 +2,28 @@
 
 ## 结论
 
-- 本轮模式：`weight_preflight`。
-- 本轮状态：`passed=True`。
+- 本轮模式：`head_grad`。
+- 本轮状态：`passed=False`。
 - 使用权重：`/home/yjl/.cache/openpi/openpi-assets/checkpoints/pi05_base/params`。
 - GPU 状态：`NVIDIA GeForce RTX 4090, 24564 MiB, 5595 MiB, 18487 MiB`。
 
 ## 已验证
 
-- dataloader state shape：`[1, 5, 32]`。
-- dataloader actions shape：`[1, 5, 50, 32]`。
-- tokenized prompt shape：`[1, 5, 200]`。
+- dataloader state shape：`[1, 32]`。
+- dataloader actions shape：`[1, 50, 32]`。
+- tokenized prompt shape：`[1, 200]`。
 - 权重结构校验：`passed=True`。
-- 权重加载耗时：`4.001` 秒。
+- 权重加载耗时：`4.043` 秒。
 - 权重 leaf 数：`53`。
 - 可实际注入的 partial params leaf 数：`51`。
 - 已过滤 `ShapeDtypeStruct` leaf 数：`2`。
 - 权重元素数：`3353434897`。
 - 权重 dtype 分布：`{'float32': 53}`。
+
+## 错误
+
+- 类型：`XlaRuntimeError`。
+- 信息：`RESOURCE_EXHAUSTED: Failed to get module function: CUDA_ERROR_OUT_OF_MEMORY: out of memory`。
 
 ## 边界
 

@@ -55,3 +55,30 @@
 - P0：在 Linux 上用 Notebook 开关或命令行启动 ALOHA mock server，再跑一次短时 `test.py` smoke。
 - P1：把仓库提交并推送到 `dictmap/robochallenge`。
 - P2：根据网站提交页确认真实评测时间窗口和命令参数。
+
+## 2026-06-02 第三轮
+
+### 已完成
+
+- 修复 ALOHA mock server 启动目录：`mock_robot_server.py` 必须从 `baseline_pi05_multitask/mock_server` 目录启动，否则 `../20260413/...` 样例路径解析失败。
+- 修复 mock 客户端 URL：`robot/interface_client.py` 的 mock 地址去掉尾部 `/`，避免请求 `//clock-sync` 返回 404。
+- 修复 smoke 运行路径：`scripts/run_aloha_mock_smoke.sh` 改为启动 baseline mock server，但执行仓库内的 `test.py`，确保使用仓库内已修复的客户端。
+- 为 `test.py` 增加 `--max_wait` 参数，smoke 不再依赖外部 `timeout` 杀进程。
+- 确认 Linux LeRobot 可用：通过 `PYTHONPATH` 引入 `/home/yjl/yjl/RoboChallenge/third_party/lerobot` 后，`openpi_rtc`、`openpi_client`、`lerobot`、`jax`、`torch`、`cv2` 全部 import 通过。
+
+### 验证结果
+
+- `scripts/probe_linux_pi05_env.sh` 通过。
+- `scripts/run_aloha_mock_smoke.sh` 通过。
+- smoke 状态：`runs/policy_smoke_aloha_status.json` 显示 `exit_code=0`、`smoke=passed`。
+- 日志 `runs/policy_smoke_aloha.log` 出现多条 `Inference result`，证明 ALOHA 样例数据、mock server、pi0.5 checkpoint、openpi 推理链路已经打通。
+
+### 当前阻塞
+
+- 真实 RoboChallenge 提交仍需要用户申请并提供 `user_token` 和 `submission_id`。
+- 仍需最终确认参赛目标是 `Table30` 还是 `Table30v2`；当前跑通的是 `Table30v2` ALOHA baseline。
+
+### 下一步
+
+- P0：把本轮修复和 smoke 结果提交并推送到 `dictmap/robochallenge`。
+- P1：根据用户选择的目标榜单，补对应的数据/模型映射；如果是 Table30 原榜，需要补 Table30 专用数据和配置。

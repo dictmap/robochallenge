@@ -53,6 +53,7 @@ def main():
     parser.add_argument("--action_type", type=str, default="joint", help="Action type")
     parser.add_argument("--duration", type=float, default=0.033, help="Duration")
     parser.add_argument("--valid_action_num", type=int, default=30, help="Valid action num")
+    parser.add_argument("--max_wait", type=float, default=600, help="Max seconds to run one mock job")
     parser.add_argument("--image_size", type=str, default="640x480", help="Image shape")
     parser.add_argument(
         "--robot_type",
@@ -99,7 +100,7 @@ def main():
             try:
                 process_job(
                     client, gpu_client, job_id, DEFAULT_ROBOT_ID,
-                    image_size, image_type, action_type, duration
+                    image_size, image_type, action_type, duration, max_wait=args.max_wait
                 )
                 jobs.remove(job_id)
             except Exception as e:

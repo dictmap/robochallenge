@@ -9,6 +9,7 @@
 - 核心操作已经写入中文 Jupyter：`notebooks/robochallenge_pi05_submit_cn.ipynb`。
 - Notebook 轻量执行产物：`notebooks/robochallenge_pi05_submit_cn.executed.ipynb`。
 - 预检脚本：`scripts/run_notebook_preflight.sh`。
+- ALOHA mock smoke 已跑通：`scripts/run_aloha_mock_smoke.sh`，结果见 `runs/policy_smoke_aloha_status.json`。
 
 ## 当前结论
 

@@ -30,6 +30,13 @@
       "note": "30 个任务，4 类 embodiment，含 convert_to_lerobot.py。"
     },
     {
+      "name": "RoboChallenge/Table30",
+      "url": "https://huggingface.co/datasets/RoboChallenge/Table30",
+      "type": "dataset",
+      "local_snapshot": "sources/hf_table30_api.json",
+      "note": "原始 Table30 数据集；机器人形态包含 ARX5、UR5、FRANKA、ALOHA，不能与 Table30v2 直接混用。"
+    },
+    {
       "name": "RoboChallenge/icra_wbc",
       "url": "https://huggingface.co/datasets/RoboChallenge/icra_wbc",
       "type": "dataset",

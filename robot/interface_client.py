@@ -59,7 +59,7 @@ class InterfaceClient:
         self.robot_id = robot_id
         self.robot_url = base_url + f"/robots/{robot_id}/direct"
         if self.mock:
-            self.robot_url = mock_url + "/"
+            self.robot_url = mock_url.rstrip("/")
         self.clock_offset = self.cal_clockoffset()
         print(f"clock jitter:{self.clock_offset}s")
     
@@ -193,4 +193,3 @@ class InterfaceClient:
         """
         response = self._get(f"{base_url}/v2/job_collections/submission/{submission_id}/runs", headers={"x-user-id": self.user_id})
         return response.json()
-

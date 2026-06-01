@@ -9,5 +9,5 @@
   "policy_smoke_requested": false,
   "has_user_token_env": false,
   "has_submission_id_env": false,
-  "next_p0": "先用 ALOHA checkpoint 跑 mock smoke；随后根据网站 submission_id 执行 demo.py。"
+  "next_p0": "把 Table30v2 ALOHA dry-run converter 扩展为短 episode LeRobot writer，并运行 dataloader smoke。"
 }

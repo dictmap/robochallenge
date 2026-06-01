@@ -8,6 +8,7 @@
 - `pi05_base` 参数读取 smoke 已通过：51 个参数 leaf，约 3.353B 参数元素，见 `runs/pi05_base_probe_status.json` 和 `reports/pi05_base_repro.md`。
 - 已审计 `pi0.6 / pi0.7` 公开可复现性：当前 OpenPI 公开代码和 `openpi-assets` bucket 未发现可下载 checkpoint/config，见 `reports/pi06_pi07_public_release_audit.md`。
 - 已完成 Table30v2 ALOHA 最小分片字段映射：`pack_the_toothbrush_holder` 可进入 dry-run converter，见 `reports/table30v2_aloha_mapping.md`。
+- 已完成 Table30v2 ALOHA dry-run converter：5 帧抽样、50 步 action window、`random_action_offset=True` 的 5 份样本、14D 到 pi0.5 32D padding 全部通过，见 `reports/table30v2_aloha_dry_run_converter.md`。
 - Linux 上已有 RoboChallenge pi0.5 多任务 baseline：`/home/yjl/yjl/RoboChallenge/baseline_pi05_multitask`。
 - 已有 ALOHA checkpoint：`/home/yjl/yjl/RoboChallenge/checkpoints/table30v2_multitask_baseline_aloha`。
 - 核心操作已经写入中文 Jupyter：`notebooks/robochallenge_pi05_submit_cn.ipynb`。
@@ -36,10 +37,14 @@
 - `reports/pi05_base_repro.md`：pi0.5 基模下载、配置核对和参数读取 smoke 结果。
 - `reports/pi06_pi07_public_release_audit.md`：pi0.6/pi0.7 是否能公开复现的审计结果。
 - `reports/table30v2_aloha_mapping.md`：Table30v2 ALOHA 最小分片到 LeRobot/OpenPI 的字段映射。
+- `reports/table30v2_aloha_dry_run_converter.md`：Table30v2 ALOHA 最小分片 dry-run converter 与 OpenPI transform smoke 结果。
+- `runs/table30v2_aloha_dry_run_status.json`：dry-run converter 的机器可读状态。
+- `runs/table30v2_aloha_dry_run_samples.jsonl`：5 帧抽样的 LeRobot-like schema 与数值摘要。
 - `scripts/collect_hf_manifest.py`：轻量拉取 Hugging Face repo manifest。
 - `scripts/probe_pi05_base_model.sh`：探测/下载/校验 `pi05_base`，可选读取参数树。
 - `scripts/audit_pi06_pi07_public_release.py`：审计 pi0.6/pi0.7 是否已有公开 OpenPI 配置或 checkpoint。
 - `scripts/audit_table30v2_aloha_mapping.py`：审计 ALOHA 最小分片的视频、状态、norm stats 和 OpenPI 配置匹配。
+- `scripts/dry_run_table30v2_aloha_converter.py`：抽样构造 Table30v2 ALOHA LeRobot-like 输入，并验证 OpenPI repack、ALOHA transform、delta action 和 32D padding。
 - `scripts/run_pi05_base_download_background.sh`：后台下载 `pi05_base` 的辅助脚本。
 - `scripts/run_pi05_base_load_smoke_background.sh`：后台执行参数读取 smoke 的辅助脚本。
 - `scripts/validate_repro_workspace.py`：检查本工作区是否具备后续迭代的最低材料。
@@ -47,6 +52,6 @@
 
 ## 下一轮 P0
 
-1. 写 ALOHA 最小分片 dry-run converter，先只抽样生成 2-5 帧并验证 LeRobot feature schema，不写全量数据。
-2. converter 通过后再接 `LeRobotW1DualDataConfig(repo_id='cvpr_multitask_aloha')` 的训练/评测入口。
+1. 将 dry-run converter 扩展成可选小 episode LeRobot writer，先只写一个短 episode，不碰全量 1.46TB 数据。
+2. 用小 episode 接 `LeRobotW1DualDataConfig(repo_id='cvpr_multitask_aloha')` 做 dataloader smoke。
 3. 明确 RoboChallenge 提交流程需要的账号/API token/模型包格式；涉及登录和提交动作必须等用户凭据或授权。

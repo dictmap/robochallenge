@@ -22,12 +22,16 @@ REQUIRED = [
     "reports/pi05_base_repro.md",
     "reports/pi06_pi07_public_release_audit.md",
     "reports/table30v2_aloha_mapping.md",
+    "reports/table30v2_aloha_dry_run_converter.md",
     "runs/pi05_base_probe_status.json",
     "runs/pi06_pi07_public_audit.json",
     "runs/table30v2_aloha_mapping_audit.json",
+    "runs/table30v2_aloha_dry_run_status.json",
+    "runs/table30v2_aloha_dry_run_samples.jsonl",
     "scripts/probe_pi05_base_model.sh",
     "scripts/audit_pi06_pi07_public_release.py",
     "scripts/audit_table30v2_aloha_mapping.py",
+    "scripts/dry_run_table30v2_aloha_converter.py",
 ]
 
 
@@ -62,6 +66,21 @@ def main() -> int:
     if not mapping_status.get("ready_for_dry_run_converter"):
         print("Table30v2 ALOHA 映射尚未满足 dry-run converter 条件")
         return 1
+    dry_run_status = json.loads((ROOT / "runs/table30v2_aloha_dry_run_status.json").read_text(encoding="utf-8"))
+    if not dry_run_status.get("passed"):
+        print("Table30v2 ALOHA dry-run converter 未通过")
+        return 1
+    smoke = dry_run_status.get("transform_smoke", {})
+    if not all(
+        [
+            smoke.get("state_14d_after_data_transforms"),
+            smoke.get("actions_50x14_after_data_transforms"),
+            smoke.get("state_32d_after_padding"),
+            smoke.get("actions_50x32_after_padding"),
+        ]
+    ):
+        print("Table30v2 ALOHA dry-run transform 形状校验未全部通过")
+        return 1
 
     print("工作区最低交接材料检查通过")
     print(f"根目录: {ROOT}")
@@ -69,6 +88,7 @@ def main() -> int:
     print("pi05_base 基模缓存与参数读取 smoke 已通过")
     print("pi0.6/pi0.7 公开 checkpoint 审计已完成")
     print("Table30v2 ALOHA 最小分片字段映射已通过")
+    print("Table30v2 ALOHA dry-run converter 已通过")
     return 0
 
 

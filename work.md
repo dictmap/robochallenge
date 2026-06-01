@@ -157,3 +157,36 @@
 
 - P0：写 ALOHA 最小分片 dry-run converter，先只抽样 2-5 帧生成 LeRobot-like feature schema 并校验，不写全量数据。
 - P1：dry-run 通过后，再扩展到可选小 episode 输出和 OpenPI dataloader smoke。
+
+## 2026-06-02 第七轮：Table30v2 ALOHA dry-run converter
+
+### 已完成
+
+- 新增 `scripts/dry_run_table30v2_aloha_converter.py`，默认抽样 `pack_the_toothbrush_holder` 的 5 帧，并构造一个 50 步 action window。
+- dry-run 输入已按 baseline 的 `LeRobotW1DualDataConfig` 使用扁平 LeRobot 键：`observation.images.front_image`、`observation.images.left_image`、`observation.images.right_image`、`observation.state`、`action`。
+- 已验证 `cvpr_multitask_aloha_rtc` 的真实训练配置：`random_action_offset=True`、`random_action_offset_copies=5`、`action_horizon=50`、`model.action_dim=32`。
+- 已生成 `runs/table30v2_aloha_dry_run_samples.jsonl`，只保存 schema 和数值摘要，不复制全量图片或视频。
+- 已生成 `reports/table30v2_aloha_dry_run_converter.md` 和 `runs/table30v2_aloha_dry_run_status.json`。
+- 已将 dry-run converter 纳入 `scripts/validate_repro_workspace.py` 的最低交接检查。
+
+### 验证结果
+
+- raw state sequence：`[50, 14]`。
+- raw action sequence：`[50, 14]`。
+- OpenPI data transforms 后 state：`[5, 14]`。
+- OpenPI data transforms 后 actions：`[5, 50, 14]`。
+- pi0.5 padding 后 state：`[5, 32]`。
+- pi0.5 padding 后 actions：`[5, 50, 32]`。
+- 三路图像键已匹配：`base_0_rgb`、`left_wrist_0_rgb`、`right_wrist_0_rgb`，mask 全为 true。
+- `passed=true`。
+
+### 当前阻塞
+
+- 仍不能进行真实 RoboChallenge 提交：需要用户申请并提供网站 `user_token` 与 `submission_id`，不能伪造。
+- 仍未写全量 LeRobot 数据集；目前只完成最小 dry-run schema 与 transform smoke。
+- 当前可提交 policy 仍是 Table30v2 ALOHA baseline 方向；原始 `Table30` 若作为正式目标，需要另行补齐对应数据入口和评测配置。
+
+### 下一步
+
+- P0：把 dry-run converter 扩展为可选小 episode LeRobot writer，先只写一个短 episode 并运行 dataloader smoke。
+- P1：小 episode 成功后，再准备微调/评测命令模板和提交打包清单。

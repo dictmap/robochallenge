@@ -1,0 +1,274 @@
+{
+  "episode_dir": "/home/yjl/yjl/RoboChallenge/baseline_pi05_multitask/20260413/aloha/pack_the_toothbrush_holder",
+  "task_info": "/home/yjl/yjl/RoboChallenge/datasets/Table30v2_extracted/pack_the_toothbrush_holder/meta/task_info.json",
+  "config_name": "cvpr_multitask_aloha_rtc",
+  "sample_count": 5,
+  "samples_path": "/home/yjl/robochallenge/repo/runs/table30v2_aloha_dry_run_samples.jsonl",
+  "transform_smoke": {
+    "config_name": "cvpr_multitask_aloha_rtc",
+    "model_action_dim": 32,
+    "action_horizon": 50,
+    "raw_state_sequence_shape": [
+      50,
+      14
+    ],
+    "raw_action_sequence_shape": [
+      50,
+      14
+    ],
+    "after_repack": {
+      "action_is_pad": {
+        "shape": [
+          50
+        ],
+        "dtype": "bool"
+      },
+      "actions": {
+        "shape": [
+          50,
+          14
+        ],
+        "dtype": "float32"
+      },
+      "metadata": {
+        "type": "NoneType",
+        "value": "None"
+      },
+      "observation/cam_high": {
+        "shape": [
+          480,
+          640,
+          3
+        ],
+        "dtype": "uint8"
+      },
+      "observation/cam_wrist_left": {
+        "shape": [
+          480,
+          640,
+          3
+        ],
+        "dtype": "uint8"
+      },
+      "observation/cam_wrist_right": {
+        "shape": [
+          480,
+          640,
+          3
+        ],
+        "dtype": "uint8"
+      },
+      "prompt": {
+        "type": "str",
+        "value": "Put the toothbrush and toothpaste into the toiletries case in sequence, close the case, and then place it into the basket."
+      },
+      "state": {
+        "shape": [
+          50,
+          14
+        ],
+        "dtype": "float32"
+      }
+    },
+    "after_data_transforms": {
+      "state": {
+        "shape": [
+          5,
+          14
+        ],
+        "dtype": "float32"
+      },
+      "image": {
+        "base_0_rgb": {
+          "shape": [
+            480,
+            640,
+            3
+          ],
+          "dtype": "uint8"
+        },
+        "left_wrist_0_rgb": {
+          "shape": [
+            480,
+            640,
+            3
+          ],
+          "dtype": "uint8"
+        },
+        "right_wrist_0_rgb": {
+          "shape": [
+            480,
+            640,
+            3
+          ],
+          "dtype": "uint8"
+        }
+      },
+      "image_mask": {
+        "base_0_rgb": {
+          "type": "bool_",
+          "value": "True"
+        },
+        "left_wrist_0_rgb": {
+          "type": "bool_",
+          "value": "True"
+        },
+        "right_wrist_0_rgb": {
+          "type": "bool_",
+          "value": "True"
+        }
+      },
+      "actions": {
+        "shape": [
+          5,
+          50,
+          14
+        ],
+        "dtype": "float32"
+      },
+      "action_is_pad": {
+        "shape": [
+          5,
+          50
+        ],
+        "dtype": "bool"
+      },
+      "action_prefill_len": {
+        "shape": [
+          5
+        ],
+        "dtype": "int32"
+      },
+      "prompt": {
+        "type": "str",
+        "value": "Put the toothbrush and toothpaste into the toiletries case in sequence, close the case, and then place it into the basket."
+      },
+      "metadata": {
+        "type": "NoneType",
+        "value": "None"
+      }
+    },
+    "after_padding": {
+      "state": {
+        "shape": [
+          5,
+          32
+        ],
+        "dtype": "float32"
+      },
+      "image": {
+        "base_0_rgb": {
+          "shape": [
+            480,
+            640,
+            3
+          ],
+          "dtype": "uint8"
+        },
+        "left_wrist_0_rgb": {
+          "shape": [
+            480,
+            640,
+            3
+          ],
+          "dtype": "uint8"
+        },
+        "right_wrist_0_rgb": {
+          "shape": [
+            480,
+            640,
+            3
+          ],
+          "dtype": "uint8"
+        }
+      },
+      "image_mask": {
+        "base_0_rgb": {
+          "type": "bool_",
+          "value": "True"
+        },
+        "left_wrist_0_rgb": {
+          "type": "bool_",
+          "value": "True"
+        },
+        "right_wrist_0_rgb": {
+          "type": "bool_",
+          "value": "True"
+        }
+      },
+      "actions": {
+        "shape": [
+          5,
+          50,
+          32
+        ],
+        "dtype": "float32"
+      },
+      "action_is_pad": {
+        "shape": [
+          5,
+          50
+        ],
+        "dtype": "bool"
+      },
+      "action_prefill_len": {
+        "shape": [
+          5
+        ],
+        "dtype": "int32"
+      },
+      "prompt": {
+        "type": "str",
+        "value": "Put the toothbrush and toothpaste into the toiletries case in sequence, close the case, and then place it into the basket."
+      },
+      "metadata": {
+        "type": "NoneType",
+        "value": "None"
+      }
+    },
+    "state_shape_after_data_transforms": [
+      5,
+      14
+    ],
+    "actions_shape_after_data_transforms": [
+      5,
+      50,
+      14
+    ],
+    "state_shape_after_padding": [
+      5,
+      32
+    ],
+    "actions_shape_after_padding": [
+      5,
+      50,
+      32
+    ],
+    "state_14d_after_data_transforms": true,
+    "actions_50x14_after_data_transforms": true,
+    "state_32d_after_padding": true,
+    "actions_50x32_after_padding": true,
+    "image_keys": [
+      "base_0_rgb",
+      "left_wrist_0_rgb",
+      "right_wrist_0_rgb"
+    ],
+    "image_masks": {
+      "base_0_rgb": true,
+      "left_wrist_0_rgb": true,
+      "right_wrist_0_rgb": true
+    },
+    "action_prefill_len_shape": [
+      5
+    ],
+    "action_prefill_len_values": [
+      12,
+      15,
+      5,
+      0,
+      3
+    ],
+    "passed": true
+  },
+  "passed": true
+}

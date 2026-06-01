@@ -26,6 +26,8 @@ REQUIRED = [
     "reports/table30v2_aloha_short_lerobot.md",
     "reports/table30v2_aloha_short_lerobot_cli.md",
     "reports/openpi_rtc_train_entry_audit.md",
+    "reports/openpi_rtc_numeric_weight_preflight.md",
+    "reports/openpi_rtc_numeric_grad_attempt.md",
     "runs/pi05_base_probe_status.json",
     "runs/pi06_pi07_public_audit.json",
     "runs/table30v2_aloha_mapping_audit.json",
@@ -34,12 +36,15 @@ REQUIRED = [
     "runs/table30v2_aloha_short_lerobot_status.json",
     "runs/table30v2_aloha_short_lerobot_cli_status.json",
     "runs/openpi_rtc_train_entry_audit.json",
+    "runs/openpi_rtc_numeric_weight_preflight_status.json",
+    "runs/openpi_rtc_numeric_grad_attempt_status.json",
     "scripts/probe_pi05_base_model.sh",
     "scripts/audit_pi06_pi07_public_release.py",
     "scripts/audit_table30v2_aloha_mapping.py",
     "scripts/dry_run_table30v2_aloha_converter.py",
     "scripts/write_table30v2_aloha_short_lerobot.py",
     "scripts/audit_openpi_rtc_train_entry.py",
+    "scripts/run_openpi_rtc_numeric_dry_run.py",
 ]
 
 
@@ -161,6 +166,41 @@ def main() -> int:
     ):
         print("openpi_rtc train_step 前向/反向 shape smoke 未通过")
         return 1
+    weight_preflight = json.loads(
+        (ROOT / "runs/openpi_rtc_numeric_weight_preflight_status.json").read_text(encoding="utf-8")
+    )
+    weight_data = weight_preflight.get("dataloader", {})
+    weight_status = weight_preflight.get("weight_preflight", {})
+    if not all(
+        [
+            weight_preflight.get("mode") == "weight_preflight",
+            weight_preflight.get("passed"),
+            weight_preflight.get("effective_random_action_offset_copies") == 5,
+            weight_data.get("state_shape") == [1, 5, 32],
+            weight_data.get("actions_shape") == [1, 5, 50, 32],
+            weight_data.get("tokenized_prompt_shape") == [1, 5, 200],
+            weight_status.get("passed"),
+            weight_status.get("partial_params", {}).get("leaf_count") == 51,
+            weight_status.get("removed_shape_dtype_struct_count") == 2,
+        ]
+    ):
+        print("openpi_rtc pi05_base 数值权重预检未通过")
+        return 1
+    grad_attempt = json.loads(
+        (ROOT / "runs/openpi_rtc_numeric_grad_attempt_status.json").read_text(encoding="utf-8")
+    )
+    grad_error = grad_attempt.get("error", {})
+    if not all(
+        [
+            grad_attempt.get("mode") == "grad",
+            not grad_attempt.get("passed"),
+            grad_attempt.get("weight_preflight", {}).get("passed"),
+            grad_error.get("type") == "XlaRuntimeError",
+            "CUDA_ERROR_OUT_OF_MEMORY" in grad_error.get("message", ""),
+        ]
+    ):
+        print("openpi_rtc 全量 grad 尝试未记录为预期 CUDA OOM blocker")
+        return 1
 
     print("工作区最低交接材料检查通过")
     print(f"根目录: {ROOT}")
@@ -172,6 +212,7 @@ def main() -> int:
     print("Table30v2 ALOHA 短 episode LeRobot writer 与 dataloader smoke 已通过")
     print("Table30v2 ALOHA 可控分片 writer CLI smoke 已通过")
     print("openpi_rtc 训练入口 shape smoke 已通过")
+    print("openpi_rtc pi05_base 权重预检已通过，全量 grad OOM blocker 已记录")
     return 0
 
 

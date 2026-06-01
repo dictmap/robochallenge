@@ -1,0 +1,590 @@
+{
+  "mode": "weight_preflight",
+  "config_name": "cvpr_multitask_aloha_rtc",
+  "repo_id": "robochallenge_table30v2_aloha_short",
+  "checkpoint": {
+    "params_path": "/home/yjl/.cache/openpi/openpi-assets/checkpoints/pi05_base/params",
+    "params_exists": true,
+    "params_size_bytes": 12441721931
+  },
+  "compute_param_dtype": "float32",
+  "random_action_offset_copies_override": null,
+  "gpu_before": {
+    "available": true,
+    "cmd": [
+      "nvidia-smi",
+      "--query-gpu=name,memory.total,memory.used,memory.free",
+      "--format=csv,noheader"
+    ],
+    "returncode": 0,
+    "stdout": "NVIDIA GeForce RTX 4090, 24564 MiB, 5595 MiB, 18487 MiB",
+    "stderr": ""
+  },
+  "passed": true,
+  "effective_random_action_offset_copies": 5,
+  "dataloader": {
+    "state_shape": [
+      1,
+      5,
+      32
+    ],
+    "actions_shape": [
+      1,
+      5,
+      50,
+      32
+    ],
+    "tokenized_prompt_shape": [
+      1,
+      5,
+      200
+    ],
+    "tokenized_prompt_mask_shape": [
+      1,
+      5,
+      200
+    ],
+    "image_keys": [
+      "base_0_rgb",
+      "left_wrist_0_rgb",
+      "right_wrist_0_rgb"
+    ]
+  },
+  "weight_preflight": {
+    "passed": true,
+    "params_path": "/home/yjl/.cache/openpi/openpi-assets/checkpoints/pi05_base/params",
+    "load_seconds": 3.942,
+    "expected": {
+      "leaf_count": 53,
+      "total_elements": 3353434897,
+      "dtype_counts": {
+        "float32": 53
+      },
+      "sample_leaves": [
+        {
+          "shape": [
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            4304
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            1152,
+            4304
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            4304,
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            16,
+            72
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            1152,
+            16,
+            72
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            16,
+            72,
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            16,
+            72
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            1152,
+            16,
+            72
+          ],
+          "dtype": "float32"
+        }
+      ]
+    },
+    "loaded": {
+      "leaf_count": 53,
+      "total_elements": 3353434897,
+      "dtype_counts": {
+        "float32": 53
+      },
+      "sample_leaves": [
+        {
+          "shape": [
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            4304
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            1152,
+            4304
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            4304,
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            16,
+            72
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            1152,
+            16,
+            72
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            16,
+            72,
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            16,
+            72
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            1152,
+            16,
+            72
+          ],
+          "dtype": "float32"
+        }
+      ]
+    },
+    "partial_params": {
+      "leaf_count": 51,
+      "total_elements": 3353433872,
+      "dtype_counts": {
+        "float32": 51
+      },
+      "sample_leaves": [
+        {
+          "shape": [
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            4304
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            1152,
+            4304
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            4304,
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            16,
+            72
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            1152,
+            16,
+            72
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            16,
+            72,
+            1152
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            16,
+            72
+          ],
+          "dtype": "float32"
+        },
+        {
+          "shape": [
+            27,
+            1152,
+            16,
+            72
+          ],
+          "dtype": "float32"
+        }
+      ]
+    },
+    "removed_shape_dtype_struct_count": 2,
+    "removed_shape_dtype_struct_sample": [
+      "knob_dir",
+      "knob_scale"
+    ]
+  },
+  "compute_params": {
+    "leaf_count": 51,
+    "total_elements": 3353433872,
+    "dtype_counts": {
+      "float32": 51
+    },
+    "sample_leaves": [
+      {
+        "shape": [
+          1152
+        ],
+        "dtype": "float32"
+      },
+      {
+        "shape": [
+          1152
+        ],
+        "dtype": "float32"
+      },
+      {
+        "shape": [
+          27,
+          1152
+        ],
+        "dtype": "float32"
+      },
+      {
+        "shape": [
+          27,
+          1152
+        ],
+        "dtype": "float32"
+      },
+      {
+        "shape": [
+          27,
+          1152
+        ],
+        "dtype": "float32"
+      },
+      {
+        "shape": [
+          27,
+          1152
+        ],
+        "dtype": "float32"
+      },
+      {
+        "shape": [
+          27,
+          4304
+        ],
+        "dtype": "float32"
+      },
+      {
+        "shape": [
+          27,
+          1152,
+          4304
+        ],
+        "dtype": "float32"
+      },
+      {
+        "shape": [
+          27,
+          1152
+        ],
+        "dtype": "float32"
+      },
+      {
+        "shape": [
+          27,
+          4304,
+          1152
+        ],
+        "dtype": "float32"
+      },
+      {
+        "shape": [
+          27,
+          16,
+          72
+        ],
+        "dtype": "float32"
+      },
+      {
+        "shape": [
+          27,
+          1152,
+          16,
+          72
+        ],
+        "dtype": "float32"
+      },
+      {
+        "shape": [
+          27,
+          1152
+        ],
+        "dtype": "float32"
+      },
+      {
+        "shape": [
+          27,
+          16,
+          72,
+          1152
+        ],
+        "dtype": "float32"
+      },
+      {
+        "shape": [
+          27,
+          16,
+          72
+        ],
+        "dtype": "float32"
+      },
+      {
+        "shape": [
+          27,
+          1152,
+          16,
+          72
+        ],
+        "dtype": "float32"
+      }
+    ]
+  },
+  "gpu_after": {
+    "available": true,
+    "cmd": [
+      "nvidia-smi",
+      "--query-gpu=name,memory.total,memory.used,memory.free",
+      "--format=csv,noheader"
+    ],
+    "returncode": 0,
+    "stdout": "NVIDIA GeForce RTX 4090, 24564 MiB, 5995 MiB, 18087 MiB",
+    "stderr": ""
+  }
+}

@@ -284,3 +284,37 @@
 
 - P0：固化最小 `openpi_rtc` 数值训练脚本，在 Linux GPU 上加载 `pi05_base` 权重跑真实 1-step loss/grad/checkpoint dry-run。
 - P1：如果真实 1-step 因显存或权重 namespace 失败，先修复 `openpi_rtc` weight loader 的 namespace 风险，再重跑。
+
+## 2026-06-02 第十一轮：openpi_rtc 数值权重预检与 grad OOM blocker
+
+### 已完成
+
+- 新增 `scripts/run_openpi_rtc_numeric_dry_run.py`，支持 `weight_preflight`、`forward`、`grad` 三种模式。
+- 默认使用 `cvpr_multitask_aloha_rtc` 和本地短分片 `robochallenge_table30v2_aloha_short`。
+- 将 `pi05_base` 权重路径改为本地已验证缓存：`/home/yjl/.cache/openpi/openpi-assets/checkpoints/pi05_base/params`。
+- 修复 `openpi_rtc` weight loader partial params 问题：按官方训练入口逻辑过滤 `ShapeDtypeStruct`，让 `knob_dir`、`knob_scale` 保留模型初始化值。
+- 生成 `reports/openpi_rtc_numeric_weight_preflight.md` 和 `runs/openpi_rtc_numeric_weight_preflight_status.json`。
+- 尝试全量 `grad` 并生成 `reports/openpi_rtc_numeric_grad_attempt.md` 和 `runs/openpi_rtc_numeric_grad_attempt_status.json`。
+- 已将数值权重预检与 grad OOM blocker 纳入 `scripts/validate_repro_workspace.py`。
+
+### 验证结果
+
+- 权重预检：`passed=true`。
+- `pi05_base` params 大小：`12,441,721,931` bytes。
+- dataloader state shape：`[1, 5, 32]`。
+- dataloader actions shape：`[1, 5, 50, 32]`。
+- tokenized prompt shape：`[1, 5, 200]`。
+- 权重结构：expected 53 leaf / loaded 53 leaf / actual partial params 51 leaf。
+- 已过滤 `ShapeDtypeStruct` leaf：2 个，分别为 `knob_dir`、`knob_scale`。
+- 全量 `grad`：失败，`XlaRuntimeError: CUDA_ERROR_OUT_OF_MEMORY`。
+
+### 当前边界
+
+- 当前 4090 上有非本轮 RoboChallenge 进程占用显存：`lerobot_sim` 约 3GB，长期 `policy-provider` 约 2.2GB；本轮没有直接杀这些非当前任务进程。
+- 在当前外部显存占用下，`forward` 与全量 `grad` 都会 OOM；此前空闲显存更高时曾观察到一次 forward loss 通过，但本轮只把可复现到文件的结果作为交接证据。
+- 全量 pi0.5 反向在单张 24GB 4090 上不适合作为默认路线，需要改 LoRA、冻结层、FSDP/多卡或更小训练目标。
+
+### 下一步
+
+- P0：做 LoRA/冻结层 `openpi_rtc` 1-step grad/checkpoint dry-run，避免全量参数反向 OOM。
+- P1：在用户确认可释放 GPU 进程后，重跑官方 5-copy forward 并保存通过状态文件。

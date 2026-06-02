@@ -43,6 +43,7 @@ REQUIRED = [
     "reports/checkpoint_split_plan.md",
     "reports/checkpoint_archive_dry_run.md",
     "reports/checkpoint_link_intake.md",
+    "reports/checkpoint_link_download_verification.md",
     "reports/authorized_submission_sequence_audit.md",
     "reports/submission_status_dashboard.html",
     "reports/checkpoint_upload_channels_audit.md",
@@ -76,6 +77,7 @@ REQUIRED = [
     "runs/checkpoint_split_plan.json",
     "runs/checkpoint_archive_dry_run.json",
     "runs/checkpoint_link_intake.json",
+    "runs/checkpoint_link_download_verification.json",
     "runs/authorized_submission_sequence_audit.json",
     "runs/submission_status_dashboard.json",
     "runs/checkpoint_upload_channels_audit.json",
@@ -106,6 +108,7 @@ REQUIRED = [
     "scripts/audit_checkpoint_split_plan.py",
     "scripts/create_checkpoint_archive.py",
     "scripts/audit_checkpoint_link_intake.py",
+    "scripts/audit_checkpoint_link_download_verification.py",
     "scripts/audit_authorized_submission_sequence.py",
     "scripts/render_submission_status_dashboard.py",
     "scripts/audit_checkpoint_upload_channels.py",
@@ -700,6 +703,45 @@ def main() -> int:
     ):
         print("Checkpoint link 回填审计未通过")
         return 1
+    link_download = json.loads((ROOT / "runs/checkpoint_link_download_verification.json").read_text(encoding="utf-8"))
+    link_download_current = link_download.get("current_env", {})
+    link_download_links = link_download_current.get("links", {})
+    link_download_tooling = link_download.get("tooling", {})
+    link_download_checks = link_download.get("checks", {})
+    link_download_commands = link_download.get("planned_commands", {})
+    link_download_verification = link_download.get("verification", {})
+    if not all(
+        [
+            link_download.get("kind") == "checkpoint_link_download_verification",
+            link_download.get("passed"),
+            link_download.get("verify_download_requested") is False,
+            link_download.get("platform_contacted") is False,
+            link_download.get("upload_performed") is False,
+            link_download.get("credentials_read") is False,
+            link_download.get("credentials_printed") is False,
+            link_download.get("link_value_printed") is False,
+            link_download_current.get("link_shape_ready") is False,
+            link_download_links.get("ROBOCHALLENGE_CHECKPOINT_LINK", {}).get("present") is False,
+            link_download_links.get("ROBOCHALLENGE_LORA_CHECKPOINT_LINK", {}).get("present") is False,
+            link_download_tooling.get("curl", {}).get("available"),
+            link_download_checks.get("link_intake_passed"),
+            link_download_checks.get("split_plan_passed"),
+            link_download_checks.get("curl_available"),
+            link_download_checks.get("commands_redacted"),
+            link_download_checks.get("commands_no_shell_redirection"),
+            "[REDACTED_CHECKPOINT_LINK]" in link_download_commands.get("head", ""),
+            "[REDACTED_CHECKPOINT_LINK]" in link_download_commands.get("range_smoke", ""),
+            link_download_verification.get("attempted") is False,
+            link_download_verification.get("download_verified") is False,
+            link_download_verification.get("download_host_contacted") is False,
+            link_download_verification.get("link_value_printed") is False,
+            link_download.get("expected_archive_gib", 0) > 10,
+            link_download.get("expected_part_count") == 3,
+            len(link_download.get("blocking", [])) >= 2,
+        ]
+    ):
+        print("Checkpoint link 下载校验审计未通过")
+        return 1
     authorized_sequence = json.loads((ROOT / "runs/authorized_submission_sequence_audit.json").read_text(encoding="utf-8"))
     sequence_commands = authorized_sequence.get("commands", {})
     sequence_command_present = sequence_commands.get("present", {})
@@ -855,6 +897,10 @@ def main() -> int:
             handoff_inputs.get("export_audit_local_ready"),
             handoff_inputs.get("upload_audit_passed"),
             handoff_inputs.get("upload_not_performed"),
+            handoff_inputs.get("link_download_audit_passed"),
+            handoff_inputs.get("link_download_not_requested"),
+            handoff_inputs.get("link_download_host_not_contacted"),
+            handoff_inputs.get("link_download_no_plaintext"),
         ]
     ):
         print("真实提交交接文档审计未通过")
@@ -1017,6 +1063,7 @@ def main() -> int:
     print("Checkpoint 分片上传计划审计已通过")
     print("Checkpoint 归档生成 dry-run 已通过")
     print("Checkpoint link 回填审计已通过")
+    print("Checkpoint link 下载校验审计已通过")
     print("用户授权后提交顺序审计已通过")
     print("提交状态 GUI 面板已通过")
     print("Checkpoint 上传通道审计已通过")

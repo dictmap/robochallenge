@@ -19,10 +19,13 @@
     "runs/openpi_rtc_lora_materialized_policy_checkpoint.tar": true,
     "runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.sha256": true,
     "scripts/audit_checkpoint_link_intake.py": true,
+    "scripts/audit_checkpoint_link_download_verification.py": true,
     "scripts/audit_real_submission_readiness.py": true
   },
   "command_mentions": {
     "checkpoint_link_intake": true,
+    "checkpoint_link_download_default": true,
+    "checkpoint_link_download_verify": true,
     "authorized_submission_sequence": true,
     "readiness_gate": true,
     "tar_create": true,
@@ -39,6 +42,8 @@
     "says_stop_when_not_ready": true,
     "says_dry_run_no_credentials": true,
     "says_link_intake_no_plaintext": true,
+    "says_download_verify_no_contact_by_default": true,
+    "says_download_verify_no_plaintext": true,
     "uses_placeholders_instead_of_values": true
   },
   "input_evidence": {
@@ -47,7 +52,11 @@
     "real_submission_currently_blocked": true,
     "export_audit_local_ready": true,
     "upload_audit_passed": true,
-    "upload_not_performed": true
+    "upload_not_performed": true,
+    "link_download_audit_passed": true,
+    "link_download_not_requested": true,
+    "link_download_host_not_contacted": true,
+    "link_download_no_plaintext": true
   },
   "blocking": [
     "无文档侧阻塞；真实提交仍取决于用户凭据、授权上传和真实 checkpoint link。"

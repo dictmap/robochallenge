@@ -909,6 +909,38 @@
 
 - P0：提交推送本轮分片计划产物。
 
+## 2026-06-02 第三十五轮：checkpoint link 下载校验审计
+
+### 已完成
+
+- 新增 `scripts/audit_checkpoint_link_download_verification.py`，默认离线审计 checkpoint link 下载校验协议。
+- 生成 `reports/checkpoint_link_download_verification.md` 和 `runs/checkpoint_link_download_verification.json`，记录 curl 可用性、脱敏 HEAD/Range 命令、当前链接状态和阻塞项。
+- `submission/REAL_SUBMISSION_HANDOFF.md` 已补充 link 下载校验步骤：默认不联网；用户明确授权后才运行 `--verify-download`。
+- `scripts/audit_submission_handoff_docs.py` 已把下载校验步骤纳入交接文档审计。
+- `scripts/validate_repro_workspace.py` 已纳入 checkpoint link 下载校验检查。
+- Notebook 新增第 36 节“checkpoint link 下载校验审计”，可在 Jupyter 中重放默认离线审计。
+
+### 验证结果
+
+- 默认下载校验审计：`passed=true`，`verify_download_requested=false`。
+- 当前仍缺真实 checkpoint link：`link_shape_ready=false`，因此 `download_verified=false`。
+- 默认模式未接触下载 host：`download_host_contacted=false`，未连接 RoboChallenge 平台，未上传，未读取凭据，未打印链接明文。
+- 授权后校验命令使用 `[REDACTED_CHECKPOINT_LINK]` 脱敏占位符，避免把真实链接写入报告。
+- handoff 审计已通过，并新增 link download 四项输入证据。
+- Linux 总体验证已通过，并新增输出“Checkpoint link 下载校验审计已通过”。
+- Notebook preflight 已通过；第 36 节中文检查无问号乱码、无替换字符、无拉丁化 mojibake。
+- 最终明文凭据扫描已通过：`hit_count=0`，`scanned_files=144`。
+- `git diff --check` 已通过。
+
+### 当前边界
+
+- 本轮不联网验证真实下载，不生成 tar，不上传 checkpoint，不读取或保存真实链接。
+- 真实下载校验必须等用户提供真实 checkpoint link 并明确授权 `--verify-download`。
+
+### 下一步
+
+- P0：提交推送本轮 checkpoint link 下载校验产物。
+
 ## 2026-06-02 第二十七轮：readiness gate 场景 smoke 与 Notebook 乱码修复
 
 ### 已完成

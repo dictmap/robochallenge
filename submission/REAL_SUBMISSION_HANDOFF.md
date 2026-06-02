@@ -89,7 +89,23 @@ bash submission/run_table30v2_aloha_demo_template.sh
 python3 scripts/audit_checkpoint_link_intake.py
 ```
 
-该审计只检查 `ROBOCHALLENGE_CHECKPOINT_LINK` 和 `ROBOCHALLENGE_LORA_CHECKPOINT_LINK` 是否为非占位符 HTTPS 下载链接形态，不联网下载，不连接 RoboChallenge 平台，不打印链接明文。审计通过后再运行：
+该审计只检查 `ROBOCHALLENGE_CHECKPOINT_LINK` 和 `ROBOCHALLENGE_LORA_CHECKPOINT_LINK` 是否为非占位符 HTTPS 下载链接形态，不联网下载，不连接 RoboChallenge 平台，不打印链接明文。
+
+随后运行默认离线下载校验协议审计：
+
+```bash
+python3 scripts/audit_checkpoint_link_download_verification.py
+```
+
+该命令默认不联网、不下载、不接触 checkpoint link host，只检查 `curl` 是否可用、HEAD/Range 校验命令是否使用脱敏占位符，以及前置 link intake / split plan 是否通过。
+
+如果用户明确授权联网验证真实 checkpoint link，再运行：
+
+```bash
+python3 scripts/audit_checkpoint_link_download_verification.py --verify-download
+```
+
+该命令只对 checkpoint link host 做 HEAD 和 1MiB Range smoke，不连接 RoboChallenge 平台，不上传文件，不打印链接明文。下载校验通过后再运行：
 
 ```bash
 python3 scripts/audit_real_submission_readiness.py

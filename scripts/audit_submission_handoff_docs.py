@@ -33,11 +33,14 @@ REQUIRED_PATHS = [
     "runs/openpi_rtc_lora_materialized_policy_checkpoint.tar",
     "runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.sha256",
     "scripts/audit_checkpoint_link_intake.py",
+    "scripts/audit_checkpoint_link_download_verification.py",
     "scripts/audit_real_submission_readiness.py",
 ]
 
 REQUIRED_COMMAND_FRAGMENTS = {
     "checkpoint_link_intake": "python3 scripts/audit_checkpoint_link_intake.py",
+    "checkpoint_link_download_default": "python3 scripts/audit_checkpoint_link_download_verification.py",
+    "checkpoint_link_download_verify": "python3 scripts/audit_checkpoint_link_download_verification.py --verify-download",
     "authorized_submission_sequence": "python3 scripts/audit_authorized_submission_sequence.py",
     "readiness_gate": "python3 scripts/audit_real_submission_readiness.py",
     "tar_create": (
@@ -93,6 +96,7 @@ def build_status(doc_path: Path) -> dict[str, Any]:
     real_submission = read_json(RUNS_DIR / "real_submission_readiness.json")
     export_audit = read_json(RUNS_DIR / "lora_checkpoint_export_readiness.json")
     upload_audit = read_json(RUNS_DIR / "checkpoint_upload_channels_audit.json")
+    link_download = read_json(RUNS_DIR / "checkpoint_link_download_verification.json")
 
     env_mentions = {key: key in text for key in REQUIRED_ENV_KEYS}
     path_mentions = {path: path in text for path in REQUIRED_PATHS}
@@ -107,6 +111,8 @@ def build_status(doc_path: Path) -> dict[str, Any]:
         "says_stop_when_not_ready": "ready_for_real_submission=false" in text,
         "says_dry_run_no_credentials": "不会打印 token 或 submission id 明文" in text,
         "says_link_intake_no_plaintext": "不打印链接明文" in text,
+        "says_download_verify_no_contact_by_default": "默认不联网、不下载" in text,
+        "says_download_verify_no_plaintext": "不打印链接明文" in text and "HEAD 和 1MiB Range smoke" in text,
         "uses_placeholders_instead_of_values": "<真实 user token>" in text and "<真实 checkpoint 下载 URL>" in text,
     }
     secret_hits = scan_secret_patterns(text)
@@ -117,6 +123,10 @@ def build_status(doc_path: Path) -> dict[str, Any]:
         "export_audit_local_ready": bool(export_audit.get("local_export_ready")),
         "upload_audit_passed": bool(upload_audit.get("passed")),
         "upload_not_performed": upload_audit.get("uploads_performed") is False,
+        "link_download_audit_passed": bool(link_download.get("passed")),
+        "link_download_not_requested": link_download.get("verify_download_requested") is False,
+        "link_download_host_not_contacted": link_download.get("verification", {}).get("download_host_contacted") is False,
+        "link_download_no_plaintext": link_download.get("link_value_printed") is False,
     }
     passed = bool(
         exists
@@ -129,6 +139,10 @@ def build_status(doc_path: Path) -> dict[str, Any]:
         and input_evidence["export_audit_local_ready"]
         and input_evidence["upload_audit_passed"]
         and input_evidence["upload_not_performed"]
+        and input_evidence["link_download_audit_passed"]
+        and input_evidence["link_download_not_requested"]
+        and input_evidence["link_download_host_not_contacted"]
+        and input_evidence["link_download_no_plaintext"]
     )
     blocking = []
     if not exists:
@@ -153,13 +167,15 @@ def build_status(doc_path: Path) -> dict[str, Any]:
         blocking.append("LoRA checkpoint 导出审计尚未显示本地就绪。")
     if not input_evidence["upload_audit_passed"]:
         blocking.append("checkpoint 上传通道审计尚未通过。")
+    if not input_evidence["link_download_audit_passed"]:
+        blocking.append("checkpoint link 下载校验审计尚未通过。")
     if blocking == []:
         blocking.append("无文档侧阻塞；真实提交仍取决于用户凭据、授权上传和真实 checkpoint link。")
 
     return {
         "kind": "submission_handoff_docs_audit",
         "passed": passed,
-        "doc_path": str(doc_path.relative_to(ROOT)),
+        "doc_path": doc_path.relative_to(ROOT).as_posix(),
         "platform_contacted": False,
         "uploads_performed": False,
         "credentials_printed": False,

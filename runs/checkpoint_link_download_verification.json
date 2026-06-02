@@ -1,0 +1,64 @@
+{
+  "kind": "checkpoint_link_download_verification",
+  "passed": true,
+  "verify_download_requested": false,
+  "platform_contacted": false,
+  "upload_performed": false,
+  "credentials_read": false,
+  "credentials_printed": false,
+  "link_value_printed": false,
+  "current_env": {
+    "links": {
+      "ROBOCHALLENGE_CHECKPOINT_LINK": {
+        "present": false,
+        "length": 0,
+        "looks_like_https_url": false,
+        "has_archive_hint": false,
+        "placeholder_like": false,
+        "accepted_shape": false
+      },
+      "ROBOCHALLENGE_LORA_CHECKPOINT_LINK": {
+        "present": false,
+        "length": 0,
+        "looks_like_https_url": false,
+        "has_archive_hint": false,
+        "placeholder_like": false,
+        "accepted_shape": false
+      }
+    },
+    "accepted_link_keys": [],
+    "selected_link_key": "",
+    "link_shape_ready": false
+  },
+  "tooling": {
+    "curl": {
+      "available": true,
+      "version": "curl 7.81.0 (x86_64-pc-linux-gnu) libcurl/7.81.0 OpenSSL/3.0.2 zlib/1.2.11 brotli/1.0.9 zstd/1.4.8 libidn2/2.3.2 libpsl/0.21.0 (+libidn2/2.3.2) libssh/0.9.6/openssl/zlib nghttp2/1.43.0 librtmp/2.3 OpenLDAP/2.5.18"
+    }
+  },
+  "planned_commands": {
+    "head": "curl -L --fail --head --max-time 30 [REDACTED_CHECKPOINT_LINK]",
+    "range_smoke": "curl -L --fail --range 0-1048575 --output /dev/null --max-time 30 [REDACTED_CHECKPOINT_LINK]"
+  },
+  "checks": {
+    "link_intake_passed": true,
+    "split_plan_passed": true,
+    "curl_available": true,
+    "commands_redacted": true,
+    "commands_no_shell_redirection": true
+  },
+  "verification": {
+    "attempted": false,
+    "download_verified": false,
+    "download_host_contacted": false,
+    "link_value_printed": false,
+    "head": {},
+    "range_smoke": {}
+  },
+  "expected_archive_gib": 11.064,
+  "expected_part_count": 3,
+  "blocking": [
+    "缺少真实 checkpoint link；当前只能审计下载校验协议，不能联网验证。",
+    "未请求 --verify-download；本轮不联网、不下载、不接触 checkpoint link host。"
+  ]
+}

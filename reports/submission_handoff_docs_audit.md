@@ -24,11 +24,14 @@
 - `runs/openpi_rtc_lora_materialized_policy_checkpoint.tar`：`True`。
 - `runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.sha256`：`True`。
 - `scripts/audit_checkpoint_link_intake.py`：`True`。
+- `scripts/audit_checkpoint_link_download_verification.py`：`True`。
 - `scripts/audit_real_submission_readiness.py`：`True`。
 
 ## 必需命令提及
 
 - `checkpoint_link_intake`：`True`。
+- `checkpoint_link_download_default`：`True`。
+- `checkpoint_link_download_verify`：`True`。
 - `authorized_submission_sequence`：`True`。
 - `readiness_gate`：`True`。
 - `tar_create`：`True`。
@@ -46,6 +49,8 @@
 - `says_stop_when_not_ready`：`True`。
 - `says_dry_run_no_credentials`：`True`。
 - `says_link_intake_no_plaintext`：`True`。
+- `says_download_verify_no_contact_by_default`：`True`。
+- `says_download_verify_no_plaintext`：`True`。
 - `uses_placeholders_instead_of_values`：`True`。
 
 ## 输入证据
@@ -56,6 +61,10 @@
 - `export_audit_local_ready`：`True`。
 - `upload_audit_passed`：`True`。
 - `upload_not_performed`：`True`。
+- `link_download_audit_passed`：`True`。
+- `link_download_not_requested`：`True`。
+- `link_download_host_not_contacted`：`True`。
+- `link_download_no_plaintext`：`True`。
 
 ## Blocking
 

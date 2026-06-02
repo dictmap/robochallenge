@@ -50,6 +50,7 @@ REQUIRED = [
     "reports/real_submission_readiness.md",
     "reports/real_submission_readiness_scenarios.md",
     "reports/submission_handoff_docs_audit.md",
+    "reports/submission_preflight_bundle.md",
     "reports/plaintext_secret_scan.md",
     "reports/robochallenge_submission_package_checklist.md",
     "runs/pi05_base_probe_status.json",
@@ -84,6 +85,7 @@ REQUIRED = [
     "runs/real_submission_readiness.json",
     "runs/real_submission_readiness_scenarios.json",
     "runs/submission_handoff_docs_audit.json",
+    "runs/submission_preflight_bundle.json",
     "runs/plaintext_secret_scan.json",
     "runs/robochallenge_submission_package_audit.json",
     "submission/README.md",
@@ -115,6 +117,7 @@ REQUIRED = [
     "scripts/audit_real_submission_readiness.py",
     "scripts/audit_real_submission_readiness_scenarios.py",
     "scripts/audit_submission_handoff_docs.py",
+    "scripts/audit_submission_preflight_bundle.py",
     "scripts/audit_plaintext_secrets.py",
     "scripts/audit_robochallenge_submission_package.py",
 ]
@@ -905,6 +908,43 @@ def main() -> int:
     ):
         print("真实提交交接文档审计未通过")
         return 1
+    preflight = json.loads((ROOT / "runs/submission_preflight_bundle.json").read_text(encoding="utf-8"))
+    preflight_subcommands = preflight.get("subcommands", {})
+    preflight_leaks = preflight.get("leak_flags", {})
+    preflight_contacts = preflight.get("contact_flags", {})
+    expected_preflight_subcommands = {
+        "checkpoint_link_intake",
+        "checkpoint_link_download_verification",
+        "real_submission_readiness",
+        "submission_handoff_docs",
+        "plaintext_secret_scan",
+    }
+    if not all(
+        [
+            preflight.get("kind") == "submission_preflight_bundle",
+            preflight.get("passed"),
+            preflight.get("go_no_go") == "blocked",
+            preflight.get("ready_for_real_submission") is False,
+            preflight.get("web_form_ready") is False,
+            preflight.get("local_baseline_runner_ready") is False,
+            preflight.get("local_lora_runner_ready") is False,
+            preflight.get("verify_download_requested") is False,
+            preflight.get("download_verified") is False,
+            preflight.get("link_shape_ready") is False,
+            preflight.get("secret_scan_hit_count") == 0,
+            set(preflight_subcommands) == expected_preflight_subcommands,
+            all(item.get("returncode") == 0 and item.get("passed") for item in preflight_subcommands.values()),
+            preflight_contacts.get("platform_contacted") is False,
+            preflight_contacts.get("uploads_performed") is False,
+            preflight_contacts.get("download_host_contacted") is False,
+            preflight_leaks.get("credentials_printed") is False,
+            preflight_leaks.get("link_values_printed") is False,
+            preflight_leaks.get("secret_values_printed") is False,
+            len(preflight.get("blocking", [])) >= 4,
+        ]
+    ):
+        print("真实提交前预检汇总未通过")
+        return 1
     secret_scan = json.loads((ROOT / "runs/plaintext_secret_scan.json").read_text(encoding="utf-8"))
     if not all(
         [
@@ -1070,6 +1110,7 @@ def main() -> int:
     print("真实提交 readiness gate 已通过")
     print("真实提交 readiness 场景 smoke 已通过")
     print("真实提交交接文档审计已通过")
+    print("真实提交前预检汇总已通过")
     print("明文凭据扫描已通过")
     return 0
 

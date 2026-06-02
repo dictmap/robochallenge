@@ -97,6 +97,12 @@ python3 scripts/audit_checkpoint_link_intake.py
 python3 scripts/audit_checkpoint_link_download_verification.py
 ```
 
+真实提交前也可以运行一键预检汇总；该命令会串联 link intake、默认下载校验协议、readiness gate、handoff 文档和明文凭据扫描，不上传、不连接 RoboChallenge 平台、不接触下载 host：
+
+```bash
+python3 scripts/audit_submission_preflight_bundle.py
+```
+
 该命令默认不联网、不下载、不接触 checkpoint link host，只检查 `curl` 是否可用、HEAD/Range 校验命令是否使用脱敏占位符，以及前置 link intake / split plan 是否通过。
 
 如果用户明确授权联网验证真实 checkpoint link，再运行：

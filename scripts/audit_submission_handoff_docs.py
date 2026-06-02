@@ -35,12 +35,14 @@ REQUIRED_PATHS = [
     "scripts/audit_checkpoint_link_intake.py",
     "scripts/audit_checkpoint_link_download_verification.py",
     "scripts/audit_real_submission_readiness.py",
+    "scripts/audit_submission_preflight_bundle.py",
 ]
 
 REQUIRED_COMMAND_FRAGMENTS = {
     "checkpoint_link_intake": "python3 scripts/audit_checkpoint_link_intake.py",
     "checkpoint_link_download_default": "python3 scripts/audit_checkpoint_link_download_verification.py",
     "checkpoint_link_download_verify": "python3 scripts/audit_checkpoint_link_download_verification.py --verify-download",
+    "submission_preflight_bundle": "python3 scripts/audit_submission_preflight_bundle.py",
     "authorized_submission_sequence": "python3 scripts/audit_authorized_submission_sequence.py",
     "readiness_gate": "python3 scripts/audit_real_submission_readiness.py",
     "tar_create": (

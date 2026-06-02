@@ -8,6 +8,7 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import sys
 import tempfile
 from typing import Any
 from urllib.parse import urlparse
@@ -81,6 +82,7 @@ def current_env_status() -> dict[str, Any]:
 
 def run_current_status_with_env(env_updates: dict[str, str]) -> dict[str, Any]:
     env = os.environ.copy()
+    env["PYTHONIOENCODING"] = "utf-8"
     for key in LINK_KEYS:
         env.pop(key, None)
     env.update(env_updates)
@@ -90,7 +92,7 @@ def run_current_status_with_env(env_updates: dict[str, str]) -> dict[str, Any]:
         report_path = tmp_dir / "report.md"
         result = subprocess.run(
             [
-                "python3",
+                sys.executable,
                 "scripts/audit_checkpoint_link_intake.py",
                 "--scenario-only",
                 "--status-path",
@@ -101,16 +103,20 @@ def run_current_status_with_env(env_updates: dict[str, str]) -> dict[str, Any]:
             cwd=ROOT,
             env=env,
             text=True,
+            encoding="utf-8",
+            errors="replace",
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             check=False,
             timeout=30,
         )
+        stdout = result.stdout or ""
+        stderr = result.stderr or ""
         status = json.loads(status_path.read_text(encoding="utf-8")) if status_path.exists() else {}
         combined_output = "\n".join(
             [
-                result.stdout,
-                result.stderr,
+                stdout,
+                stderr,
                 status_path.read_text(encoding="utf-8") if status_path.exists() else "",
                 report_path.read_text(encoding="utf-8") if report_path.exists() else "",
             ]
@@ -244,6 +250,8 @@ def write_report(status: dict[str, Any], path: Path) -> None:
 
 
 def main() -> int:
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     args = parse_args()
     status = build_status(args.scenario_only)
     args.status_path.parent.mkdir(parents=True, exist_ok=True)

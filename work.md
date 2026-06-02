@@ -737,6 +737,29 @@
 ### 下一步
 
 - P0：最终 secret scan、diff check 后提交推送。
+## 2026-06-02 第三十六轮：真实提交前预检汇总
+
+### 已完成
+- 新增 `scripts/audit_submission_preflight_bundle.py`，一键串联 checkpoint link 回填审计、默认下载校验协议、真实提交 readiness gate、handoff 文档审计和明文凭据扫描。
+- 修复 `scripts/audit_checkpoint_link_intake.py` 的场景 smoke：内部子进程改用当前 Python 解释器，并固定 UTF-8 输出，避免 Windows 本地 `python3` 缺失或默认编码导致误失败。
+- 修复 `scripts/audit_real_submission_readiness.py` 的本地兼容性：`bash -n` 改为通过 stdin 检查脚本文本，并收敛 WSL relay 的不可打印 stderr，不污染 JSON/Markdown。
+- `submission/REAL_SUBMISSION_HANDOFF.md` 新增一键预检命令，`scripts/audit_submission_handoff_docs.py` 已强制检查该命令和脚本路径。
+- `scripts/validate_repro_workspace.py` 新增真实提交前预检汇总 gate，要求 no-contact、no-upload、no-secret-leak 且当前 go/no-go 仍准确为 `blocked`。
+- Notebook `notebooks/robochallenge_pi05_submit_cn.ipynb` 新增第 37 节“真实提交前预检汇总”，可在 Jupyter 中复现该 bundle。
+
+### 验证结果
+- 本地 `python scripts\audit_submission_preflight_bundle.py` 已通过：`passed=true`，`go_no_go=blocked`，五个子审计 returncode 均为 `0`。
+- 本地 bundle 关键边界均为 false：`platform_contacted=false`、`uploads_performed=false`、`download_host_contacted=false`、`credentials_printed=false`、`link_values_printed=false`、`secret_values_printed=false`。
+- 本地 handoff 审计已通过，并确认 `submission_preflight_bundle` 命令和 `scripts/audit_submission_preflight_bundle.py` 路径均已被文档覆盖。
+- Linux 已重跑 `audit_submission_preflight_bundle.py`、`validate_repro_workspace.py`、`run_notebook_preflight.sh`、`audit_plaintext_secrets.py` 和 `git diff --check`，均已通过。
+- 新增/更新的 handoff 文档、bundle 报告、bundle JSON、Notebook 第 37 节均已检查：无问号乱码、无替换字符、无常见 mojibake。
+
+### 当前边界
+- 本轮仍不生成 tar、不上传 checkpoint、不连接 RoboChallenge 平台、不接触 checkpoint 下载 host、不读取或保存真实 token/link。
+- 当前真实提交仍缺 `ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID` 和真实可访问 checkpoint link，因此 bundle 的正确结论是 `blocked`，不是 ready。
+
+### 下一步
+- P0：提交并推送本轮真实提交前预检汇总产物。
 
 ## 2026-06-02 第二十九轮：明文凭据扫描审计
 

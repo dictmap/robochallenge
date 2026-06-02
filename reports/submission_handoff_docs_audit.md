@@ -26,12 +26,14 @@
 - `scripts/audit_checkpoint_link_intake.py`：`True`。
 - `scripts/audit_checkpoint_link_download_verification.py`：`True`。
 - `scripts/audit_real_submission_readiness.py`：`True`。
+- `scripts/audit_submission_preflight_bundle.py`：`True`。
 
 ## 必需命令提及
 
 - `checkpoint_link_intake`：`True`。
 - `checkpoint_link_download_default`：`True`。
 - `checkpoint_link_download_verify`：`True`。
+- `submission_preflight_bundle`：`True`。
 - `authorized_submission_sequence`：`True`。
 - `readiness_gate`：`True`。
 - `tar_create`：`True`。

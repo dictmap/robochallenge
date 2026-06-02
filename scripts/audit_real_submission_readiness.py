@@ -9,6 +9,7 @@ import os
 from pathlib import Path
 import re
 import subprocess
+import sys
 from typing import Any
 
 
@@ -56,18 +57,29 @@ def env_probe() -> dict[str, dict[str, Any]]:
 def bash_syntax(path: Path) -> dict[str, Any]:
     if not path.exists():
         return {"exists": False, "passed": False, "returncode": None, "stderr": "missing"}
-    result = subprocess.run(
-        ["bash", "-n", str(path)],
-        text=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        check=False,
-    )
+    try:
+        result = subprocess.run(
+            ["bash", "-n"],
+            input=path.read_text(encoding="utf-8"),
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+        )
+    except FileNotFoundError:
+        return {"exists": True, "passed": False, "returncode": None, "stderr": "bash not found"}
+    stderr = result.stderr or ""
+    if "WSL" in stderr and "execvpe(/bin/bash) failed" in stderr:
+        stderr = "bash unavailable in current Windows shell"
+    else:
+        stderr = "".join(ch if ch in "\n\r\t" or (ord(ch) >= 32 and ch != "\ufffd") else "?" for ch in stderr)
     return {
         "exists": True,
         "passed": result.returncode == 0,
         "returncode": result.returncode,
-        "stderr": result.stderr.strip(),
+        "stderr": stderr.strip(),
     }
 
 
@@ -188,6 +200,8 @@ def write_report(status: dict[str, Any], path: Path) -> None:
 
 
 def main() -> int:
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     args = parse_args()
     status = build_status()
     args.status_path.parent.mkdir(parents=True, exist_ok=True)

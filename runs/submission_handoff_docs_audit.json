@@ -20,12 +20,14 @@
     "runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.sha256": true,
     "scripts/audit_checkpoint_link_intake.py": true,
     "scripts/audit_checkpoint_link_download_verification.py": true,
-    "scripts/audit_real_submission_readiness.py": true
+    "scripts/audit_real_submission_readiness.py": true,
+    "scripts/audit_submission_preflight_bundle.py": true
   },
   "command_mentions": {
     "checkpoint_link_intake": true,
     "checkpoint_link_download_default": true,
     "checkpoint_link_download_verify": true,
+    "submission_preflight_bundle": true,
     "authorized_submission_sequence": true,
     "readiness_gate": true,
     "tar_create": true,

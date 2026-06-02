@@ -18,6 +18,7 @@
 - 已跑通 LoRA reduced trainable-filter 反向与 scoped checkpoint dry-run：`lora_grad.passed=true`，远端写出 `runs/openpi_rtc_lora_grad_checkpoint/trainable_params_step1.npz`，见 `reports/openpi_rtc_lora_numeric_grad_reduced.md`。
 - 已将 LoRA scoped checkpoint 物化为本地完整 policy checkpoint，`create_trained_policy` 加载 smoke 通过，并新增 LoRA `demo.py` runner 模板，见 `reports/openpi_rtc_lora_materialized_policy_smoke.md` 和 `submission/run_table30v2_aloha_lora_demo_template.sh`。
 - 已新增 LoRA checkpoint 导出就绪审计，确认本地 12GB+ checkpoint 具备打包/上传前置条件，并用 tar stream smoke 验证可完整读取；真实上传和 checkpoint link 仍需要用户授权，见 `reports/lora_checkpoint_export_readiness.md`。
+- 已新增 checkpoint 上传通道审计，只检查本机上传工具和凭据迹象，不读取明文、不上传，见 `reports/checkpoint_upload_channels_audit.md`。
 - Linux 上已有 RoboChallenge pi0.5 多任务 baseline：`/home/yjl/yjl/RoboChallenge/baseline_pi05_multitask`。
 - 已有 ALOHA checkpoint：`/home/yjl/yjl/RoboChallenge/checkpoints/table30v2_multitask_baseline_aloha`。
 - 核心操作已经写入中文 Jupyter：`notebooks/robochallenge_pi05_submit_cn.ipynb`。
@@ -62,6 +63,7 @@
 - `reports/openpi_rtc_lora_inference_checkpoint_materialize.md`：LoRA 完整推理 checkpoint 物化结果。
 - `reports/openpi_rtc_lora_materialized_policy_smoke.md`：LoRA 完整物化 checkpoint 的 `create_trained_policy` 加载 smoke 结果。
 - `reports/lora_checkpoint_export_readiness.md`：LoRA 完整物化 checkpoint 的导出/上传前置条件审计。
+- `reports/checkpoint_upload_channels_audit.md`：本机 checkpoint 上传通道、工具和凭据迹象审计。
 - `reports/robochallenge_submission_package_checklist.md`：RoboChallenge 提交包清单、入口参数、凭据缺口和链接位说明。
 - `runs/table30v2_aloha_dry_run_status.json`：dry-run converter 的机器可读状态。
 - `runs/table30v2_aloha_dry_run_samples.jsonl`：5 帧抽样的 LeRobot-like schema 与数值摘要。
@@ -80,6 +82,7 @@
 - `runs/openpi_rtc_lora_inference_checkpoint_materialize_status.json`：LoRA 完整推理 checkpoint 物化机器可读状态。
 - `runs/openpi_rtc_lora_materialized_policy_smoke_status.json`：LoRA 完整物化 checkpoint 加载 smoke 机器可读状态。
 - `runs/lora_checkpoint_export_readiness.json`：LoRA checkpoint 导出就绪机器可读状态。
+- `runs/checkpoint_upload_channels_audit.json`：checkpoint 上传通道审计机器可读状态。
 - `runs/robochallenge_submission_package_audit.json`：提交包清单和启动模板的机器可读审计状态。
 - `submission/submission_manifest_template.json`：不含明文凭据的提交 manifest 模板。
 - `submission/run_table30v2_aloha_demo_template.sh`：Table30v2 ALOHA baseline 的 `demo.py` 启动模板。
@@ -94,6 +97,7 @@
 - `scripts/run_openpi_rtc_numeric_dry_run.py`：分阶段运行 `openpi_rtc` 数值 dry-run，支持权重预检、forward、grad、head_grad 和低显存覆盖参数。
 - `scripts/audit_openpi_rtc_lora_path.py`：审计 `openpi_rtc` LoRA 低显存路线并验证 `pi05_base` 权重合并。
 - `scripts/audit_lora_checkpoint_export_readiness.py`：审计 LoRA 完整物化 checkpoint 是否具备导出/上传前置条件。
+- `scripts/audit_checkpoint_upload_channels.py`：审计本机是否具备 checkpoint 上传工具、凭据迹象和本地打包前置条件。
 - `scripts/audit_robochallenge_submission_package.py`：生成并审计提交包清单、manifest 和无凭据启动模板。
 - `scripts/run_pi05_base_download_background.sh`：后台下载 `pi05_base` 的辅助脚本。
 - `scripts/run_pi05_base_load_smoke_background.sh`：后台执行参数读取 smoke 的辅助脚本。

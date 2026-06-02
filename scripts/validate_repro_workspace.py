@@ -39,6 +39,7 @@ REQUIRED = [
     "reports/openpi_rtc_lora_inference_checkpoint_materialize.md",
     "reports/openpi_rtc_lora_materialized_policy_smoke.md",
     "reports/lora_checkpoint_export_readiness.md",
+    "reports/checkpoint_upload_channels_audit.md",
     "reports/robochallenge_submission_package_checklist.md",
     "runs/pi05_base_probe_status.json",
     "runs/pi06_pi07_public_audit.json",
@@ -61,6 +62,7 @@ REQUIRED = [
     "runs/openpi_rtc_lora_inference_checkpoint_materialize_status.json",
     "runs/openpi_rtc_lora_materialized_policy_smoke_status.json",
     "runs/lora_checkpoint_export_readiness.json",
+    "runs/checkpoint_upload_channels_audit.json",
     "runs/robochallenge_submission_package_audit.json",
     "submission/README.md",
     "submission/submission_manifest_template.json",
@@ -78,6 +80,7 @@ REQUIRED = [
     "scripts/audit_openpi_rtc_lora_inference_checkpoint_layout.py",
     "scripts/smoke_openpi_rtc_materialized_policy.py",
     "scripts/audit_lora_checkpoint_export_readiness.py",
+    "scripts/audit_checkpoint_upload_channels.py",
     "scripts/audit_robochallenge_submission_package.py",
 ]
 
@@ -535,6 +538,24 @@ def main() -> int:
     ):
         print("LoRA checkpoint 导出就绪审计未通过")
         return 1
+    upload_audit = json.loads((ROOT / "runs/checkpoint_upload_channels_audit.json").read_text(encoding="utf-8"))
+    upload_channels = upload_audit.get("channels", {})
+    if not all(
+        [
+            upload_audit.get("passed"),
+            upload_audit.get("uploads_performed") is False,
+            upload_audit.get("plaintext_credentials_read") is False,
+            upload_audit.get("local_tar_ready"),
+            upload_audit.get("archive_exists") is False,
+            upload_audit.get("archive_git_ignored"),
+            upload_audit.get("disk", {}).get("free_bytes", 0) > 0,
+            upload_channels.get("huggingface_hub", {}).get("selected") is False,
+            upload_channels.get("object_storage", {}).get("selected") is False,
+            upload_channels.get("manual_download", {}).get("selected") is False,
+        ]
+    ):
+        print("Checkpoint 上传通道审计未通过")
+        return 1
     if not all(
         [
             lora_grad.get("mode") == "lora_grad",
@@ -660,6 +681,7 @@ def main() -> int:
     print("openpi_rtc LoRA 完整推理 checkpoint 物化已通过")
     print("openpi_rtc LoRA 完整物化 policy 加载 smoke 已通过")
     print("LoRA checkpoint 导出就绪审计已通过")
+    print("Checkpoint 上传通道审计已通过")
     return 0
 
 

@@ -1,0 +1,202 @@
+{
+  "kind": "checkpoint_upload_channels_audit",
+  "passed": true,
+  "uploads_performed": false,
+  "plaintext_credentials_read": false,
+  "export_status_path": "runs/lora_checkpoint_export_readiness.json",
+  "local_tar_ready": true,
+  "archive_path": "runs/openpi_rtc_lora_materialized_policy_checkpoint.tar",
+  "archive_exists": false,
+  "archive_git_ignored": true,
+  "sha256_path": "runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.sha256",
+  "sha256_exists": false,
+  "disk": {
+    "path": "/home/yjl/robochallenge/repo/runs",
+    "total_bytes": 1967317549056,
+    "used_bytes": 1346987384832,
+    "free_bytes": 520320344064,
+    "free_gb": 484.586
+  },
+  "recommended_local_archive": {
+    "path": "runs/openpi_rtc_lora_materialized_policy_checkpoint.tar",
+    "git_ignored_by_pattern": "*.tar",
+    "create_command": "tar -C runs -cf runs/openpi_rtc_lora_materialized_policy_checkpoint.tar openpi_rtc_lora_materialized_policy_checkpoint",
+    "hash_command": "sha256sum runs/openpi_rtc_lora_materialized_policy_checkpoint.tar > runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.sha256",
+    "note": "默认不自动打包 12GB+ checkpoint；只有需要上传时再手动执行。"
+  },
+  "commands": {
+    "hf": {
+      "available": false,
+      "path": null,
+      "version": "",
+      "returncode": null
+    },
+    "huggingface-cli": {
+      "available": false,
+      "path": null,
+      "version": "",
+      "returncode": null
+    },
+    "gh": {
+      "available": false,
+      "path": null,
+      "version": "",
+      "returncode": null
+    },
+    "git-lfs": {
+      "available": true,
+      "path": "/usr/bin/git",
+      "version": "git-lfs/3.0.2 (GitHub; linux amd64; go 1.18.1)",
+      "returncode": 0
+    },
+    "rclone": {
+      "available": false,
+      "path": null,
+      "version": "",
+      "returncode": null
+    },
+    "ossutil": {
+      "available": false,
+      "path": null,
+      "version": "",
+      "returncode": null
+    },
+    "aws": {
+      "available": false,
+      "path": null,
+      "version": "",
+      "returncode": null
+    },
+    "gsutil": {
+      "available": false,
+      "path": null,
+      "version": "",
+      "returncode": null
+    },
+    "gcloud": {
+      "available": false,
+      "path": null,
+      "version": "",
+      "returncode": null
+    },
+    "azcopy": {
+      "available": false,
+      "path": null,
+      "version": "",
+      "returncode": null
+    },
+    "curl": {
+      "available": true,
+      "path": "/usr/bin/curl",
+      "version": "curl 7.81.0 (x86_64-pc-linux-gnu) libcurl/7.81.0 OpenSSL/3.0.2 zlib/1.2.11 brotli/1.0.9 zstd/1.4.8 libidn2/2.3.2 libpsl/0.21.0 (+libidn2/2.3.2) libssh/0.9.6/openssl/zlib nghttp2/1.43.0 librtmp/2.3 OpenLDAP/2.5.18",
+      "returncode": 0
+    }
+  },
+  "auth_probes": {
+    "huggingface": {
+      "env_present": {
+        "HF_TOKEN": false,
+        "HUGGING_FACE_HUB_TOKEN": false
+      },
+      "config_file_present": {
+        "~/.cache/huggingface/token": false
+      }
+    },
+    "github_cli": {
+      "env_present": {
+        "GH_TOKEN": false,
+        "GITHUB_TOKEN": false
+      },
+      "config_file_present": {
+        "~/.config/gh/hosts.yml": false
+      }
+    },
+    "rclone": {
+      "env_present": {
+        "RCLONE_CONFIG": false
+      },
+      "config_file_present": {
+        "~/.config/rclone/rclone.conf": false
+      }
+    },
+    "aliyun_oss": {
+      "env_present": {
+        "OSS_ACCESS_KEY_ID": false,
+        "OSS_ACCESS_KEY_SECRET": false,
+        "ALIBABA_CLOUD_ACCESS_KEY_ID": false
+      },
+      "config_file_present": {
+        "~/.ossutilconfig": false,
+        "~/.ossutilconfig.aliyuncs": false
+      }
+    },
+    "aws_s3": {
+      "env_present": {
+        "AWS_ACCESS_KEY_ID": false,
+        "AWS_SECRET_ACCESS_KEY": false,
+        "AWS_PROFILE": false
+      },
+      "config_file_present": {
+        "~/.aws/credentials": false,
+        "~/.aws/config": false
+      }
+    },
+    "google_cloud": {
+      "env_present": {
+        "GOOGLE_APPLICATION_CREDENTIALS": false,
+        "CLOUDSDK_CONFIG": false
+      },
+      "config_file_present": {
+        "~/.boto": false,
+        "~/.config/gcloud/application_default_credentials.json": false
+      }
+    },
+    "azure_blob": {
+      "env_present": {
+        "AZURE_STORAGE_CONNECTION_STRING": false,
+        "AZCOPY_AUTO_LOGIN_TYPE": false
+      },
+      "config_file_present": {
+        "~/.azure": false
+      }
+    }
+  },
+  "channels": {
+    "huggingface_hub": {
+      "tool_available": false,
+      "credential_hint_present": false,
+      "selected": false,
+      "blocking": "需要用户确认 Hugging Face 仓库、可见性、许可和 token 后才能上传。"
+    },
+    "github_release_or_lfs": {
+      "tool_available": true,
+      "credential_hint_present": false,
+      "selected": false,
+      "blocking": "需要用户确认 GitHub 资产大小限制、仓库策略和 token 后才能上传。"
+    },
+    "rclone_remote": {
+      "tool_available": false,
+      "credential_hint_present": false,
+      "selected": false,
+      "blocking": "需要用户指定 rclone remote 和可公开/评测端可访问路径。"
+    },
+    "object_storage": {
+      "tool_available": false,
+      "credential_hint_present": false,
+      "selected": false,
+      "blocking": "需要用户指定对象存储 bucket/path、访问权限和凭据。"
+    },
+    "manual_download": {
+      "tool_available": true,
+      "credential_hint_present": false,
+      "selected": false,
+      "blocking": "需要用户给出可由 RoboChallenge 评测端访问的下载 URL。"
+    }
+  },
+  "blocking": [
+    "需要用户选择上传通道和存储位置。",
+    "需要用户授权相应存储凭据；本审计只检查是否存在凭据迹象，不读取明文。",
+    "需要生成真实 checkpoint link 后回填 RoboChallenge 网站。",
+    "真实提交仍需要 ROBOCHALLENGE_USER_TOKEN 和 ROBOCHALLENGE_SUBMISSION_ID。"
+  ]
+}

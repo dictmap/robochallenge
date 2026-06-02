@@ -628,3 +628,31 @@
 
 - P0：运行 notebook preflight、secret scan 和 diff check 后提交推送。
 - P1：用户授权存储位置后，按报告命令打包、上传并回填 checkpoint link。
+
+## 2026-06-02 第二十二轮：checkpoint 上传通道审计
+
+### 已完成
+
+- 新增 `scripts/audit_checkpoint_upload_channels.py`，审计当前 Linux 机器是否已有可用上传工具和凭据迹象。
+- 审计范围包括 `hf` / `huggingface-cli`、`gh`、`git-lfs`、`rclone`、`ossutil`、`aws`、`gsutil`、`gcloud`、`azcopy` 和 `curl`。
+- 只检查命令是否存在、版本信息、环境变量是否存在、配置文件是否存在；不读取明文 token，不调用上传接口。
+- 检查 `runs/openpi_rtc_lora_materialized_policy_checkpoint.tar` 是否尚未生成，并确认该 tar 路径会被 `.gitignore` 排除。
+- 已将上传通道审计纳入 `scripts/validate_repro_workspace.py`。
+
+### 验证结果
+
+- 上传通道审计：`passed=true`，`uploads_performed=false`，`plaintext_credentials_read=false`。
+- 本机可用上传相关工具：`git-lfs` 和 `curl`。
+- 未发现 Hugging Face、GitHub CLI、rclone、OSS、AWS、GCS、Azure 的环境变量或配置文件凭据迹象。
+- `runs/openpi_rtc_lora_materialized_policy_checkpoint.tar` 尚未生成；该 tar 路径会被 `.gitignore` 排除。
+- 本审计不会上传 checkpoint，不会生成 12GB+ tar，不会伪造 checkpoint link。
+
+### 当前边界
+
+- 本地 checkpoint 已具备打包前置条件，但上传通道仍必须由用户选择并授权。
+- 真实提交仍需要 `ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID` 和真实 checkpoint link。
+
+### 下一步
+
+- P0：运行 workspace validator、notebook preflight、secret scan 和 diff check 后提交推送。
+- P1：用户确认上传通道后，按对应工具执行打包/上传，并把真实 checkpoint link 回填到 RoboChallenge。

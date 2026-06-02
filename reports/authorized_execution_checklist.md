@@ -72,9 +72,9 @@
 
 ## 本地证据
 
-- `preflight_bundle_passed`：`False`。
+- `preflight_bundle_passed`：`True`。
 - `preflight_go_no_go_blocked`：`True`。
-- `blockers_summary_passed`：`False`。
+- `blockers_summary_passed`：`True`。
 - `blockers_summary_go_no_go_blocked`：`True`。
 - `readiness_gate_passed`：`True`。
 - `readiness_currently_false`：`True`。

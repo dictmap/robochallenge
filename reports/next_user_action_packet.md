@@ -71,6 +71,11 @@
 - 缺少 ROBOCHALLENGE_SUBMISSION_ID。
 - 缺少真实可访问 checkpoint link；可使用 ROBOCHALLENGE_CHECKPOINT_LINK 或 ROBOCHALLENGE_LORA_CHECKPOINT_LINK 记录。
 - 尚未执行 checkpoint 上传，本地 tar 文件也未生成。
+- SUBMISSION_TARGET_CONFIRMATION
+- ROBOCHALLENGE_USER_TOKEN
+- ROBOCHALLENGE_SUBMISSION_ID
+- ROBOCHALLENGE_SUBMISSION_VARIANT=baseline
+- ROBOCHALLENGE_REAL_RUN_CONFIRM
 - 缺少 checkpoint link；请设置 ROBOCHALLENGE_CHECKPOINT_LINK 或 ROBOCHALLENGE_LORA_CHECKPOINT_LINK。
 - 缺少真实 checkpoint link；当前只能审计下载校验协议，不能联网验证。
 - 未请求 --verify-download；本轮不联网、不下载、不接触 checkpoint link host。
@@ -78,11 +83,6 @@
 - 需要用户提供真实 ROBOCHALLENGE_SUBMISSION_ID。
 - 需要确认本次要提交的是 Table30v2 ALOHA 还是原始 Table30；当前可运行链路是 Table30v2 ALOHA。
 - 若要提交 LoRA 版本，还需要把本地 12GB+ checkpoint 放到网站可访问的 checkpoint link。
-- SUBMISSION_TARGET_CONFIRMATION
-- ROBOCHALLENGE_USER_TOKEN
-- ROBOCHALLENGE_SUBMISSION_ID
-- ROBOCHALLENGE_SUBMISSION_VARIANT=baseline
-- ROBOCHALLENGE_REAL_RUN_CONFIRM
 
 ## 只读边界
 

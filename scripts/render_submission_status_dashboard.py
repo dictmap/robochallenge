@@ -31,6 +31,7 @@ SOURCE_FILES = {
     "web_form_field_packet": RUNS_DIR / "web_form_field_packet.json",
     "submission_variant_route_packet": RUNS_DIR / "submission_variant_route_packet.json",
     "baseline_submission_quickstart": RUNS_DIR / "baseline_submission_quickstart.json",
+    "baseline_dry_run_gate": RUNS_DIR / "baseline_dry_run_gate.json",
     "route_aware_submission_blockers": RUNS_DIR / "route_aware_submission_blockers.json",
     "jupyter_input": RUNS_DIR / "jupyter_input_template_audit.json",
     "jupyter_authorized": RUNS_DIR / "jupyter_authorized_preflight_template_audit.json",
@@ -91,6 +92,7 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
     web_form_packet = data["web_form_field_packet"]
     route_packet = data["submission_variant_route_packet"]
     baseline_quickstart = data["baseline_submission_quickstart"]
+    baseline_dry_run_gate = data["baseline_dry_run_gate"]
     route_aware_blockers = data["route_aware_submission_blockers"]
     jupyter_input = data["jupyter_input"]
     jupyter_authorized = data["jupyter_authorized"]
@@ -147,6 +149,13 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
         and baseline_quickstart.get("recommended_route") == "baseline_official_aloha"
         and baseline_quickstart.get("requires_checkpoint_upload") is False
         and baseline_quickstart.get("requires_checkpoint_link") is False
+    )
+    baseline_dry_run_gate_ready = bool(
+        baseline_dry_run_gate.get("passed")
+        and baseline_dry_run_gate.get("recommended_route") == "baseline_official_aloha"
+        and baseline_dry_run_gate.get("requires_checkpoint_upload") is False
+        and baseline_dry_run_gate.get("requires_checkpoint_link") is False
+        and baseline_dry_run_gate.get("stops_before_real_runner_without_confirmation") is True
     )
     route_aware_blockers_ready = bool(
         route_aware_blockers.get("passed")
@@ -295,6 +304,13 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
             "reports/baseline_submission_quickstart.md",
         ),
         card(
+            "Baseline dry-run gate",
+            "done" if baseline_dry_run_gate_ready else "watch",
+            "先 dry-run",
+            "拿到 token/submission id 后先跑授权前只读预检，再跑 baseline wrapper dry-run gate；无强确认时停在真实 runner 前。",
+            "reports/baseline_dry_run_gate.md",
+        ),
+        card(
             "路线感知阻塞",
             "done" if route_aware_blockers_ready else "watch",
             "baseline 不等 link",
@@ -335,6 +351,7 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
     web_form_packet = data["web_form_field_packet"]
     route_packet = data["submission_variant_route_packet"]
     baseline_quickstart = data["baseline_submission_quickstart"]
+    baseline_dry_run_gate = data["baseline_dry_run_gate"]
     route_aware_blockers = data["route_aware_submission_blockers"]
     jupyter_input = data["jupyter_input"]
     jupyter_authorized = data["jupyter_authorized"]
@@ -386,6 +403,14 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
         "baseline_submission_quickstart_passed": baseline_quickstart.get("passed") is True,
         "baseline_submission_quickstart_no_upload": baseline_quickstart.get("requires_checkpoint_upload") is False,
         "baseline_submission_quickstart_no_link": baseline_quickstart.get("requires_checkpoint_link") is False,
+        "baseline_dry_run_gate_passed": baseline_dry_run_gate.get("passed") is True,
+        "baseline_dry_run_gate_no_upload": baseline_dry_run_gate.get("requires_checkpoint_upload") is False,
+        "baseline_dry_run_gate_no_link": baseline_dry_run_gate.get("requires_checkpoint_link") is False,
+        "baseline_dry_run_gate_stops_before_real_runner": baseline_dry_run_gate.get(
+            "stops_before_real_runner_without_confirmation"
+        )
+        is True,
+        "baseline_dry_run_gate_command": baseline_dry_run_gate.get("dry_run_gate_command"),
         "route_aware_submission_blockers_passed": route_aware_blockers.get("passed") is True,
         "route_aware_recommended_route": route_aware_blockers.get("recommended_route"),
         "route_aware_baseline_no_upload": route_aware_blockers.get("baseline_requires_checkpoint_upload") is False,

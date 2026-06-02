@@ -12,6 +12,9 @@
 - 推荐提交路线：`baseline_official_aloha`。
 - baseline 是否需要 checkpoint link：`False`。
 - baseline 是否需要 checkpoint upload：`False`。
+- baseline dry-run gate：`True`。
+- baseline dry-run 命令：`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_ready_real_submission_template.sh`。
+- dry-run 是否停在真实 runner 前：`True`。
 - LoRA/web 是否需要 checkpoint link：`True`。
 - LoRA/web 是否需要 checkpoint upload：`True`。
 - 下载已验证：`False`。
@@ -45,6 +48,7 @@
 - `next_user_action_packet`：returncode=`0`，passed=`True`。
 - `web_form_field_packet`：returncode=`0`，passed=`True`。
 - `route_aware_submission_blockers`：returncode=`0`，passed=`True`。
+- `baseline_dry_run_gate`：returncode=`0`，passed=`True`。
 - `submission_handoff_docs`：returncode=`0`，passed=`True`。
 - `submission_artifact_manifest`：returncode=`0`，passed=`True`。
 

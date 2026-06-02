@@ -1685,3 +1685,32 @@
 
 - P0：同步 `work.md` 后刷新 manifest/dashboard/总验证，提交并推送本轮授权执行清单 baseline 主路径化。
 - P1：下一轮继续检查真实 token 到位后的 dry-run gate 命令，保证第一条可执行授权路径就是 baseline 基模复现。
+
+## 2026-06-03 第六十轮：baseline dry-run gate 独立证据包
+
+### 已完成
+- 新增 `scripts/render_baseline_dry_run_gate.py`，把用户拿到 `ROBOCHALLENGE_USER_TOKEN` 和 `ROBOCHALLENGE_SUBMISSION_ID` 后的 baseline dry-run gate 单独固化为机器可读证据包。
+- 新增 `runs/baseline_dry_run_gate.json` 和中文报告 `reports/baseline_dry_run_gate.md`。
+- 明确 baseline 官方 ALOHA 路线不需要 checkpoint link、checkpoint upload 或 checkpoint 归档授权；LoRA/web checkpoint 路线仍单独保留上传和真实 link 回填要求。
+- 明确授权后两条安全入口：先跑 `ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_authorized_preflight_template.sh`，再跑 `ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_ready_real_submission_template.sh` 作为 dry-run gate。
+- dry-run gate 证据来自 `ready_real_runner_template_audit` 的 synthetic no-confirm smoke：`variant=baseline`、`dry_run_called=true`、`missing_confirmation=true`、`stops_before_real_runner=true`、`real_runner_started=false`、`printed_protected_values=false`。
+- 更新 `scripts/audit_submission_preflight_bundle.py`、`scripts/audit_submission_artifact_manifest.py`、`scripts/render_submission_status_dashboard.py` 和 `scripts/validate_repro_workspace.py`，把 dry-run gate 纳入 preflight、manifest、GUI 和总验证。
+
+### 验证结果
+
+- Linux 端 `python3 -m py_compile` 已通过，覆盖新增脚本和所有改动脚本。
+- Linux 端 `python3 scripts/render_baseline_dry_run_gate.py` 已通过：`passed=true`，`recommended_route=baseline_official_aloha`，`requires_checkpoint_link=false`，`requires_checkpoint_upload=false`，`stops_before_real_runner_without_confirmation=true`。
+- Linux 端完整 no-contact 链已通过：明文凭据扫描、preflight bundle、blockers summary、artifact manifest、GUI dashboard、总体验证和 `git diff --check` 均通过。
+- `runs/submission_preflight_bundle.json` 现在包含 `baseline_dry_run_gate_passed=true`、`baseline_dry_run_gate_command=ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_ready_real_submission_template.sh`、`baseline_dry_run_gate_stops_before_real_runner=true`。
+- GUI dashboard 升级为 `source_count=21`、`card_count=21`、`done_count=16`、`blocked_count=4`，新增 “Baseline dry-run gate” 卡片。
+- 本轮没有读取真实 token、submission id 或 checkpoint link，没有连接 RoboChallenge 平台，没有上传 checkpoint，没有生成 checkpoint tar，也没有启动真实 runner。
+
+### 当前边界
+
+- baseline 官方路线仍只等待：提交对象确认、`ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline`、真实 runner 强确认。
+- LoRA/web checkpoint 路线仍单独等待归档/上传授权和真实 checkpoint link。
+
+### 下一步
+
+- P0：提交并推送本轮 baseline dry-run gate 证据包、GUI 卡片、manifest 和验证链更新。
+- P1：用户拿到 token/submission id 后，先按 `reports/baseline_dry_run_gate.md` 跑 baseline 授权前只读预检和 dry-run gate，再决定是否进入真实 runner 强确认。

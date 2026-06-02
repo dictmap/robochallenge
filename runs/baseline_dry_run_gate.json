@@ -1,0 +1,74 @@
+{
+  "kind": "baseline_dry_run_gate",
+  "passed": true,
+  "recommended_route": "baseline_official_aloha",
+  "requires_checkpoint_upload": false,
+  "requires_checkpoint_link": false,
+  "authorized_preflight_command": "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_authorized_preflight_template.sh",
+  "dry_run_gate_command": "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_ready_real_submission_template.sh",
+  "real_runner_command": "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION bash submission/run_ready_real_submission_template.sh",
+  "first_real_runner_wrapper_command": "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_ready_real_submission_template.sh",
+  "stops_before_real_runner_without_confirmation": true,
+  "baseline_required_ids": [
+    "ROBOCHALLENGE_REAL_RUN_CONFIRM",
+    "ROBOCHALLENGE_SUBMISSION_ID",
+    "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline",
+    "ROBOCHALLENGE_USER_TOKEN",
+    "SUBMISSION_TARGET_CONFIRMATION"
+  ],
+  "lora_only_ids": [
+    "CHECKPOINT_ARCHIVE_AUTHORIZATION",
+    "ROBOCHALLENGE_CHECKPOINT_LINK"
+  ],
+  "evidence": {
+    "route_packet_passed": true,
+    "recommended_route_baseline": true,
+    "quickstart_passed": true,
+    "quickstart_no_checkpoint_upload": true,
+    "quickstart_no_checkpoint_link": true,
+    "authorized_preflight_command_exact": true,
+    "dry_run_gate_command_exact": true,
+    "real_runner_command_exact": true,
+    "ready_runner_template_passed": true,
+    "ready_runner_default_baseline": true,
+    "synthetic_dry_run_called": true,
+    "synthetic_variant_baseline": true,
+    "synthetic_missing_confirmation": true,
+    "synthetic_stops_before_real_runner": true,
+    "synthetic_real_runner_not_started": true,
+    "synthetic_no_protected_values_printed": true,
+    "authorized_execution_passed": true,
+    "authorized_execution_baseline_required_ids": true,
+    "authorized_execution_baseline_no_lora_ids": true,
+    "action_packet_passed": true,
+    "action_packet_baseline_required_ids": true,
+    "action_packet_baseline_no_lora_ids": true,
+    "route_aware_passed": true,
+    "route_aware_baseline_no_checkpoint_upload": true,
+    "route_aware_baseline_no_checkpoint_link": true,
+    "route_aware_baseline_required_ids": true,
+    "route_aware_baseline_no_lora_ids": true,
+    "route_aware_lora_keeps_link_branch": true,
+    "secret_scan_clean": true,
+    "previous_preflight_passed_or_absent": true
+  },
+  "leak_flags": {
+    "credentials_printed": false,
+    "link_values_printed": false,
+    "secret_values_printed": false
+  },
+  "contact_flags": {
+    "platform_contacted": false,
+    "uploads_performed": false,
+    "download_host_contacted": false
+  },
+  "platform_contacted": false,
+  "uploads_performed": false,
+  "credentials_read": false,
+  "credentials_printed": false,
+  "link_values_printed": false,
+  "secret_values_printed": false,
+  "blocking": [
+    "baseline dry-run gate 已固化；拿到 token/submission id 后先跑只读预检，再跑 dry-run gate，缺少真实确认短语时不会启动 runner。"
+  ]
+}

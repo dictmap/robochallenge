@@ -214,9 +214,9 @@
     "未设置 ROBOCHALLENGE_REAL_RUN_CONFIRM 但试图启动真实 runner。"
   ],
   "evidence": {
-    "preflight_bundle_passed": false,
+    "preflight_bundle_passed": true,
     "preflight_go_no_go_blocked": true,
-    "blockers_summary_passed": false,
+    "blockers_summary_passed": true,
     "blockers_summary_go_no_go_blocked": true,
     "readiness_gate_passed": true,
     "readiness_currently_false": true,

@@ -36,6 +36,7 @@ SUBCOMMANDS = [
     ("next_user_action_packet", "scripts/render_next_user_action_packet.py"),
     ("web_form_field_packet", "scripts/render_web_form_field_packet.py"),
     ("route_aware_submission_blockers", "scripts/render_route_aware_submission_blockers.py"),
+    ("baseline_dry_run_gate", "scripts/render_baseline_dry_run_gate.py"),
     ("submission_handoff_docs", "scripts/audit_submission_handoff_docs.py"),
     ("submission_artifact_manifest", "scripts/audit_submission_artifact_manifest.py"),
 ]
@@ -98,6 +99,7 @@ def build_status() -> dict[str, Any]:
     web_form_packet = read_json(RUNS_DIR / "web_form_field_packet.json")
     route_packet = read_json(RUNS_DIR / "submission_variant_route_packet.json")
     baseline_quickstart = read_json(RUNS_DIR / "baseline_submission_quickstart.json")
+    baseline_dry_run_gate = read_json(RUNS_DIR / "baseline_dry_run_gate.json")
     route_aware_blockers = read_json(RUNS_DIR / "route_aware_submission_blockers.json")
 
     leak_flags = {
@@ -120,6 +122,7 @@ def build_status() -> dict[str, Any]:
                 web_form_packet,
                 route_packet,
                 baseline_quickstart,
+                baseline_dry_run_gate,
                 route_aware_blockers,
             ]
         ),
@@ -136,6 +139,7 @@ def build_status() -> dict[str, Any]:
         or bool(web_form_packet.get("link_values_printed"))
         or bool(route_packet.get("link_values_printed"))
         or bool(baseline_quickstart.get("link_values_printed"))
+        or bool(baseline_dry_run_gate.get("link_values_printed"))
         or bool(route_aware_blockers.get("link_values_printed")),
         "secret_values_printed": bool(secret_scan.get("secret_values_printed"))
         or bool(artifact_manifest.get("secret_values_printed"))
@@ -149,6 +153,7 @@ def build_status() -> dict[str, Any]:
         or bool(web_form_packet.get("secret_values_printed"))
         or bool(route_packet.get("secret_values_printed"))
         or bool(baseline_quickstart.get("secret_values_printed"))
+        or bool(baseline_dry_run_gate.get("secret_values_printed"))
         or bool(route_aware_blockers.get("secret_values_printed")),
     }
     contact_flags = {
@@ -171,6 +176,7 @@ def build_status() -> dict[str, Any]:
                 web_form_packet,
                 route_packet,
                 baseline_quickstart,
+                baseline_dry_run_gate,
                 route_aware_blockers,
             ]
         ),
@@ -193,6 +199,7 @@ def build_status() -> dict[str, Any]:
                 web_form_packet,
                 route_packet,
                 baseline_quickstart,
+                baseline_dry_run_gate,
                 route_aware_blockers,
             ]
             for key in ["uploads_performed", "upload_performed"]
@@ -228,6 +235,11 @@ def build_status() -> dict[str, Any]:
         "recommended_route": route_aware_blockers.get("recommended_route"),
         "baseline_requires_checkpoint_link": route_aware_blockers.get("baseline_requires_checkpoint_link"),
         "baseline_requires_checkpoint_upload": route_aware_blockers.get("baseline_requires_checkpoint_upload"),
+        "baseline_dry_run_gate_passed": baseline_dry_run_gate.get("passed") is True,
+        "baseline_dry_run_gate_command": baseline_dry_run_gate.get("dry_run_gate_command"),
+        "baseline_dry_run_gate_stops_before_real_runner": baseline_dry_run_gate.get(
+            "stops_before_real_runner_without_confirmation"
+        ),
         "lora_web_requires_checkpoint_link": route_aware_blockers.get("lora_web_requires_checkpoint_link"),
         "lora_web_requires_checkpoint_upload": route_aware_blockers.get("lora_web_requires_checkpoint_upload"),
         "baseline_current_blocking": route_aware_blockers.get("baseline_current_blocking", []),
@@ -258,6 +270,9 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         f"- 推荐提交路线：`{status['recommended_route']}`。",
         f"- baseline 是否需要 checkpoint link：`{status['baseline_requires_checkpoint_link']}`。",
         f"- baseline 是否需要 checkpoint upload：`{status['baseline_requires_checkpoint_upload']}`。",
+        f"- baseline dry-run gate：`{status['baseline_dry_run_gate_passed']}`。",
+        f"- baseline dry-run 命令：`{status['baseline_dry_run_gate_command']}`。",
+        f"- dry-run 是否停在真实 runner 前：`{status['baseline_dry_run_gate_stops_before_real_runner']}`。",
         f"- LoRA/web 是否需要 checkpoint link：`{status['lora_web_requires_checkpoint_link']}`。",
         f"- LoRA/web 是否需要 checkpoint upload：`{status['lora_web_requires_checkpoint_upload']}`。",
         f"- 下载已验证：`{status['download_verified']}`。",

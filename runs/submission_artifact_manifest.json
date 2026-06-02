@@ -7,7 +7,7 @@
   "credentials_printed": false,
   "link_values_printed": false,
   "secret_values_printed": false,
-  "artifact_count": 51,
+  "artifact_count": 53,
   "artifacts": [
     {
       "path": "README.md",
@@ -20,15 +20,15 @@
       "path": "work.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 112024,
-      "sha256": "f4fae00fd103c921a121c1f31f27778a033f6086538d5af321d062d4d46a92a4"
+      "size_bytes": 114338,
+      "sha256": "0200e586ce26e8220bfbb9215df95cf248f78bb80802af7295f97505d9a02741"
     },
     {
       "path": "notebooks/robochallenge_pi05_submit_cn.ipynb",
       "exists": true,
       "tracked": true,
-      "size_bytes": 91739,
-      "sha256": "816950bc75928dacf61cc252189a4b88bef81966239f85dd8224c67b0637216b"
+      "size_bytes": 93470,
+      "sha256": "e24bd0bab63d5b2092caf81fc39923fc991296dedff3e614ab38fc7f48a0e240"
     },
     {
       "path": "submission/README.md",
@@ -55,8 +55,8 @@
       "path": "submission/robochallenge_env_template.sh",
       "exists": true,
       "tracked": true,
-      "size_bytes": 838,
-      "sha256": "612cbff35b9376312619409a560641bb803f8e140aa05a34f356da1207c93144"
+      "size_bytes": 1001,
+      "sha256": "a8c03b923f80fb6e0dfb51120cd8cf2231c3b94e22e968b0670b3042b2f89e53"
     },
     {
       "path": "submission/submission_manifest_template.json",
@@ -90,8 +90,8 @@
       "path": "submission/run_ready_real_submission_template.sh",
       "exists": true,
       "tracked": true,
-      "size_bytes": 2933,
-      "sha256": "43ee6d7aabda09238eb423664d520393eae31a49b1ac10e6750ee5f196b81773"
+      "size_bytes": 2939,
+      "sha256": "6b7cc55154166da1a7e44bf909358216f496d0df62d96f4feed73aa7d5a05baa"
     },
     {
       "path": "submission/run_authorized_checkpoint_archive_template.sh",
@@ -216,8 +216,8 @@
       "path": "reports/submission_env_template_audit.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 1006,
-      "sha256": "aff3ab4d14b54dd1a593360171a5c2ab531fca797dfeb9a2fd91a5ab4f7ff1c0"
+      "size_bytes": 1100,
+      "sha256": "a668eda776f2782e8fced7348adc8d43293126e0789fff64f1c6a745624a096c"
     },
     {
       "path": "reports/notebook_structure_audit.md",
@@ -230,8 +230,8 @@
       "path": "reports/jupyter_input_template_audit.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 1869,
-      "sha256": "c3776d9d83d0bb234f03c4664ff5b53d8087f1c8a56bdfa4cb5af982cc1b6e3e"
+      "size_bytes": 2322,
+      "sha256": "0233412a00de3a0160e70faa62bfcebf1c6bb09cca1d9213ba175aaf6ddfb433"
     },
     {
       "path": "reports/jupyter_authorized_preflight_template_audit.md",
@@ -251,8 +251,8 @@
       "path": "reports/ready_real_runner_template_audit.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 1514,
-      "sha256": "7a91e1199e2ee25d3e5fe5366331f5d57e479551fcf8854eb83b2cdb83759e61"
+      "size_bytes": 1633,
+      "sha256": "4f7358ce93690dfffee7b00d8a3858fecab511d2f31ca56ef3706a578141989f"
     },
     {
       "path": "reports/authorized_checkpoint_archive_template_audit.md",
@@ -285,9 +285,16 @@
     {
       "path": "reports/submission_variant_route_packet.md",
       "exists": true,
-      "tracked": false,
+      "tracked": true,
       "size_bytes": 3262,
       "sha256": "9615b04f4dc3a3946369ee923e6fde50e7616bb1af954fc06155ddc73bf4c3ea"
+    },
+    {
+      "path": "reports/baseline_submission_quickstart.md",
+      "exists": true,
+      "tracked": false,
+      "size_bytes": 2755,
+      "sha256": "370c7ccde88a66311e864349ed648756db11cb52c87336aa5b4b313c53af3671"
     },
     {
       "path": "reports/submission_handoff_docs_audit.md",
@@ -307,22 +314,22 @@
       "path": "reports/submission_preflight_bundle.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 2353,
-      "sha256": "7153baf81a175cd3864e050bfbceb39c63a72fb5b27fd0ba00cd98b8ea1f3b32"
+      "size_bytes": 2424,
+      "sha256": "8df45b270c303f780df20632086a933be5317c4a7ea644cad49d5b35069987ef"
     },
     {
       "path": "reports/plaintext_secret_scan.md",
       "exists": true,
       "tracked": true,
       "size_bytes": 610,
-      "sha256": "c05c308b670415f5383cf3f7c625f2fc3273986e17b115d4c1557c31b3fa9262"
+      "sha256": "9fb204ad7a50ea65d8b1dab5481abcca61ba46c3a92aff9fbfee1393ed0065e6"
     },
     {
       "path": "reports/submission_status_dashboard.html",
       "exists": true,
       "tracked": true,
-      "size_bytes": 12448,
-      "sha256": "1f0f8842aa3456ad53cffc489b2769917312b915e1623be458c2cdd4efa1785c"
+      "size_bytes": 13434,
+      "sha256": "1a89217b000c8f200581d6b453b60ed95fe13fbb3383dff0452a962ce7bc93ea"
     },
     {
       "path": "scripts/render_next_user_action_packet.py",
@@ -341,16 +348,23 @@
     {
       "path": "scripts/render_submission_variant_route_packet.py",
       "exists": true,
-      "tracked": false,
+      "tracked": true,
       "size_bytes": 14665,
       "sha256": "8c09f4814254926d9b3e2eb46463f70896d98bebedaf56b5a7659dd1c128f699"
+    },
+    {
+      "path": "scripts/render_baseline_submission_quickstart.py",
+      "exists": true,
+      "tracked": false,
+      "size_bytes": 9973,
+      "sha256": "a6dd12fde694bb1d688bef942533a6d08a781112c19c59afe2d851a00600c634"
     },
     {
       "path": "scripts/audit_jupyter_input_template.py",
       "exists": true,
       "tracked": true,
-      "size_bytes": 10254,
-      "sha256": "c7994af00b5271ef4b4b4bb3428670aa1aa6d2b9628125dc669265fc36e16ff0"
+      "size_bytes": 11349,
+      "sha256": "a5ee03cc0b4712026962bfb72d68776982d795d23d3d1568ed732d365e34a923"
     },
     {
       "path": "scripts/audit_jupyter_authorized_preflight_template.py",
@@ -423,6 +437,9 @@
     "submission_variant_route_packet_passed": true,
     "submission_variant_route_packet_baseline_default": true,
     "submission_variant_route_packet_has_two_routes": true,
+    "baseline_submission_quickstart_passed": true,
+    "baseline_submission_quickstart_no_upload": true,
+    "baseline_submission_quickstart_no_link": true,
     "readiness_currently_blocked": true,
     "env_template_passed": true,
     "secret_scan_passed": true,

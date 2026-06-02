@@ -3,23 +3,25 @@ set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 ENV_FILE="${ROBOCHALLENGE_ENV_FILE:-$REPO_ROOT/submission/robochallenge_env.local.sh}"
-VARIANT="${ROBOCHALLENGE_SUBMISSION_VARIANT:-lora}"
-VERIFY_DOWNLOAD="${ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD:-0}"
-CONFIRM_VALUE="${ROBOCHALLENGE_REAL_RUN_CONFIRM:-}"
 CONFIRM_PHRASE="RUN_REAL_ROBOCHALLENGE_SUBMISSION"
 
 cd "$REPO_ROOT"
 
 echo "[ready-real-runner] repo=$REPO_ROOT"
-echo "[ready-real-runner] variant=$VARIANT"
 echo "[ready-real-runner] env_file_present=$([[ -f "$ENV_FILE" ]] && echo true || echo false)"
-echo "[ready-real-runner] verify_download=$VERIFY_DOWNLOAD"
-echo "[ready-real-runner] confirmation_present=$([[ -n "$CONFIRM_VALUE" ]] && echo true || echo false)"
 
 if [[ -f "$ENV_FILE" ]]; then
   # shellcheck source=/dev/null
   source "$ENV_FILE"
 fi
+
+VARIANT="${ROBOCHALLENGE_SUBMISSION_VARIANT:-baseline}"
+VERIFY_DOWNLOAD="${ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD:-0}"
+CONFIRM_VALUE="${ROBOCHALLENGE_REAL_RUN_CONFIRM:-}"
+
+echo "[ready-real-runner] variant=$VARIANT"
+echo "[ready-real-runner] verify_download=$VERIFY_DOWNLOAD"
+echo "[ready-real-runner] confirmation_present=$([[ -n "$CONFIRM_VALUE" ]] && echo true || echo false)"
 
 python3 scripts/audit_checkpoint_link_intake.py --scenario-only
 if [[ "$VERIFY_DOWNLOAD" == "1" ]]; then

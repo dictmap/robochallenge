@@ -2,9 +2,9 @@
   "kind": "submission_status_dashboard",
   "passed": true,
   "html_path": "reports/submission_status_dashboard.html",
-  "source_count": 18,
-  "card_count": 18,
-  "done_count": 13,
+  "source_count": 19,
+  "card_count": 19,
+  "done_count": 14,
   "blocked_count": 4,
   "watch_count": 1,
   "ready_for_real_submission": false,
@@ -30,6 +30,9 @@
   "submission_variant_route_packet_passed": true,
   "submission_variant_recommended_default": "baseline_official_aloha",
   "submission_variant_route_count": 2,
+  "baseline_submission_quickstart_passed": true,
+  "baseline_submission_quickstart_no_upload": true,
+  "baseline_submission_quickstart_no_link": true,
   "jupyter_input_template_passed": true,
   "jupyter_input_default_off": true,
   "jupyter_local_env_ignored": true,
@@ -168,6 +171,14 @@
       "value": "baseline 优先",
       "detail": "官方 ALOHA baseline 本地 runner 不需要 LoRA tar/link；LoRA 网页 checkpoint 路线仍需上传和 link。",
       "report": "reports/submission_variant_route_packet.md"
+    },
+    {
+      "title": "Baseline 最短路径",
+      "state": "done",
+      "state_label": "已完成",
+      "value": "无 link 前置",
+      "detail": "token 和 submission id 到位后先跑 baseline 授权预检；缺真实确认短语时只到 dry-run，不启动 runner。",
+      "report": "reports/baseline_submission_quickstart.md"
     },
     {
       "title": "Jupyter 安全填空",

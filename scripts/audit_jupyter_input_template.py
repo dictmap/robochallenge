@@ -25,6 +25,7 @@ LOCAL_ENV_PATH = "submission/robochallenge_env.local.sh"
 REQUIRED_KEYS = [
     "ROBOCHALLENGE_USER_TOKEN",
     "ROBOCHALLENGE_SUBMISSION_ID",
+    "ROBOCHALLENGE_SUBMISSION_VARIANT",
     "ROBOCHALLENGE_LORA_CHECKPOINT_LINK",
     "ROBOCHALLENGE_CHECKPOINT_LINK",
 ]
@@ -39,6 +40,10 @@ REQUIRED_FRAGMENTS = [
     "is_placeholder_like",
     "PLACEHOLDER_MARKERS",
     "missing_or_placeholder",
+    "normalize_submission_variant",
+    "required_for_variant",
+    'submission_variant == "lora"',
+    "ROBOCHALLENGE_CHECKPOINT_LINK [baseline 可留空]",
     "os.chmod",
     LOCAL_ENV_PATH,
     *REQUIRED_KEYS,
@@ -126,6 +131,14 @@ def build_status(notebook_path: Path) -> dict[str, Any]:
     required_fragments = {fragment: fragment in section_source for fragment in REQUIRED_FRAGMENTS}
     forbidden_fragments = {fragment: fragment in section_source for fragment in FORBIDDEN_FRAGMENTS}
     required_keys = {key: key in section_source for key in REQUIRED_KEYS}
+    variant_logic = {
+        "submission_variant_supported": "ROBOCHALLENGE_SUBMISSION_VARIANT" in section_source
+        and "normalize_submission_variant" in section_source,
+        "baseline_checkpoint_link_optional": "ROBOCHALLENGE_CHECKPOINT_LINK [baseline 可留空]" in section_source,
+        "lora_checkpoint_link_required": 'submission_variant == "lora"' in section_source
+        and "ROBOCHALLENGE_LORA_CHECKPOINT_LINK" in section_source
+        and "required_for_variant.extend" in section_source,
+    }
     code_cell_ok = bool(code_cell and code_cell.get("cell_type") == "code")
     code_cell_clean = bool(
         code_cell_ok
@@ -158,6 +171,8 @@ def build_status(notebook_path: Path) -> dict[str, Any]:
             blocking.append(f"安全填空入口包含禁止片段：`{fragment}`。")
     if not all(required_keys.values()):
         blocking.append("安全填空入口没有覆盖全部必要环境变量。")
+    if not all(variant_logic.values()):
+        blocking.append("安全填空入口没有正确区分 baseline 与 LoRA 的 checkpoint link 要求。")
     if not local_env_ignore["ignored"]:
         blocking.append(f"`{LOCAL_ENV_PATH}` 没有被 Git 忽略。")
     if secret_hits or whole_notebook_secret_hits:
@@ -173,6 +188,7 @@ def build_status(notebook_path: Path) -> dict[str, Any]:
         and all(required_fragments.values())
         and not any(forbidden_fragments.values())
         and all(required_keys.values())
+        and all(variant_logic.values())
         and local_env_ignore["ignored"]
         and not secret_hits
         and not whole_notebook_secret_hits
@@ -194,6 +210,7 @@ def build_status(notebook_path: Path) -> dict[str, Any]:
         "local_env_path": LOCAL_ENV_PATH,
         "local_env_ignored": local_env_ignore,
         "required_keys": required_keys,
+        "variant_logic": variant_logic,
         "required_fragments": required_fragments,
         "forbidden_fragments": forbidden_fragments,
         "code_cell_clean": code_cell_clean,
@@ -225,6 +242,9 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         "",
     ]
     for key, ok in status["required_keys"].items():
+        lines.append(f"- `{key}`：`{ok}`。")
+    lines.extend(["", "## Variant 逻辑", ""])
+    for key, ok in status["variant_logic"].items():
         lines.append(f"- `{key}`：`{ok}`。")
     lines.extend(["", "## 关键片段", ""])
     for fragment, ok in status["required_fragments"].items():

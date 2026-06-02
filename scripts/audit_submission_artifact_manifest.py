@@ -59,6 +59,7 @@ REQUIRED_ARTIFACTS = [
     "reports/next_user_action_packet.md",
     "reports/web_form_field_packet.md",
     "reports/submission_variant_route_packet.md",
+    "reports/baseline_submission_quickstart.md",
     "reports/submission_handoff_docs_audit.md",
     "reports/authorized_submission_sequence_audit.md",
     "reports/submission_preflight_bundle.md",
@@ -67,6 +68,7 @@ REQUIRED_ARTIFACTS = [
     "scripts/render_next_user_action_packet.py",
     "scripts/render_web_form_field_packet.py",
     "scripts/render_submission_variant_route_packet.py",
+    "scripts/render_baseline_submission_quickstart.py",
     "scripts/audit_jupyter_input_template.py",
     "scripts/audit_jupyter_authorized_preflight_template.py",
     "scripts/audit_authorized_execution_checklist.py",
@@ -172,6 +174,7 @@ def build_status() -> dict[str, Any]:
     action_packet = read_json(RUNS_DIR / "next_user_action_packet.json")
     web_form_packet = read_json(RUNS_DIR / "web_form_field_packet.json")
     route_packet = read_json(RUNS_DIR / "submission_variant_route_packet.json")
+    baseline_quickstart = read_json(RUNS_DIR / "baseline_submission_quickstart.json")
     readiness = read_json(RUNS_DIR / "real_submission_readiness.json")
     env_template = read_json(RUNS_DIR / "submission_env_template_audit.json")
     secret_scan = read_json(RUNS_DIR / "plaintext_secret_scan.json")
@@ -193,6 +196,9 @@ def build_status() -> dict[str, Any]:
         "submission_variant_route_packet_baseline_default": route_packet.get("recommended_default")
         == "baseline_official_aloha",
         "submission_variant_route_packet_has_two_routes": route_packet.get("route_count") == 2,
+        "baseline_submission_quickstart_passed": baseline_quickstart.get("passed") is True,
+        "baseline_submission_quickstart_no_upload": baseline_quickstart.get("requires_checkpoint_upload") is False,
+        "baseline_submission_quickstart_no_link": baseline_quickstart.get("requires_checkpoint_link") is False,
         "readiness_currently_blocked": readiness.get("ready_for_real_submission") is False,
         "env_template_passed": env_template.get("passed") is True,
         "secret_scan_passed": secret_scan.get("passed") is True,
@@ -213,6 +219,7 @@ def build_status() -> dict[str, Any]:
                 action_packet,
                 web_form_packet,
                 route_packet,
+                baseline_quickstart,
                 readiness,
                 env_template,
             ]
@@ -226,13 +233,15 @@ def build_status() -> dict[str, Any]:
         or bool(authorized_execution.get("link_values_printed"))
         or bool(action_packet.get("link_values_printed"))
         or bool(web_form_packet.get("link_values_printed"))
-        or bool(route_packet.get("link_values_printed")),
+        or bool(route_packet.get("link_values_printed"))
+        or bool(baseline_quickstart.get("link_values_printed")),
         "secret_values_printed": bool(secret_scan.get("secret_values_printed"))
         or bool(jupyter_input.get("secret_values_printed"))
         or bool(jupyter_authorized.get("secret_values_printed"))
         or bool(action_packet.get("secret_values_printed"))
         or bool(web_form_packet.get("secret_values_printed"))
-        or bool(route_packet.get("secret_values_printed")),
+        or bool(route_packet.get("secret_values_printed"))
+        or bool(baseline_quickstart.get("secret_values_printed")),
     }
     contact_flags = {
         "platform_contacted": any(
@@ -249,6 +258,7 @@ def build_status() -> dict[str, Any]:
                 action_packet,
                 web_form_packet,
                 route_packet,
+                baseline_quickstart,
                 readiness,
                 env_template,
                 secret_scan,
@@ -268,6 +278,7 @@ def build_status() -> dict[str, Any]:
                 action_packet,
                 web_form_packet,
                 route_packet,
+                baseline_quickstart,
                 readiness,
                 env_template,
                 secret_scan,

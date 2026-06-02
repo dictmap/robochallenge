@@ -1,0 +1,88 @@
+{
+  "kind": "baseline_submission_quickstart",
+  "passed": true,
+  "recommended_route": "baseline_official_aloha",
+  "requires_checkpoint_upload": false,
+  "requires_checkpoint_link": false,
+  "required_user_inputs": [
+    {
+      "id": "SUBMISSION_TARGET_CONFIRMATION",
+      "detail": "确认提交对象是 Table30v2 ALOHA baseline，不是原始 Table30，也不是 LoRA 网页 checkpoint 路线。"
+    },
+    {
+      "id": "ROBOCHALLENGE_USER_TOKEN",
+      "detail": "从 RoboChallenge 页面获得，只写入本地 shell 或被 Git 忽略的 local env。"
+    },
+    {
+      "id": "ROBOCHALLENGE_SUBMISSION_ID",
+      "detail": "从 RoboChallenge 提交页面获得，不能伪造。"
+    },
+    {
+      "id": "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline",
+      "detail": "当前 wrapper 已默认 baseline；显式设置可避免误走 LoRA。"
+    },
+    {
+      "id": "ROBOCHALLENGE_REAL_RUN_CONFIRM",
+      "detail": "只有用户确认启动真实 runner 后，才设置 RUN_REAL_ROBOCHALLENGE_SUBMISSION。"
+    }
+  ],
+  "commands": [
+    {
+      "step": 1,
+      "name": "写入本地 env",
+      "command": "Notebook 第 44 节：RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE=True；variant 填 baseline。",
+      "guard": "只写 submission/robochallenge_env.local.sh；不把真实值写入 Notebook 源码或 tracked 文件。"
+    },
+    {
+      "step": 2,
+      "name": "授权前只读预检",
+      "command": "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_authorized_preflight_template.sh",
+      "guard": "只读检查；ready=false 时停止。"
+    },
+    {
+      "step": 3,
+      "name": "baseline wrapper dry-run gate",
+      "command": "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_ready_real_submission_template.sh",
+      "guard": "未设置真实确认短语时，最多跑 baseline dry-run，然后停在真实 runner 前。"
+    },
+    {
+      "step": 4,
+      "name": "真实 runner 强确认",
+      "command": "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION bash submission/run_ready_real_submission_template.sh",
+      "guard": "只有用户明确授权真实提交时运行；该命令会启动 demo.py 并连接 RoboChallenge。"
+    }
+  ],
+  "evidence": {
+    "route_packet_passed": true,
+    "baseline_is_recommended_default": true,
+    "baseline_route_ready_without_credentials": true,
+    "baseline_checkpoint_ready": true,
+    "baseline_does_not_need_upload": true,
+    "baseline_does_not_need_checkpoint_link": true,
+    "ready_runner_template_passed": true,
+    "ready_runner_default_baseline": true,
+    "synthetic_baseline_no_confirm_dry_run": true,
+    "package_audit_passed": true,
+    "readiness_gate_passed": true,
+    "secret_scan_clean": true
+  },
+  "leak_flags": {
+    "credentials_printed": false,
+    "link_values_printed": false,
+    "secret_values_printed": false
+  },
+  "contact_flags": {
+    "platform_contacted": false,
+    "uploads_performed": false,
+    "download_host_contacted": false
+  },
+  "platform_contacted": false,
+  "uploads_performed": false,
+  "credentials_read": false,
+  "credentials_printed": false,
+  "link_values_printed": false,
+  "secret_values_printed": false,
+  "blocking": [
+    "baseline 最短路径已固化；真实提交仍等待用户 token、submission id 和强确认。"
+  ]
+}

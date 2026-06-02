@@ -30,6 +30,7 @@ SOURCE_FILES = {
     "next_user_action_packet": RUNS_DIR / "next_user_action_packet.json",
     "web_form_field_packet": RUNS_DIR / "web_form_field_packet.json",
     "submission_variant_route_packet": RUNS_DIR / "submission_variant_route_packet.json",
+    "baseline_submission_quickstart": RUNS_DIR / "baseline_submission_quickstart.json",
     "jupyter_input": RUNS_DIR / "jupyter_input_template_audit.json",
     "jupyter_authorized": RUNS_DIR / "jupyter_authorized_preflight_template_audit.json",
     "link_intake": RUNS_DIR / "checkpoint_link_intake.json",
@@ -88,6 +89,7 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
     action_packet = data["next_user_action_packet"]
     web_form_packet = data["web_form_field_packet"]
     route_packet = data["submission_variant_route_packet"]
+    baseline_quickstart = data["baseline_submission_quickstart"]
     jupyter_input = data["jupyter_input"]
     jupyter_authorized = data["jupyter_authorized"]
     link_intake = data["link_intake"]
@@ -131,6 +133,12 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
         route_packet.get("passed")
         and route_packet.get("recommended_default") == "baseline_official_aloha"
         and route_packet.get("route_count") == 2
+    )
+    baseline_quickstart_ready = bool(
+        baseline_quickstart.get("passed")
+        and baseline_quickstart.get("recommended_route") == "baseline_official_aloha"
+        and baseline_quickstart.get("requires_checkpoint_upload") is False
+        and baseline_quickstart.get("requires_checkpoint_link") is False
     )
     jupyter_input_ready = bool(
         jupyter_input.get("passed")
@@ -258,6 +266,13 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
             "reports/submission_variant_route_packet.md",
         ),
         card(
+            "Baseline 最短路径",
+            "done" if baseline_quickstart_ready else "watch",
+            "无 link 前置",
+            "token 和 submission id 到位后先跑 baseline 授权预检；缺真实确认短语时只到 dry-run，不启动 runner。",
+            "reports/baseline_submission_quickstart.md",
+        ),
+        card(
             "Jupyter 安全填空",
             "done" if jupyter_input_ready else "watch",
             "local env 入口",
@@ -290,6 +305,7 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
     action_packet = data["next_user_action_packet"]
     web_form_packet = data["web_form_field_packet"]
     route_packet = data["submission_variant_route_packet"]
+    baseline_quickstart = data["baseline_submission_quickstart"]
     jupyter_input = data["jupyter_input"]
     jupyter_authorized = data["jupyter_authorized"]
     sequence = data["authorized_sequence"]
@@ -332,6 +348,9 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
         "submission_variant_route_packet_passed": route_packet.get("passed") is True,
         "submission_variant_recommended_default": route_packet.get("recommended_default"),
         "submission_variant_route_count": route_packet.get("route_count"),
+        "baseline_submission_quickstart_passed": baseline_quickstart.get("passed") is True,
+        "baseline_submission_quickstart_no_upload": baseline_quickstart.get("requires_checkpoint_upload") is False,
+        "baseline_submission_quickstart_no_link": baseline_quickstart.get("requires_checkpoint_link") is False,
         "jupyter_input_template_passed": jupyter_input.get("passed") is True,
         "jupyter_input_default_off": jupyter_input.get("run_flag_default_false") is True,
         "jupyter_local_env_ignored": jupyter_input.get("local_env_ignored", {}).get("ignored") is True,

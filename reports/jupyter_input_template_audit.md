@@ -17,8 +17,15 @@
 
 - `ROBOCHALLENGE_USER_TOKEN`：`True`。
 - `ROBOCHALLENGE_SUBMISSION_ID`：`True`。
+- `ROBOCHALLENGE_SUBMISSION_VARIANT`：`True`。
 - `ROBOCHALLENGE_LORA_CHECKPOINT_LINK`：`True`。
 - `ROBOCHALLENGE_CHECKPOINT_LINK`：`True`。
+
+## Variant 逻辑
+
+- `submission_variant_supported`：`True`。
+- `baseline_checkpoint_link_optional`：`True`。
+- `lora_checkpoint_link_required`：`True`。
 
 ## 关键片段
 
@@ -32,10 +39,15 @@
 - `is_placeholder_like`：`True`。
 - `PLACEHOLDER_MARKERS`：`True`。
 - `missing_or_placeholder`：`True`。
+- `normalize_submission_variant`：`True`。
+- `required_for_variant`：`True`。
+- `submission_variant == "lora"`：`True`。
+- `ROBOCHALLENGE_CHECKPOINT_LINK [baseline 可留空]`：`True`。
 - `os.chmod`：`True`。
 - `submission/robochallenge_env.local.sh`：`True`。
 - `ROBOCHALLENGE_USER_TOKEN`：`True`。
 - `ROBOCHALLENGE_SUBMISSION_ID`：`True`。
+- `ROBOCHALLENGE_SUBMISSION_VARIANT`：`True`。
 - `ROBOCHALLENGE_LORA_CHECKPOINT_LINK`：`True`。
 - `ROBOCHALLENGE_CHECKPOINT_LINK`：`True`。
 

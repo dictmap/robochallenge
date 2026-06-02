@@ -39,6 +39,7 @@
 - `next_user_action_packet`：returncode=`0`，passed=`True`。
 - `web_form_field_packet`：returncode=`0`，passed=`True`。
 - `submission_variant_route_packet`：returncode=`0`，passed=`True`。
+- `baseline_submission_quickstart`：returncode=`0`，passed=`True`。
 - `submission_artifact_manifest`：returncode=`0`，passed=`True`。
 
 ## Blocking

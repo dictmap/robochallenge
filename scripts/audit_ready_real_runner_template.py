@@ -20,7 +20,6 @@ TEMPLATE = ROOT / "submission" / "run_ready_real_submission_template.sh"
 DEFAULT_STATUS = RUNS_DIR / "ready_real_runner_template_audit.json"
 DEFAULT_REPORT = REPORTS_DIR / "ready_real_runner_template_audit.md"
 CONFIRM_PHRASE = "RUN_REAL_ROBOCHALLENGE_SUBMISSION"
-SYNTHETIC_LINK = "https://download.shape-ok.invalid/robochallenge/openpi_lora_checkpoint.tar"
 SYNTHETIC_TOKEN = "audit-token-shape-only"
 SYNTHETIC_SUBMISSION_ID = "audit-submission-shape-only"
 
@@ -38,6 +37,7 @@ REQUIRED_FRAGMENTS = {
     "download_verify_guarded": "--verify-download",
     "runs_readiness": "python3 scripts/audit_real_submission_readiness.py",
     "reads_readiness_json": "runs/real_submission_readiness.json",
+    "default_variant_baseline": 'VARIANT="${ROBOCHALLENGE_SUBMISSION_VARIANT:-baseline}"',
     "checks_lora_ready": "local_lora_runner_ready",
     "checks_baseline_ready": "local_baseline_runner_ready",
     "lora_dry_run_first": "ROBOCHALLENGE_DRY_RUN=1 bash submission/run_table30v2_aloha_lora_demo_template.sh",
@@ -123,10 +123,15 @@ def run_template(extra_env: dict[str, str]) -> dict[str, Any]:
     stderr = result.stderr or ""
     combined = stdout + "\n" + stderr
     leaked_values = [value for value in values_to_protect if value in combined]
+    variant = ""
+    for line in combined.splitlines():
+        if line.startswith("[ready-real-runner] variant="):
+            variant = line.split("=", 1)[1].strip()
     return {
         "returncode": result.returncode,
         "stdout_tail": stdout[-3000:],
         "stderr_tail": stderr[-3000:],
+        "variant": variant,
         "printed_protected_values": bool(leaked_values),
         "leaked_value_count": len(leaked_values),
         "ready_false": "ready_for_real_submission=false" in combined,
@@ -177,17 +182,14 @@ def build_status() -> dict[str, Any]:
         {
             "ROBOCHALLENGE_ENV_FILE": str(ROOT / "submission" / "__missing_env_for_real_runner_audit__.sh"),
             "ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD": "0",
-            "ROBOCHALLENGE_SUBMISSION_VARIANT": "lora",
         }
     )
     synthetic_no_confirm = run_template(
         {
             "ROBOCHALLENGE_ENV_FILE": str(ROOT / "submission" / "__missing_env_for_real_runner_audit__.sh"),
             "ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD": "0",
-            "ROBOCHALLENGE_SUBMISSION_VARIANT": "lora",
             "ROBOCHALLENGE_USER_TOKEN": SYNTHETIC_TOKEN,
             "ROBOCHALLENGE_SUBMISSION_ID": SYNTHETIC_SUBMISSION_ID,
-            "ROBOCHALLENGE_LORA_CHECKPOINT_LINK": SYNTHETIC_LINK,
         }
     )
     restore = restore_clean_submission_state()
@@ -205,6 +207,7 @@ def build_status() -> dict[str, Any]:
     synthetic_no_confirm["passed"] = all(
         [
             synthetic_no_confirm["returncode"] != 0,
+            synthetic_no_confirm["variant"] == "baseline",
             synthetic_no_confirm["dry_run_called"],
             synthetic_no_confirm["missing_confirmation"],
             synthetic_no_confirm["stops_before_real_runner"],
@@ -236,6 +239,7 @@ def build_status() -> dict[str, Any]:
         "secret_values_printed": False,
         "template_path": "submission/run_ready_real_submission_template.sh",
         "confirmation_phrase": CONFIRM_PHRASE,
+        "default_variant": "baseline" if REQUIRED_FRAGMENTS["default_variant_baseline"] in text else "",
         "bash_n": bash_n,
         "required_fragments": required,
         "forbidden_fragments": forbidden,
@@ -259,6 +263,7 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         "",
         f"- 审计状态：`passed={status['passed']}`。",
         f"- 模板路径：`{status['template_path']}`。",
+        f"- 默认提交路线：`{status['default_variant']}`。",
         f"- 确认短语：`{status['confirmation_phrase']}`。",
         f"- bash 语法检查：`{status['bash_n']['passed']}`。",
         f"- 无凭据 smoke：`{status['no_credentials_smoke']['passed']}`。",
@@ -279,6 +284,7 @@ def write_report(status: dict[str, Any], path: Path) -> None:
     lines.append(f"- 无凭据返回码：`{status['no_credentials_smoke']['returncode']}`。")
     lines.append(f"- 无凭据是否停在真实 runner 前：`{not status['no_credentials_smoke']['real_runner_started']}`。")
     lines.append(f"- synthetic 是否先 dry-run：`{status['synthetic_no_confirm_smoke']['dry_run_called']}`。")
+    lines.append(f"- synthetic 默认路线：`{status['synthetic_no_confirm_smoke']['variant']}`。")
     lines.append(f"- synthetic 是否因缺少确认停止：`{status['synthetic_no_confirm_smoke']['missing_confirmation']}`。")
     lines.append(f"- synthetic 是否启动真实 runner：`{status['synthetic_no_confirm_smoke']['real_runner_started']}`。")
     lines.append(f"- clean state restore：`{status['clean_state_restore']['passed']}`。")

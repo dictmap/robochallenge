@@ -21,8 +21,14 @@
   "required_keys": {
     "ROBOCHALLENGE_USER_TOKEN": true,
     "ROBOCHALLENGE_SUBMISSION_ID": true,
+    "ROBOCHALLENGE_SUBMISSION_VARIANT": true,
     "ROBOCHALLENGE_LORA_CHECKPOINT_LINK": true,
     "ROBOCHALLENGE_CHECKPOINT_LINK": true
+  },
+  "variant_logic": {
+    "submission_variant_supported": true,
+    "baseline_checkpoint_link_optional": true,
+    "lora_checkpoint_link_required": true
   },
   "required_fragments": {
     "第 44 节：安全填空本地 env 入口": true,
@@ -35,10 +41,15 @@
     "is_placeholder_like": true,
     "PLACEHOLDER_MARKERS": true,
     "missing_or_placeholder": true,
+    "normalize_submission_variant": true,
+    "required_for_variant": true,
+    "submission_variant == \"lora\"": true,
+    "ROBOCHALLENGE_CHECKPOINT_LINK [baseline 可留空]": true,
     "os.chmod": true,
     "submission/robochallenge_env.local.sh": true,
     "ROBOCHALLENGE_USER_TOKEN": true,
     "ROBOCHALLENGE_SUBMISSION_ID": true,
+    "ROBOCHALLENGE_SUBMISSION_VARIANT": true,
     "ROBOCHALLENGE_LORA_CHECKPOINT_LINK": true,
     "ROBOCHALLENGE_CHECKPOINT_LINK": true
   },

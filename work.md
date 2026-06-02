@@ -1513,3 +1513,32 @@
 
 - P0：同步到 Linux 端，复跑路线包、预检汇总、manifest、GUI、总体验证和 `git diff --check`，然后提交推送。
 - P1：用户拿到凭据后，默认先按 baseline 官方 ALOHA 路线跑授权预检；只有明确选择 LoRA 网页 checkpoint 路线时，再进入归档/上传/link 流程。
+
+## 2026-06-03 第五十四轮：baseline 官方路线最短提交路径
+
+### 已完成
+
+- 修正 `submission/run_ready_real_submission_template.sh`：默认 `ROBOCHALLENGE_SUBMISSION_VARIANT` 从 `lora` 改为 `baseline`。
+- 修正同一 wrapper 的读取顺序：先加载被 Git 忽略的 `submission/robochallenge_env.local.sh`，再读取 `ROBOCHALLENGE_SUBMISSION_VARIANT`、`ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD` 和 `ROBOCHALLENGE_REAL_RUN_CONFIRM`，避免 local env 中的 variant 被忽略。
+- 更新 `submission/robochallenge_env_template.sh`，加入安全默认值 `ROBOCHALLENGE_SUBMISSION_VARIANT=baseline`。
+- 更新 `scripts/audit_ready_real_runner_template.py`：现在会检查默认路线是 baseline，并用 synthetic token/submission id 验证“没有 checkpoint link 时也能进入 baseline dry-run，然后因缺少真实确认短语停在真实 runner 前”。
+- 新增 `scripts/render_baseline_submission_quickstart.py`，生成官方 ALOHA baseline 最短提交路径包。
+- 新增机器可读产物 `runs/baseline_submission_quickstart.json` 和中文报告 `reports/baseline_submission_quickstart.md`。
+- 已把 baseline 最短路径包纳入 preflight、artifact manifest、GUI dashboard 和总体验证。
+
+### 验证目标
+
+- baseline 路线必须显示 `requires_checkpoint_upload=false`、`requires_checkpoint_link=false`。
+- wrapper 默认路线必须是 `baseline`。
+- synthetic 无确认 smoke 必须显示 `variant=baseline`、`dry_run_called=true`、`missing_confirmation=true`、`real_runner_started=false`。
+- 本轮仍不读取真实 token，不连接 RoboChallenge 平台，不上传 checkpoint，不生成 checkpoint tar，不启动真实 runner。
+
+### 当前边界
+
+- baseline 官方路线离真实 runner 只剩用户侧输入和强确认：`ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、提交对象确认、`ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION`。
+- LoRA 网页 checkpoint 路线仍需要额外的归档/上传授权和真实 checkpoint link。
+
+### 下一步
+
+- P0：同步到 Linux 端并复跑完整 no-contact 审计链；通过后提交推送。
+- P1：如果用户提供 token/submission id，先用 baseline quickstart 的第 2/3 步做授权预检和 dry-run gate，不进入 LoRA 上传流程。

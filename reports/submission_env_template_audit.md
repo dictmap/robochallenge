@@ -15,6 +15,7 @@
 
 - `ROBOCHALLENGE_USER_TOKEN`：present=`True`，placeholder=`True`。
 - `ROBOCHALLENGE_SUBMISSION_ID`：present=`True`，placeholder=`True`。
+- `ROBOCHALLENGE_SUBMISSION_VARIANT`：present=`True`，placeholder=`True`。
 - `ROBOCHALLENGE_LORA_CHECKPOINT_LINK`：present=`True`，placeholder=`True`。
 - `ROBOCHALLENGE_CHECKPOINT_LINK`：present=`True`，placeholder=`True`。
 
@@ -26,4 +27,4 @@
 
 ## Blocking
 
-- 无模板侧阻塞；真实提交仍取决于用户提供凭据、submission id 和 checkpoint link。
+- 无模板侧阻塞；baseline 默认路线仍取决于用户提供凭据、submission id 和真实 runner 强确认。

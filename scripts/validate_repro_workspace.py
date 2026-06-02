@@ -62,6 +62,7 @@ REQUIRED = [
     "reports/next_user_action_packet.md",
     "reports/web_form_field_packet.md",
     "reports/submission_variant_route_packet.md",
+    "reports/baseline_submission_quickstart.md",
     "reports/submission_artifact_manifest.md",
     "reports/submission_blockers_summary.md",
     "reports/plaintext_secret_scan.md",
@@ -110,6 +111,7 @@ REQUIRED = [
     "runs/next_user_action_packet.json",
     "runs/web_form_field_packet.json",
     "runs/submission_variant_route_packet.json",
+    "runs/baseline_submission_quickstart.json",
     "runs/submission_artifact_manifest.json",
     "runs/submission_blockers_summary.json",
     "runs/plaintext_secret_scan.json",
@@ -159,6 +161,7 @@ REQUIRED = [
     "scripts/render_next_user_action_packet.py",
     "scripts/render_web_form_field_packet.py",
     "scripts/render_submission_variant_route_packet.py",
+    "scripts/render_baseline_submission_quickstart.py",
     "scripts/audit_submission_artifact_manifest.py",
     "scripts/audit_submission_blockers_summary.py",
     "scripts/audit_plaintext_secrets.py",
@@ -838,9 +841,9 @@ def main() -> int:
             "<html lang=\"zh-CN\">" in dashboard_html_text,
             "RoboChallenge pi0.5 提交状态面板" in dashboard_html_text,
             "当前阻塞" in dashboard_html_text,
-            dashboard.get("source_count") >= 18,
-            dashboard.get("card_count") >= 18,
-            dashboard.get("done_count", 0) >= 13,
+            dashboard.get("source_count") >= 19,
+            dashboard.get("card_count") >= 19,
+            dashboard.get("done_count", 0) >= 14,
             dashboard.get("blocked_count", 0) >= 4,
             dashboard.get("ready_for_real_submission") is False,
             dashboard.get("web_form_ready") is False,
@@ -865,6 +868,9 @@ def main() -> int:
             dashboard.get("submission_variant_route_packet_passed") is True,
             dashboard.get("submission_variant_recommended_default") == "baseline_official_aloha",
             dashboard.get("submission_variant_route_count") == 2,
+            dashboard.get("baseline_submission_quickstart_passed") is True,
+            dashboard.get("baseline_submission_quickstart_no_upload") is True,
+            dashboard.get("baseline_submission_quickstart_no_link") is True,
             dashboard.get("jupyter_input_template_passed") is True,
             dashboard.get("jupyter_input_default_off") is True,
             dashboard.get("jupyter_local_env_ignored") is True,
@@ -885,6 +891,7 @@ def main() -> int:
             "下一步动作包" in dashboard_titles,
             "网页表单字段" in dashboard_titles,
             "提交路线拆分" in dashboard_titles,
+            "Baseline 最短路径" in dashboard_titles,
             "Jupyter 安全填空" in dashboard_titles,
             "Jupyter 授权预检" in dashboard_titles,
             "真实提交 gate" in dashboard_titles,
@@ -1051,6 +1058,7 @@ def main() -> int:
     jupyter_required = jupyter_input.get("required_fragments", {})
     jupyter_forbidden = jupyter_input.get("forbidden_fragments", {})
     jupyter_keys = jupyter_input.get("required_keys", {})
+    jupyter_variant_logic = jupyter_input.get("variant_logic", {})
     if not all(
         [
             jupyter_input.get("kind") == "jupyter_input_template_audit",
@@ -1070,6 +1078,7 @@ def main() -> int:
             all(jupyter_required.values()),
             not any(jupyter_forbidden.values()),
             all(jupyter_keys.values()),
+            all(jupyter_variant_logic.values()),
             jupyter_input.get("code_cell_clean") is True,
             jupyter_input.get("code_cell_id") == "safe-local-env-input-code",
             jupyter_input.get("secret_pattern_hits") == [],
@@ -1157,6 +1166,7 @@ def main() -> int:
             ready_real_runner.get("secret_values_printed") is False,
             ready_real_runner.get("template_path") == "submission/run_ready_real_submission_template.sh",
             ready_real_runner.get("confirmation_phrase") == "RUN_REAL_ROBOCHALLENGE_SUBMISSION",
+            ready_real_runner.get("default_variant") == "baseline",
             ready_real_runner.get("bash_n", {}).get("passed"),
             all(ready_real_runner.get("required_fragments", {}).values()),
             not any(ready_real_runner.get("forbidden_fragments", {}).values()),
@@ -1166,6 +1176,7 @@ def main() -> int:
             not ready_real_no_credentials.get("dry_run_called"),
             not ready_real_no_credentials.get("real_runner_started"),
             ready_real_no_confirm.get("passed"),
+            ready_real_no_confirm.get("variant") == "baseline",
             ready_real_no_confirm.get("dry_run_called"),
             ready_real_no_confirm.get("missing_confirmation"),
             ready_real_no_confirm.get("stops_before_real_runner"),
@@ -1402,6 +1413,42 @@ def main() -> int:
     ):
         print("提交路线拆分包审计未通过")
         return 1
+    baseline_quickstart = json.loads((ROOT / "runs/baseline_submission_quickstart.json").read_text(encoding="utf-8"))
+    quickstart_evidence = baseline_quickstart.get("evidence", {})
+    quickstart_leaks = baseline_quickstart.get("leak_flags", {})
+    quickstart_contacts = baseline_quickstart.get("contact_flags", {})
+    quickstart_input_ids = {item.get("id") for item in baseline_quickstart.get("required_user_inputs", [])}
+    quickstart_commands = baseline_quickstart.get("commands", [])
+    if not all(
+        [
+            baseline_quickstart.get("kind") == "baseline_submission_quickstart",
+            baseline_quickstart.get("passed"),
+            baseline_quickstart.get("recommended_route") == "baseline_official_aloha",
+            baseline_quickstart.get("requires_checkpoint_upload") is False,
+            baseline_quickstart.get("requires_checkpoint_link") is False,
+            {
+                "SUBMISSION_TARGET_CONFIRMATION",
+                "ROBOCHALLENGE_USER_TOKEN",
+                "ROBOCHALLENGE_SUBMISSION_ID",
+                "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline",
+                "ROBOCHALLENGE_REAL_RUN_CONFIRM",
+            }.issubset(quickstart_input_ids),
+            len(quickstart_commands) >= 4,
+            any("run_authorized_preflight_template.sh" in item.get("command", "") for item in quickstart_commands),
+            any("run_ready_real_submission_template.sh" in item.get("command", "") for item in quickstart_commands),
+            all(quickstart_evidence.values()),
+            not any(quickstart_leaks.values()),
+            not any(quickstart_contacts.values()),
+            baseline_quickstart.get("platform_contacted") is False,
+            baseline_quickstart.get("uploads_performed") is False,
+            baseline_quickstart.get("credentials_read") is False,
+            baseline_quickstart.get("credentials_printed") is False,
+            baseline_quickstart.get("link_values_printed") is False,
+            baseline_quickstart.get("secret_values_printed") is False,
+        ]
+    ):
+        print("baseline 最短提交路径包审计未通过")
+        return 1
     artifact_manifest = json.loads((ROOT / "runs/submission_artifact_manifest.json").read_text(encoding="utf-8"))
     artifact_inputs = artifact_manifest.get("inputs", {})
     artifact_leaks = artifact_manifest.get("leak_flags", {})
@@ -1453,6 +1500,7 @@ def main() -> int:
         "next_user_action_packet",
         "web_form_field_packet",
         "submission_variant_route_packet",
+        "baseline_submission_quickstart",
         "submission_artifact_manifest",
     }
     if not all(
@@ -1694,6 +1742,7 @@ def main() -> int:
     print("下一步用户动作包审计已通过")
     print("网页表单字段包审计已通过")
     print("提交路线拆分包审计已通过")
+    print("baseline 最短提交路径包审计已通过")
     print("提交准备材料 manifest 审计已通过")
     print("真实提交前预检汇总已通过")
     print("真实提交阻塞项摘要已通过")

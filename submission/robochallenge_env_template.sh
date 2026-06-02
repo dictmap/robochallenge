@@ -10,6 +10,9 @@
 export ROBOCHALLENGE_USER_TOKEN="<真实 user token>"
 export ROBOCHALLENGE_SUBMISSION_ID="<真实 submission id>"
 
+# 默认推荐先走官方 Table30v2 ALOHA baseline；只有明确选择 LoRA 物化路线时再改成 lora。
+export ROBOCHALLENGE_SUBMISSION_VARIANT="baseline"
+
 # LoRA / fine-tuned checkpoint 下载链接。走 LoRA 路线时设置这一项。
 export ROBOCHALLENGE_LORA_CHECKPOINT_LINK="<真实 checkpoint 下载 URL>"
 

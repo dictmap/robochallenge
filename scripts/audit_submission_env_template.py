@@ -22,6 +22,7 @@ DEFAULT_REPORT = REPORTS_DIR / "submission_env_template_audit.md"
 REQUIRED_KEYS = [
     "ROBOCHALLENGE_USER_TOKEN",
     "ROBOCHALLENGE_SUBMISSION_ID",
+    "ROBOCHALLENGE_SUBMISSION_VARIANT",
     "ROBOCHALLENGE_LORA_CHECKPOINT_LINK",
     "ROBOCHALLENGE_CHECKPOINT_LINK",
 ]
@@ -90,10 +91,13 @@ def build_status(template_path: Path) -> dict[str, Any]:
     text = template_path.read_text(encoding="utf-8") if template_exists else ""
     exports = parse_exports(text)
     required_present = {key: key in exports for key in REQUIRED_KEYS}
-    placeholder_values = {
-        key: bool(exports.get(key, "").startswith("<真实 ") and exports.get(key, "").endswith(">"))
-        for key in REQUIRED_KEYS
-    }
+    placeholder_values = {}
+    for key in REQUIRED_KEYS:
+        value = exports.get(key, "")
+        if key == "ROBOCHALLENGE_SUBMISSION_VARIANT":
+            placeholder_values[key] = value == "baseline"
+        else:
+            placeholder_values[key] = bool(value.startswith("<真实 ") and value.endswith(">"))
     local_ignore = {path: git_check_ignore(path) for path in LOCAL_SECRET_PATHS}
     hits = secret_pattern_hits(text)
     blocking = []
@@ -104,14 +108,17 @@ def build_status(template_path: Path) -> dict[str, Any]:
             blocking.append(f"模板缺少 `{key}`。")
     for key, ok in placeholder_values.items():
         if not ok:
-            blocking.append(f"模板中的 `{key}` 不是占位符。")
+            if key == "ROBOCHALLENGE_SUBMISSION_VARIANT":
+                blocking.append(f"模板中的 `{key}` 不是 baseline 默认值。")
+            else:
+                blocking.append(f"模板中的 `{key}` 不是占位符。")
     for path, item in local_ignore.items():
         if not item["ignored"]:
             blocking.append(f"真实本地副本路径 `{path}` 未被 Git 忽略。")
     if hits:
         blocking.append("模板疑似包含真实 token、submission id 或第三方密钥模式。")
     if not blocking:
-        blocking.append("无模板侧阻塞；真实提交仍取决于用户提供凭据、submission id 和 checkpoint link。")
+        blocking.append("无模板侧阻塞；baseline 默认路线仍取决于用户提供凭据、submission id 和真实 runner 强确认。")
 
     passed = bool(
         template_exists

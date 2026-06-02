@@ -18,6 +18,9 @@
 - baseline 凭据卫生：`True`。
 - local env 是否被 Git 忽略：`True`。
 - 是否读取 local env 内容：`False`。
+- synthetic local env smoke：`True`。
+- synthetic 授权预检是否走 baseline：`True`。
+- synthetic ready runner 是否停在真实 runner 前：`True`。
 - LoRA/web 是否需要 checkpoint link：`True`。
 - LoRA/web 是否需要 checkpoint upload：`True`。
 - 下载已验证：`False`。
@@ -53,6 +56,7 @@
 - `route_aware_submission_blockers`：returncode=`0`，passed=`True`。
 - `baseline_dry_run_gate`：returncode=`0`，passed=`True`。
 - `baseline_credential_hygiene`：returncode=`0`，passed=`True`。
+- `baseline_local_env_smoke`：returncode=`0`，passed=`True`。
 - `submission_handoff_docs`：returncode=`0`，passed=`True`。
 - `submission_artifact_manifest`：returncode=`0`，passed=`True`。
 

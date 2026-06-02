@@ -13,6 +13,8 @@
 ## 必要片段
 
 - `sources_local_env_file`：`True`。
+- `reads_variant_after_local_env_source`：`True`。
+- `default_variant_baseline`：`True`。
 - `runs_link_intake`：`True`。
 - `runs_link_download_default`：`True`。
 - `download_verify_guarded`：`True`。
@@ -21,6 +23,7 @@
 - `reads_readiness_json`：`True`。
 - `lora_dry_run_only`：`True`。
 - `baseline_dry_run_only`：`True`。
+- `blockers_warning_continues_dry_run_only`：`True`。
 - `requires_explicit_real_authorization`：`True`。
 
 ## 禁止片段

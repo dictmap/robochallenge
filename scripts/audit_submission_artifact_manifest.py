@@ -62,6 +62,7 @@ REQUIRED_ARTIFACTS = [
     "reports/baseline_submission_quickstart.md",
     "reports/baseline_dry_run_gate.md",
     "reports/baseline_credential_hygiene.md",
+    "reports/baseline_local_env_smoke.md",
     "reports/route_aware_submission_blockers.md",
     "reports/submission_handoff_docs_audit.md",
     "reports/authorized_submission_sequence_audit.md",
@@ -74,6 +75,7 @@ REQUIRED_ARTIFACTS = [
     "scripts/render_baseline_submission_quickstart.py",
     "scripts/render_baseline_dry_run_gate.py",
     "scripts/render_baseline_credential_hygiene.py",
+    "scripts/render_baseline_local_env_smoke.py",
     "scripts/render_route_aware_submission_blockers.py",
     "scripts/audit_jupyter_input_template.py",
     "scripts/audit_jupyter_authorized_preflight_template.py",
@@ -183,6 +185,7 @@ def build_status() -> dict[str, Any]:
     baseline_quickstart = read_json(RUNS_DIR / "baseline_submission_quickstart.json")
     baseline_dry_run_gate = read_json(RUNS_DIR / "baseline_dry_run_gate.json")
     baseline_credential_hygiene = read_json(RUNS_DIR / "baseline_credential_hygiene.json")
+    baseline_local_env_smoke = read_json(RUNS_DIR / "baseline_local_env_smoke.json")
     route_aware_blockers = read_json(RUNS_DIR / "route_aware_submission_blockers.json")
     readiness = read_json(RUNS_DIR / "real_submission_readiness.json")
     env_template = read_json(RUNS_DIR / "submission_env_template_audit.json")
@@ -261,6 +264,23 @@ def build_status() -> dict[str, Any]:
         is False,
         "baseline_credential_hygiene_no_link": baseline_credential_hygiene.get("requires_checkpoint_link")
         is False,
+        "baseline_local_env_smoke_passed": baseline_local_env_smoke.get("passed") is True,
+        "baseline_local_env_smoke_synthetic_values_not_recorded": baseline_local_env_smoke.get(
+            "synthetic_values_recorded"
+        )
+        is False,
+        "baseline_local_env_smoke_temp_env_removed": baseline_local_env_smoke.get(
+            "synthetic_env_file_removed_after_run"
+        )
+        is True,
+        "baseline_local_env_smoke_authorized_preflight_baseline": baseline_local_env_smoke.get(
+            "authorized_preflight", {}
+        ).get("variant_baseline")
+        is True,
+        "baseline_local_env_smoke_ready_runner_stops": baseline_local_env_smoke.get("ready_runner", {}).get(
+            "stops_before_real_runner"
+        )
+        is True,
         "route_aware_submission_blockers_passed": route_aware_blockers.get("passed") is True,
         "route_aware_recommended_baseline": route_aware_blockers.get("recommended_route") == "baseline_official_aloha",
         "route_aware_baseline_no_upload": route_aware_blockers.get("baseline_requires_checkpoint_upload") is False,
@@ -290,6 +310,7 @@ def build_status() -> dict[str, Any]:
                 baseline_quickstart,
                 baseline_dry_run_gate,
                 baseline_credential_hygiene,
+                baseline_local_env_smoke,
                 route_aware_blockers,
                 readiness,
                 env_template,
@@ -308,6 +329,7 @@ def build_status() -> dict[str, Any]:
         or bool(baseline_quickstart.get("link_values_printed"))
         or bool(baseline_dry_run_gate.get("link_values_printed"))
         or bool(baseline_credential_hygiene.get("link_values_printed"))
+        or bool(baseline_local_env_smoke.get("link_values_printed"))
         or bool(route_aware_blockers.get("link_values_printed")),
         "secret_values_printed": bool(secret_scan.get("secret_values_printed"))
         or bool(jupyter_input.get("secret_values_printed"))
@@ -318,6 +340,7 @@ def build_status() -> dict[str, Any]:
         or bool(baseline_quickstart.get("secret_values_printed"))
         or bool(baseline_dry_run_gate.get("secret_values_printed"))
         or bool(baseline_credential_hygiene.get("secret_values_printed"))
+        or bool(baseline_local_env_smoke.get("secret_values_printed"))
         or bool(route_aware_blockers.get("secret_values_printed")),
     }
     contact_flags = {
@@ -338,6 +361,7 @@ def build_status() -> dict[str, Any]:
                 baseline_quickstart,
                 baseline_dry_run_gate,
                 baseline_credential_hygiene,
+                baseline_local_env_smoke,
                 route_aware_blockers,
                 readiness,
                 env_template,
@@ -361,6 +385,7 @@ def build_status() -> dict[str, Any]:
                 baseline_quickstart,
                 baseline_dry_run_gate,
                 baseline_credential_hygiene,
+                baseline_local_env_smoke,
                 route_aware_blockers,
                 readiness,
                 env_template,

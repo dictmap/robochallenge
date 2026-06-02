@@ -15,6 +15,8 @@
   },
   "required_fragments": {
     "sources_local_env_file": true,
+    "reads_variant_after_local_env_source": true,
+    "default_variant_baseline": true,
     "runs_link_intake": true,
     "runs_link_download_default": true,
     "download_verify_guarded": true,
@@ -23,6 +25,7 @@
     "reads_readiness_json": true,
     "lora_dry_run_only": true,
     "baseline_dry_run_only": true,
+    "blockers_warning_continues_dry_run_only": true,
     "requires_explicit_real_authorization": true
   },
   "forbidden_fragments": {

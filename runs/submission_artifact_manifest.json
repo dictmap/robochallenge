@@ -7,7 +7,7 @@
   "credentials_printed": false,
   "link_values_printed": false,
   "secret_values_printed": false,
-  "artifact_count": 59,
+  "artifact_count": 61,
   "artifacts": [
     {
       "path": "README.md",
@@ -20,8 +20,8 @@
       "path": "work.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 134730,
-      "sha256": "ea69cff630993bce3b6095365dac2acdf709d0b86b8acf57f73e9d630115b78c"
+      "size_bytes": 138043,
+      "sha256": "13580a1e0d730f2913462c4b03732756279f80660363a8f2d93b5a412251883d"
     },
     {
       "path": "notebooks/robochallenge_pi05_submit_cn.ipynb",
@@ -83,8 +83,8 @@
       "path": "submission/run_authorized_preflight_template.sh",
       "exists": true,
       "tracked": true,
-      "size_bytes": 2295,
-      "sha256": "6daf56fcc68137c20573357ad61959ce54d381489736d22be9373db1ac7d5bf2"
+      "size_bytes": 2310,
+      "sha256": "b7718d93d57c0f650f111d7230c1f275f47d7068965593498bd5ebad88ccf8c2"
     },
     {
       "path": "submission/run_ready_real_submission_template.sh",
@@ -244,8 +244,8 @@
       "path": "reports/authorized_preflight_template_audit.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 1187,
-      "sha256": "08c240c7233552cad030e491438fd1260b7652ba047de5ef0a707991b42f8912"
+      "size_bytes": 1337,
+      "sha256": "8bcada942bd335593bd72a50030ca58a84b54ad68959fc8758ac55248a5b4350"
     },
     {
       "path": "reports/ready_real_runner_template_audit.md",
@@ -306,9 +306,16 @@
     {
       "path": "reports/baseline_credential_hygiene.md",
       "exists": true,
-      "tracked": false,
+      "tracked": true,
       "size_bytes": 2313,
       "sha256": "76ee43531cb291c5c3f0e319aaa439f7ea4651388af0223e9ce6a8e938a0d673"
+    },
+    {
+      "path": "reports/baseline_local_env_smoke.md",
+      "exists": true,
+      "tracked": false,
+      "size_bytes": 1768,
+      "sha256": "37c6404e6600e154be1129ca7ec367496360dbceb31edcdb7a83611cf2c3b18e"
     },
     {
       "path": "reports/route_aware_submission_blockers.md",
@@ -335,22 +342,22 @@
       "path": "reports/submission_preflight_bundle.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 3963,
-      "sha256": "a4d09c7ee8ff932275cdc39a2e0802ea915ed9502257b1a7c8ae88c7215c519a"
+      "size_bytes": 4190,
+      "sha256": "de9b6e471e905c4d881d94c70dd5ea80d19735c4383521c1f0c6c8c7f6acb543"
     },
     {
       "path": "reports/plaintext_secret_scan.md",
       "exists": true,
       "tracked": true,
       "size_bytes": 610,
-      "sha256": "83750de369a79c7a201ae5d39585ff0fe18f3c576fd1f5fa60f0385bbcbd2de7"
+      "sha256": "bc70625450b3c0556483c0f484965e57e5b67d239b5a1c37c88d3455337134e9"
     },
     {
       "path": "reports/submission_status_dashboard.html",
       "exists": true,
       "tracked": true,
-      "size_bytes": 14982,
-      "sha256": "8639afb90a5ca95a881f53883cfca80b7c8c75ad8065fbfaf500f2615b727622"
+      "size_bytes": 15483,
+      "sha256": "986cd62a894735d741077ee198963c7ee02fe530bffb18f656f32f786e492f3d"
     },
     {
       "path": "scripts/render_next_user_action_packet.py",
@@ -390,9 +397,16 @@
     {
       "path": "scripts/render_baseline_credential_hygiene.py",
       "exists": true,
-      "tracked": false,
+      "tracked": true,
       "size_bytes": 11177,
       "sha256": "91a8ccbf133f4854092b47a8290a9213a2eb79fa31f43cc0c377d70771e95528"
+    },
+    {
+      "path": "scripts/render_baseline_local_env_smoke.py",
+      "exists": true,
+      "tracked": false,
+      "size_bytes": 11051,
+      "sha256": "3b1cc69874d0658e6f5f214230ba7d796b607b47f0720904f08e0def5013642c"
     },
     {
       "path": "scripts/render_route_aware_submission_blockers.py",
@@ -513,6 +527,11 @@
     "baseline_credential_hygiene_does_not_read_local_env": true,
     "baseline_credential_hygiene_no_upload": true,
     "baseline_credential_hygiene_no_link": true,
+    "baseline_local_env_smoke_passed": true,
+    "baseline_local_env_smoke_synthetic_values_not_recorded": true,
+    "baseline_local_env_smoke_temp_env_removed": true,
+    "baseline_local_env_smoke_authorized_preflight_baseline": true,
+    "baseline_local_env_smoke_ready_runner_stops": true,
     "route_aware_submission_blockers_passed": true,
     "route_aware_recommended_baseline": true,
     "route_aware_baseline_no_upload": true,

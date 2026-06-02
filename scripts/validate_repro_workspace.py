@@ -65,6 +65,7 @@ REQUIRED = [
     "reports/baseline_submission_quickstart.md",
     "reports/baseline_dry_run_gate.md",
     "reports/baseline_credential_hygiene.md",
+    "reports/baseline_local_env_smoke.md",
     "reports/route_aware_submission_blockers.md",
     "reports/submission_artifact_manifest.md",
     "reports/submission_blockers_summary.md",
@@ -117,6 +118,7 @@ REQUIRED = [
     "runs/baseline_submission_quickstart.json",
     "runs/baseline_dry_run_gate.json",
     "runs/baseline_credential_hygiene.json",
+    "runs/baseline_local_env_smoke.json",
     "runs/route_aware_submission_blockers.json",
     "runs/submission_artifact_manifest.json",
     "runs/submission_blockers_summary.json",
@@ -170,6 +172,7 @@ REQUIRED = [
     "scripts/render_baseline_submission_quickstart.py",
     "scripts/render_baseline_dry_run_gate.py",
     "scripts/render_baseline_credential_hygiene.py",
+    "scripts/render_baseline_local_env_smoke.py",
     "scripts/render_route_aware_submission_blockers.py",
     "scripts/audit_submission_artifact_manifest.py",
     "scripts/audit_submission_blockers_summary.py",
@@ -895,6 +898,11 @@ def main() -> int:
             dashboard.get("baseline_credential_hygiene_local_env_gitignored") is True,
             dashboard.get("baseline_credential_hygiene_local_env_not_tracked") is True,
             dashboard.get("baseline_credential_hygiene_does_not_read_local_env") is True,
+            dashboard.get("baseline_local_env_smoke_passed") is True,
+            dashboard.get("baseline_local_env_smoke_synthetic_values_not_recorded") is True,
+            dashboard.get("baseline_local_env_smoke_temp_env_removed") is True,
+            dashboard.get("baseline_local_env_smoke_authorized_preflight_baseline") is True,
+            dashboard.get("baseline_local_env_smoke_ready_runner_stops") is True,
             dashboard.get("route_aware_submission_blockers_passed") is True,
             dashboard.get("route_aware_recommended_route") == "baseline_official_aloha",
             dashboard.get("route_aware_baseline_no_upload") is True,
@@ -941,6 +949,7 @@ def main() -> int:
             "Baseline 最短路径" in dashboard_titles,
             "Baseline dry-run gate" in dashboard_titles,
             "Baseline 凭据卫生" in dashboard_titles,
+            "Baseline local env smoke" in dashboard_titles,
             "路线感知阻塞" in dashboard_titles,
             "Jupyter 安全填空" in dashboard_titles,
             "Jupyter 授权预检" in dashboard_titles,
@@ -1655,6 +1664,52 @@ def main() -> int:
     ):
         print("baseline 凭据卫生证据包审计未通过")
         return 1
+    baseline_local_env_smoke = json.loads((ROOT / "runs/baseline_local_env_smoke.json").read_text(encoding="utf-8"))
+    local_env_smoke_evidence = baseline_local_env_smoke.get("evidence", {})
+    local_env_smoke_leaks = baseline_local_env_smoke.get("leak_flags", {})
+    local_env_smoke_contacts = baseline_local_env_smoke.get("contact_flags", {})
+    local_env_authorized = baseline_local_env_smoke.get("authorized_preflight", {})
+    local_env_ready = baseline_local_env_smoke.get("ready_runner", {})
+    if not all(
+        [
+            baseline_local_env_smoke.get("kind") == "baseline_local_env_smoke",
+            baseline_local_env_smoke.get("passed"),
+            baseline_local_env_smoke.get("recommended_route") == "baseline_official_aloha",
+            baseline_local_env_smoke.get("synthetic_token_length", 0) > 20,
+            baseline_local_env_smoke.get("synthetic_submission_id_length", 0) > 20,
+            baseline_local_env_smoke.get("synthetic_values_recorded") is False,
+            baseline_local_env_smoke.get("synthetic_env_file_removed_after_run") is True,
+            baseline_local_env_smoke.get("authorized_preflight_command")
+            == "bash submission/run_authorized_preflight_template.sh",
+            baseline_local_env_smoke.get("ready_runner_command")
+            == "bash submission/run_ready_real_submission_template.sh",
+            local_env_authorized.get("returncode") == 0,
+            local_env_authorized.get("env_file_present_true") is True,
+            local_env_authorized.get("variant_baseline") is True,
+            local_env_authorized.get("dry_run_called") is True,
+            local_env_authorized.get("robot_type_aloha") is True,
+            local_env_authorized.get("printed_protected_values") is False,
+            local_env_ready.get("returncode") == 1,
+            local_env_ready.get("env_file_present_true") is True,
+            local_env_ready.get("variant_baseline") is True,
+            local_env_ready.get("dry_run_called") is True,
+            local_env_ready.get("missing_confirmation") is True,
+            local_env_ready.get("stops_before_real_runner") is True,
+            local_env_ready.get("real_runner_started") is False,
+            local_env_ready.get("printed_protected_values") is False,
+            all(local_env_smoke_evidence.values()),
+            not any(local_env_smoke_leaks.values()),
+            not any(local_env_smoke_contacts.values()),
+            baseline_local_env_smoke.get("platform_contacted") is False,
+            baseline_local_env_smoke.get("uploads_performed") is False,
+            baseline_local_env_smoke.get("credentials_read") is False,
+            baseline_local_env_smoke.get("credentials_printed") is False,
+            baseline_local_env_smoke.get("link_values_printed") is False,
+            baseline_local_env_smoke.get("secret_values_printed") is False,
+        ]
+    ):
+        print("baseline synthetic local env smoke 审计未通过")
+        return 1
     route_aware_blockers = json.loads((ROOT / "runs/route_aware_submission_blockers.json").read_text(encoding="utf-8"))
     route_aware_evidence = route_aware_blockers.get("evidence", {})
     route_aware_leaks = route_aware_blockers.get("leak_flags", {})
@@ -1757,6 +1812,7 @@ def main() -> int:
         "baseline_submission_quickstart",
         "baseline_dry_run_gate",
         "baseline_credential_hygiene",
+        "baseline_local_env_smoke",
         "route_aware_submission_blockers",
         "submission_artifact_manifest",
     }
@@ -1779,6 +1835,9 @@ def main() -> int:
             preflight.get("baseline_credential_hygiene_passed") is True,
             preflight.get("baseline_credential_hygiene_local_env_gitignored") is True,
             preflight.get("baseline_credential_hygiene_local_env_content_read") is False,
+            preflight.get("baseline_local_env_smoke_passed") is True,
+            preflight.get("baseline_local_env_smoke_authorized_preflight_variant_baseline") is True,
+            preflight.get("baseline_local_env_smoke_ready_runner_stops_before_real_runner") is True,
             preflight.get("secret_scan_hit_count") == 0,
             set(preflight_subcommands) == expected_preflight_subcommands,
             all(item.get("returncode") == 0 and item.get("passed") for item in preflight_subcommands.values()),

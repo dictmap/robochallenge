@@ -33,6 +33,7 @@ SOURCE_FILES = {
     "baseline_submission_quickstart": RUNS_DIR / "baseline_submission_quickstart.json",
     "baseline_dry_run_gate": RUNS_DIR / "baseline_dry_run_gate.json",
     "baseline_credential_hygiene": RUNS_DIR / "baseline_credential_hygiene.json",
+    "baseline_local_env_smoke": RUNS_DIR / "baseline_local_env_smoke.json",
     "route_aware_submission_blockers": RUNS_DIR / "route_aware_submission_blockers.json",
     "jupyter_input": RUNS_DIR / "jupyter_input_template_audit.json",
     "jupyter_authorized": RUNS_DIR / "jupyter_authorized_preflight_template_audit.json",
@@ -95,6 +96,7 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
     baseline_quickstart = data["baseline_submission_quickstart"]
     baseline_dry_run_gate = data["baseline_dry_run_gate"]
     baseline_credential_hygiene = data["baseline_credential_hygiene"]
+    baseline_local_env_smoke = data["baseline_local_env_smoke"]
     route_aware_blockers = data["route_aware_submission_blockers"]
     jupyter_input = data["jupyter_input"]
     jupyter_authorized = data["jupyter_authorized"]
@@ -165,6 +167,14 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
         and baseline_credential_hygiene.get("local_env_gitignored") is True
         and baseline_credential_hygiene.get("local_env_tracked") is False
         and baseline_credential_hygiene.get("local_env_content_read") is False
+    )
+    baseline_local_env_smoke_ready = bool(
+        baseline_local_env_smoke.get("passed")
+        and baseline_local_env_smoke.get("recommended_route") == "baseline_official_aloha"
+        and baseline_local_env_smoke.get("synthetic_values_recorded") is False
+        and baseline_local_env_smoke.get("synthetic_env_file_removed_after_run") is True
+        and baseline_local_env_smoke.get("authorized_preflight", {}).get("variant_baseline") is True
+        and baseline_local_env_smoke.get("ready_runner", {}).get("stops_before_real_runner") is True
     )
     route_aware_blockers_ready = bool(
         route_aware_blockers.get("passed")
@@ -327,6 +337,13 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
             "reports/baseline_credential_hygiene.md",
         ),
         card(
+            "Baseline local env smoke",
+            "done" if baseline_local_env_smoke_ready else "watch",
+            "synthetic 已跑通",
+            "临时 fake local env 已验证授权预检会按 baseline 读取，ready runner 缺强确认时仍停在真实 runner 前。",
+            "reports/baseline_local_env_smoke.md",
+        ),
+        card(
             "路线感知阻塞",
             "done" if route_aware_blockers_ready else "watch",
             "baseline 不等 link",
@@ -369,6 +386,7 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
     baseline_quickstart = data["baseline_submission_quickstart"]
     baseline_dry_run_gate = data["baseline_dry_run_gate"]
     baseline_credential_hygiene = data["baseline_credential_hygiene"]
+    baseline_local_env_smoke = data["baseline_local_env_smoke"]
     route_aware_blockers = data["route_aware_submission_blockers"]
     jupyter_input = data["jupyter_input"]
     jupyter_authorized = data["jupyter_authorized"]
@@ -439,6 +457,23 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
             "local_env_content_read"
         )
         is False,
+        "baseline_local_env_smoke_passed": baseline_local_env_smoke.get("passed") is True,
+        "baseline_local_env_smoke_synthetic_values_not_recorded": baseline_local_env_smoke.get(
+            "synthetic_values_recorded"
+        )
+        is False,
+        "baseline_local_env_smoke_temp_env_removed": baseline_local_env_smoke.get(
+            "synthetic_env_file_removed_after_run"
+        )
+        is True,
+        "baseline_local_env_smoke_authorized_preflight_baseline": baseline_local_env_smoke.get(
+            "authorized_preflight", {}
+        ).get("variant_baseline")
+        is True,
+        "baseline_local_env_smoke_ready_runner_stops": baseline_local_env_smoke.get("ready_runner", {}).get(
+            "stops_before_real_runner"
+        )
+        is True,
         "route_aware_submission_blockers_passed": route_aware_blockers.get("passed") is True,
         "route_aware_recommended_route": route_aware_blockers.get("recommended_route"),
         "route_aware_baseline_no_upload": route_aware_blockers.get("baseline_requires_checkpoint_upload") is False,

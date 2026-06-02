@@ -1744,3 +1744,35 @@
 
 - P0：提交并推送本轮 baseline 凭据卫生证据包、GUI 卡片、manifest 和验证链更新。
 - P1：用户拿到 token/submission id 后，先写入被 Git 忽略的 local env，再跑 `reports/baseline_credential_hygiene.md` 对应的卫生检查和 baseline dry-run gate。
+
+## 2026-06-03 第六十二轮：baseline local env synthetic smoke
+
+### 已完成
+
+- 修正 `submission/run_authorized_preflight_template.sh`：现在先 source `submission/robochallenge_env.local.sh`，再读取 `ROBOCHALLENGE_SUBMISSION_VARIANT`，默认路线改为 `baseline`。
+- 同一脚本在 readiness 已通过时，即使 route-aware blockers summary 仍提示人工决策项，也只作为 warning 记录并继续执行 dry-run；真实 runner 仍由 `ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION` 单独强确认保护。
+- 扩展 `scripts/audit_authorized_preflight_template.py`：硬性检查 variant 在 source local env 之后读取、默认值是 baseline、blockers warning 只能继续 dry-run。
+- 新增 `scripts/render_baseline_local_env_smoke.py`，用临时 synthetic local env 验证授权预检和 ready runner gate。
+- 新增 `runs/baseline_local_env_smoke.json` 和中文报告 `reports/baseline_local_env_smoke.md`。
+- synthetic local env smoke 会创建临时 fake env，运行完后删除，并恢复被 wrapper 刷新的 readiness/link/blockers 状态文件；报告只记录长度和布尔证据，不记录 synthetic 明文值。
+- 更新 `scripts/audit_submission_preflight_bundle.py`、`scripts/audit_submission_artifact_manifest.py`、`scripts/render_submission_status_dashboard.py` 和 `scripts/validate_repro_workspace.py`，把 local env smoke 纳入 preflight、manifest、GUI 和总验证。
+
+### 验证结果
+
+- Linux 端 `python3 -m py_compile` 已通过，覆盖新增脚本和所有改动脚本。
+- Linux 端 `bash -n submission/run_authorized_preflight_template.sh` 已通过。
+- Linux 端 `python3 scripts/audit_authorized_preflight_template.py` 已通过：`reads_variant_after_local_env_source=true`，`default_variant_baseline=true`，`blockers_warning_continues_dry_run_only=true`。
+- Linux 端 `python3 scripts/render_baseline_local_env_smoke.py` 已通过：authorized preflight `returncode=0`、`variant_baseline=true`、`dry_run_called=true`；ready runner `variant_baseline=true`、`stops_before_real_runner=true`；临时 env 文件已删除。
+- Linux 端完整 no-contact 链已通过：明文凭据扫描、preflight bundle、blockers summary、artifact manifest、GUI dashboard、总体验证和 `git diff --check` 均通过。
+- GUI dashboard 升级为 `source_count=23`、`card_count=23`、`done_count=18`、`blocked_count=4`，新增 “Baseline local env smoke” 卡片。
+- 本轮没有读取真实 token、submission id 或 checkpoint link，没有连接 RoboChallenge 平台，没有上传 checkpoint，没有生成 checkpoint tar，也没有启动真实 runner。
+
+### 当前边界
+
+- baseline 官方路线仍只等待：提交对象确认、`ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline`、真实 runner 强确认。
+- LoRA/web checkpoint 路线仍单独等待归档/上传授权和真实 checkpoint link。
+
+### 下一步
+
+- P0：提交并推送本轮 authorized preflight local env 读取顺序修复、synthetic local env smoke、GUI 卡片、manifest 和验证链更新。
+- P1：用户拿到 token/submission id 后，可直接把它们写入 `submission/robochallenge_env.local.sh`，再跑 baseline local env smoke、授权预检和 dry-run gate。

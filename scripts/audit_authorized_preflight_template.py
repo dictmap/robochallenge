@@ -98,8 +98,12 @@ def build_status() -> dict[str, Any]:
     readiness = read_json(RUNS_DIR / "real_submission_readiness.json")
     blockers = read_json(RUNS_DIR / "submission_blockers_summary.json")
     secret_hits = [pattern for pattern in SECRET_PATTERNS if re.search(pattern, text)]
+    source_index = text.find('source "$ENV_FILE"')
+    variant_index = text.find('VARIANT="${ROBOCHALLENGE_SUBMISSION_VARIANT:-baseline}"')
     required_fragments = {
         "sources_local_env_file": "source \"$ENV_FILE\"" in text,
+        "reads_variant_after_local_env_source": source_index >= 0 and variant_index > source_index,
+        "default_variant_baseline": 'VARIANT="${ROBOCHALLENGE_SUBMISSION_VARIANT:-baseline}"' in text,
         "runs_link_intake": "python3 scripts/audit_checkpoint_link_intake.py" in text,
         "runs_link_download_default": "python3 scripts/audit_checkpoint_link_download_verification.py" in text,
         "download_verify_guarded": "ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD" in text
@@ -111,6 +115,7 @@ def build_status() -> dict[str, Any]:
         in text,
         "baseline_dry_run_only": "ROBOCHALLENGE_DRY_RUN=1 bash submission/run_table30v2_aloha_demo_template.sh"
         in text,
+        "blockers_warning_continues_dry_run_only": "continuing dry-run only" in text,
         "requires_explicit_real_authorization": "real runner still requires explicit user authorization" in text,
     }
     forbidden_fragments = {

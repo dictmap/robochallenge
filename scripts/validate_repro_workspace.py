@@ -40,6 +40,7 @@ REQUIRED = [
     "reports/openpi_rtc_lora_materialized_policy_smoke.md",
     "reports/lora_checkpoint_export_readiness.md",
     "reports/checkpoint_archive_plan.md",
+    "reports/checkpoint_split_plan.md",
     "reports/checkpoint_archive_dry_run.md",
     "reports/checkpoint_link_intake.md",
     "reports/authorized_submission_sequence_audit.md",
@@ -72,6 +73,7 @@ REQUIRED = [
     "runs/openpi_rtc_lora_materialized_policy_smoke_status.json",
     "runs/lora_checkpoint_export_readiness.json",
     "runs/checkpoint_archive_plan.json",
+    "runs/checkpoint_split_plan.json",
     "runs/checkpoint_archive_dry_run.json",
     "runs/checkpoint_link_intake.json",
     "runs/authorized_submission_sequence_audit.json",
@@ -101,6 +103,7 @@ REQUIRED = [
     "scripts/smoke_openpi_rtc_materialized_policy.py",
     "scripts/audit_lora_checkpoint_export_readiness.py",
     "scripts/audit_checkpoint_archive_plan.py",
+    "scripts/audit_checkpoint_split_plan.py",
     "scripts/create_checkpoint_archive.py",
     "scripts/audit_checkpoint_link_intake.py",
     "scripts/audit_authorized_submission_sequence.py",
@@ -594,6 +597,39 @@ def main() -> int:
     ):
         print("Checkpoint 归档计划审计未通过")
         return 1
+    split_plan = json.loads((ROOT / "runs/checkpoint_split_plan.json").read_text(encoding="utf-8"))
+    split_commands = split_plan.get("commands", {})
+    split_parts = split_plan.get("parts", [])
+    if not all(
+        [
+            split_plan.get("kind") == "checkpoint_split_plan",
+            split_plan.get("passed"),
+            split_plan.get("archive_created") is False,
+            split_plan.get("parts_created") is False,
+            split_plan.get("upload_performed") is False,
+            split_plan.get("credentials_read") is False,
+            split_plan.get("platform_contacted") is False,
+            split_plan.get("archive_path") == "runs/openpi_rtc_lora_materialized_policy_checkpoint.tar",
+            split_plan.get("sha256_path") == "runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.sha256",
+            split_plan.get("part_prefix") == "runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.part-",
+            split_plan.get("expected_archive_bytes", 0) > 10 * 1024**3,
+            split_plan.get("part_size_gib") == 4,
+            split_plan.get("expected_part_count") == 3,
+            split_plan.get("archive_absent"),
+            split_plan.get("sha256_absent"),
+            split_plan.get("existing_part_count") == 0,
+            split_plan.get("all_parts_git_ignored"),
+            len(split_parts) == 3,
+            all(part.get("git_ignored") for part in split_parts),
+            all(part.get("exists") is False for part in split_parts),
+            split_commands.get("commands_safe"),
+            "split -b 4G" in split_commands.get("split_archive", ""),
+            split_commands.get("reassemble_archive", "").startswith("cat runs/"),
+            split_commands.get("verify_reassembled_archive", "").startswith("sha256sum -c runs/"),
+        ]
+    ):
+        print("Checkpoint 分片上传计划审计未通过")
+        return 1
     archive_dry_run = json.loads((ROOT / "runs/checkpoint_archive_dry_run.json").read_text(encoding="utf-8"))
     archive_dry_run_disk = archive_dry_run.get("disk", {})
     archive_dry_run_commands = archive_dry_run.get("commands", {})
@@ -978,6 +1014,7 @@ def main() -> int:
     print("openpi_rtc LoRA 完整物化 policy 加载 smoke 已通过")
     print("LoRA checkpoint 导出就绪审计已通过")
     print("Checkpoint 归档计划审计已通过")
+    print("Checkpoint 分片上传计划审计已通过")
     print("Checkpoint 归档生成 dry-run 已通过")
     print("Checkpoint link 回填审计已通过")
     print("用户授权后提交顺序审计已通过")

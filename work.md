@@ -880,6 +880,35 @@
 
 - P0：提交推送本轮 GUI 面板产物。
 
+## 2026-06-02 第三十四轮：checkpoint 分片上传计划审计
+
+### 已完成
+
+- 新增 `scripts/audit_checkpoint_split_plan.py`，离线计算 LoRA checkpoint tar 的 4GiB 分片上传计划。
+- 生成 `reports/checkpoint_split_plan.md` 和 `runs/checkpoint_split_plan.json`，记录预计分片数量、每片大小、Git 忽略状态和授权后 split/cat/sha256 命令。
+- `scripts/validate_repro_workspace.py` 已纳入分片计划检查。
+- Notebook 新增第 35 节“checkpoint 分片上传计划审计”，可在 Jupyter 中重放该审计。
+
+### 验证结果
+
+- 分片计划审计：`passed=true`，预计 tar `11.064 GiB`，预计分片 `3` 个。
+- 分片大小：前两片各 `4.0 GiB`，第三片 `3.064 GiB`。
+- `archive_created=false`，`parts_created=false`，`upload_performed=false`，`credentials_read=false`，`platform_contacted=false`。
+- 分片路径均被 Git 忽略；当前实际存在分片数量为 `0`。
+- Linux 总体验证已通过，并新增输出“Checkpoint 分片上传计划审计已通过”。
+- Notebook preflight 已通过；第 35 节中文检查无问号乱码、无替换字符、无拉丁化 mojibake。
+- 最终明文凭据扫描已通过：`hit_count=0`，`scanned_files=141`。
+- `git diff --check` 已通过。
+
+### 当前边界
+
+- 本轮不生成真实 tar、不生成分片、不上传 checkpoint、不读取或保存任何凭据。
+- 真实分片上传仍需要用户明确授权生成 tar/sha256，并选择可由 RoboChallenge 评测端访问的存储通道。
+
+### 下一步
+
+- P0：提交推送本轮分片计划产物。
+
 ## 2026-06-02 第二十七轮：readiness gate 场景 smoke 与 Notebook 乱码修复
 
 ### 已完成

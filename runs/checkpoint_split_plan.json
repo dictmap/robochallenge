@@ -1,0 +1,59 @@
+{
+  "kind": "checkpoint_split_plan",
+  "passed": true,
+  "archive_created": false,
+  "parts_created": false,
+  "upload_performed": false,
+  "credentials_read": false,
+  "platform_contacted": false,
+  "archive_path": "runs/openpi_rtc_lora_materialized_policy_checkpoint.tar",
+  "sha256_path": "runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.sha256",
+  "part_prefix": "runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.part-",
+  "expected_archive_bytes": 11879987200,
+  "expected_archive_gib": 11.064,
+  "part_size_bytes": 4294967296,
+  "part_size_gib": 4,
+  "expected_part_count": 3,
+  "parts": [
+    {
+      "index": 0,
+      "path": "runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.part-000",
+      "expected_size_bytes": 4294967296,
+      "expected_size_gib": 4.0,
+      "exists": false,
+      "git_ignored": true
+    },
+    {
+      "index": 1,
+      "path": "runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.part-001",
+      "expected_size_bytes": 4294967296,
+      "expected_size_gib": 4.0,
+      "exists": false,
+      "git_ignored": true
+    },
+    {
+      "index": 2,
+      "path": "runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.part-002",
+      "expected_size_bytes": 3290052608,
+      "expected_size_gib": 3.064,
+      "exists": false,
+      "git_ignored": true
+    }
+  ],
+  "archive_absent": true,
+  "sha256_absent": true,
+  "existing_part_count": 0,
+  "all_parts_git_ignored": true,
+  "commands": {
+    "split_archive": "split -b 4G -d -a 3 runs/openpi_rtc_lora_materialized_policy_checkpoint.tar runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.part-",
+    "list_parts": "ls -lh runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.part-*",
+    "verify_reassembled_archive": "sha256sum -c runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.sha256",
+    "reassemble_archive": "cat runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.part-* > runs/openpi_rtc_lora_materialized_policy_checkpoint.tar",
+    "commands_safe": true
+  },
+  "blocking": [
+    "本审计不生成 tar、不生成分片、不上传 checkpoint。",
+    "真实分片上传仍需要用户先授权生成 tar/sha256，并选择存储通道。",
+    "拿到真实可访问 checkpoint link 后，仍需运行 checkpoint link intake 和 readiness gate。"
+  ]
+}

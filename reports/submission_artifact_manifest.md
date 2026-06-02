@@ -14,7 +14,7 @@
 ## 材料清单
 
 - `README.md`：exists=`True`，tracked=`True`，size=`18481`，sha256=`b75c47a50df3af20c4ba3eb4e2c3a3aede49504420432120c940d8ae7950659b`。
-- `work.md`：exists=`True`，tracked=`True`，size=`88509`，sha256=`b71ff3e64c93e73d77f240fd6c4bc93689eba0f773a227e980c4aa75d68c7c1d`。
+- `work.md`：exists=`True`，tracked=`True`，size=`91076`，sha256=`e4c7d32806f1ea58a029e9a0bad1c71189a4935d5816308528c181969d9b8fa2`。
 - `notebooks/robochallenge_pi05_submit_cn.ipynb`：exists=`True`，tracked=`True`，size=`81936`，sha256=`de4accddfee7b04e42b72dfd158c7e9132c37a86fe0df4255d4916a93de9a98d`。
 - `submission/README.md`：exists=`True`，tracked=`True`，size=`1515`，sha256=`2cde21317add90ad127853e652fc1c54ed023b638a250453d8584df1a44e9bb1`。
 - `submission/REAL_SUBMISSION_HANDOFF.md`：exists=`True`，tracked=`True`，size=`7159`，sha256=`23e8859e7fe90e4b1211c5babcc22753b74dfd9650da9c5178f6ac8c5c95ed2e`。
@@ -25,7 +25,7 @@
 - `submission/run_table30v2_aloha_lora_demo_template.sh`：exists=`True`，tracked=`True`，size=`1756`，sha256=`0fce1d85424ac3d2b9058cd93489e102d4eee7a1c9ac0052a35b49f887946975`。
 - `submission/run_authorized_preflight_template.sh`：exists=`True`，tracked=`True`，size=`2295`，sha256=`6daf56fcc68137c20573357ad61959ce54d381489736d22be9373db1ac7d5bf2`。
 - `submission/run_ready_real_submission_template.sh`：exists=`True`，tracked=`True`，size=`2933`，sha256=`43ee6d7aabda09238eb423664d520393eae31a49b1ac10e6750ee5f196b81773`。
-- `submission/run_authorized_checkpoint_archive_template.sh`：exists=`True`，tracked=`False`，size=`1304`，sha256=`e48d88ab07b7340d8e1f54f20242fc42bdcc52dbc9acc16518d7b0c28c8cc041`。
+- `submission/run_authorized_checkpoint_archive_template.sh`：exists=`True`，tracked=`True`，size=`1304`，sha256=`e48d88ab07b7340d8e1f54f20242fc42bdcc52dbc9acc16518d7b0c28c8cc041`。
 - `reports/pi05_base_repro.md`：exists=`True`，tracked=`True`，size=`4145`，sha256=`d537bdaeb9611c168c0edecdd5ee6c9183fd4e072538f0129090c8813d39802a`。
 - `reports/pi06_pi07_public_release_audit.md`：exists=`True`，tracked=`True`，size=`2191`，sha256=`bceae637e4cd02f91dfed63ab89477f81c5c5bd8b2cb5f95a3f150bf2013ad35`。
 - `reports/table30_vs_table30v2.md`：exists=`True`，tracked=`True`，size=`2680`，sha256=`701844a0a4316e38210400478fe3ea9b057019c054ef807a1a51f0f87f646ebe`。
@@ -46,12 +46,12 @@
 - `reports/notebook_structure_audit.md`：exists=`True`，tracked=`True`，size=`1198`，sha256=`013d9eb047822c8a01404c82eae3e0fb59bbae8afec3a2eba0c45d63b77c4f4a`。
 - `reports/authorized_preflight_template_audit.md`：exists=`True`，tracked=`True`，size=`1187`，sha256=`08c240c7233552cad030e491438fd1260b7652ba047de5ef0a707991b42f8912`。
 - `reports/ready_real_runner_template_audit.md`：exists=`True`，tracked=`True`，size=`1514`，sha256=`7a91e1199e2ee25d3e5fe5366331f5d57e479551fcf8854eb83b2cdb83759e61`。
-- `reports/authorized_checkpoint_archive_template_audit.md`：exists=`True`，tracked=`False`，size=`2030`，sha256=`0a02a63659e96376720e1c11c78ab6bd7a5b4118c13a93c99155fbd2dd5d6bbe`。
+- `reports/authorized_checkpoint_archive_template_audit.md`：exists=`True`，tracked=`True`，size=`2030`，sha256=`0a02a63659e96376720e1c11c78ab6bd7a5b4118c13a93c99155fbd2dd5d6bbe`。
 - `reports/submission_handoff_docs_audit.md`：exists=`True`，tracked=`True`，size=`4107`，sha256=`33ead6714a727c60998e7a2921d23da472c2cd1b59478a74f2f790ea1c08648f`。
 - `reports/authorized_submission_sequence_audit.md`：exists=`True`，tracked=`True`，size=`3942`，sha256=`e155c2c0281605c5be2524c9b4c0443df0acf4e15af4da9b64ca37617d3bc30b`。
 - `reports/submission_preflight_bundle.md`：exists=`True`，tracked=`True`，size=`1943`，sha256=`aeb09c6cd8daa55ad262bf516dc2a634224faf51f392aad7de7f80cf8592a870`。
-- `reports/plaintext_secret_scan.md`：exists=`True`，tracked=`True`，size=`610`，sha256=`101d089c494bed0c5f0d41754decc5cf2b6830f784051c751152dd7f058e562e`。
-- `reports/submission_status_dashboard.html`：exists=`True`，tracked=`True`，size=`9467`，sha256=`163316d3dc44d94f2453902457eb48e784f8f25dfd192951618404578d8d91cc`。
+- `reports/plaintext_secret_scan.md`：exists=`True`，tracked=`True`，size=`610`，sha256=`6ab3bf0c3302639154fde65e8f1be719e9b2dcb1cd6c607e91c741f01e94de11`。
+- `reports/submission_status_dashboard.html`：exists=`True`，tracked=`True`，size=`10013`，sha256=`4fd1e9a1cafd8a800790aa1fa838e43ec0f955daf9cdbd8390af895fecd83eba`。
 
 ## 本地凭据与大文件忽略检查
 

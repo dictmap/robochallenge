@@ -1296,3 +1296,31 @@
 
 - P0：提交并推送本轮授权后 checkpoint 归档强确认入口产物。
 - P1：用户提供真实凭据、checkpoint link 和归档/上传授权后，先运行 `bash submission/run_authorized_preflight_template.sh`；如果要生成 LoRA checkpoint tar，再设置 `ROBOCHALLENGE_ARCHIVE_CONFIRM=CREATE_ROBOCHALLENGE_CHECKPOINT_ARCHIVE` 执行归档入口。
+
+## 2026-06-02 第四十六轮：提交状态 GUI 面板归档门禁展示
+
+### 已完成
+
+- 更新 `scripts/render_submission_status_dashboard.py`，把 `runs/authorized_checkpoint_archive_template_audit.json` 纳入提交状态 GUI 的数据源。
+- GUI 面板新增“归档强确认入口”卡片，明确展示 `ROBOCHALLENGE_ARCHIVE_CONFIRM=CREATE_ROBOCHALLENGE_CHECKPOINT_ARCHIVE` 是生成 checkpoint tar 的必要确认短语。
+- “归档生成”卡片已改为说明默认不生成 tar，真实生成必须先通过归档强确认入口。
+- 面板状态 JSON 新增 `archive_confirm_gate_passed`、`archive_confirm_phrase` 和 `archive_no_confirm_blocks`，便于后续自动化审计直接读取。
+- 更新 `scripts/validate_repro_workspace.py`，把 GUI 面板中的归档门禁卡片、确认短语和无确认阻断状态纳入总体验证。
+- 本地生成 `reports/submission_status_dashboard_preview.png` 做 GUI 视觉检查，确认新增卡片可见，长确认短语能换行显示。
+
+### 验证结果
+
+- 本地 `python -m py_compile scripts\render_submission_status_dashboard.py scripts\validate_repro_workspace.py` 已通过。
+- 本地 `python scripts\render_submission_status_dashboard.py` 已生成新版 `reports/submission_status_dashboard.html` 和 `runs/submission_status_dashboard.json`。
+- 本地 Chrome headless 截图已通过人工检查：新增“归档强确认入口”卡片正常显示，确认短语没有被截断。
+- Linux 端最终审计链已复跑通过：`python3 scripts/audit_plaintext_secrets.py`、`python3 scripts/audit_submission_artifact_manifest.py`、`python3 scripts/audit_submission_preflight_bundle.py`、`python3 scripts/audit_submission_blockers_summary.py`、`python3 scripts/validate_repro_workspace.py` 和 `git diff --check` 均通过。
+
+### 当前边界
+
+- 本轮只补 GUI 展示和静态审计，不生成 checkpoint tar、不上传 checkpoint、不连接 RoboChallenge 平台、不读取或伪造真实凭据。
+- 真实提交仍处于 `go_no_go=blocked`：还缺 `ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、真实可访问 checkpoint link，以及用户对 checkpoint 归档/上传和真实 runner 的明确授权。
+
+### 下一步
+
+- P0：同步到 Linux 端，复跑提交材料审计链和总体验证后提交推送。
+- P1：用户补齐真实凭据和 checkpoint link 后，先运行 `bash submission/run_authorized_preflight_template.sh`；需要生成 checkpoint tar 时再显式设置 `ROBOCHALLENGE_ARCHIVE_CONFIRM=CREATE_ROBOCHALLENGE_CHECKPOINT_ARCHIVE`。

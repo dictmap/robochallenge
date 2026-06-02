@@ -823,6 +823,9 @@ def main() -> int:
             dashboard.get("preflight_no_secret_leak") is True,
             dashboard.get("link_shape_ready") is False,
             dashboard.get("archive_created") is False,
+            dashboard.get("archive_confirm_gate_passed") is True,
+            dashboard.get("archive_confirm_phrase") == "CREATE_ROBOCHALLENGE_CHECKPOINT_ARCHIVE",
+            dashboard.get("archive_no_confirm_blocks") is True,
             dashboard.get("uploads_performed") is False,
             dashboard.get("platform_contacted") is False,
             dashboard.get("credentials_printed") is False,
@@ -832,8 +835,10 @@ def main() -> int:
             len(dashboard.get("blocking", [])) >= 3,
             "pi0.5 基模" in dashboard_titles,
             "Table30v2 ALOHA" in dashboard_titles,
+            "归档强确认入口" in dashboard_titles,
             "真实提交 gate" in dashboard_titles,
             "提交前预检汇总" in dashboard_titles,
+            "CREATE_ROBOCHALLENGE_CHECKPOINT_ARCHIVE" in dashboard_html_text,
         ]
     ):
         print("提交状态 GUI 面板未通过")

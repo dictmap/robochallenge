@@ -80,8 +80,8 @@
     .watch .state { color: var(--watch); }
     a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
     h2 { margin: 14px 0 8px; font-size: 18px; line-height: 1.2; }
-    p { margin: 0; color: var(--muted); line-height: 1.55; font-size: 14px; }
-    .value { color: var(--ink); font-size: 21px; font-weight: 800; margin-bottom: 8px; }
+    p { margin: 0; color: var(--muted); line-height: 1.55; font-size: 14px; overflow-wrap: anywhere; }
+    .value { color: var(--ink); font-size: 21px; font-weight: 800; margin-bottom: 8px; overflow-wrap: anywhere; }
     .blockers {
       margin-top: 18px;
       background: #1f2924;
@@ -105,10 +105,10 @@
         <h1>RoboChallenge pi0.5 提交状态面板</h1>
         <p class="sub">静态 GUI 汇总当前复现、LoRA checkpoint、上传/link/readiness 阻塞和授权后执行顺序。面板由 JSON 审计结果生成，不读取或显示真实凭据。</p>
       </div>
-      <div class="stamp">生成时间<br>2026-06-02 07:26:31 UTC</div>
+      <div class="stamp">生成时间<br>2026-06-02 15:28:14 UTC</div>
     </header>
     <section class="summary">
-      <div class="metric"><b>6</b><span>已完成项</span></div>
+      <div class="metric"><b>7</b><span>已完成项</span></div>
       <div class="metric"><b>4</b><span>待授权项</span></div>
       <div class="metric"><b>否</b><span>真实提交就绪</span></div>
       <div class="metric"><b>否</b><span>checkpoint link 就绪</span></div>
@@ -173,7 +173,17 @@
               </div>
               <h2>归档生成</h2>
               <p class="value">dry-run 已通过</p>
-              <p>默认不生成 tar；真实生成必须显式授权 --execute --confirm-create-large-archive。</p>
+              <p>默认不生成 tar；真实生成必须先通过归档强确认入口。</p>
+            </article>
+
+            <article class="card done">
+              <div class="card-top">
+                <span class="state">已完成</span>
+                <a href="../reports/authorized_checkpoint_archive_template_audit.md">报告</a>
+              </div>
+              <h2>归档强确认入口</h2>
+              <p class="value">无确认不生成 tar</p>
+              <p>模板要求 ROBOCHALLENGE_ARCHIVE_CONFIRM=CREATE_ROBOCHALLENGE_CHECKPOINT_ARCHIVE；未确认时停在 creating tar 前。</p>
             </article>
 
             <article class="card blocked">

@@ -20,8 +20,8 @@
       "path": "work.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 88509,
-      "sha256": "b71ff3e64c93e73d77f240fd6c4bc93689eba0f773a227e980c4aa75d68c7c1d"
+      "size_bytes": 91076,
+      "sha256": "e4c7d32806f1ea58a029e9a0bad1c71189a4935d5816308528c181969d9b8fa2"
     },
     {
       "path": "notebooks/robochallenge_pi05_submit_cn.ipynb",
@@ -96,7 +96,7 @@
     {
       "path": "submission/run_authorized_checkpoint_archive_template.sh",
       "exists": true,
-      "tracked": false,
+      "tracked": true,
       "size_bytes": 1304,
       "sha256": "e48d88ab07b7340d8e1f54f20242fc42bdcc52dbc9acc16518d7b0c28c8cc041"
     },
@@ -243,7 +243,7 @@
     {
       "path": "reports/authorized_checkpoint_archive_template_audit.md",
       "exists": true,
-      "tracked": false,
+      "tracked": true,
       "size_bytes": 2030,
       "sha256": "0a02a63659e96376720e1c11c78ab6bd7a5b4118c13a93c99155fbd2dd5d6bbe"
     },
@@ -273,14 +273,14 @@
       "exists": true,
       "tracked": true,
       "size_bytes": 610,
-      "sha256": "101d089c494bed0c5f0d41754decc5cf2b6830f784051c751152dd7f058e562e"
+      "sha256": "6ab3bf0c3302639154fde65e8f1be719e9b2dcb1cd6c607e91c741f01e94de11"
     },
     {
       "path": "reports/submission_status_dashboard.html",
       "exists": true,
       "tracked": true,
-      "size_bytes": 9467,
-      "sha256": "163316d3dc44d94f2453902457eb48e784f8f25dfd192951618404578d8d91cc"
+      "size_bytes": 10013,
+      "sha256": "4fd1e9a1cafd8a800790aa1fa838e43ec0f955daf9cdbd8390af895fecd83eba"
     }
   ],
   "missing_required_artifacts": [],

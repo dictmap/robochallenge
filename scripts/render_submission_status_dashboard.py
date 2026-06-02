@@ -25,6 +25,7 @@ SOURCE_FILES = {
     "lora_policy": RUNS_DIR / "openpi_rtc_lora_materialized_policy_smoke_status.json",
     "lora_export": RUNS_DIR / "lora_checkpoint_export_readiness.json",
     "archive_dry_run": RUNS_DIR / "checkpoint_archive_dry_run.json",
+    "authorized_archive": RUNS_DIR / "authorized_checkpoint_archive_template_audit.json",
     "link_intake": RUNS_DIR / "checkpoint_link_intake.json",
     "readiness": RUNS_DIR / "real_submission_readiness.json",
     "preflight_bundle": RUNS_DIR / "submission_preflight_bundle.json",
@@ -76,6 +77,7 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
     lora_policy = data["lora_policy"]
     lora_export = data["lora_export"]
     archive_dry_run = data["archive_dry_run"]
+    authorized_archive = data["authorized_archive"]
     link_intake = data["link_intake"]
     readiness = data["readiness"]
     preflight = data["preflight_bundle"]
@@ -90,6 +92,13 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
     preflight_no_contact = not any(preflight_contacts.values())
     preflight_no_leak = not any(preflight_leaks.values())
     archive_created = archive_dry_run.get("archive_created")
+    archive_confirm_smoke = authorized_archive.get("no_confirm_smoke", {})
+    archive_confirm_gate_passed = bool(
+        authorized_archive.get("passed")
+        and archive_confirm_smoke.get("passed")
+        and archive_confirm_smoke.get("stops_before_creating_tar")
+        and archive_confirm_smoke.get("archive_created") is False
+    )
     uploads_performed = readiness.get("inputs", {}).get("uploads_performed")
     plaintext_clean = plaintext.get("hit_count") == 0 and plaintext.get("secret_values_printed") is False
 
@@ -133,8 +142,18 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
             "归档生成",
             "blocked" if not archive_created else "done",
             "dry-run 已通过",
-            "默认不生成 tar；真实生成必须显式授权 --execute --confirm-create-large-archive。",
+            "默认不生成 tar；真实生成必须先通过归档强确认入口。",
             "reports/checkpoint_archive_dry_run.md",
+        ),
+        card(
+            "归档强确认入口",
+            "done" if archive_confirm_gate_passed else "watch",
+            "无确认不生成 tar",
+            (
+                "模板要求 ROBOCHALLENGE_ARCHIVE_CONFIRM=CREATE_ROBOCHALLENGE_CHECKPOINT_ARCHIVE；"
+                "未确认时停在 creating tar 前。"
+            ),
+            "reports/authorized_checkpoint_archive_template_audit.md",
         ),
         card(
             "上传与链接",
@@ -181,6 +200,7 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
     readiness = data["readiness"]
     link_intake = data["link_intake"]
     archive = data["archive_dry_run"]
+    authorized_archive = data["authorized_archive"]
     sequence = data["authorized_sequence"]
     preflight = data["preflight_bundle"]
     plaintext = data["plaintext_scan"]
@@ -206,6 +226,9 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
         "preflight_no_secret_leak": not any(preflight_leaks.values()),
         "link_shape_ready": link_intake.get("current_env", {}).get("link_shape_ready"),
         "archive_created": archive.get("archive_created"),
+        "archive_confirm_gate_passed": authorized_archive.get("passed") is True,
+        "archive_confirm_phrase": authorized_archive.get("confirmation_phrase"),
+        "archive_no_confirm_blocks": authorized_archive.get("no_confirm_smoke", {}).get("passed") is True,
         "uploads_performed": readiness.get("inputs", {}).get("uploads_performed"),
         "platform_contacted": False,
         "credentials_printed": False,
@@ -317,8 +340,8 @@ def render_html(status: dict[str, Any]) -> str:
     .watch .state {{ color: var(--watch); }}
     a {{ color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }}
     h2 {{ margin: 14px 0 8px; font-size: 18px; line-height: 1.2; }}
-    p {{ margin: 0; color: var(--muted); line-height: 1.55; font-size: 14px; }}
-    .value {{ color: var(--ink); font-size: 21px; font-weight: 800; margin-bottom: 8px; }}
+    p {{ margin: 0; color: var(--muted); line-height: 1.55; font-size: 14px; overflow-wrap: anywhere; }}
+    .value {{ color: var(--ink); font-size: 21px; font-weight: 800; margin-bottom: 8px; overflow-wrap: anywhere; }}
     .blockers {{
       margin-top: 18px;
       background: #1f2924;

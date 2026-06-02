@@ -2064,3 +2064,32 @@
 
 - P0：提交并推送本轮 local env 权限契约审计。
 - P1：凭据到位后先运行 baseline 授权前只读预检与 dry-run gate；真实 runner 仍必须等待用户明确授权。
+
+## 2026-06-03 第七十三轮：bash xtrace 防泄漏审计
+
+### 已完成
+
+- 更新四个提交 shell 入口：`submission/run_table30v2_aloha_demo_template.sh`、`submission/run_table30v2_aloha_lora_demo_template.sh`、`submission/run_authorized_preflight_template.sh`、`submission/run_ready_real_submission_template.sh`，首条有效命令均改为 `set +x`。
+- 新增 `scripts/audit_shell_xtrace_secret_guard.py`，用 `bash -x` 和 synthetic token/submission id 覆盖 baseline demo、LoRA demo、authorized preflight、ready real runner 四个入口。
+- 新增机器可读产物 `runs/shell_xtrace_secret_guard.json` 和中文报告 `reports/shell_xtrace_secret_guard.md`。
+- 已接入 `scripts/audit_submission_preflight_bundle.py`、`scripts/audit_submission_artifact_manifest.py`、`scripts/render_submission_status_dashboard.py` 和 `scripts/validate_repro_workspace.py`。
+- GUI dashboard 新增 `bash xtrace 防泄漏` 卡片，当前总计 `source_count=31`、`card_count=31`、`done_count=26`、`blocked_count=4`、`watch_count=1`。
+
+### 验证结果
+
+- Linux 端 `python3 scripts/audit_shell_xtrace_secret_guard.py` 已通过：`case_count=4`、`all_cases_saw_set_plus_x_trace=true`、`all_cases_stop_trace_after_guard=true`、`all_cases_no_protected_values=true`、`demo_dry_runs_passed=true`、`ready_runner_stops_before_real_runner=true`。
+- `bash -x` 下四个入口的 stderr 只保留 `+ set +x` trace；synthetic token/submission id 没有进入 stdout/stderr 或 JSON 明文。
+- Linux 端完整链路 `audit_chinese_utf8_artifacts.py`、`audit_plaintext_secrets.py`、`audit_submission_preflight_bundle.py`、`audit_submission_artifact_manifest.py`、`render_submission_status_dashboard.py`、`validate_repro_workspace.py` 和 `git diff --check` 均已通过。
+- 明文凭据扫描仍为 `hit_count=0`；中文 UTF-8 审计仍为 `decode_error_count=0`、`bad_marker_hit_count=0`。
+- 本轮没有读取真实 token、submission id、checkpoint link 或 local env 内容；没有连接 RoboChallenge 平台，没有上传 checkpoint，没有生成 checkpoint tar，也没有启动真实 runner。
+
+### 当前边界
+
+- 本轮只证明调试模式 `bash -x` 不会泄漏凭据；真实 token/submission id 的平台有效性仍必须等待用户提供凭据并明确授权后才能验证。
+- baseline 官方路线仍只等待：提交对象确认、`ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline`、`ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION`。
+- LoRA/web checkpoint 路线仍单独等待 checkpoint 归档、上传授权和真实可访问 checkpoint link；这不是 baseline 官方 ALOHA 最短路线的前置条件。
+
+### 下一步
+
+- P0：提交并推送本轮 bash xtrace 防泄漏审计。
+- P1：凭据到位后先运行 baseline 授权前只读预检与 dry-run gate；真实 runner 仍必须等待用户明确授权。

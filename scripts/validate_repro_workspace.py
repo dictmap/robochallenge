@@ -70,6 +70,7 @@ REQUIRED = [
     "reports/local_env_permission_contract.md",
     "reports/placeholder_credential_rejection.md",
     "reports/synthetic_dry_run_redaction.md",
+    "reports/shell_xtrace_secret_guard.md",
     "reports/baseline_local_env_smoke.md",
     "reports/baseline_final_handoff_packet.md",
     "reports/baseline_final_handoff_rehearsal.md",
@@ -130,6 +131,7 @@ REQUIRED = [
     "runs/local_env_permission_contract.json",
     "runs/placeholder_credential_rejection.json",
     "runs/synthetic_dry_run_redaction.json",
+    "runs/shell_xtrace_secret_guard.json",
     "runs/baseline_local_env_smoke.json",
     "runs/baseline_final_handoff_packet.json",
     "runs/baseline_final_handoff_rehearsal.json",
@@ -191,6 +193,7 @@ REQUIRED = [
     "scripts/audit_local_env_permission_contract.py",
     "scripts/audit_placeholder_credential_rejection.py",
     "scripts/audit_synthetic_dry_run_redaction.py",
+    "scripts/audit_shell_xtrace_secret_guard.py",
     "scripts/render_baseline_local_env_smoke.py",
     "scripts/render_baseline_final_handoff_packet.py",
     "scripts/render_baseline_final_handoff_rehearsal.py",
@@ -976,6 +979,17 @@ def main() -> int:
             dashboard.get("synthetic_dry_run_values_not_recorded") is True,
             dashboard.get("synthetic_dry_run_no_contact") is True,
             dashboard.get("synthetic_dry_run_no_leak") is True,
+            dashboard.get("shell_xtrace_secret_guard_passed") is True,
+            dashboard.get("shell_xtrace_case_count") == 4,
+            dashboard.get("shell_xtrace_templates_disable_xtrace") is True,
+            dashboard.get("shell_xtrace_cases_saw_set_plus_x") is True,
+            dashboard.get("shell_xtrace_stops_trace_after_guard") is True,
+            dashboard.get("shell_xtrace_no_protected_values") is True,
+            dashboard.get("shell_xtrace_demo_dry_runs_passed") is True,
+            dashboard.get("shell_xtrace_ready_runner_blocks_real_runner") is True,
+            dashboard.get("shell_xtrace_values_not_recorded") is True,
+            dashboard.get("shell_xtrace_no_contact") is True,
+            dashboard.get("shell_xtrace_no_leak") is True,
             dashboard.get("baseline_local_env_smoke_passed") is True,
             dashboard.get("baseline_local_env_smoke_synthetic_values_not_recorded") is True,
             dashboard.get("baseline_local_env_smoke_temp_env_removed") is True,
@@ -1061,6 +1075,7 @@ def main() -> int:
             "Local env 权限" in dashboard_titles,
             "占位符凭据拒绝" in dashboard_titles,
             "Synthetic dry-run 脱敏" in dashboard_titles,
+            "bash xtrace 防泄漏" in dashboard_titles,
             "Baseline local env smoke" in dashboard_titles,
             "Baseline final handoff" in dashboard_titles,
             "Baseline handoff rehearsal" in dashboard_titles,
@@ -1976,6 +1991,48 @@ def main() -> int:
     ):
         print("synthetic dry-run 脱敏审计未通过")
         return 1
+    shell_xtrace = json.loads((ROOT / "runs/shell_xtrace_secret_guard.json").read_text(encoding="utf-8"))
+    shell_xtrace_evidence = shell_xtrace.get("evidence", {})
+    shell_xtrace_leaks = shell_xtrace.get("leak_flags", {})
+    shell_xtrace_contacts = shell_xtrace.get("contact_flags", {})
+    shell_xtrace_cases = shell_xtrace.get("cases", [])
+    shell_xtrace_templates = shell_xtrace.get("templates_disable_xtrace", {})
+    if not all(
+        [
+            shell_xtrace.get("kind") == "shell_xtrace_secret_guard",
+            shell_xtrace.get("passed"),
+            shell_xtrace.get("recommended_route") == "baseline_official_aloha",
+            shell_xtrace.get("case_count") == 4,
+            len(shell_xtrace_cases) == 4,
+            shell_xtrace.get("synthetic_values_recorded") is False,
+            all(shell_xtrace_templates.values()),
+            all(item.get("set_plus_x_trace_seen") is True for item in shell_xtrace_cases),
+            all(item.get("unexpected_trace_after_guard") is False for item in shell_xtrace_cases),
+            all(item.get("printed_protected_values") is False for item in shell_xtrace_cases),
+            all(item.get("real_runner_started") is False for item in shell_xtrace_cases),
+            all(item.get("returncode_expected") is True for item in shell_xtrace_cases),
+            shell_xtrace_evidence.get("all_templates_disable_xtrace_first") is True,
+            shell_xtrace_evidence.get("all_cases_saw_set_plus_x_trace") is True,
+            shell_xtrace_evidence.get("all_cases_stop_trace_after_guard") is True,
+            shell_xtrace_evidence.get("all_cases_no_protected_values") is True,
+            shell_xtrace_evidence.get("demo_dry_runs_passed") is True,
+            shell_xtrace_evidence.get("demo_outputs_lengths_only") is True,
+            shell_xtrace_evidence.get("authorized_preflight_passed") is True,
+            shell_xtrace_evidence.get("ready_runner_stops_before_real_runner") is True,
+            shell_xtrace_evidence.get("restore_clean_state_passed") is True,
+            shell_xtrace.get("clean_state_restore", {}).get("passed") is True,
+            not any(shell_xtrace_leaks.values()),
+            not any(shell_xtrace_contacts.values()),
+            shell_xtrace.get("platform_contacted") is False,
+            shell_xtrace.get("uploads_performed") is False,
+            shell_xtrace.get("credentials_read") is False,
+            shell_xtrace.get("credentials_printed") is False,
+            shell_xtrace.get("link_values_printed") is False,
+            shell_xtrace.get("secret_values_printed") is False,
+        ]
+    ):
+        print("bash xtrace 防泄漏审计未通过")
+        return 1
     baseline_local_env_smoke = json.loads((ROOT / "runs/baseline_local_env_smoke.json").read_text(encoding="utf-8"))
     local_env_smoke_evidence = baseline_local_env_smoke.get("evidence", {})
     local_env_smoke_leaks = baseline_local_env_smoke.get("leak_flags", {})
@@ -2261,6 +2318,7 @@ def main() -> int:
         "local_env_permission_contract",
         "placeholder_credential_rejection",
         "synthetic_dry_run_redaction",
+        "shell_xtrace_secret_guard",
         "baseline_local_env_smoke",
         "baseline_final_handoff_packet",
         "baseline_final_handoff_rehearsal",
@@ -2306,6 +2364,14 @@ def main() -> int:
             preflight.get("synthetic_dry_run_baseline_lengths_only") is True,
             preflight.get("synthetic_dry_run_lora_lengths_only") is True,
             preflight.get("synthetic_dry_run_values_not_recorded") is True,
+            preflight.get("shell_xtrace_secret_guard_passed") is True,
+            preflight.get("shell_xtrace_templates_disable_xtrace") is True,
+            preflight.get("shell_xtrace_cases_saw_set_plus_x") is True,
+            preflight.get("shell_xtrace_stops_trace_after_guard") is True,
+            preflight.get("shell_xtrace_no_protected_values") is True,
+            preflight.get("shell_xtrace_demo_dry_runs_passed") is True,
+            preflight.get("shell_xtrace_ready_runner_blocks_real_runner") is True,
+            preflight.get("shell_xtrace_values_not_recorded") is True,
             preflight.get("baseline_local_env_smoke_passed") is True,
             preflight.get("baseline_local_env_smoke_authorized_preflight_variant_baseline") is True,
             preflight.get("baseline_local_env_smoke_ready_runner_stops_before_real_runner") is True,
@@ -2531,6 +2597,8 @@ def main() -> int:
             "ROBOCHALLENGE_USER_TOKEN" in lora_runner_text,
             "ROBOCHALLENGE_SUBMISSION_ID" in lora_runner_text,
             "runs/openpi_rtc_lora_materialized_policy_checkpoint" in lora_runner_text,
+            "set +x" in runner_text,
+            "set +x" in lora_runner_text,
             "reject_placeholder" in runner_text,
             "reject_placeholder" in lora_runner_text,
             "ROBOCHALLENGE_DRY_RUN" in runner_text,

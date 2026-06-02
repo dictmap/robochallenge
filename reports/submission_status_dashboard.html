@@ -105,10 +105,10 @@
         <h1>RoboChallenge pi0.5 提交状态面板</h1>
         <p class="sub">静态 GUI 汇总当前复现、LoRA checkpoint、上传/link/readiness 阻塞和授权后执行顺序。面板由 JSON 审计结果生成，不读取或显示真实凭据。</p>
       </div>
-      <div class="stamp">生成时间<br>2026-06-02 21:45:56 UTC</div>
+      <div class="stamp">生成时间<br>2026-06-02 22:00:14 UTC</div>
     </header>
     <section class="summary">
-      <div class="metric"><b>25</b><span>已完成项</span></div>
+      <div class="metric"><b>26</b><span>已完成项</span></div>
       <div class="metric"><b>4</b><span>待授权项</span></div>
       <div class="metric"><b>否</b><span>真实提交就绪</span></div>
       <div class="metric"><b>否</b><span>checkpoint link 就绪</span></div>
@@ -329,6 +329,16 @@
             <article class="card done">
               <div class="card-top">
                 <span class="state">已完成</span>
+                <a href="../reports/shell_xtrace_secret_guard.md">报告</a>
+              </div>
+              <h2>bash xtrace 防泄漏</h2>
+              <p class="value">4 个入口</p>
+              <p>四个提交 shell 入口在 bash -x 下会先关闭 xtrace，合成 token/submission id 不进入日志。</p>
+            </article>
+
+            <article class="card done">
+              <div class="card-top">
+                <span class="state">已完成</span>
                 <a href="../reports/baseline_local_env_smoke.md">报告</a>
               </div>
               <h2>Baseline local env smoke</h2>
@@ -402,7 +412,7 @@
                 <a href="../reports/chinese_utf8_artifact_audit.md">报告</a>
               </div>
               <h2>中文 UTF-8</h2>
-              <p class="value">140 个文件</p>
+              <p class="value">142 个文件</p>
               <p>关键报告、GUI、Notebook 和交接文档已做 UTF-8 解码与常见乱码哨兵扫描。</p>
             </article>
 

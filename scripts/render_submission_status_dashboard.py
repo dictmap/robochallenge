@@ -36,6 +36,7 @@ SOURCE_FILES = {
     "local_env_permission": RUNS_DIR / "local_env_permission_contract.json",
     "placeholder_credentials": RUNS_DIR / "placeholder_credential_rejection.json",
     "synthetic_dry_run_redaction": RUNS_DIR / "synthetic_dry_run_redaction.json",
+    "shell_xtrace_secret_guard": RUNS_DIR / "shell_xtrace_secret_guard.json",
     "baseline_local_env_smoke": RUNS_DIR / "baseline_local_env_smoke.json",
     "baseline_final_handoff": RUNS_DIR / "baseline_final_handoff_packet.json",
     "baseline_final_handoff_rehearsal": RUNS_DIR / "baseline_final_handoff_rehearsal.json",
@@ -106,6 +107,7 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
     local_env_permission = data["local_env_permission"]
     placeholder_credentials = data["placeholder_credentials"]
     synthetic_dry_run = data["synthetic_dry_run_redaction"]
+    shell_xtrace = data["shell_xtrace_secret_guard"]
     baseline_local_env_smoke = data["baseline_local_env_smoke"]
     baseline_final_handoff = data["baseline_final_handoff"]
     baseline_final_handoff_rehearsal = data["baseline_final_handoff_rehearsal"]
@@ -217,6 +219,18 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
         and synthetic_dry_run.get("synthetic_values_recorded") is False
         and not any(synthetic_dry_run.get("leak_flags", {}).values())
         and not any(synthetic_dry_run.get("contact_flags", {}).values())
+    )
+    shell_xtrace_ready = bool(
+        shell_xtrace.get("passed")
+        and shell_xtrace.get("synthetic_values_recorded") is False
+        and shell_xtrace.get("evidence", {}).get("all_templates_disable_xtrace_first") is True
+        and shell_xtrace.get("evidence", {}).get("all_cases_saw_set_plus_x_trace") is True
+        and shell_xtrace.get("evidence", {}).get("all_cases_stop_trace_after_guard") is True
+        and shell_xtrace.get("evidence", {}).get("all_cases_no_protected_values") is True
+        and shell_xtrace.get("evidence", {}).get("demo_dry_runs_passed") is True
+        and shell_xtrace.get("evidence", {}).get("ready_runner_stops_before_real_runner") is True
+        and not any(shell_xtrace.get("leak_flags", {}).values())
+        and not any(shell_xtrace.get("contact_flags", {}).values())
     )
     baseline_local_env_smoke_ready = bool(
         baseline_local_env_smoke.get("passed")
@@ -452,6 +466,13 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
             "reports/synthetic_dry_run_redaction.md",
         ),
         card(
+            "bash xtrace 防泄漏",
+            "done" if shell_xtrace_ready else "watch",
+            f"{shell_xtrace.get('case_count', 0)} 个入口",
+            "四个提交 shell 入口在 bash -x 下会先关闭 xtrace，合成 token/submission id 不进入日志。",
+            "reports/shell_xtrace_secret_guard.md",
+        ),
+        card(
             "Baseline local env smoke",
             "done" if baseline_local_env_smoke_ready else "watch",
             "synthetic 已跑通",
@@ -532,6 +553,7 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
     local_env_permission = data["local_env_permission"]
     placeholder_credentials = data["placeholder_credentials"]
     synthetic_dry_run = data["synthetic_dry_run_redaction"]
+    shell_xtrace = data["shell_xtrace_secret_guard"]
     baseline_local_env_smoke = data["baseline_local_env_smoke"]
     baseline_final_handoff = data["baseline_final_handoff"]
     baseline_final_handoff_rehearsal = data["baseline_final_handoff_rehearsal"]
@@ -661,6 +683,33 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
         "synthetic_dry_run_values_not_recorded": synthetic_dry_run.get("synthetic_values_recorded") is False,
         "synthetic_dry_run_no_contact": not any(synthetic_dry_run.get("contact_flags", {}).values()),
         "synthetic_dry_run_no_leak": not any(synthetic_dry_run.get("leak_flags", {}).values()),
+        "shell_xtrace_secret_guard_passed": shell_xtrace.get("passed") is True,
+        "shell_xtrace_case_count": shell_xtrace.get("case_count"),
+        "shell_xtrace_templates_disable_xtrace": shell_xtrace.get("evidence", {}).get(
+            "all_templates_disable_xtrace_first"
+        )
+        is True,
+        "shell_xtrace_cases_saw_set_plus_x": shell_xtrace.get("evidence", {}).get(
+            "all_cases_saw_set_plus_x_trace"
+        )
+        is True,
+        "shell_xtrace_stops_trace_after_guard": shell_xtrace.get("evidence", {}).get(
+            "all_cases_stop_trace_after_guard"
+        )
+        is True,
+        "shell_xtrace_no_protected_values": shell_xtrace.get("evidence", {}).get(
+            "all_cases_no_protected_values"
+        )
+        is True,
+        "shell_xtrace_demo_dry_runs_passed": shell_xtrace.get("evidence", {}).get("demo_dry_runs_passed")
+        is True,
+        "shell_xtrace_ready_runner_blocks_real_runner": shell_xtrace.get("evidence", {}).get(
+            "ready_runner_stops_before_real_runner"
+        )
+        is True,
+        "shell_xtrace_values_not_recorded": shell_xtrace.get("synthetic_values_recorded") is False,
+        "shell_xtrace_no_contact": not any(shell_xtrace.get("contact_flags", {}).values()),
+        "shell_xtrace_no_leak": not any(shell_xtrace.get("leak_flags", {}).values()),
         "baseline_local_env_smoke_passed": baseline_local_env_smoke.get("passed") is True,
         "baseline_local_env_smoke_synthetic_values_not_recorded": baseline_local_env_smoke.get(
             "synthetic_values_recorded"

@@ -7,7 +7,7 @@
   "credentials_printed": false,
   "link_values_printed": false,
   "secret_values_printed": false,
-  "artifact_count": 75,
+  "artifact_count": 77,
   "artifacts": [
     {
       "path": "README.md",
@@ -20,8 +20,8 @@
       "path": "work.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 165377,
-      "sha256": "74048d7486f32a31e1f0dda926ab60a2cf0c25346e04cab9179b797a876f94c0"
+      "size_bytes": 168319,
+      "sha256": "316028e4bfe8f4978bf985c9283e834e032284ffa3f32348344c0217533daa0a"
     },
     {
       "path": "notebooks/robochallenge_pi05_submit_cn.ipynb",
@@ -69,29 +69,29 @@
       "path": "submission/run_table30v2_aloha_demo_template.sh",
       "exists": true,
       "tracked": true,
-      "size_bytes": 1777,
-      "sha256": "05fd025a768fee996413976aef865c1da343a88d5c788aa53cb03e8d922e8afa"
+      "size_bytes": 1784,
+      "sha256": "8651fd06faae55eb81d2f9ac465108968454fa845e1b416a6d5b96687426a6cf"
     },
     {
       "path": "submission/run_table30v2_aloha_lora_demo_template.sh",
       "exists": true,
       "tracked": true,
-      "size_bytes": 1756,
-      "sha256": "0fce1d85424ac3d2b9058cd93489e102d4eee7a1c9ac0052a35b49f887946975"
+      "size_bytes": 1763,
+      "sha256": "5bb84a825fd14ca68954ac6eefff22614c2fd3ea46b8fba17624dd32c1b2ea2e"
     },
     {
       "path": "submission/run_authorized_preflight_template.sh",
       "exists": true,
       "tracked": true,
-      "size_bytes": 2310,
-      "sha256": "b7718d93d57c0f650f111d7230c1f275f47d7068965593498bd5ebad88ccf8c2"
+      "size_bytes": 2317,
+      "sha256": "3690dd33c736b75ff741a1f7604a1c122be0a841ee9ba2fd9fa95a36772d6380"
     },
     {
       "path": "submission/run_ready_real_submission_template.sh",
       "exists": true,
       "tracked": true,
-      "size_bytes": 2939,
-      "sha256": "6b7cc55154166da1a7e44bf909358216f496d0df62d96f4feed73aa7d5a05baa"
+      "size_bytes": 2946,
+      "sha256": "fd9663754be1df55d6a4a969e8b8e8e078cc27812aac5b49c0b559d2127ebd88"
     },
     {
       "path": "submission/run_authorized_checkpoint_archive_template.sh",
@@ -252,7 +252,7 @@
       "exists": true,
       "tracked": true,
       "size_bytes": 1045,
-      "sha256": "31cc02b2120db78ff841961d65a15b2e62a540fec3262bd026cc0d17ec1cc0a8"
+      "sha256": "fbe9e537cec9cd0af751f6ca575ee8ac675aec55e253622d8ef67b0e30348da3"
     },
     {
       "path": "reports/authorized_preflight_template_audit.md",
@@ -327,7 +327,7 @@
     {
       "path": "reports/local_env_permission_contract.md",
       "exists": true,
-      "tracked": false,
+      "tracked": true,
       "size_bytes": 1566,
       "sha256": "08bf60a84ff5ba2d5e0d1a5ea78df581d69a68830be6ab58ae56319ece1b2968"
     },
@@ -344,6 +344,13 @@
       "tracked": true,
       "size_bytes": 1388,
       "sha256": "d56d5ebc13935738b6ae11f35d195e187efb077b8e3a11b60a0b4272fc5762cb"
+    },
+    {
+      "path": "reports/shell_xtrace_secret_guard.md",
+      "exists": true,
+      "tracked": false,
+      "size_bytes": 2284,
+      "sha256": "d42984be33a0e66a2c820a9214dddba2c35d45c8ad376e76c375345096c4ad1a"
     },
     {
       "path": "reports/baseline_local_env_smoke.md",
@@ -391,22 +398,22 @@
       "path": "reports/submission_preflight_bundle.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 6549,
-      "sha256": "0e4f6245fc59f201765b1bc56ee2bfea992eadb527a89a221f0a0ab6645dcd78"
+      "size_bytes": 7012,
+      "sha256": "0a62ffb12ba41e8ba1de688068571d1dac03028d1e04c01e869a3b76613d11e9"
     },
     {
       "path": "reports/plaintext_secret_scan.md",
       "exists": true,
       "tracked": true,
       "size_bytes": 610,
-      "sha256": "eace455197e3e4bff59ffba1808f3470b2bf73535a7b7db5b8fba37202871950"
+      "sha256": "c67f1a89c849795397e890d7d6090703f4af0938d4f98edd0e7f0260905e882c"
     },
     {
       "path": "reports/submission_status_dashboard.html",
       "exists": true,
       "tracked": true,
-      "size_bytes": 18981,
-      "sha256": "0f9ca3e0734dbbeb19fc59f07f62d2673c372432ed67f8bf3ee0e9341c3f4c3b"
+      "size_bytes": 19454,
+      "sha256": "ef2b230c6b784334d31865e734d73956c9b59174095b103246067540bf36afb5"
     },
     {
       "path": "scripts/render_next_user_action_packet.py",
@@ -453,7 +460,7 @@
     {
       "path": "scripts/audit_local_env_permission_contract.py",
       "exists": true,
-      "tracked": false,
+      "tracked": true,
       "size_bytes": 8185,
       "sha256": "23641d0614747f2434def6a1220f8fad150dcec67bf763f3254527f7142ab4e4"
     },
@@ -470,6 +477,13 @@
       "tracked": true,
       "size_bytes": 8876,
       "sha256": "9c99d957d941185e8d55d63422e123d0c2ff6dc4847b7b25cfbc1e6fa3095994"
+    },
+    {
+      "path": "scripts/audit_shell_xtrace_secret_guard.py",
+      "exists": true,
+      "tracked": false,
+      "size_bytes": 12238,
+      "sha256": "befd36828cdb48788a7a3a33b7d4dc6fd8293bcda3b7edc2d7769ecdc0f5f042"
     },
     {
       "path": "scripts/render_baseline_local_env_smoke.py",
@@ -659,6 +673,14 @@
     "synthetic_dry_run_baseline_runner_not_started": true,
     "synthetic_dry_run_lora_runner_not_started": true,
     "synthetic_dry_run_values_not_recorded": true,
+    "shell_xtrace_secret_guard_passed": true,
+    "shell_xtrace_templates_disable_xtrace": true,
+    "shell_xtrace_cases_saw_set_plus_x": true,
+    "shell_xtrace_stops_trace_after_guard": true,
+    "shell_xtrace_no_protected_values": true,
+    "shell_xtrace_demo_dry_runs_passed": true,
+    "shell_xtrace_ready_runner_blocks_real_runner": true,
+    "shell_xtrace_values_not_recorded": true,
     "baseline_local_env_smoke_passed": true,
     "baseline_local_env_smoke_synthetic_values_not_recorded": true,
     "baseline_local_env_smoke_temp_env_removed": true,

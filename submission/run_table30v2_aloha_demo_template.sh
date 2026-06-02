@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set +x
 set -euo pipefail
 
 # RoboChallenge Table30v2 ALOHA pi0.5 官方 baseline checkpoint 提交启动模板。

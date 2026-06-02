@@ -67,6 +67,7 @@ REQUIRED_ARTIFACTS = [
     "reports/local_env_permission_contract.md",
     "reports/placeholder_credential_rejection.md",
     "reports/synthetic_dry_run_redaction.md",
+    "reports/shell_xtrace_secret_guard.md",
     "reports/baseline_local_env_smoke.md",
     "reports/baseline_final_handoff_packet.md",
     "reports/baseline_final_handoff_rehearsal.md",
@@ -85,6 +86,7 @@ REQUIRED_ARTIFACTS = [
     "scripts/audit_local_env_permission_contract.py",
     "scripts/audit_placeholder_credential_rejection.py",
     "scripts/audit_synthetic_dry_run_redaction.py",
+    "scripts/audit_shell_xtrace_secret_guard.py",
     "scripts/render_baseline_local_env_smoke.py",
     "scripts/render_baseline_final_handoff_packet.py",
     "scripts/render_baseline_final_handoff_rehearsal.py",
@@ -204,6 +206,7 @@ def build_status() -> dict[str, Any]:
     local_env_permission = read_json(RUNS_DIR / "local_env_permission_contract.json")
     placeholder_credential_rejection = read_json(RUNS_DIR / "placeholder_credential_rejection.json")
     synthetic_dry_run_redaction = read_json(RUNS_DIR / "synthetic_dry_run_redaction.json")
+    shell_xtrace_secret_guard = read_json(RUNS_DIR / "shell_xtrace_secret_guard.json")
     baseline_local_env_smoke = read_json(RUNS_DIR / "baseline_local_env_smoke.json")
     baseline_final_handoff = read_json(RUNS_DIR / "baseline_final_handoff_packet.json")
     baseline_final_handoff_rehearsal = read_json(RUNS_DIR / "baseline_final_handoff_rehearsal.json")
@@ -361,6 +364,32 @@ def build_status() -> dict[str, Any]:
         is True,
         "synthetic_dry_run_values_not_recorded": synthetic_dry_run_redaction.get("synthetic_values_recorded")
         is False,
+        "shell_xtrace_secret_guard_passed": shell_xtrace_secret_guard.get("passed") is True,
+        "shell_xtrace_templates_disable_xtrace": shell_xtrace_secret_guard.get("evidence", {}).get(
+            "all_templates_disable_xtrace_first"
+        )
+        is True,
+        "shell_xtrace_cases_saw_set_plus_x": shell_xtrace_secret_guard.get("evidence", {}).get(
+            "all_cases_saw_set_plus_x_trace"
+        )
+        is True,
+        "shell_xtrace_stops_trace_after_guard": shell_xtrace_secret_guard.get("evidence", {}).get(
+            "all_cases_stop_trace_after_guard"
+        )
+        is True,
+        "shell_xtrace_no_protected_values": shell_xtrace_secret_guard.get("evidence", {}).get(
+            "all_cases_no_protected_values"
+        )
+        is True,
+        "shell_xtrace_demo_dry_runs_passed": shell_xtrace_secret_guard.get("evidence", {}).get(
+            "demo_dry_runs_passed"
+        )
+        is True,
+        "shell_xtrace_ready_runner_blocks_real_runner": shell_xtrace_secret_guard.get("evidence", {}).get(
+            "ready_runner_stops_before_real_runner"
+        )
+        is True,
+        "shell_xtrace_values_not_recorded": shell_xtrace_secret_guard.get("synthetic_values_recorded") is False,
         "baseline_local_env_smoke_passed": baseline_local_env_smoke.get("passed") is True,
         "baseline_local_env_smoke_synthetic_values_not_recorded": baseline_local_env_smoke.get(
             "synthetic_values_recorded"
@@ -461,6 +490,7 @@ def build_status() -> dict[str, Any]:
                 local_env_permission,
                 placeholder_credential_rejection,
                 synthetic_dry_run_redaction,
+                shell_xtrace_secret_guard,
                 baseline_local_env_smoke,
                 baseline_final_handoff,
                 baseline_final_handoff_rehearsal,
@@ -487,6 +517,7 @@ def build_status() -> dict[str, Any]:
         or bool(local_env_permission.get("link_values_printed"))
         or bool(placeholder_credential_rejection.get("link_values_printed"))
         or bool(synthetic_dry_run_redaction.get("link_values_printed"))
+        or bool(shell_xtrace_secret_guard.get("link_values_printed"))
         or bool(baseline_local_env_smoke.get("link_values_printed"))
         or bool(baseline_final_handoff.get("link_values_printed"))
         or bool(baseline_final_handoff_rehearsal.get("link_values_printed"))
@@ -505,6 +536,7 @@ def build_status() -> dict[str, Any]:
         or bool(local_env_permission.get("secret_values_printed"))
         or bool(placeholder_credential_rejection.get("secret_values_printed"))
         or bool(synthetic_dry_run_redaction.get("secret_values_printed"))
+        or bool(shell_xtrace_secret_guard.get("secret_values_printed"))
         or bool(baseline_local_env_smoke.get("secret_values_printed"))
         or bool(baseline_final_handoff.get("secret_values_printed"))
         or bool(baseline_final_handoff_rehearsal.get("secret_values_printed"))
@@ -533,6 +565,7 @@ def build_status() -> dict[str, Any]:
                 local_env_permission,
                 placeholder_credential_rejection,
                 synthetic_dry_run_redaction,
+                shell_xtrace_secret_guard,
                 baseline_local_env_smoke,
                 baseline_final_handoff,
                 baseline_final_handoff_rehearsal,
@@ -564,6 +597,7 @@ def build_status() -> dict[str, Any]:
                 local_env_permission,
                 placeholder_credential_rejection,
                 synthetic_dry_run_redaction,
+                shell_xtrace_secret_guard,
                 baseline_local_env_smoke,
                 baseline_final_handoff,
                 baseline_final_handoff_rehearsal,

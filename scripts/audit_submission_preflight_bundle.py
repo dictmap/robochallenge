@@ -43,6 +43,7 @@ SUBCOMMANDS = [
     ("local_env_permission_contract", "scripts/audit_local_env_permission_contract.py"),
     ("placeholder_credential_rejection", "scripts/audit_placeholder_credential_rejection.py"),
     ("synthetic_dry_run_redaction", "scripts/audit_synthetic_dry_run_redaction.py"),
+    ("shell_xtrace_secret_guard", "scripts/audit_shell_xtrace_secret_guard.py"),
     ("baseline_local_env_smoke", "scripts/render_baseline_local_env_smoke.py"),
     ("baseline_final_handoff_packet", "scripts/render_baseline_final_handoff_packet.py"),
     ("baseline_final_handoff_rehearsal", "scripts/render_baseline_final_handoff_rehearsal.py"),
@@ -115,6 +116,7 @@ def build_status() -> dict[str, Any]:
     local_env_permission = read_json(RUNS_DIR / "local_env_permission_contract.json")
     placeholder_credential_rejection = read_json(RUNS_DIR / "placeholder_credential_rejection.json")
     synthetic_dry_run_redaction = read_json(RUNS_DIR / "synthetic_dry_run_redaction.json")
+    shell_xtrace_secret_guard = read_json(RUNS_DIR / "shell_xtrace_secret_guard.json")
     baseline_local_env_smoke = read_json(RUNS_DIR / "baseline_local_env_smoke.json")
     baseline_final_handoff = read_json(RUNS_DIR / "baseline_final_handoff_packet.json")
     baseline_final_handoff_rehearsal = read_json(RUNS_DIR / "baseline_final_handoff_rehearsal.json")
@@ -147,6 +149,7 @@ def build_status() -> dict[str, Any]:
                 local_env_permission,
                 placeholder_credential_rejection,
                 synthetic_dry_run_redaction,
+                shell_xtrace_secret_guard,
                 baseline_local_env_smoke,
                 baseline_final_handoff,
                 baseline_final_handoff_rehearsal,
@@ -173,6 +176,7 @@ def build_status() -> dict[str, Any]:
         or bool(local_env_permission.get("link_values_printed"))
         or bool(placeholder_credential_rejection.get("link_values_printed"))
         or bool(synthetic_dry_run_redaction.get("link_values_printed"))
+        or bool(shell_xtrace_secret_guard.get("link_values_printed"))
         or bool(baseline_local_env_smoke.get("link_values_printed"))
         or bool(baseline_final_handoff.get("link_values_printed"))
         or bool(baseline_final_handoff_rehearsal.get("link_values_printed"))
@@ -196,6 +200,7 @@ def build_status() -> dict[str, Any]:
         or bool(local_env_permission.get("secret_values_printed"))
         or bool(placeholder_credential_rejection.get("secret_values_printed"))
         or bool(synthetic_dry_run_redaction.get("secret_values_printed"))
+        or bool(shell_xtrace_secret_guard.get("secret_values_printed"))
         or bool(baseline_local_env_smoke.get("secret_values_printed"))
         or bool(baseline_final_handoff.get("secret_values_printed"))
         or bool(baseline_final_handoff_rehearsal.get("secret_values_printed"))
@@ -228,6 +233,7 @@ def build_status() -> dict[str, Any]:
                 local_env_permission,
                 placeholder_credential_rejection,
                 synthetic_dry_run_redaction,
+                shell_xtrace_secret_guard,
                 baseline_local_env_smoke,
                 baseline_final_handoff,
                 baseline_final_handoff_rehearsal,
@@ -260,6 +266,7 @@ def build_status() -> dict[str, Any]:
                 local_env_permission,
                 placeholder_credential_rejection,
                 synthetic_dry_run_redaction,
+                shell_xtrace_secret_guard,
                 baseline_local_env_smoke,
                 baseline_final_handoff,
                 baseline_final_handoff_rehearsal,
@@ -369,6 +376,32 @@ def build_status() -> dict[str, Any]:
         is True,
         "synthetic_dry_run_values_not_recorded": synthetic_dry_run_redaction.get("synthetic_values_recorded")
         is False,
+        "shell_xtrace_secret_guard_passed": shell_xtrace_secret_guard.get("passed") is True,
+        "shell_xtrace_templates_disable_xtrace": shell_xtrace_secret_guard.get("evidence", {}).get(
+            "all_templates_disable_xtrace_first"
+        )
+        is True,
+        "shell_xtrace_cases_saw_set_plus_x": shell_xtrace_secret_guard.get("evidence", {}).get(
+            "all_cases_saw_set_plus_x_trace"
+        )
+        is True,
+        "shell_xtrace_stops_trace_after_guard": shell_xtrace_secret_guard.get("evidence", {}).get(
+            "all_cases_stop_trace_after_guard"
+        )
+        is True,
+        "shell_xtrace_no_protected_values": shell_xtrace_secret_guard.get("evidence", {}).get(
+            "all_cases_no_protected_values"
+        )
+        is True,
+        "shell_xtrace_demo_dry_runs_passed": shell_xtrace_secret_guard.get("evidence", {}).get(
+            "demo_dry_runs_passed"
+        )
+        is True,
+        "shell_xtrace_ready_runner_blocks_real_runner": shell_xtrace_secret_guard.get("evidence", {}).get(
+            "ready_runner_stops_before_real_runner"
+        )
+        is True,
+        "shell_xtrace_values_not_recorded": shell_xtrace_secret_guard.get("synthetic_values_recorded") is False,
         "baseline_local_env_smoke_passed": baseline_local_env_smoke.get("passed") is True,
         "baseline_local_env_smoke_authorized_preflight_variant_baseline": baseline_local_env_smoke.get(
             "authorized_preflight", {}
@@ -485,6 +518,14 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         f"- baseline synthetic dry-run 是否只输出长度：`{status['synthetic_dry_run_baseline_lengths_only']}`。",
         f"- LoRA synthetic dry-run 是否只输出长度：`{status['synthetic_dry_run_lora_lengths_only']}`。",
         f"- 是否未记录 synthetic 明文：`{status['synthetic_dry_run_values_not_recorded']}`。",
+        f"- bash xtrace 防泄漏：`{status['shell_xtrace_secret_guard_passed']}`。",
+        f"- xtrace 首条命令是否关闭：`{status['shell_xtrace_templates_disable_xtrace']}`。",
+        f"- bash -x 是否看到 set +x 防护：`{status['shell_xtrace_cases_saw_set_plus_x']}`。",
+        f"- set +x 后是否停止 trace：`{status['shell_xtrace_stops_trace_after_guard']}`。",
+        f"- bash -x 是否未打印 synthetic 凭据：`{status['shell_xtrace_no_protected_values']}`。",
+        f"- bash -x demo dry-run 是否通过：`{status['shell_xtrace_demo_dry_runs_passed']}`。",
+        f"- bash -x ready runner 是否停在真实 runner 前：`{status['shell_xtrace_ready_runner_blocks_real_runner']}`。",
+        f"- bash -x 是否未记录 synthetic 明文：`{status['shell_xtrace_values_not_recorded']}`。",
         f"- synthetic local env smoke：`{status['baseline_local_env_smoke_passed']}`。",
         f"- synthetic 授权预检是否走 baseline：`{status['baseline_local_env_smoke_authorized_preflight_variant_baseline']}`。",
         f"- synthetic ready runner 是否停在真实 runner 前：`{status['baseline_local_env_smoke_ready_runner_stops_before_real_runner']}`。",

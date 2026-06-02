@@ -13,7 +13,7 @@
 - baseline 是否需要 checkpoint link：`False`。
 - baseline 是否需要 checkpoint upload：`False`。
 - 中文 UTF-8 产物审计：`True`。
-- 中文 UTF-8 扫描文件数：`140`。
+- 中文 UTF-8 扫描文件数：`142`。
 - 中文 UTF-8 解码错误数：`0`。
 - 中文乱码哨兵命中数：`0`。
 - baseline dry-run gate：`True`。
@@ -41,6 +41,14 @@
 - baseline synthetic dry-run 是否只输出长度：`True`。
 - LoRA synthetic dry-run 是否只输出长度：`True`。
 - 是否未记录 synthetic 明文：`True`。
+- bash xtrace 防泄漏：`True`。
+- xtrace 首条命令是否关闭：`True`。
+- bash -x 是否看到 set +x 防护：`True`。
+- set +x 后是否停止 trace：`True`。
+- bash -x 是否未打印 synthetic 凭据：`True`。
+- bash -x demo dry-run 是否通过：`True`。
+- bash -x ready runner 是否停在真实 runner 前：`True`。
+- bash -x 是否未记录 synthetic 明文：`True`。
 - synthetic local env smoke：`True`。
 - synthetic 授权预检是否走 baseline：`True`。
 - synthetic ready runner 是否停在真实 runner 前：`True`。
@@ -99,6 +107,7 @@
 - `local_env_permission_contract`：returncode=`0`，passed=`True`。
 - `placeholder_credential_rejection`：returncode=`0`，passed=`True`。
 - `synthetic_dry_run_redaction`：returncode=`0`，passed=`True`。
+- `shell_xtrace_secret_guard`：returncode=`0`，passed=`True`。
 - `baseline_local_env_smoke`：returncode=`0`，passed=`True`。
 - `baseline_final_handoff_packet`：returncode=`0`，passed=`True`。
 - `baseline_final_handoff_rehearsal`：returncode=`0`，passed=`True`。

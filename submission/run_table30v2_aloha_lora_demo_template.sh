@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set +x
 set -euo pipefail
 
 # RoboChallenge Table30v2 ALOHA pi0.5 LoRA 完整物化 checkpoint 提交启动模板。

@@ -286,6 +286,9 @@ def build_status() -> dict[str, Any]:
         "next_user_action_packet_baseline_no_link": action_packet.get("baseline_requires_checkpoint_link") is False,
         "next_user_action_packet_lora_web_needs_upload": action_packet.get("lora_web_requires_checkpoint_upload") is True,
         "next_user_action_packet_lora_web_needs_link": action_packet.get("lora_web_requires_checkpoint_link") is True,
+        "next_user_action_packet_target_confirmation_value_exact": action_packet.get("target_confirmation_value")
+        == "CONFIRM_TABLE30V2_ALOHA_BASELINE",
+        "next_user_action_packet_target_not_user_confirmed": action_packet.get("target_user_confirmed") is False,
         "web_form_field_packet_passed": web_form_packet.get("passed") is True,
         "web_form_field_packet_currently_not_ready": web_form_packet.get("web_form_ready") is False,
         "web_form_field_packet_recommended_baseline": web_form_packet.get("recommended_route")
@@ -522,6 +525,12 @@ def build_status() -> dict[str, Any]:
         )
         is True,
         "baseline_final_handoff_does_not_read_local_env": baseline_final_handoff.get("local_env_content_read")
+        is False,
+        "baseline_final_handoff_target_confirmation_value_exact": baseline_final_handoff.get(
+            "target_confirmation_value"
+        )
+        == "CONFIRM_TABLE30V2_ALOHA_BASELINE",
+        "baseline_final_handoff_target_not_user_confirmed": baseline_final_handoff.get("target_user_confirmed")
         is False,
         "baseline_final_handoff_rehearsal_passed": baseline_final_handoff_rehearsal.get("passed") is True,
         "baseline_final_handoff_rehearsal_command_count": baseline_final_handoff_rehearsal.get("command_count")

@@ -29,10 +29,12 @@
   "submission_target_target_task": "pack_the_toothbrush_holder",
   "submission_target_target_robot": "aloha",
   "submission_target_target_benchmark": "Table30v2",
+  "next_user_action_target_confirmation_value": "CONFIRM_TABLE30V2_ALOHA_BASELINE",
+  "next_user_action_target_user_confirmed": false,
   "baseline_requires_checkpoint_link": false,
   "baseline_requires_checkpoint_upload": false,
   "chinese_utf8_artifact_audit_passed": true,
-  "chinese_utf8_artifact_scanned_file_count": 152,
+  "chinese_utf8_artifact_scanned_file_count": 154,
   "chinese_utf8_artifact_decode_error_count": 0,
   "chinese_utf8_artifact_bad_marker_hit_count": 0,
   "baseline_dry_run_gate_passed": true,
@@ -112,6 +114,8 @@
   "baseline_final_handoff_no_upload": true,
   "baseline_final_handoff_no_link": true,
   "baseline_final_handoff_does_not_read_local_env": true,
+  "baseline_final_handoff_target_confirmation_value": "CONFIRM_TABLE30V2_ALOHA_BASELINE",
+  "baseline_final_handoff_target_user_confirmed": false,
   "baseline_final_handoff_rehearsal_passed": true,
   "baseline_final_handoff_rehearsal_command_count": 3,
   "baseline_final_handoff_rehearsal_ready_runner_stops": true,
@@ -193,7 +197,7 @@
       "script": "scripts/audit_chinese_utf8_artifacts.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": ": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"runs/baseline_final_handoff_packet.json\",\n      \"size_bytes\": 4599,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"runs/baseline_final_handoff_rehearsal.json\",\n      \"size_bytes\": 5113,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"runs/baseline_local_env_smoke.json\",\n      \"size_bytes\": 10682,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    }\n  ],\n  \"decode_error_paths\": [],\n  \"bad_marker_hit_paths\": [],\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"中文交接产物 UTF-8 解码与乱码哨兵扫描通过。\"\n  ]\n}\n",
+      "stdout_tail": "ror\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"runs/baseline_dry_run_gate.json\",\n      \"size_bytes\": 3627,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"runs/baseline_final_handoff_packet.json\",\n      \"size_bytes\": 5668,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"runs/baseline_final_handoff_rehearsal.json\",\n      \"size_bytes\": 5113,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    }\n  ],\n  \"decode_error_paths\": [],\n  \"bad_marker_hit_paths\": [],\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"中文交接产物 UTF-8 解码与乱码哨兵扫描通过。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "real_submission_readiness": {
@@ -263,7 +267,7 @@
       "script": "scripts/render_next_user_action_packet.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": "\n    \"baseline_quickstart_no_link\": true,\n    \"baseline_quickstart_no_upload\": true,\n    \"baseline_blocking_has_no_checkpoint_link\": true,\n    \"baseline_blocking_has_no_archive_authorization\": true,\n    \"baseline_required_ids_complete\": true,\n    \"lora_web_requires_checkpoint_link\": true,\n    \"lora_web_requires_archive_authorization\": true,\n    \"lora_web_required_ids_complete\": true,\n    \"secret_scan_clean\": true\n  },\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false\n  },\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"动作包已生成；baseline 仍等待用户 token、submission id 和真实 runner 强确认，LoRA/web checkpoint 路线额外等待授权上传和真实 checkpoint link。\"\n  ]\n}\n",
+      "stdout_tail": "tion_does_not_confirm_for_user\": true,\n    \"target_confirmation_target_exact\": true,\n    \"baseline_blocking_has_no_checkpoint_link\": true,\n    \"baseline_blocking_has_no_archive_authorization\": true,\n    \"baseline_required_ids_complete\": true,\n    \"lora_web_requires_checkpoint_link\": true,\n    \"lora_web_requires_archive_authorization\": true,\n    \"lora_web_required_ids_complete\": true,\n    \"secret_scan_clean\": true\n  },\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false\n  },\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"动作包已生成；baseline 仍等待用户 token、submission id 和真实 runner 强确认，LoRA/web checkpoint 路线额外等待授权上传和真实 checkpoint link。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "web_form_field_packet": {
@@ -361,7 +365,7 @@
       "script": "scripts/render_baseline_final_handoff_packet.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": "re_baseline_blocking_exact\": true,\n    \"route_aware_baseline_no_lora_ids\": true,\n    \"route_aware_lora_keeps_checkpoint_requirements\": true,\n    \"credential_hygiene_required_ids_complete\": true,\n    \"dry_run_gate_required_ids_complete\": true,\n    \"secret_scan_clean\": true,\n    \"handoff_command_count\": true,\n    \"handoff_command_order_exact\": true,\n    \"handoff_first_three_no_contact\": true,\n    \"handoff_real_runner_requires_confirmation\": true\n  },\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false\n  },\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"baseline 最终交接包已固化；拿到用户凭据后先跑前三个 no-contact 步骤，只有用户明确授权时才运行第四个真实 runner 强确认命令。\"\n  ]\n}\n",
+      "stdout_tail": "arget_confirmation_packet_passed\": true,\n    \"target_confirmation_value_exact\": true,\n    \"target_confirmation_not_user_confirmed\": true,\n    \"target_confirmation_does_not_confirm_for_user\": true,\n    \"target_confirmation_target_exact\": true,\n    \"secret_scan_clean\": true,\n    \"handoff_command_count\": true,\n    \"handoff_command_order_exact\": true,\n    \"handoff_first_three_no_contact\": true,\n    \"handoff_real_runner_requires_confirmation\": true\n  },\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false\n  },\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"baseline 最终交接包已固化；拿到用户凭据后先跑前三个 no-contact 步骤，只有用户明确授权时才运行第四个真实 runner 强确认命令。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "baseline_final_handoff_rehearsal": {

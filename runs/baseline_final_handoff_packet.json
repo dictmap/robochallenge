@@ -3,6 +3,24 @@
   "passed": true,
   "recommended_route": "baseline_official_aloha",
   "recommended_local_env": "submission/robochallenge_env.local.sh",
+  "target_confirmation_value": "CONFIRM_TABLE30V2_ALOHA_BASELINE",
+  "target_user_confirmed": false,
+  "target_confirmation_target": {
+    "benchmark": "Table30v2",
+    "robot_type": "aloha",
+    "task_name": "pack_the_toothbrush_holder"
+  },
+  "first_user_confirmation_step": {
+    "id": "SUBMISSION_TARGET_CONFIRMATION",
+    "recommended_confirmation_value": "CONFIRM_TABLE30V2_ALOHA_BASELINE",
+    "target": {
+      "benchmark": "Table30v2",
+      "robot_type": "aloha",
+      "task_name": "pack_the_toothbrush_holder"
+    },
+    "source": "reports/submission_target_confirmation_packet.md",
+    "user_action": "确认本次提交对象是 Table30v2 / aloha / pack_the_toothbrush_holder baseline。"
+  },
   "local_env_content_read": false,
   "requires_checkpoint_upload": false,
   "requires_checkpoint_link": false,
@@ -82,6 +100,8 @@
     "authorized_execution_required_ids_complete": true,
     "action_packet_passed": true,
     "action_packet_required_ids_complete": true,
+    "action_packet_target_confirmation_value_exact": true,
+    "action_packet_target_not_user_confirmed": true,
     "route_aware_passed": true,
     "route_aware_recommends_baseline": true,
     "route_aware_baseline_no_checkpoint_upload": true,
@@ -91,6 +111,11 @@
     "route_aware_lora_keeps_checkpoint_requirements": true,
     "credential_hygiene_required_ids_complete": true,
     "dry_run_gate_required_ids_complete": true,
+    "target_confirmation_packet_passed": true,
+    "target_confirmation_value_exact": true,
+    "target_confirmation_not_user_confirmed": true,
+    "target_confirmation_does_not_confirm_for_user": true,
+    "target_confirmation_target_exact": true,
     "secret_scan_clean": true,
     "handoff_command_count": true,
     "handoff_command_order_exact": true,

@@ -2291,3 +2291,26 @@
 
 - P0：提交并推送本轮提交对象确认包审计。
 - P1：用户确认目标并提供 token/submission id 后，先跑 baseline 授权前只读预检与 dry-run gate；真实 runner 仍必须等待用户明确授权。
+## 2026-06-03 第八十一轮：目标确认值交接透传审计
+
+### 已完成
+- 扩展 `scripts/render_next_user_action_packet.py`，将 `submission_target_confirmation_packet` 中的 `CONFIRM_TABLE30V2_ALOHA_BASELINE` 透传为动作包字段：`target_confirmation_value`、`target_user_confirmed`、`target_confirmation_target` 与 `first_user_confirmation_step`。
+- 扩展 `scripts/render_baseline_final_handoff_packet.py`，在最终交接包中直接展示同一目标确认值和 `target_user_confirmed=false`，并保持 4 条命令顺序、前三条 no-contact、第四条真实 runner 强确认不变。
+- 更新 `scripts/audit_submission_preflight_bundle.py`、`scripts/audit_submission_artifact_manifest.py`、`scripts/render_submission_status_dashboard.py` 与 `scripts/validate_repro_workspace.py`，新增动作包与 final handoff 的确认值透传断言。
+- 重新生成 `reports/next_user_action_packet.md`、`reports/baseline_final_handoff_packet.md`、`reports/submission_preflight_bundle.md`、`reports/submission_artifact_manifest.md`、`reports/submission_status_dashboard.html` 及对应 `runs/*.json`。
+
+### 验证结果
+- Linux 端完整 no-contact 链路已通过：`py_compile`、`render_next_user_action_packet.py`、`render_baseline_final_handoff_packet.py`、`audit_chinese_utf8_artifacts.py`、`audit_plaintext_secrets.py`、`audit_submission_preflight_bundle.py`、`audit_submission_artifact_manifest.py`、`render_submission_status_dashboard.py`、`validate_repro_workspace.py` 与 `git diff --check`。
+- `runs/next_user_action_packet.json` 实测：`passed=true`，`target_confirmation_value=CONFIRM_TABLE30V2_ALOHA_BASELINE`，`target_user_confirmed=false`。
+- `runs/baseline_final_handoff_packet.json` 实测：`passed=true`，`target_confirmation_value=CONFIRM_TABLE30V2_ALOHA_BASELINE`，`target_user_confirmed=false`。
+- GUI dashboard 实测仍为 `source_count=36`、`card_count=36`、`done_count=30`、`blocked_count=5`、`watch_count=1`、`ready_for_real_submission=false`。
+- 明文凭据扫描仍为 `hit_count=0`；中文 UTF-8 审计为 `scanned_file_count=154`、`decode_error_count=0`、`bad_marker_hit_count=0`。
+
+### 当前边界
+- 本轮没有读取真实 token、submission id、checkpoint link 或真实 local env 内容。
+- 没有连接 RoboChallenge 平台，没有上传 checkpoint，没有生成 checkpoint tar，也没有启动真实 runner。
+- `CONFIRM_TABLE30V2_ALOHA_BASELINE` 只是推荐确认值；当前仍明确记录 `target_user_confirmed=false`，不能视为已替用户确认提交目标。
+
+### 下一步
+- P0：提交并推送本轮目标确认值交接透传审计。
+- P1：用户明确确认目标并提供 token/submission id 后，先跑 baseline 授权前只读预检与 dry-run gate；真实 runner 仍必须等待用户明确授权。

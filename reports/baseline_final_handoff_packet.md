@@ -11,6 +11,15 @@
 - baseline 是否需要 checkpoint 归档授权：`False`。
 - 前三步 no-contact 命令数量：`3`。
 - 真实 runner 是否需要强确认：`True`。
+- 推荐目标确认值：`CONFIRM_TABLE30V2_ALOHA_BASELINE`。
+- 是否已经替用户确认目标：`False`。
+
+## 提交对象确认
+
+- 目标：`Table30v2 / aloha / pack_the_toothbrush_holder`。
+- 用户需要确认的短语：`CONFIRM_TABLE30V2_ALOHA_BASELINE`。
+- 证据来源：`reports/submission_target_confirmation_packet.md`。
+- 本交接包只给出推荐确认值，不替用户确认、不联系平台：`target_user_confirmed=False`。
 
 ## 凭据后执行顺序
 
@@ -71,6 +80,8 @@
 - `authorized_execution_required_ids_complete`：`True`。
 - `action_packet_passed`：`True`。
 - `action_packet_required_ids_complete`：`True`。
+- `action_packet_target_confirmation_value_exact`：`True`。
+- `action_packet_target_not_user_confirmed`：`True`。
 - `route_aware_passed`：`True`。
 - `route_aware_recommends_baseline`：`True`。
 - `route_aware_baseline_no_checkpoint_upload`：`True`。
@@ -80,6 +91,11 @@
 - `route_aware_lora_keeps_checkpoint_requirements`：`True`。
 - `credential_hygiene_required_ids_complete`：`True`。
 - `dry_run_gate_required_ids_complete`：`True`。
+- `target_confirmation_packet_passed`：`True`。
+- `target_confirmation_value_exact`：`True`。
+- `target_confirmation_not_user_confirmed`：`True`。
+- `target_confirmation_does_not_confirm_for_user`：`True`。
+- `target_confirmation_target_exact`：`True`。
 - `secret_scan_clean`：`True`。
 - `handoff_command_count`：`True`。
 - `handoff_command_order_exact`：`True`。

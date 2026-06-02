@@ -18,10 +18,12 @@
 - 推荐目标确认值：`CONFIRM_TABLE30V2_ALOHA_BASELINE`。
 - 是否已经替用户确认目标：`False`。
 - 确认包目标：`Table30v2 / aloha / pack_the_toothbrush_holder`。
+- 下一步动作包透传确认值：`CONFIRM_TABLE30V2_ALOHA_BASELINE`。
+- 下一步动作包是否替用户确认：`False`。
 - baseline 是否需要 checkpoint link：`False`。
 - baseline 是否需要 checkpoint upload：`False`。
 - 中文 UTF-8 产物审计：`True`。
-- 中文 UTF-8 扫描文件数：`152`。
+- 中文 UTF-8 扫描文件数：`154`。
 - 中文 UTF-8 解码错误数：`0`。
 - 中文乱码哨兵命中数：`0`。
 - baseline dry-run gate：`True`。
@@ -89,6 +91,8 @@
 - final handoff 命令数：`4`。
 - final handoff no-contact 命令数：`3`。
 - final handoff 真实 runner 是否需要强确认：`True`。
+- final handoff 透传确认值：`CONFIRM_TABLE30V2_ALOHA_BASELINE`。
+- final handoff 是否替用户确认：`False`。
 - final handoff 前三步演练：`True`。
 - rehearsal 命令数：`3`。
 - rehearsal 是否 no-contact：`True`。

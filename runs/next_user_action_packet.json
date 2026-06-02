@@ -8,6 +8,24 @@
   "local_env_path": "submission/robochallenge_env.local.sh",
   "local_env_ignored": true,
   "recommended_route": "baseline_official_aloha",
+  "target_confirmation_value": "CONFIRM_TABLE30V2_ALOHA_BASELINE",
+  "target_user_confirmed": false,
+  "target_confirmation_target": {
+    "benchmark": "Table30v2",
+    "robot_type": "aloha",
+    "task_name": "pack_the_toothbrush_holder"
+  },
+  "first_user_confirmation_step": {
+    "id": "SUBMISSION_TARGET_CONFIRMATION",
+    "recommended_confirmation_value": "CONFIRM_TABLE30V2_ALOHA_BASELINE",
+    "target": {
+      "benchmark": "Table30v2",
+      "robot_type": "aloha",
+      "task_name": "pack_the_toothbrush_holder"
+    },
+    "source": "reports/submission_target_confirmation_packet.md",
+    "user_action": "确认本次提交对象是 Table30v2 / aloha / pack_the_toothbrush_holder baseline。"
+  },
   "baseline_requires_checkpoint_link": false,
   "baseline_requires_checkpoint_upload": false,
   "baseline_current_blocking": [
@@ -182,6 +200,11 @@
     "baseline_quickstart_passed": true,
     "baseline_quickstart_no_link": true,
     "baseline_quickstart_no_upload": true,
+    "target_confirmation_packet_passed": true,
+    "target_confirmation_value_exact": true,
+    "target_confirmation_not_user_confirmed": true,
+    "target_confirmation_does_not_confirm_for_user": true,
+    "target_confirmation_target_exact": true,
     "baseline_blocking_has_no_checkpoint_link": true,
     "baseline_blocking_has_no_archive_authorization": true,
     "baseline_required_ids_complete": true,

@@ -944,6 +944,9 @@ def main() -> int:
             dashboard.get("next_user_action_packet_baseline_no_link") is True,
             dashboard.get("next_user_action_packet_lora_web_needs_upload") is True,
             dashboard.get("next_user_action_packet_lora_web_needs_link") is True,
+            dashboard.get("next_user_action_packet_target_confirmation_value")
+            == "CONFIRM_TABLE30V2_ALOHA_BASELINE",
+            dashboard.get("next_user_action_packet_target_user_confirmed") is False,
             dashboard.get("web_form_field_packet_passed") is True,
             dashboard.get("web_form_field_count", 0) >= 10,
             dashboard.get("web_form_ready_field_count", 0) >= 6,
@@ -1074,6 +1077,9 @@ def main() -> int:
             dashboard.get("baseline_final_handoff_no_contact_command_count") == 3,
             dashboard.get("baseline_final_handoff_real_runner_requires_confirmation") is True,
             dashboard.get("baseline_final_handoff_does_not_read_local_env") is True,
+            dashboard.get("baseline_final_handoff_target_confirmation_value")
+            == "CONFIRM_TABLE30V2_ALOHA_BASELINE",
+            dashboard.get("baseline_final_handoff_target_user_confirmed") is False,
             dashboard.get("baseline_final_handoff_rehearsal_passed") is True,
             dashboard.get("baseline_final_handoff_rehearsal_command_count") == 3,
             dashboard.get("baseline_final_handoff_rehearsal_synthetic_values_not_recorded") is True,
@@ -1661,6 +1667,7 @@ def main() -> int:
     action_packet_required_ids = set(action_packet.get("required_decision_ids", []))
     action_packet_baseline_ids = set(action_packet.get("baseline_current_blocking", []))
     action_packet_lora_web_ids = set(action_packet.get("lora_web_current_blocking", []))
+    action_packet_target = action_packet.get("target_confirmation_target", {})
     if not all(
         [
             action_packet.get("kind") == "next_user_action_packet",
@@ -1678,6 +1685,13 @@ def main() -> int:
             action_packet.get("link_values_printed") is False,
             action_packet.get("secret_values_printed") is False,
             action_packet.get("recommended_route") == "baseline_official_aloha",
+            action_packet.get("target_confirmation_value") == "CONFIRM_TABLE30V2_ALOHA_BASELINE",
+            action_packet.get("target_user_confirmed") is False,
+            action_packet_target.get("benchmark") == "Table30v2",
+            action_packet_target.get("robot_type") == "aloha",
+            action_packet_target.get("task_name") == "pack_the_toothbrush_holder",
+            action_packet.get("first_user_confirmation_step", {}).get("recommended_confirmation_value")
+            == "CONFIRM_TABLE30V2_ALOHA_BASELINE",
             action_packet.get("baseline_requires_checkpoint_link") is False,
             action_packet.get("baseline_requires_checkpoint_upload") is False,
             action_packet.get("lora_web_requires_checkpoint_link") is True,
@@ -2441,12 +2455,20 @@ def main() -> int:
     final_handoff_commands = baseline_final_handoff.get("commands", [])
     final_handoff_command_strings = [item.get("command") for item in final_handoff_commands]
     final_handoff_real_command = final_handoff_commands[3] if len(final_handoff_commands) > 3 else {}
+    final_handoff_target = baseline_final_handoff.get("target_confirmation_target", {})
     if not all(
         [
             baseline_final_handoff.get("kind") == "baseline_final_handoff_packet",
             baseline_final_handoff.get("passed"),
             baseline_final_handoff.get("recommended_route") == "baseline_official_aloha",
             baseline_final_handoff.get("recommended_local_env") == "submission/robochallenge_env.local.sh",
+            baseline_final_handoff.get("target_confirmation_value") == "CONFIRM_TABLE30V2_ALOHA_BASELINE",
+            baseline_final_handoff.get("target_user_confirmed") is False,
+            final_handoff_target.get("benchmark") == "Table30v2",
+            final_handoff_target.get("robot_type") == "aloha",
+            final_handoff_target.get("task_name") == "pack_the_toothbrush_holder",
+            baseline_final_handoff.get("first_user_confirmation_step", {}).get("recommended_confirmation_value")
+            == "CONFIRM_TABLE30V2_ALOHA_BASELINE",
             baseline_final_handoff.get("local_env_content_read") is False,
             baseline_final_handoff.get("requires_checkpoint_upload") is False,
             baseline_final_handoff.get("requires_checkpoint_link") is False,
@@ -2703,6 +2725,8 @@ def main() -> int:
             preflight.get("submission_target_target_benchmark") == "Table30v2",
             preflight.get("submission_target_target_robot") == "aloha",
             preflight.get("submission_target_target_task") == "pack_the_toothbrush_holder",
+            preflight.get("next_user_action_target_confirmation_value") == "CONFIRM_TABLE30V2_ALOHA_BASELINE",
+            preflight.get("next_user_action_target_user_confirmed") is False,
             preflight.get("local_baseline_runner_ready") is False,
             preflight.get("local_lora_runner_ready") is False,
             preflight.get("verify_download_requested") is False,
@@ -2789,6 +2813,9 @@ def main() -> int:
             preflight.get("baseline_final_handoff_no_upload") is True,
             preflight.get("baseline_final_handoff_no_link") is True,
             preflight.get("baseline_final_handoff_does_not_read_local_env") is True,
+            preflight.get("baseline_final_handoff_target_confirmation_value")
+            == "CONFIRM_TABLE30V2_ALOHA_BASELINE",
+            preflight.get("baseline_final_handoff_target_user_confirmed") is False,
             preflight.get("baseline_final_handoff_rehearsal_passed") is True,
             preflight.get("baseline_final_handoff_rehearsal_command_count") == 3,
             preflight.get("baseline_final_handoff_rehearsal_ready_runner_stops") is True,

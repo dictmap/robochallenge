@@ -364,6 +364,8 @@ def build_status() -> dict[str, Any]:
         "submission_target_target_task": target_confirmation.get("target", {}).get("task_name"),
         "submission_target_target_robot": target_confirmation.get("target", {}).get("robot_type"),
         "submission_target_target_benchmark": target_confirmation.get("target", {}).get("benchmark"),
+        "next_user_action_target_confirmation_value": action_packet.get("target_confirmation_value"),
+        "next_user_action_target_user_confirmed": action_packet.get("target_user_confirmed"),
         "baseline_requires_checkpoint_link": route_aware_blockers.get("baseline_requires_checkpoint_link"),
         "baseline_requires_checkpoint_upload": route_aware_blockers.get("baseline_requires_checkpoint_upload"),
         "chinese_utf8_artifact_audit_passed": chinese_utf8.get("passed") is True,
@@ -546,6 +548,10 @@ def build_status() -> dict[str, Any]:
         "baseline_final_handoff_no_upload": baseline_final_handoff.get("requires_checkpoint_upload") is False,
         "baseline_final_handoff_no_link": baseline_final_handoff.get("requires_checkpoint_link") is False,
         "baseline_final_handoff_does_not_read_local_env": baseline_final_handoff.get("local_env_content_read") is False,
+        "baseline_final_handoff_target_confirmation_value": baseline_final_handoff.get(
+            "target_confirmation_value"
+        ),
+        "baseline_final_handoff_target_user_confirmed": baseline_final_handoff.get("target_user_confirmed"),
         "baseline_final_handoff_rehearsal_passed": baseline_final_handoff_rehearsal.get("passed") is True,
         "baseline_final_handoff_rehearsal_command_count": baseline_final_handoff_rehearsal.get("command_count"),
         "baseline_final_handoff_rehearsal_ready_runner_stops": rehearsal_step3.get("stops_before_real_runner")
@@ -600,6 +606,8 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         f"- 推荐目标确认值：`{status['submission_target_confirmation_value']}`。",
         f"- 是否已经替用户确认目标：`{status['submission_target_user_confirmed']}`。",
         f"- 确认包目标：`{status['submission_target_target_benchmark']} / {status['submission_target_target_robot']} / {status['submission_target_target_task']}`。",
+        f"- 下一步动作包透传确认值：`{status['next_user_action_target_confirmation_value']}`。",
+        f"- 下一步动作包是否替用户确认：`{status['next_user_action_target_user_confirmed']}`。",
         f"- baseline 是否需要 checkpoint link：`{status['baseline_requires_checkpoint_link']}`。",
         f"- baseline 是否需要 checkpoint upload：`{status['baseline_requires_checkpoint_upload']}`。",
         f"- 中文 UTF-8 产物审计：`{status['chinese_utf8_artifact_audit_passed']}`。",
@@ -671,6 +679,8 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         f"- final handoff 命令数：`{status['baseline_final_handoff_command_count']}`。",
         f"- final handoff no-contact 命令数：`{status['baseline_final_handoff_no_contact_command_count']}`。",
         f"- final handoff 真实 runner 是否需要强确认：`{status['baseline_final_handoff_real_runner_requires_confirmation']}`。",
+        f"- final handoff 透传确认值：`{status['baseline_final_handoff_target_confirmation_value']}`。",
+        f"- final handoff 是否替用户确认：`{status['baseline_final_handoff_target_user_confirmed']}`。",
         f"- final handoff 前三步演练：`{status['baseline_final_handoff_rehearsal_passed']}`。",
         f"- rehearsal 命令数：`{status['baseline_final_handoff_rehearsal_command_count']}`。",
         f"- rehearsal 是否 no-contact：`{status['baseline_final_handoff_rehearsal_no_contact']}`。",

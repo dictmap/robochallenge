@@ -29,6 +29,12 @@ REAL_RUNNER_COMMAND = (
     "ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION "
     "bash submission/run_ready_real_submission_template.sh"
 )
+EXPECTED_TARGET_CONFIRMATION_VALUE = "CONFIRM_TABLE30V2_ALOHA_BASELINE"
+EXPECTED_TARGET = {
+    "benchmark": "Table30v2",
+    "robot_type": "aloha",
+    "task_name": "pack_the_toothbrush_holder",
+}
 
 BASELINE_REQUIRED_IDS = {
     "SUBMISSION_TARGET_CONFIRMATION",
@@ -124,6 +130,7 @@ def build_status() -> dict[str, Any]:
     authorized_execution = read_json(RUNS_DIR / "authorized_execution_checklist.json")
     action_packet = read_json(RUNS_DIR / "next_user_action_packet.json")
     route_aware = read_json(RUNS_DIR / "route_aware_submission_blockers.json")
+    target_confirmation = read_json(RUNS_DIR / "submission_target_confirmation_packet.json")
     secret_scan = read_json(RUNS_DIR / "plaintext_secret_scan.json")
 
     inputs = [
@@ -135,6 +142,7 @@ def build_status() -> dict[str, Any]:
         authorized_execution,
         action_packet,
         route_aware,
+        target_confirmation,
         secret_scan,
     ]
     commands = build_commands()
@@ -151,6 +159,14 @@ def build_status() -> dict[str, Any]:
     dry_run_required_ids = ids(dry_run_gate.get("baseline_required_ids", []))
     local_env_authorized = local_env_smoke.get("authorized_preflight", {})
     local_env_ready = local_env_smoke.get("ready_runner", {})
+    target_confirmation_target = target_confirmation.get("target", {})
+    first_user_confirmation_step = {
+        "id": "SUBMISSION_TARGET_CONFIRMATION",
+        "recommended_confirmation_value": target_confirmation.get("recommended_confirmation_value"),
+        "target": dict(EXPECTED_TARGET),
+        "source": "reports/submission_target_confirmation_packet.md",
+        "user_action": "确认本次提交对象是 Table30v2 / aloha / pack_the_toothbrush_holder baseline。",
+    }
 
     evidence = {
         "route_packet_passed": route_packet.get("passed") is True,
@@ -179,6 +195,9 @@ def build_status() -> dict[str, Any]:
         "authorized_execution_required_ids_complete": BASELINE_REQUIRED_IDS.issubset(authorized_ids),
         "action_packet_passed": action_packet.get("passed") is True,
         "action_packet_required_ids_complete": BASELINE_REQUIRED_IDS.issubset(action_ids),
+        "action_packet_target_confirmation_value_exact": action_packet.get("target_confirmation_value")
+        == EXPECTED_TARGET_CONFIRMATION_VALUE,
+        "action_packet_target_not_user_confirmed": action_packet.get("target_user_confirmed") is False,
         "route_aware_passed": route_aware.get("passed") is True,
         "route_aware_recommends_baseline": route_aware.get("recommended_route") == "baseline_official_aloha",
         "route_aware_baseline_no_checkpoint_upload": route_aware.get("baseline_requires_checkpoint_upload") is False,
@@ -188,6 +207,15 @@ def build_status() -> dict[str, Any]:
         "route_aware_lora_keeps_checkpoint_requirements": LORA_ONLY_IDS.issubset(lora_blocking),
         "credential_hygiene_required_ids_complete": BASELINE_REQUIRED_IDS.issubset(credential_required_ids),
         "dry_run_gate_required_ids_complete": BASELINE_REQUIRED_IDS.issubset(dry_run_required_ids),
+        "target_confirmation_packet_passed": target_confirmation.get("passed") is True,
+        "target_confirmation_value_exact": target_confirmation.get("recommended_confirmation_value")
+        == EXPECTED_TARGET_CONFIRMATION_VALUE,
+        "target_confirmation_not_user_confirmed": target_confirmation.get("target_user_confirmed") is False,
+        "target_confirmation_does_not_confirm_for_user": target_confirmation.get("does_not_confirm_for_user")
+        is True,
+        "target_confirmation_target_exact": all(
+            target_confirmation_target.get(key) == value for key, value in EXPECTED_TARGET.items()
+        ),
         "secret_scan_clean": secret_scan.get("passed") is True and secret_scan.get("hit_count") == 0,
         "handoff_command_count": len(commands) == 4,
         "handoff_command_order_exact": command_strings
@@ -232,6 +260,10 @@ def build_status() -> dict[str, Any]:
         "passed": passed,
         "recommended_route": "baseline_official_aloha",
         "recommended_local_env": LOCAL_ENV_REL,
+        "target_confirmation_value": target_confirmation.get("recommended_confirmation_value"),
+        "target_user_confirmed": target_confirmation.get("target_user_confirmed"),
+        "target_confirmation_target": dict(EXPECTED_TARGET),
+        "first_user_confirmation_step": first_user_confirmation_step,
         "local_env_content_read": False,
         "requires_checkpoint_upload": False,
         "requires_checkpoint_link": False,
@@ -272,6 +304,15 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         f"- baseline 是否需要 checkpoint 归档授权：`{status['requires_checkpoint_archive_authorization']}`。",
         f"- 前三步 no-contact 命令数量：`{status['no_contact_command_count']}`。",
         f"- 真实 runner 是否需要强确认：`{status['real_runner_requires_confirmation']}`。",
+        f"- 推荐目标确认值：`{status['target_confirmation_value']}`。",
+        f"- 是否已经替用户确认目标：`{status['target_user_confirmed']}`。",
+        "",
+        "## 提交对象确认",
+        "",
+        f"- 目标：`{status['target_confirmation_target']['benchmark']} / {status['target_confirmation_target']['robot_type']} / {status['target_confirmation_target']['task_name']}`。",
+        f"- 用户需要确认的短语：`{status['first_user_confirmation_step']['recommended_confirmation_value']}`。",
+        f"- 证据来源：`{status['first_user_confirmation_step']['source']}`。",
+        f"- 本交接包只给出推荐确认值，不替用户确认、不联系平台：`target_user_confirmed={status['target_user_confirmed']}`。",
         "",
         "## 凭据后执行顺序",
         "",

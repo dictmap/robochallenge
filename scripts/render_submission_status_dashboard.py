@@ -163,6 +163,8 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
         and action_packet.get("recommended_route") == "baseline_official_aloha"
         and action_packet.get("baseline_requires_checkpoint_link") is False
         and action_packet.get("lora_web_requires_checkpoint_link") is True
+        and action_packet.get("target_confirmation_value") == "CONFIRM_TABLE30V2_ALOHA_BASELINE"
+        and action_packet.get("target_user_confirmed") is False
     )
     web_form_packet_ready = bool(
         web_form_packet.get("passed")
@@ -326,6 +328,8 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
         and baseline_final_handoff.get("command_count") == 4
         and baseline_final_handoff.get("no_contact_command_count") == 3
         and baseline_final_handoff.get("real_runner_requires_confirmation") is True
+        and baseline_final_handoff.get("target_confirmation_value") == "CONFIRM_TABLE30V2_ALOHA_BASELINE"
+        and baseline_final_handoff.get("target_user_confirmed") is False
     )
     rehearsal_commands = baseline_final_handoff_rehearsal.get("commands", [])
     rehearsal_step3 = rehearsal_commands[2] if len(rehearsal_commands) >= 3 else {}
@@ -719,6 +723,8 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
         "next_user_action_packet_baseline_no_link": action_packet.get("baseline_requires_checkpoint_link") is False,
         "next_user_action_packet_lora_web_needs_upload": action_packet.get("lora_web_requires_checkpoint_upload") is True,
         "next_user_action_packet_lora_web_needs_link": action_packet.get("lora_web_requires_checkpoint_link") is True,
+        "next_user_action_packet_target_confirmation_value": action_packet.get("target_confirmation_value"),
+        "next_user_action_packet_target_user_confirmed": action_packet.get("target_user_confirmed"),
         "web_form_field_packet_passed": web_form_packet.get("passed") is True,
         "web_form_field_count": web_form_packet.get("field_count"),
         "web_form_ready_field_count": web_form_packet.get("ready_field_count"),
@@ -951,6 +957,8 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
         )
         is True,
         "baseline_final_handoff_does_not_read_local_env": baseline_final_handoff.get("local_env_content_read") is False,
+        "baseline_final_handoff_target_confirmation_value": baseline_final_handoff.get("target_confirmation_value"),
+        "baseline_final_handoff_target_user_confirmed": baseline_final_handoff.get("target_user_confirmed"),
         "baseline_final_handoff_rehearsal_passed": baseline_final_handoff_rehearsal.get("passed") is True,
         "baseline_final_handoff_rehearsal_command_count": baseline_final_handoff_rehearsal.get("command_count"),
         "baseline_final_handoff_rehearsal_synthetic_values_not_recorded": baseline_final_handoff_rehearsal.get(

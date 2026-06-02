@@ -1,7 +1,7 @@
 {
   "kind": "chinese_utf8_artifact_audit",
   "passed": true,
-  "scanned_file_count": 152,
+  "scanned_file_count": 154,
   "decode_error_count": 0,
   "bad_marker_hit_file_count": 0,
   "bad_marker_hit_count": 0,
@@ -112,7 +112,7 @@
     },
     {
       "path": "reports/baseline_final_handoff_packet.md",
-      "size_bytes": 4232,
+      "size_bytes": 5068,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -280,7 +280,7 @@
     },
     {
       "path": "reports/next_user_action_packet.md",
-      "size_bytes": 6629,
+      "size_bytes": 7341,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -488,7 +488,7 @@
     },
     {
       "path": "reports/submission_artifact_manifest.md",
-      "size_bytes": 25012,
+      "size_bytes": 25284,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -520,7 +520,7 @@
     },
     {
       "path": "reports/submission_preflight_bundle.md",
-      "size_bytes": 8831,
+      "size_bytes": 9085,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -529,6 +529,14 @@
     {
       "path": "reports/submission_status_dashboard.html",
       "size_bytes": 21990,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/submission_target_confirmation_packet.md",
+      "size_bytes": 2258,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -656,7 +664,7 @@
     },
     {
       "path": "runs/baseline_final_handoff_packet.json",
-      "size_bytes": 4599,
+      "size_bytes": 5668,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -665,14 +673,6 @@
     {
       "path": "runs/baseline_final_handoff_rehearsal.json",
       "size_bytes": 5113,
-      "utf8_decode_ok": true,
-      "decode_error": "",
-      "bad_marker_count": 0,
-      "bad_marker_hits": []
-    },
-    {
-      "path": "runs/baseline_local_env_smoke.json",
-      "size_bytes": 10682,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,

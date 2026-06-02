@@ -44,6 +44,12 @@ LORA_WEB_REQUIRED_IDS = [
 
 NOTEBOOK_PATH = "notebooks/robochallenge_pi05_submit_cn.ipynb"
 LOCAL_ENV_PATH = "submission/robochallenge_env.local.sh"
+EXPECTED_TARGET_CONFIRMATION_VALUE = "CONFIRM_TABLE30V2_ALOHA_BASELINE"
+EXPECTED_TARGET = {
+    "benchmark": "Table30v2",
+    "robot_type": "aloha",
+    "task_name": "pack_the_toothbrush_holder",
+}
 
 
 def parse_args() -> argparse.Namespace:
@@ -88,6 +94,7 @@ def build_status() -> dict[str, Any]:
     sequence = read_json(RUNS_DIR / "authorized_submission_sequence_audit.json")
     route_packet = read_json(RUNS_DIR / "submission_variant_route_packet.json")
     baseline_quickstart = read_json(RUNS_DIR / "baseline_submission_quickstart.json")
+    target_confirmation = read_json(RUNS_DIR / "submission_target_confirmation_packet.json")
     secret_scan = read_json(RUNS_DIR / "plaintext_secret_scan.json")
 
     decisions = authorized_execution.get("required_user_decisions", [])
@@ -114,6 +121,14 @@ def build_status() -> dict[str, Any]:
         or BASELINE_REQUIRED_IDS
     )
     lora_web_current_blocking = unique(list(lora_route.get("current_blocking", [])) or LORA_WEB_REQUIRED_IDS)
+    target_confirmation_target = target_confirmation.get("target", {})
+    first_user_confirmation_step = {
+        "id": "SUBMISSION_TARGET_CONFIRMATION",
+        "recommended_confirmation_value": target_confirmation.get("recommended_confirmation_value"),
+        "target": dict(EXPECTED_TARGET),
+        "source": "reports/submission_target_confirmation_packet.md",
+        "user_action": "确认本次提交对象是 Table30v2 / aloha / pack_the_toothbrush_holder baseline。",
+    }
 
     local_env_ignored = (
         env_template.get("local_secret_paths", {})
@@ -146,6 +161,15 @@ def build_status() -> dict[str, Any]:
         "baseline_quickstart_passed": baseline_quickstart.get("passed") is True,
         "baseline_quickstart_no_link": baseline_quickstart.get("requires_checkpoint_link") is False,
         "baseline_quickstart_no_upload": baseline_quickstart.get("requires_checkpoint_upload") is False,
+        "target_confirmation_packet_passed": target_confirmation.get("passed") is True,
+        "target_confirmation_value_exact": target_confirmation.get("recommended_confirmation_value")
+        == EXPECTED_TARGET_CONFIRMATION_VALUE,
+        "target_confirmation_not_user_confirmed": target_confirmation.get("target_user_confirmed") is False,
+        "target_confirmation_does_not_confirm_for_user": target_confirmation.get("does_not_confirm_for_user")
+        is True,
+        "target_confirmation_target_exact": all(
+            target_confirmation_target.get(key) == value for key, value in EXPECTED_TARGET.items()
+        ),
         "baseline_blocking_has_no_checkpoint_link": "ROBOCHALLENGE_CHECKPOINT_LINK" not in baseline_current_blocking,
         "baseline_blocking_has_no_archive_authorization": "CHECKPOINT_ARCHIVE_AUTHORIZATION"
         not in baseline_current_blocking,
@@ -169,6 +193,7 @@ def build_status() -> dict[str, Any]:
                 sequence,
                 route_packet,
                 baseline_quickstart,
+                target_confirmation,
                 secret_scan,
             ]
         ),
@@ -183,6 +208,7 @@ def build_status() -> dict[str, Any]:
                 sequence,
                 route_packet,
                 baseline_quickstart,
+                target_confirmation,
                 secret_scan,
             ]
         ),
@@ -198,6 +224,7 @@ def build_status() -> dict[str, Any]:
                 sequence,
                 route_packet,
                 baseline_quickstart,
+                target_confirmation,
                 secret_scan,
             ]
         ),
@@ -216,6 +243,7 @@ def build_status() -> dict[str, Any]:
                 sequence,
                 route_packet,
                 baseline_quickstart,
+                target_confirmation,
                 secret_scan,
             ]
         ),
@@ -232,6 +260,7 @@ def build_status() -> dict[str, Any]:
                 sequence,
                 route_packet,
                 baseline_quickstart,
+                target_confirmation,
                 secret_scan,
             ]
         ),
@@ -276,6 +305,10 @@ def build_status() -> dict[str, Any]:
         "local_env_path": LOCAL_ENV_PATH,
         "local_env_ignored": local_env_ignored,
         "recommended_route": "baseline_official_aloha",
+        "target_confirmation_value": target_confirmation.get("recommended_confirmation_value"),
+        "target_user_confirmed": target_confirmation.get("target_user_confirmed"),
+        "target_confirmation_target": dict(EXPECTED_TARGET),
+        "first_user_confirmation_step": first_user_confirmation_step,
         "baseline_requires_checkpoint_link": False,
         "baseline_requires_checkpoint_upload": False,
         "baseline_current_blocking": baseline_current_blocking,
@@ -319,6 +352,15 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         f"- baseline 是否需要 checkpoint upload：`{status['baseline_requires_checkpoint_upload']}`。",
         f"- LoRA/web 是否需要 checkpoint link：`{status['lora_web_requires_checkpoint_link']}`。",
         f"- LoRA/web 是否需要 checkpoint upload：`{status['lora_web_requires_checkpoint_upload']}`。",
+        f"- 推荐目标确认值：`{status['target_confirmation_value']}`。",
+        f"- 是否已经替用户确认目标：`{status['target_user_confirmed']}`。",
+        "",
+        "## 提交对象确认",
+        "",
+        f"- 目标：`{status['target_confirmation_target']['benchmark']} / {status['target_confirmation_target']['robot_type']} / {status['target_confirmation_target']['task_name']}`。",
+        f"- 用户需要确认的短语：`{status['first_user_confirmation_step']['recommended_confirmation_value']}`。",
+        f"- 证据来源：`{status['first_user_confirmation_step']['source']}`。",
+        f"- 本包只给出推荐确认值，不替用户确认、不联系平台：`target_user_confirmed={status['target_user_confirmed']}`。",
         "",
         "## Baseline 最短路线当前只差",
         "",

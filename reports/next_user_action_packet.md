@@ -13,6 +13,15 @@
 - baseline 是否需要 checkpoint upload：`False`。
 - LoRA/web 是否需要 checkpoint link：`True`。
 - LoRA/web 是否需要 checkpoint upload：`True`。
+- 推荐目标确认值：`CONFIRM_TABLE30V2_ALOHA_BASELINE`。
+- 是否已经替用户确认目标：`False`。
+
+## 提交对象确认
+
+- 目标：`Table30v2 / aloha / pack_the_toothbrush_holder`。
+- 用户需要确认的短语：`CONFIRM_TABLE30V2_ALOHA_BASELINE`。
+- 证据来源：`reports/submission_target_confirmation_packet.md`。
+- 本包只给出推荐确认值，不替用户确认、不联系平台：`target_user_confirmed=False`。
 
 ## Baseline 最短路线当前只差
 
@@ -117,6 +126,11 @@
 - `baseline_quickstart_passed`：`True`。
 - `baseline_quickstart_no_link`：`True`。
 - `baseline_quickstart_no_upload`：`True`。
+- `target_confirmation_packet_passed`：`True`。
+- `target_confirmation_value_exact`：`True`。
+- `target_confirmation_not_user_confirmed`：`True`。
+- `target_confirmation_does_not_confirm_for_user`：`True`。
+- `target_confirmation_target_exact`：`True`。
 - `baseline_blocking_has_no_checkpoint_link`：`True`。
 - `baseline_blocking_has_no_archive_authorization`：`True`。
 - `baseline_required_ids_complete`：`True`。

@@ -1,0 +1,217 @@
+#!/usr/bin/env python3
+"""Audit the real-submission handoff document without reading or printing credentials."""
+
+from __future__ import annotations
+
+import argparse
+import json
+from pathlib import Path
+import re
+from typing import Any
+
+
+ROOT = Path(__file__).resolve().parents[1]
+REPORTS_DIR = ROOT / "reports"
+RUNS_DIR = ROOT / "runs"
+SUBMISSION_DIR = ROOT / "submission"
+DEFAULT_DOC = SUBMISSION_DIR / "REAL_SUBMISSION_HANDOFF.md"
+DEFAULT_STATUS = RUNS_DIR / "submission_handoff_docs_audit.json"
+DEFAULT_REPORT = REPORTS_DIR / "submission_handoff_docs_audit.md"
+
+
+REQUIRED_ENV_KEYS = [
+    "ROBOCHALLENGE_USER_TOKEN",
+    "ROBOCHALLENGE_SUBMISSION_ID",
+    "ROBOCHALLENGE_LORA_CHECKPOINT_LINK",
+]
+
+REQUIRED_PATHS = [
+    "submission/run_table30v2_aloha_demo_template.sh",
+    "submission/run_table30v2_aloha_lora_demo_template.sh",
+    "runs/openpi_rtc_lora_materialized_policy_checkpoint",
+    "runs/openpi_rtc_lora_materialized_policy_checkpoint.tar",
+    "runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.sha256",
+    "scripts/audit_real_submission_readiness.py",
+]
+
+REQUIRED_COMMAND_FRAGMENTS = {
+    "readiness_gate": "python3 scripts/audit_real_submission_readiness.py",
+    "tar_create": (
+        "tar -C runs -cf runs/openpi_rtc_lora_materialized_policy_checkpoint.tar "
+        "openpi_rtc_lora_materialized_policy_checkpoint"
+    ),
+    "sha256_create": (
+        "sha256sum runs/openpi_rtc_lora_materialized_policy_checkpoint.tar > "
+        "runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.sha256"
+    ),
+    "baseline_runner": "bash submission/run_table30v2_aloha_demo_template.sh",
+    "lora_runner": "bash submission/run_table30v2_aloha_lora_demo_template.sh",
+}
+
+SECRET_PATTERNS = [
+    r"sk-[A-Za-z0-9_-]{30,}",
+    r"hf_[A-Za-z0-9]{20,}",
+    r"ROBOCHALLENGE_(?:USER_)?TOKEN\s*=\s*[A-Za-z0-9_-]{20,}",
+]
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="审计真实提交交接文档，不连接平台、不读取凭据明文。")
+    parser.add_argument("--doc-path", type=Path, default=DEFAULT_DOC, help="交接文档路径。")
+    parser.add_argument("--status-path", type=Path, default=DEFAULT_STATUS, help="机器可读 JSON 输出路径。")
+    parser.add_argument("--report-path", type=Path, default=DEFAULT_REPORT, help="中文审计报告输出路径。")
+    return parser.parse_args()
+
+
+def read_json(path: Path) -> dict[str, Any]:
+    if not path.exists():
+        return {}
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def normalize(text: str) -> str:
+    return " ".join(text.split())
+
+
+def scan_secret_patterns(text: str) -> list[str]:
+    hits = []
+    for pattern in SECRET_PATTERNS:
+        if re.search(pattern, text):
+            hits.append(pattern)
+    return hits
+
+
+def build_status(doc_path: Path) -> dict[str, Any]:
+    exists = doc_path.exists()
+    text = doc_path.read_text(encoding="utf-8") if exists else ""
+    flat_text = normalize(text)
+    real_submission = read_json(RUNS_DIR / "real_submission_readiness.json")
+    export_audit = read_json(RUNS_DIR / "lora_checkpoint_export_readiness.json")
+    upload_audit = read_json(RUNS_DIR / "checkpoint_upload_channels_audit.json")
+
+    env_mentions = {key: key in text for key in REQUIRED_ENV_KEYS}
+    path_mentions = {path: path in text for path in REQUIRED_PATHS}
+    command_mentions = {
+        name: normalize(fragment) in flat_text for name, fragment in REQUIRED_COMMAND_FRAGMENTS.items()
+    }
+    guardrails = {
+        "says_no_plaintext_credentials": "不保存明文" in text and "不要把真实 token" in text,
+        "says_no_fake_submission": "不要伪造" in text,
+        "says_no_upload_without_authorization": "未获得用户授权" in text,
+        "says_no_git_checkpoint": "不要把 `runs/openpi_rtc_lora_materialized_policy_checkpoint.tar`" in text,
+        "says_stop_when_not_ready": "ready_for_real_submission=false" in text,
+        "uses_placeholders_instead_of_values": "<真实 user token>" in text and "<真实 checkpoint 下载 URL>" in text,
+    }
+    secret_hits = scan_secret_patterns(text)
+    input_evidence = {
+        "real_submission_gate_exists": bool(real_submission),
+        "real_submission_gate_passed": bool(real_submission.get("passed")),
+        "real_submission_currently_blocked": real_submission.get("ready_for_real_submission") is False,
+        "export_audit_local_ready": bool(export_audit.get("local_export_ready")),
+        "upload_audit_passed": bool(upload_audit.get("passed")),
+        "upload_not_performed": upload_audit.get("uploads_performed") is False,
+    }
+    passed = bool(
+        exists
+        and all(env_mentions.values())
+        and all(path_mentions.values())
+        and all(command_mentions.values())
+        and all(guardrails.values())
+        and not secret_hits
+        and input_evidence["real_submission_gate_passed"]
+        and input_evidence["export_audit_local_ready"]
+        and input_evidence["upload_audit_passed"]
+        and input_evidence["upload_not_performed"]
+    )
+    blocking = []
+    if not exists:
+        blocking.append("缺少真实提交交接文档。")
+    for key, ok in env_mentions.items():
+        if not ok:
+            blocking.append(f"交接文档缺少环境变量 `{key}`。")
+    for path, ok in path_mentions.items():
+        if not ok:
+            blocking.append(f"交接文档缺少路径 `{path}`。")
+    for name, ok in command_mentions.items():
+        if not ok:
+            blocking.append(f"交接文档缺少命令片段 `{name}`。")
+    for name, ok in guardrails.items():
+        if not ok:
+            blocking.append(f"交接文档缺少安全边界 `{name}`。")
+    if secret_hits:
+        blocking.append("交接文档疑似包含明文 token 或密钥模式。")
+    if not input_evidence["real_submission_gate_passed"]:
+        blocking.append("真实提交 readiness gate 的状态文件缺失或未通过。")
+    if not input_evidence["export_audit_local_ready"]:
+        blocking.append("LoRA checkpoint 导出审计尚未显示本地就绪。")
+    if not input_evidence["upload_audit_passed"]:
+        blocking.append("checkpoint 上传通道审计尚未通过。")
+    if blocking == []:
+        blocking.append("无文档侧阻塞；真实提交仍取决于用户凭据、授权上传和真实 checkpoint link。")
+
+    return {
+        "kind": "submission_handoff_docs_audit",
+        "passed": passed,
+        "doc_path": str(doc_path.relative_to(ROOT)),
+        "platform_contacted": False,
+        "uploads_performed": False,
+        "credentials_printed": False,
+        "secret_patterns_found": secret_hits,
+        "env_mentions": env_mentions,
+        "path_mentions": path_mentions,
+        "command_mentions": command_mentions,
+        "guardrails": guardrails,
+        "input_evidence": input_evidence,
+        "blocking": blocking,
+    }
+
+
+def write_report(status: dict[str, Any], path: Path) -> None:
+    lines = [
+        "# 真实提交交接文档审计",
+        "",
+        "## 结论",
+        "",
+        f"- 审计状态：`passed={status['passed']}`。",
+        f"- 文档路径：`{status['doc_path']}`。",
+        f"- 是否连接 RoboChallenge 平台：`{status['platform_contacted']}`。",
+        f"- 是否执行上传：`{status['uploads_performed']}`。",
+        f"- 是否打印凭据：`{status['credentials_printed']}`。",
+        f"- 是否发现疑似明文密钥：`{bool(status['secret_patterns_found'])}`。",
+        "",
+        "## 必需环境变量提及",
+        "",
+    ]
+    for key, value in status["env_mentions"].items():
+        lines.append(f"- `{key}`：`{value}`。")
+    lines.extend(["", "## 必需路径提及", ""])
+    for key, value in status["path_mentions"].items():
+        lines.append(f"- `{key}`：`{value}`。")
+    lines.extend(["", "## 必需命令提及", ""])
+    for key, value in status["command_mentions"].items():
+        lines.append(f"- `{key}`：`{value}`。")
+    lines.extend(["", "## 安全边界", ""])
+    for key, value in status["guardrails"].items():
+        lines.append(f"- `{key}`：`{value}`。")
+    lines.extend(["", "## 输入证据", ""])
+    for key, value in status["input_evidence"].items():
+        lines.append(f"- `{key}`：`{value}`。")
+    lines.extend(["", "## Blocking", ""])
+    for item in status["blocking"]:
+        lines.append(f"- {item}")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def main() -> int:
+    args = parse_args()
+    status = build_status(args.doc_path)
+    args.status_path.parent.mkdir(parents=True, exist_ok=True)
+    args.status_path.write_text(json.dumps(status, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    write_report(status, args.report_path)
+    print(json.dumps(status, ensure_ascii=False, indent=2))
+    return 0 if status["passed"] else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

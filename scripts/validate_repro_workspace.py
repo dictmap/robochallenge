@@ -41,6 +41,7 @@ REQUIRED = [
     "reports/lora_checkpoint_export_readiness.md",
     "reports/checkpoint_upload_channels_audit.md",
     "reports/real_submission_readiness.md",
+    "reports/submission_handoff_docs_audit.md",
     "reports/robochallenge_submission_package_checklist.md",
     "runs/pi05_base_probe_status.json",
     "runs/pi06_pi07_public_audit.json",
@@ -65,8 +66,10 @@ REQUIRED = [
     "runs/lora_checkpoint_export_readiness.json",
     "runs/checkpoint_upload_channels_audit.json",
     "runs/real_submission_readiness.json",
+    "runs/submission_handoff_docs_audit.json",
     "runs/robochallenge_submission_package_audit.json",
     "submission/README.md",
+    "submission/REAL_SUBMISSION_HANDOFF.md",
     "submission/submission_manifest_template.json",
     "submission/run_table30v2_aloha_demo_template.sh",
     "submission/run_table30v2_aloha_lora_demo_template.sh",
@@ -84,6 +87,7 @@ REQUIRED = [
     "scripts/audit_lora_checkpoint_export_readiness.py",
     "scripts/audit_checkpoint_upload_channels.py",
     "scripts/audit_real_submission_readiness.py",
+    "scripts/audit_submission_handoff_docs.py",
     "scripts/audit_robochallenge_submission_package.py",
 ]
 
@@ -583,6 +587,33 @@ def main() -> int:
     ):
         print("真实提交 readiness gate 未通过或当前阻塞状态未准确记录")
         return 1
+    handoff = json.loads((ROOT / "runs/submission_handoff_docs_audit.json").read_text(encoding="utf-8"))
+    handoff_inputs = handoff.get("input_evidence", {})
+    handoff_guardrails = handoff.get("guardrails", {})
+    handoff_commands = handoff.get("command_mentions", {})
+    handoff_paths = handoff.get("path_mentions", {})
+    handoff_env = handoff.get("env_mentions", {})
+    if not all(
+        [
+            handoff.get("passed"),
+            handoff.get("doc_path") == "submission/REAL_SUBMISSION_HANDOFF.md",
+            handoff.get("platform_contacted") is False,
+            handoff.get("uploads_performed") is False,
+            handoff.get("credentials_printed") is False,
+            handoff.get("secret_patterns_found") == [],
+            all(handoff_env.values()),
+            all(handoff_paths.values()),
+            all(handoff_commands.values()),
+            all(handoff_guardrails.values()),
+            handoff_inputs.get("real_submission_gate_passed"),
+            handoff_inputs.get("real_submission_currently_blocked"),
+            handoff_inputs.get("export_audit_local_ready"),
+            handoff_inputs.get("upload_audit_passed"),
+            handoff_inputs.get("upload_not_performed"),
+        ]
+    ):
+        print("真实提交交接文档审计未通过")
+        return 1
     if not all(
         [
             lora_grad.get("mode") == "lora_grad",
@@ -710,6 +741,7 @@ def main() -> int:
     print("LoRA checkpoint 导出就绪审计已通过")
     print("Checkpoint 上传通道审计已通过")
     print("真实提交 readiness gate 已通过")
+    print("真实提交交接文档审计已通过")
     return 0
 
 

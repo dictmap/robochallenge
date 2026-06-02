@@ -685,3 +685,30 @@
 
 - P0：运行 workspace validator、notebook preflight、secret scan 和 diff check 后提交推送。
 - P1：用户提供真实凭据和 checkpoint link 后，再运行 readiness gate；通过后才能执行 baseline/LoRA runner。
+
+## 2026-06-02 第二十四轮：真实提交交接文档审计
+
+### 已完成
+
+- 新增 `submission/REAL_SUBMISSION_HANDOFF.md`，把用户拿到 `ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID` 和真实 checkpoint link 后的最短命令链固化下来。
+- 新增 `scripts/audit_submission_handoff_docs.py`，检查交接文档是否包含必需环境变量、runner 路径、tar/sha256/readiness 命令和安全边界。
+- 审计明确不会连接 RoboChallenge 平台、不会上传 checkpoint、不会打印凭据。
+- 已将交接文档审计纳入 `scripts/validate_repro_workspace.py`。
+
+### 验证结果
+
+- 交接文档审计：`passed=true`，`platform_contacted=false`，`uploads_performed=false`，`credentials_printed=false`。
+- 必需环境变量、路径、命令和安全边界全部命中；`secret_patterns_found=[]`。
+- `python3 scripts/validate_repro_workspace.py` 已通过，并新增输出“真实提交交接文档审计已通过”。
+- Notebook preflight 已通过，第 27 节可执行交接文档审计。
+- `python3 -m py_compile`、`git diff --check` 和凭据扫描已通过。
+
+### 当前边界
+
+- 本轮只补齐无凭据状态下的真实提交交接证据，不会伪造 token、submission id 或 checkpoint link。
+- 真实提交仍需要用户授权上传通道，并提供真实可访问 checkpoint link。
+
+### 下一步
+
+- P0：用户提供真实 token、submission id 和 checkpoint link 后，重新运行 readiness gate。
+- P1：用户授权上传通道后，再生成 tar、sha256 并上传物化 LoRA checkpoint。

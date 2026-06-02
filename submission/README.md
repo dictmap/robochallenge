@@ -5,6 +5,7 @@
 - `submission/submission_manifest_template.json`：机器可读提交 manifest 模板。
 - `submission/run_table30v2_aloha_demo_template.sh`：Table30v2 ALOHA baseline 的 `demo.py` 启动模板。
 - `submission/run_table30v2_aloha_lora_demo_template.sh`：Table30v2 ALOHA LoRA 完整物化 checkpoint 的 `demo.py` 启动模板。
+- `submission/REAL_SUBMISSION_HANDOFF.md`：用户拿到 token、submission id 和 checkpoint link 后的真实提交交接清单。
 
 当前默认稳妥提交路线仍是官方 pi0.5 Table30v2 ALOHA baseline。LoRA scoped checkpoint 已被物化为本地完整 checkpoint，并通过 `create_trained_policy` 加载 smoke；但真实网站提交仍需要用户提供凭据，并把本地 checkpoint 上传成网站可访问链接。
 

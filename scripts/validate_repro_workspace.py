@@ -787,11 +787,15 @@ def main() -> int:
             "RoboChallenge pi0.5 提交状态面板" in dashboard_html_text,
             "当前阻塞" in dashboard_html_text,
             dashboard.get("source_count") >= 10,
-            dashboard.get("card_count") >= 10,
+            dashboard.get("card_count") >= 11,
             dashboard.get("done_count", 0) >= 6,
-            dashboard.get("blocked_count", 0) >= 3,
+            dashboard.get("blocked_count", 0) >= 4,
             dashboard.get("ready_for_real_submission") is False,
             dashboard.get("web_form_ready") is False,
+            dashboard.get("preflight_passed") is True,
+            dashboard.get("preflight_go_no_go") == "blocked",
+            dashboard.get("preflight_no_contact") is True,
+            dashboard.get("preflight_no_secret_leak") is True,
             dashboard.get("link_shape_ready") is False,
             dashboard.get("archive_created") is False,
             dashboard.get("uploads_performed") is False,
@@ -804,6 +808,7 @@ def main() -> int:
             "pi0.5 基模" in dashboard_titles,
             "Table30v2 ALOHA" in dashboard_titles,
             "真实提交 gate" in dashboard_titles,
+            "提交前预检汇总" in dashboard_titles,
         ]
     ):
         print("提交状态 GUI 面板未通过")

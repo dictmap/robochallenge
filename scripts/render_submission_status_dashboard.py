@@ -27,6 +27,7 @@ SOURCE_FILES = {
     "archive_dry_run": RUNS_DIR / "checkpoint_archive_dry_run.json",
     "link_intake": RUNS_DIR / "checkpoint_link_intake.json",
     "readiness": RUNS_DIR / "real_submission_readiness.json",
+    "preflight_bundle": RUNS_DIR / "submission_preflight_bundle.json",
     "authorized_sequence": RUNS_DIR / "authorized_submission_sequence_audit.json",
     "plaintext_scan": RUNS_DIR / "plaintext_secret_scan.json",
 }
@@ -77,12 +78,17 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
     archive_dry_run = data["archive_dry_run"]
     link_intake = data["link_intake"]
     readiness = data["readiness"]
+    preflight = data["preflight_bundle"]
     sequence = data["authorized_sequence"]
     plaintext = data["plaintext_scan"]
 
     gcs_zero = all(item.get("object_count") == 0 for item in pi06_pi07.get("gcs_prefixes", []))
     current_link_ready = link_intake.get("current_env", {}).get("link_shape_ready")
     ready_for_real = readiness.get("ready_for_real_submission")
+    preflight_contacts = preflight.get("contact_flags", {})
+    preflight_leaks = preflight.get("leak_flags", {})
+    preflight_no_contact = not any(preflight_contacts.values())
+    preflight_no_leak = not any(preflight_leaks.values())
     archive_created = archive_dry_run.get("archive_created")
     uploads_performed = readiness.get("inputs", {}).get("uploads_performed")
     plaintext_clean = plaintext.get("hit_count") == 0 and plaintext.get("secret_values_printed") is False
@@ -145,6 +151,16 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
             "reports/real_submission_readiness.md",
         ),
         card(
+            "提交前预检汇总",
+            "blocked" if preflight.get("go_no_go") == "blocked" else "done",
+            f"go/no-go={preflight.get('go_no_go', 'unknown')}",
+            (
+                "一键预检已串联 link、下载协议、readiness、handoff 和明文扫描；"
+                f"no-contact={yes(preflight_no_contact)}，no-leak={yes(preflight_no_leak)}。"
+            ),
+            "reports/submission_preflight_bundle.md",
+        ),
+        card(
             "授权后顺序",
             "done" if sequence.get("passed") and sequence.get("commands", {}).get("critical_order_passed") else "watch",
             "顺序已固化",
@@ -166,7 +182,10 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
     link_intake = data["link_intake"]
     archive = data["archive_dry_run"]
     sequence = data["authorized_sequence"]
+    preflight = data["preflight_bundle"]
     plaintext = data["plaintext_scan"]
+    preflight_contacts = preflight.get("contact_flags", {})
+    preflight_leaks = preflight.get("leak_flags", {})
     blocked_cards = [item for item in cards if item["state"] == "blocked"]
     watch_cards = [item for item in cards if item["state"] == "watch"]
     done_cards = [item for item in cards if item["state"] == "done"]
@@ -181,6 +200,10 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
         "watch_count": len(watch_cards),
         "ready_for_real_submission": readiness.get("ready_for_real_submission"),
         "web_form_ready": readiness.get("web_form_ready"),
+        "preflight_passed": preflight.get("passed"),
+        "preflight_go_no_go": preflight.get("go_no_go"),
+        "preflight_no_contact": not any(preflight_contacts.values()),
+        "preflight_no_secret_leak": not any(preflight_leaks.values()),
         "link_shape_ready": link_intake.get("current_env", {}).get("link_shape_ready"),
         "archive_created": archive.get("archive_created"),
         "uploads_performed": readiness.get("inputs", {}).get("uploads_performed"),

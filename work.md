@@ -737,6 +737,28 @@
 ### 下一步
 
 - P0：最终 secret scan、diff check 后提交推送。
+## 2026-06-02 第三十七轮：GUI 面板纳入提交前预检汇总
+
+### 已完成
+- 更新 `scripts/render_submission_status_dashboard.py`，把 `runs/submission_preflight_bundle.json` 纳入 GUI 数据源。
+- `reports/submission_status_dashboard.html` 新增“提交前预检汇总”卡片，展示 `go/no-go=blocked`、`no-contact=是` 和 `no-leak=是`。
+- `runs/submission_status_dashboard.json` 新增 `preflight_passed`、`preflight_go_no_go`、`preflight_no_contact`、`preflight_no_secret_leak` 等机器可读字段。
+- 更新 `scripts/validate_repro_workspace.py`，强制要求 GUI 至少 11 张卡片、至少 4 个阻塞卡片，并检查预检汇总卡片和 no-contact/no-leak 字段。
+- 更新 Notebook 第 34 节 GUI 单元：重新生成面板后会断言“提交前预检汇总”卡片、`go/no-go=blocked` 和 no-contact/no-leak 状态。
+
+### 验证结果
+- 本地 `python scripts\render_submission_status_dashboard.py` 已通过，`card_count=11`、`blocked_count=4`、`source_count=11`。
+- 本地 `python scripts\validate_repro_workspace.py` 已通过。
+- Linux 已重跑 dashboard 渲染、`validate_repro_workspace.py`、`run_notebook_preflight.sh`、`audit_plaintext_secrets.py` 和 `git diff --check`，均已通过。
+- 新增/更新的 Notebook、dashboard JSON 和 dashboard HTML 已检查：无问号乱码、无替换字符、无常见 mojibake。
+- 浏览器插件拒绝直接打开本地 `file://` HTML；本轮未绕过该安全策略，改用静态 HTML/JSON 校验。
+
+### 当前边界
+- GUI 只展示状态，不连接 RoboChallenge 平台、不上传 checkpoint、不读取或显示真实 token/link。
+- 当前真实提交仍缺 `ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID` 和真实可访问 checkpoint link，因此 GUI 中预检汇总正确显示 `go/no-go=blocked`。
+
+### 下一步
+- P0：提交并推送本轮 GUI 面板预检汇总卡片产物。
 ## 2026-06-02 第三十六轮：真实提交前预检汇总
 
 ### 已完成

@@ -105,11 +105,11 @@
         <h1>RoboChallenge pi0.5 提交状态面板</h1>
         <p class="sub">静态 GUI 汇总当前复现、LoRA checkpoint、上传/link/readiness 阻塞和授权后执行顺序。面板由 JSON 审计结果生成，不读取或显示真实凭据。</p>
       </div>
-      <div class="stamp">生成时间<br>2026-06-02 04:15:48 UTC</div>
+      <div class="stamp">生成时间<br>2026-06-02 07:26:31 UTC</div>
     </header>
     <section class="summary">
       <div class="metric"><b>6</b><span>已完成项</span></div>
-      <div class="metric"><b>3</b><span>待授权项</span></div>
+      <div class="metric"><b>4</b><span>待授权项</span></div>
       <div class="metric"><b>否</b><span>真实提交就绪</span></div>
       <div class="metric"><b>否</b><span>checkpoint link 就绪</span></div>
       <div class="metric"><b>否</b><span>本地 tar 已生成</span></div>
@@ -194,6 +194,16 @@
               <h2>真实提交 gate</h2>
               <p class="value">ready=false</p>
               <p>缺少 user token、submission id、checkpoint link；runner 仍不会启动。</p>
+            </article>
+
+            <article class="card blocked">
+              <div class="card-top">
+                <span class="state">待授权</span>
+                <a href="../reports/submission_preflight_bundle.md">报告</a>
+              </div>
+              <h2>提交前预检汇总</h2>
+              <p class="value">go/no-go=blocked</p>
+              <p>一键预检已串联 link、下载协议、readiness、handoff 和明文扫描；no-contact=是，no-leak=是。</p>
             </article>
 
             <article class="card done">

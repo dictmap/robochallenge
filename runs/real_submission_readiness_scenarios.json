@@ -1,0 +1,67 @@
+{
+  "kind": "real_submission_readiness_scenarios",
+  "passed": true,
+  "platform_contacted": false,
+  "credentials_printed": false,
+  "synthetic_values_recorded": false,
+  "scenarios": {
+    "missing_env_expected_blocked": {
+      "returncode": 0,
+      "gate_passed_field": true,
+      "ready_for_real_submission": false,
+      "web_form_ready": false,
+      "local_baseline_runner_ready": false,
+      "local_lora_runner_ready": false,
+      "platform_contacted": false,
+      "credentials_printed": false,
+      "value_leak_detected": false,
+      "leaked_value_keys": [],
+      "env_presence": {
+        "ROBOCHALLENGE_USER_TOKEN": false,
+        "ROBOCHALLENGE_SUBMISSION_ID": false,
+        "ROBOCHALLENGE_CHECKPOINT_LINK": false,
+        "ROBOCHALLENGE_LORA_CHECKPOINT_LINK": false
+      },
+      "url_flags": {
+        "ROBOCHALLENGE_USER_TOKEN": false,
+        "ROBOCHALLENGE_SUBMISSION_ID": false,
+        "ROBOCHALLENGE_CHECKPOINT_LINK": false,
+        "ROBOCHALLENGE_LORA_CHECKPOINT_LINK": false
+      },
+      "blocking_count": 4
+    },
+    "synthetic_env_expected_ready_shape": {
+      "returncode": 0,
+      "gate_passed_field": true,
+      "ready_for_real_submission": true,
+      "web_form_ready": true,
+      "local_baseline_runner_ready": true,
+      "local_lora_runner_ready": true,
+      "platform_contacted": false,
+      "credentials_printed": false,
+      "value_leak_detected": false,
+      "leaked_value_keys": [],
+      "env_presence": {
+        "ROBOCHALLENGE_USER_TOKEN": true,
+        "ROBOCHALLENGE_SUBMISSION_ID": true,
+        "ROBOCHALLENGE_CHECKPOINT_LINK": false,
+        "ROBOCHALLENGE_LORA_CHECKPOINT_LINK": true
+      },
+      "url_flags": {
+        "ROBOCHALLENGE_USER_TOKEN": false,
+        "ROBOCHALLENGE_SUBMISSION_ID": false,
+        "ROBOCHALLENGE_CHECKPOINT_LINK": false,
+        "ROBOCHALLENGE_LORA_CHECKPOINT_LINK": true
+      },
+      "blocking_count": 1
+    }
+  },
+  "expectations": {
+    "missing_env_expected_blocked": true,
+    "synthetic_env_expected_ready_shape": true
+  },
+  "blocking": [
+    "本审计只验证 readiness gate 的布尔逻辑翻转；synthetic ready 不代表真实提交完成。",
+    "真实提交仍需要用户提供真实 token、submission id 和可访问 checkpoint link。"
+  ]
+}

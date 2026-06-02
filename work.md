@@ -737,6 +737,33 @@
 ### 下一步
 
 - P0：最终 secret scan、diff check 后提交推送。
+
+## 2026-06-02 第二十七轮：readiness gate 场景 smoke 与 Notebook 乱码修复
+
+### 已完成
+
+- 新增 `scripts/audit_real_submission_readiness_scenarios.py`，离线验证 readiness gate 在“缺少凭据”和“synthetic 凭据/链接齐全”两种场景下的布尔逻辑。
+- 生成 `reports/real_submission_readiness_scenarios.md` 和 `runs/real_submission_readiness_scenarios.json`。
+- 修复 Notebook 第 27 节的中文问号乱码，并新增第 28 节 readiness 场景 smoke。
+- 已将 readiness 场景 smoke 纳入 `scripts/validate_repro_workspace.py`。
+
+### 验证结果
+
+- readiness 场景 smoke：`passed=true`，`platform_contacted=false`，`credentials_printed=false`，`synthetic_values_recorded=false`。
+- 缺凭据场景：`ready_for_real_submission=false`，`web_form_ready=false`。
+- synthetic 齐全场景：`ready_for_real_submission=true`，`web_form_ready=true`，baseline/LoRA runner ready 均为 `true`；该结果只验证 gate 逻辑翻转。
+- Notebook 第 27-28 节问号计数为 `0`，preflight 已通过。
+- `python3 scripts/validate_repro_workspace.py` 已通过，并新增输出“真实提交 readiness 场景 smoke 已通过”。
+- 待运行：最终 secret scan、diff check 和提交推送。
+
+### 当前边界
+
+- synthetic ready 只验证本地 gate 逻辑，不代表真实提交完成。
+- 真实提交仍需要用户提供真实 token、submission id 和可访问 checkpoint link。
+
+### 下一步
+
+- P0：最终 secret scan、diff check 后提交推送。
 - P1：用户提供真实凭据和 checkpoint link 后，重新运行 readiness gate。
 
 ## 2026-06-02 第二十六轮：runner dry-run 不连接平台检查

@@ -41,6 +41,7 @@ REQUIRED = [
     "reports/lora_checkpoint_export_readiness.md",
     "reports/checkpoint_upload_channels_audit.md",
     "reports/real_submission_readiness.md",
+    "reports/real_submission_readiness_scenarios.md",
     "reports/submission_handoff_docs_audit.md",
     "reports/robochallenge_submission_package_checklist.md",
     "runs/pi05_base_probe_status.json",
@@ -66,6 +67,7 @@ REQUIRED = [
     "runs/lora_checkpoint_export_readiness.json",
     "runs/checkpoint_upload_channels_audit.json",
     "runs/real_submission_readiness.json",
+    "runs/real_submission_readiness_scenarios.json",
     "runs/submission_handoff_docs_audit.json",
     "runs/robochallenge_submission_package_audit.json",
     "submission/README.md",
@@ -87,6 +89,7 @@ REQUIRED = [
     "scripts/audit_lora_checkpoint_export_readiness.py",
     "scripts/audit_checkpoint_upload_channels.py",
     "scripts/audit_real_submission_readiness.py",
+    "scripts/audit_real_submission_readiness_scenarios.py",
     "scripts/audit_submission_handoff_docs.py",
     "scripts/audit_robochallenge_submission_package.py",
 ]
@@ -587,6 +590,33 @@ def main() -> int:
     ):
         print("真实提交 readiness gate 未通过或当前阻塞状态未准确记录")
         return 1
+    readiness_scenarios = json.loads(
+        (ROOT / "runs/real_submission_readiness_scenarios.json").read_text(encoding="utf-8")
+    )
+    missing_scenario = readiness_scenarios.get("scenarios", {}).get("missing_env_expected_blocked", {})
+    synthetic_scenario = readiness_scenarios.get("scenarios", {}).get("synthetic_env_expected_ready_shape", {})
+    if not all(
+        [
+            readiness_scenarios.get("passed"),
+            readiness_scenarios.get("platform_contacted") is False,
+            readiness_scenarios.get("credentials_printed") is False,
+            readiness_scenarios.get("synthetic_values_recorded") is False,
+            readiness_scenarios.get("expectations", {}).get("missing_env_expected_blocked"),
+            readiness_scenarios.get("expectations", {}).get("synthetic_env_expected_ready_shape"),
+            missing_scenario.get("ready_for_real_submission") is False,
+            missing_scenario.get("web_form_ready") is False,
+            missing_scenario.get("value_leak_detected") is False,
+            synthetic_scenario.get("ready_for_real_submission") is True,
+            synthetic_scenario.get("web_form_ready") is True,
+            synthetic_scenario.get("local_baseline_runner_ready") is True,
+            synthetic_scenario.get("local_lora_runner_ready") is True,
+            synthetic_scenario.get("platform_contacted") is False,
+            synthetic_scenario.get("credentials_printed") is False,
+            synthetic_scenario.get("value_leak_detected") is False,
+        ]
+    ):
+        print("真实提交 readiness 场景 smoke 未通过")
+        return 1
     handoff = json.loads((ROOT / "runs/submission_handoff_docs_audit.json").read_text(encoding="utf-8"))
     handoff_inputs = handoff.get("input_evidence", {})
     handoff_guardrails = handoff.get("guardrails", {})
@@ -755,6 +785,7 @@ def main() -> int:
     print("LoRA checkpoint 导出就绪审计已通过")
     print("Checkpoint 上传通道审计已通过")
     print("真实提交 readiness gate 已通过")
+    print("真实提交 readiness 场景 smoke 已通过")
     print("真实提交交接文档审计已通过")
     return 0
 

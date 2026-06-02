@@ -1430,3 +1430,31 @@
 ### 下一步
 - P0：提交并推送本轮 Jupyter handoff/sequence 固化、审计脚本和派生报告。
 - P1：用户拿到真实凭据后，优先按 Notebook 第 44 节写入 local env，再手动开启第 45 节做授权预检；预检 ready 之后再进入 checkpoint 归档/上传或真实 runner 强确认入口。
+
+## 2026-06-03 第五十一轮：下一步用户动作包与 GUI 卡片
+
+### 已完成
+- 新增 `scripts/render_next_user_action_packet.py`，从 readiness、blockers、授权执行清单、Jupyter 第 44/45 节审计和 handoff/sequence 审计生成一页式下一步动作包。
+- 新增机器可读产物 `runs/next_user_action_packet.json` 和中文报告 `reports/next_user_action_packet.md`。
+- 动作包明确列出 6 个需要用户补齐或授权的项目：提交对象确认、`ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、真实 checkpoint link、checkpoint 归档授权、真实 runner 强确认。
+- 更新 `scripts/audit_submission_preflight_bundle.py`，把 `next_user_action_packet` 加入只读预检子审计。
+- 更新 `scripts/audit_submission_artifact_manifest.py`，把动作包报告、脚本和 no-contact/no-leak 证据纳入提交准备材料 manifest。
+- 更新 `scripts/render_submission_status_dashboard.py`，GUI 新增“下一步动作包”卡片，链接到 `reports/next_user_action_packet.md`。
+- 更新 `scripts/validate_repro_workspace.py`，总体验证会检查动作包报告、JSON、脚本、6 个用户决策项、Notebook 第 44/45 节入口和 no-contact/no-leak 边界。
+
+### 验证结果
+
+- 本地和 Linux 端语法检查已通过：`python3 -m py_compile scripts/render_next_user_action_packet.py scripts/audit_submission_preflight_bundle.py scripts/audit_submission_artifact_manifest.py scripts/render_submission_status_dashboard.py scripts/validate_repro_workspace.py`。
+- Linux 端 `python3 scripts/render_next_user_action_packet.py` 已通过：`passed=true`，`go_no_go=blocked_by_user_inputs`，`local_env_ignored=true`，6 个 `required_decision_ids` 齐全，`first_notebook_steps` 覆盖 Notebook 第 44/45 节。
+- Linux 端完整 no-contact 链已通过：动作包、preflight bundle、artifact manifest、blockers summary、GUI 渲染、总体验证和 `git diff --check` 均通过。
+- GUI 状态已升级为 16 个数据源和 16 张卡片，新增“下一步动作包”卡片；真实提交仍显示 `ready=false`、`go/no-go=blocked`。
+- 明文凭据扫描仍为无命中；本轮没有读取、打印或保存真实 token、submission id、checkpoint link。
+
+### 当前边界
+
+- 本轮没有接触 RoboChallenge 平台，没有上传 checkpoint，没有生成 checkpoint tar，没有启动真实 runner，也没有联网验证 checkpoint link。
+- 真实提交仍处于 `go_no_go=blocked`：还缺 `ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、真实可访问 checkpoint link，以及用户对 checkpoint 归档/上传和真实 runner 的明确授权。
+
+### 下一步
+- P0：提交并推送本轮下一步动作包、GUI 卡片和审计链更新。
+- P1：用户拿到凭据后，直接打开 `reports/next_user_action_packet.md` 或 GUI“下一步动作包”卡片，按 Notebook 第 44/45 节路线写入 local env 并跑授权预检。

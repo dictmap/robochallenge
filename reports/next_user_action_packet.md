@@ -1,0 +1,70 @@
+# 下一步用户动作包
+
+## 结论
+
+- 审计状态：`passed=True`。
+- go/no-go：`blocked_by_user_inputs`。
+- 真实提交就绪：`False`。
+- Web 表单就绪：`False`。
+- Notebook：`notebooks/robochallenge_pi05_submit_cn.ipynb`。
+- 本地 env：`submission/robochallenge_env.local.sh`，Git 忽略：`True`。
+
+## 用户需要补齐或授权
+
+- `SUBMISSION_TARGET_CONFIRMATION`：提交对象确认。需要用户确认提交 Table30v2 ALOHA；原始 Table30 还不能直接沿用当前链路。
+- `ROBOCHALLENGE_USER_TOKEN`：RoboChallenge user token。只能放入本地 shell 或被 Git 忽略的 local env 文件，不能写入 tracked 文件。
+- `ROBOCHALLENGE_SUBMISSION_ID`：RoboChallenge submission id。必须来自 RoboChallenge 页面，不能伪造。
+- `ROBOCHALLENGE_CHECKPOINT_LINK`：真实 checkpoint link。LoRA 提交需要可访问 checkpoint link；默认只做脱敏形态检查。
+- `CHECKPOINT_ARCHIVE_AUTHORIZATION`：checkpoint 归档授权。生成 11GB+ tar 前必须显式设置归档确认短语。
+- `ROBOCHALLENGE_REAL_RUN_CONFIRM`：真实 runner 强确认。启动真实 runner 前必须显式设置真实提交确认短语。
+
+## 推荐入口
+
+1. 打开 `notebooks/robochallenge_pi05_submit_cn.ipynb`。
+2. 在第 44 节手动设置 `RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE=True`，把真实值写入被 Git 忽略的 local env。
+3. 在第 45 节手动设置 `RUN_JUPYTER_AUTHORIZED_PREFLIGHT=True`，只运行授权后预检。
+4. 只有预检显示 ready 后，才进入 checkpoint 归档/上传或真实 runner 强确认入口。
+
+## 当前阻塞
+
+- 缺少 ROBOCHALLENGE_USER_TOKEN。
+- 缺少 ROBOCHALLENGE_SUBMISSION_ID。
+- 缺少真实可访问 checkpoint link；可使用 ROBOCHALLENGE_CHECKPOINT_LINK 或 ROBOCHALLENGE_LORA_CHECKPOINT_LINK 记录。
+- 尚未执行 checkpoint 上传，本地 tar 文件也未生成。
+- 缺少 checkpoint link；请设置 ROBOCHALLENGE_CHECKPOINT_LINK 或 ROBOCHALLENGE_LORA_CHECKPOINT_LINK。
+- 缺少真实 checkpoint link；当前只能审计下载校验协议，不能联网验证。
+- 未请求 --verify-download；本轮不联网、不下载、不接触 checkpoint link host。
+- 需要用户提供真实 ROBOCHALLENGE_USER_TOKEN。
+- 需要用户提供真实 ROBOCHALLENGE_SUBMISSION_ID。
+- 需要确认本次要提交的是 Table30v2 ALOHA 还是原始 Table30；当前可运行链路是 Table30v2 ALOHA。
+- 若要提交 LoRA 版本，还需要把本地 12GB+ checkpoint 放到网站可访问的 checkpoint link。
+
+## 只读边界
+
+- `platform_contacted`：`False`。
+- `uploads_performed`：`False`。
+- `download_host_contacted`：`False`。
+- `credentials_printed`：`False`。
+- `link_values_printed`：`False`。
+- `secret_values_printed`：`False`。
+
+## 输入证据
+
+- `readiness_gate_passed`：`True`。
+- `ready_for_real_submission_false`：`True`。
+- `web_form_ready_false`：`True`。
+- `authorized_execution_checklist_passed`：`True`。
+- `authorized_execution_go_no_go_blocked`：`True`。
+- `all_expected_decisions_listed`：`True`。
+- `jupyter_input_template_passed`：`True`。
+- `jupyter_input_default_false`：`True`。
+- `jupyter_authorized_preflight_template_passed`：`True`。
+- `jupyter_authorized_preflight_execution_default_false`：`True`。
+- `local_env_ignored`：`True`。
+- `handoff_docs_passed`：`True`。
+- `authorized_sequence_passed`：`True`。
+- `secret_scan_clean`：`True`。
+
+## Blocking
+
+- 动作包已生成；真实提交仍等待用户凭据、checkpoint link 和显式授权。

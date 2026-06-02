@@ -7,7 +7,7 @@
   "credentials_printed": false,
   "link_values_printed": false,
   "secret_values_printed": false,
-  "artifact_count": 45,
+  "artifact_count": 47,
   "artifacts": [
     {
       "path": "README.md",
@@ -20,8 +20,8 @@
       "path": "work.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 103324,
-      "sha256": "8e353fe4ef690660baf001a582d97320e4ea01b2e24ed6a0899ff26c87303ec3"
+      "size_bytes": 106275,
+      "sha256": "d117641c482141cab2abe4baa94bcf3ca4d2b7a162ecf8838d9b39a3080012a2"
     },
     {
       "path": "notebooks/robochallenge_pi05_submit_cn.ipynb",
@@ -269,6 +269,13 @@
       "sha256": "f8e1985f1a9f74221c2cca074858ebf46d8a1ce9606ed82180efcb2f7bdc6c42"
     },
     {
+      "path": "reports/next_user_action_packet.md",
+      "exists": true,
+      "tracked": false,
+      "size_bytes": 3525,
+      "sha256": "d8dc4be545ec54e8a241dbff28c09cf103d0fc895d6052d894d4b045c77f6e03"
+    },
+    {
       "path": "reports/submission_handoff_docs_audit.md",
       "exists": true,
       "tracked": true,
@@ -286,22 +293,29 @@
       "path": "reports/submission_preflight_bundle.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 2155,
-      "sha256": "3e9e9dfea1f7e2a7824460038a54962fd4ccfd4a964b6cfc14763886483a5c61"
+      "size_bytes": 2219,
+      "sha256": "345d6f938f63b7abe6b44b808af178263c2bd6c629a983504c43a8781a340feb"
     },
     {
       "path": "reports/plaintext_secret_scan.md",
       "exists": true,
       "tracked": true,
       "size_bytes": 610,
-      "sha256": "6b034e8d21f5546bfc7884c3bc29f4a3e6c3253341f648ccd71c90ba86bdabdb"
+      "sha256": "101d089c494bed0c5f0d41754decc5cf2b6830f784051c751152dd7f058e562e"
     },
     {
       "path": "reports/submission_status_dashboard.html",
       "exists": true,
       "tracked": true,
-      "size_bytes": 11486,
-      "sha256": "9ebf4ba227dd33ceb6bda688fc46230fee801eca2abf03a75f6a315c68e8fed5"
+      "size_bytes": 11963,
+      "sha256": "3b7fe0b5c7c9eca56355ea63223213cc99734676b4456e6590bcd78e678925c3"
+    },
+    {
+      "path": "scripts/render_next_user_action_packet.py",
+      "exists": true,
+      "tracked": false,
+      "size_bytes": 11207,
+      "sha256": "dab2f1f20bb65566c0b8af6507e99439796419de30a2cd2443f95485a89aeeb0"
     },
     {
       "path": "scripts/audit_jupyter_input_template.py",
@@ -375,6 +389,7 @@
     "ready_real_runner_template_passed": true,
     "authorized_checkpoint_archive_template_passed": true,
     "authorized_execution_checklist_passed": true,
+    "next_user_action_packet_passed": true,
     "readiness_currently_blocked": true,
     "env_template_passed": true,
     "secret_scan_passed": true,

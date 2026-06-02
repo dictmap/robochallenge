@@ -27,6 +27,7 @@ SOURCE_FILES = {
     "archive_dry_run": RUNS_DIR / "checkpoint_archive_dry_run.json",
     "authorized_archive": RUNS_DIR / "authorized_checkpoint_archive_template_audit.json",
     "authorized_execution": RUNS_DIR / "authorized_execution_checklist.json",
+    "next_user_action_packet": RUNS_DIR / "next_user_action_packet.json",
     "jupyter_input": RUNS_DIR / "jupyter_input_template_audit.json",
     "jupyter_authorized": RUNS_DIR / "jupyter_authorized_preflight_template_audit.json",
     "link_intake": RUNS_DIR / "checkpoint_link_intake.json",
@@ -82,6 +83,7 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
     archive_dry_run = data["archive_dry_run"]
     authorized_archive = data["authorized_archive"]
     authorized_execution = data["authorized_execution"]
+    action_packet = data["next_user_action_packet"]
     jupyter_input = data["jupyter_input"]
     jupyter_authorized = data["jupyter_authorized"]
     link_intake = data["link_intake"]
@@ -109,6 +111,12 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
         authorized_execution.get("passed")
         and authorized_execution.get("go_no_go") == "blocked_by_user_inputs"
         and authorized_execution.get("ready_for_real_submission") is False
+    )
+    action_packet_ready = bool(
+        action_packet.get("passed")
+        and action_packet.get("go_no_go") == "blocked_by_user_inputs"
+        and action_packet.get("local_env_ignored") is True
+        and len(action_packet.get("required_user_decisions", [])) >= 6
     )
     jupyter_input_ready = bool(
         jupyter_input.get("passed")
@@ -215,6 +223,13 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
             "reports/authorized_execution_checklist.md",
         ),
         card(
+            "下一步动作包",
+            "done" if action_packet_ready else "watch",
+            "Notebook 优先",
+            "把用户要补齐的 6 项和第 44/45 节入口合并成一页；不读取、不保存、不打印真实值。",
+            "reports/next_user_action_packet.md",
+        ),
+        card(
             "Jupyter 安全填空",
             "done" if jupyter_input_ready else "watch",
             "local env 入口",
@@ -244,6 +259,7 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
     archive = data["archive_dry_run"]
     authorized_archive = data["authorized_archive"]
     authorized_execution = data["authorized_execution"]
+    action_packet = data["next_user_action_packet"]
     jupyter_input = data["jupyter_input"]
     jupyter_authorized = data["jupyter_authorized"]
     sequence = data["authorized_sequence"]
@@ -276,6 +292,9 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
         "archive_no_confirm_blocks": authorized_archive.get("no_confirm_smoke", {}).get("passed") is True,
         "authorized_execution_checklist_passed": authorized_execution.get("passed") is True,
         "authorized_execution_go_no_go": authorized_execution.get("go_no_go"),
+        "next_user_action_packet_passed": action_packet.get("passed") is True,
+        "next_user_action_packet_decision_count": len(action_packet.get("required_user_decisions", [])),
+        "next_user_action_packet_local_env_ignored": action_packet.get("local_env_ignored") is True,
         "jupyter_input_template_passed": jupyter_input.get("passed") is True,
         "jupyter_input_default_off": jupyter_input.get("run_flag_default_false") is True,
         "jupyter_local_env_ignored": jupyter_input.get("local_env_ignored", {}).get("ignored") is True,

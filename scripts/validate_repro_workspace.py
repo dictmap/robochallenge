@@ -59,6 +59,7 @@ REQUIRED = [
     "reports/ready_real_runner_template_audit.md",
     "reports/authorized_checkpoint_archive_template_audit.md",
     "reports/authorized_execution_checklist.md",
+    "reports/next_user_action_packet.md",
     "reports/submission_artifact_manifest.md",
     "reports/submission_blockers_summary.md",
     "reports/plaintext_secret_scan.md",
@@ -104,6 +105,7 @@ REQUIRED = [
     "runs/ready_real_runner_template_audit.json",
     "runs/authorized_checkpoint_archive_template_audit.json",
     "runs/authorized_execution_checklist.json",
+    "runs/next_user_action_packet.json",
     "runs/submission_artifact_manifest.json",
     "runs/submission_blockers_summary.json",
     "runs/plaintext_secret_scan.json",
@@ -150,6 +152,7 @@ REQUIRED = [
     "scripts/audit_ready_real_runner_template.py",
     "scripts/audit_authorized_checkpoint_archive_template.py",
     "scripts/audit_authorized_execution_checklist.py",
+    "scripts/render_next_user_action_packet.py",
     "scripts/audit_submission_artifact_manifest.py",
     "scripts/audit_submission_blockers_summary.py",
     "scripts/audit_plaintext_secrets.py",
@@ -829,9 +832,9 @@ def main() -> int:
             "<html lang=\"zh-CN\">" in dashboard_html_text,
             "RoboChallenge pi0.5 提交状态面板" in dashboard_html_text,
             "当前阻塞" in dashboard_html_text,
-            dashboard.get("source_count") >= 15,
-            dashboard.get("card_count") >= 15,
-            dashboard.get("done_count", 0) >= 10,
+            dashboard.get("source_count") >= 16,
+            dashboard.get("card_count") >= 16,
+            dashboard.get("done_count", 0) >= 11,
             dashboard.get("blocked_count", 0) >= 4,
             dashboard.get("ready_for_real_submission") is False,
             dashboard.get("web_form_ready") is False,
@@ -846,6 +849,9 @@ def main() -> int:
             dashboard.get("archive_no_confirm_blocks") is True,
             dashboard.get("authorized_execution_checklist_passed") is True,
             dashboard.get("authorized_execution_go_no_go") == "blocked_by_user_inputs",
+            dashboard.get("next_user_action_packet_passed") is True,
+            dashboard.get("next_user_action_packet_decision_count", 0) >= 6,
+            dashboard.get("next_user_action_packet_local_env_ignored") is True,
             dashboard.get("jupyter_input_template_passed") is True,
             dashboard.get("jupyter_input_default_off") is True,
             dashboard.get("jupyter_local_env_ignored") is True,
@@ -863,6 +869,7 @@ def main() -> int:
             "Table30v2 ALOHA" in dashboard_titles,
             "归档强确认入口" in dashboard_titles,
             "授权执行清单" in dashboard_titles,
+            "下一步动作包" in dashboard_titles,
             "Jupyter 安全填空" in dashboard_titles,
             "Jupyter 授权预检" in dashboard_titles,
             "真实提交 gate" in dashboard_titles,
@@ -1242,6 +1249,44 @@ def main() -> int:
     ):
         print("授权执行清单审计未通过")
         return 1
+    action_packet = json.loads((ROOT / "runs/next_user_action_packet.json").read_text(encoding="utf-8"))
+    action_packet_evidence = action_packet.get("evidence", {})
+    action_packet_leaks = action_packet.get("leak_flags", {})
+    action_packet_contacts = action_packet.get("contact_flags", {})
+    action_packet_required_ids = set(action_packet.get("required_decision_ids", []))
+    if not all(
+        [
+            action_packet.get("kind") == "next_user_action_packet",
+            action_packet.get("passed"),
+            action_packet.get("go_no_go") == "blocked_by_user_inputs",
+            action_packet.get("ready_for_real_submission") is False,
+            action_packet.get("web_form_ready") is False,
+            action_packet.get("notebook_path") == "notebooks/robochallenge_pi05_submit_cn.ipynb",
+            action_packet.get("local_env_path") == "submission/robochallenge_env.local.sh",
+            action_packet.get("local_env_ignored") is True,
+            action_packet.get("platform_contacted") is False,
+            action_packet.get("uploads_performed") is False,
+            action_packet.get("credentials_read") is False,
+            action_packet.get("credentials_printed") is False,
+            action_packet.get("link_values_printed") is False,
+            action_packet.get("secret_values_printed") is False,
+            {
+                "SUBMISSION_TARGET_CONFIRMATION",
+                "ROBOCHALLENGE_USER_TOKEN",
+                "ROBOCHALLENGE_SUBMISSION_ID",
+                "ROBOCHALLENGE_CHECKPOINT_LINK",
+                "CHECKPOINT_ARCHIVE_AUTHORIZATION",
+                "ROBOCHALLENGE_REAL_RUN_CONFIRM",
+            }.issubset(action_packet_required_ids),
+            len(action_packet.get("first_notebook_steps", [])) >= 2,
+            len(action_packet.get("current_blocking", [])) >= 4,
+            all(action_packet_evidence.values()),
+            not any(action_packet_leaks.values()),
+            not any(action_packet_contacts.values()),
+        ]
+    ):
+        print("下一步用户动作包审计未通过")
+        return 1
     artifact_manifest = json.loads((ROOT / "runs/submission_artifact_manifest.json").read_text(encoding="utf-8"))
     artifact_inputs = artifact_manifest.get("inputs", {})
     artifact_leaks = artifact_manifest.get("leak_flags", {})
@@ -1290,6 +1335,7 @@ def main() -> int:
         "submission_handoff_docs",
         "plaintext_secret_scan",
         "authorized_execution_checklist",
+        "next_user_action_packet",
         "submission_artifact_manifest",
     }
     if not all(
@@ -1528,6 +1574,7 @@ def main() -> int:
     print("强确认真实 runner 模板审计已通过")
     print("授权后 checkpoint 归档模板审计已通过")
     print("授权执行清单审计已通过")
+    print("下一步用户动作包审计已通过")
     print("提交准备材料 manifest 审计已通过")
     print("真实提交前预检汇总已通过")
     print("真实提交阻塞项摘要已通过")

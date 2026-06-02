@@ -2,9 +2,9 @@
   "kind": "submission_status_dashboard",
   "passed": true,
   "html_path": "reports/submission_status_dashboard.html",
-  "source_count": 15,
-  "card_count": 15,
-  "done_count": 10,
+  "source_count": 16,
+  "card_count": 16,
+  "done_count": 11,
   "blocked_count": 4,
   "watch_count": 1,
   "ready_for_real_submission": false,
@@ -20,6 +20,9 @@
   "archive_no_confirm_blocks": true,
   "authorized_execution_checklist_passed": true,
   "authorized_execution_go_no_go": "blocked_by_user_inputs",
+  "next_user_action_packet_passed": true,
+  "next_user_action_packet_decision_count": 6,
+  "next_user_action_packet_local_env_ignored": true,
   "jupyter_input_template_passed": true,
   "jupyter_input_default_off": true,
   "jupyter_local_env_ignored": true,
@@ -134,6 +137,14 @@
       "value": "等待用户输入",
       "detail": "模式确认、token、submission id、checkpoint link、归档授权和真实 runner 确认已整理成可复跑清单。",
       "report": "reports/authorized_execution_checklist.md"
+    },
+    {
+      "title": "下一步动作包",
+      "state": "done",
+      "state_label": "已完成",
+      "value": "Notebook 优先",
+      "detail": "把用户要补齐的 6 项和第 44/45 节入口合并成一页；不读取、不保存、不打印真实值。",
+      "report": "reports/next_user_action_packet.md"
     },
     {
       "title": "Jupyter 安全填空",

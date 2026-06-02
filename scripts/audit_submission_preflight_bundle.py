@@ -32,6 +32,7 @@ SUBCOMMANDS = [
     ("submission_handoff_docs", "scripts/audit_submission_handoff_docs.py"),
     ("plaintext_secret_scan", "scripts/audit_plaintext_secrets.py"),
     ("authorized_execution_checklist", "scripts/audit_authorized_execution_checklist.py"),
+    ("next_user_action_packet", "scripts/render_next_user_action_packet.py"),
     ("submission_artifact_manifest", "scripts/audit_submission_artifact_manifest.py"),
 ]
 
@@ -89,6 +90,7 @@ def build_status() -> dict[str, Any]:
     authorized_archive = read_json(RUNS_DIR / "authorized_checkpoint_archive_template_audit.json")
     handoff = read_json(RUNS_DIR / "submission_handoff_docs_audit.json")
     secret_scan = read_json(RUNS_DIR / "plaintext_secret_scan.json")
+    action_packet = read_json(RUNS_DIR / "next_user_action_packet.json")
 
     leak_flags = {
         "credentials_printed": any(
@@ -106,6 +108,7 @@ def build_status() -> dict[str, Any]:
                 authorized_archive,
                 handoff,
                 secret_scan,
+                action_packet,
             ]
         ),
         "link_values_printed": bool(link_intake.get("link_values_printed"))
@@ -116,7 +119,8 @@ def build_status() -> dict[str, Any]:
         or bool(jupyter_authorized.get("link_values_printed"))
         or bool(authorized_preflight.get("link_values_printed"))
         or bool(ready_real_runner.get("link_values_printed"))
-        or bool(authorized_archive.get("link_values_printed")),
+        or bool(authorized_archive.get("link_values_printed"))
+        or bool(action_packet.get("link_values_printed")),
         "secret_values_printed": bool(secret_scan.get("secret_values_printed"))
         or bool(artifact_manifest.get("secret_values_printed"))
         or bool(notebook_structure.get("secret_values_printed"))
@@ -124,7 +128,8 @@ def build_status() -> dict[str, Any]:
         or bool(jupyter_authorized.get("secret_values_printed"))
         or bool(authorized_preflight.get("secret_values_printed"))
         or bool(ready_real_runner.get("secret_values_printed"))
-        or bool(authorized_archive.get("secret_values_printed")),
+        or bool(authorized_archive.get("secret_values_printed"))
+        or bool(action_packet.get("secret_values_printed")),
     }
     contact_flags = {
         "platform_contacted": any(
@@ -142,6 +147,7 @@ def build_status() -> dict[str, Any]:
                 authorized_archive,
                 handoff,
                 secret_scan,
+                action_packet,
             ]
         ),
         "uploads_performed": any(
@@ -159,6 +165,7 @@ def build_status() -> dict[str, Any]:
                 authorized_archive,
                 handoff,
                 secret_scan,
+                action_packet,
             ]
             for key in ["uploads_performed", "upload_performed"]
         ),

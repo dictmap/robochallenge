@@ -8,6 +8,7 @@
 - 文件数量：`18`；目录数量：`6`；总大小：`11.06 GB`。
 - 参数数据 shard 数量：`13`。
 - Git 忽略状态：`True`。
+- tar stream smoke：attempted=`True`，passed=`True`。
 
 ## 必需文件
 
@@ -31,6 +32,12 @@
 - `params/_METADATA`：`27.68 KB`。
 - `params/ocdbt.process_0/d/aad9216614f8c61b4a9d5c180807e9f4`：`3.60 KB`。
 - `assets/cvpr_multitask_aloha/norm_stats.json`：`3.37 KB`。
+
+## tar stream smoke
+
+- 命令：`set -o pipefail; tar -C /home/yjl/robochallenge/repo/runs -cf - openpi_rtc_lora_materialized_policy_checkpoint | wc -c`。
+- 结果：attempted=`True`，passed=`True`，耗时 `19.666` 秒。
+- archive stream bytes：`11879987200`；expected min bytes：`11879949503`。
 
 ## 建议导出命令
 

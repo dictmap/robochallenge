@@ -507,6 +507,7 @@ def main() -> int:
     )
     lora_export_inventory = lora_export.get("inventory", {})
     lora_export_required = {item.get("path"): item for item in lora_export.get("required_files", [])}
+    lora_export_tar_smoke = lora_export.get("tar_stream_smoke", {})
     expected_export_files = [
         "runs/openpi_rtc_lora_materialized_policy_checkpoint/params/_METADATA",
         "runs/openpi_rtc_lora_materialized_policy_checkpoint/params/_CHECKPOINT_METADATA",
@@ -525,6 +526,11 @@ def main() -> int:
             lora_export_inventory.get("params_data_file_count", 0) > 0,
             all(lora_export_required.get(path, {}).get("exists") for path in expected_export_files),
             "tar -C runs -cf" in lora_export.get("recommended_local_archive", {}).get("create_command", ""),
+            lora_export_tar_smoke.get("attempted"),
+            lora_export_tar_smoke.get("passed"),
+            lora_export_tar_smoke.get("returncode") == 0,
+            "| wc -c" in lora_export_tar_smoke.get("command", ""),
+            lora_export_tar_smoke.get("archive_stream_bytes", 0) > lora_export_inventory.get("total_size_bytes", 0),
         ]
     ):
         print("LoRA checkpoint 导出就绪审计未通过")

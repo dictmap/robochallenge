@@ -605,6 +605,7 @@
 - 检查必需文件：`params/_METADATA`、`params/_CHECKPOINT_METADATA`、`params/manifest.ocdbt`、`params/ocdbt.process_0/manifest.ocdbt` 和 `assets/cvpr_multitask_aloha/norm_stats.json`。
 - 检查 checkpoint 总大小、参数数据 shard 数量、最大文件抽样和 `.gitignore` 排除状态。
 - 报告给出手动 tar 与 sha256 命令；默认不打包 12GB+ 文件，不上传外部服务，不写入任何 token。
+- 新增 `--tar-stream-smoke`，用 `tar -C runs -cf - openpi_rtc_lora_materialized_policy_checkpoint | wc -c` 验证完整 checkpoint 可被 tar 读取，并记录 archive stream 字节数，但不生成大文件。
 - 已将导出就绪审计纳入 `scripts/validate_repro_workspace.py`。
 
 ### 验证结果
@@ -614,6 +615,7 @@
 - 参数数据 shard 数量：`13`。
 - 必需文件全部存在：`params/_METADATA`、`params/_CHECKPOINT_METADATA`、`params/manifest.ocdbt`、`params/ocdbt.process_0/manifest.ocdbt`、`assets/cvpr_multitask_aloha/norm_stats.json`。
 - `.gitignore` 命中 `runs/*checkpoint*/`，完整 checkpoint 不会进入 Git。
+- tar stream smoke：`passed=true`，耗时 `19.666` 秒，archive stream bytes=`11879987200`，expected min bytes=`11879949503`。
 - 远端 `python3 scripts/validate_repro_workspace.py` 已通过。
 
 ### 当前边界

@@ -17,7 +17,7 @@
 - 已跑通 LoRA reduced 数值前向：`bfloat16`、1-copy、`max_token_len=64`、`action_horizon=10` 下 `forward.passed=true`，见 `reports/openpi_rtc_lora_numeric_forward_reduced.md`。
 - 已跑通 LoRA reduced trainable-filter 反向与 scoped checkpoint dry-run：`lora_grad.passed=true`，远端写出 `runs/openpi_rtc_lora_grad_checkpoint/trainable_params_step1.npz`，见 `reports/openpi_rtc_lora_numeric_grad_reduced.md`。
 - 已将 LoRA scoped checkpoint 物化为本地完整 policy checkpoint，`create_trained_policy` 加载 smoke 通过，并新增 LoRA `demo.py` runner 模板，见 `reports/openpi_rtc_lora_materialized_policy_smoke.md` 和 `submission/run_table30v2_aloha_lora_demo_template.sh`。
-- 已新增 LoRA checkpoint 导出就绪审计，确认本地 12GB+ checkpoint 具备打包/上传前置条件，但真实上传和 checkpoint link 仍需要用户授权，见 `reports/lora_checkpoint_export_readiness.md`。
+- 已新增 LoRA checkpoint 导出就绪审计，确认本地 12GB+ checkpoint 具备打包/上传前置条件，并用 tar stream smoke 验证可完整读取；真实上传和 checkpoint link 仍需要用户授权，见 `reports/lora_checkpoint_export_readiness.md`。
 - Linux 上已有 RoboChallenge pi0.5 多任务 baseline：`/home/yjl/yjl/RoboChallenge/baseline_pi05_multitask`。
 - 已有 ALOHA checkpoint：`/home/yjl/yjl/RoboChallenge/checkpoints/table30v2_multitask_baseline_aloha`。
 - 核心操作已经写入中文 Jupyter：`notebooks/robochallenge_pi05_submit_cn.ipynb`。
@@ -145,5 +145,6 @@
 - 已新增 `scripts/audit_lora_checkpoint_export_readiness.py`。
 - 已生成 `reports/lora_checkpoint_export_readiness.md` 和 `runs/lora_checkpoint_export_readiness.json`。
 - 审计目标是本地 `runs/openpi_rtc_lora_materialized_policy_checkpoint`：检查 Orbax params metadata、manifest、norm stats、数据 shard、总大小和 Git 忽略状态。
+- 已支持 `--tar-stream-smoke`：执行 `tar -C runs -cf - openpi_rtc_lora_materialized_policy_checkpoint | wc -c`，验证报告中的打包源目录可完整读取，并记录 archive stream 字节数，但不生成 12GB+ tar 文件。
 - 报告给出可手动执行的本地 tar/sha256 命令；默认不自动打包 12GB+ 文件，也不上传到任何外部服务。
 - 当前本地导出就绪，但网站提交仍需要真实 checkpoint link、`ROBOCHALLENGE_USER_TOKEN` 和 `ROBOCHALLENGE_SUBMISSION_ID`。

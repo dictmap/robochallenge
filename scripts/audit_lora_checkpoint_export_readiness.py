@@ -8,6 +8,7 @@ import hashlib
 import json
 from pathlib import Path
 import subprocess
+import time
 from typing import Any
 
 
@@ -53,6 +54,11 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="计算必要小文件 sha256；不会散列 12GB 参数 shard。",
     )
+    parser.add_argument(
+        "--tar-stream-smoke",
+        action="store_true",
+        help="把 checkpoint 以 tar 流写入 /dev/null，验证打包命令可完整读取；不会生成 12GB+ tar 文件。",
+    )
     return parser.parse_args()
 
 
@@ -88,6 +94,42 @@ def sha256_file(path: Path) -> str:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             hasher.update(chunk)
     return hasher.hexdigest()
+
+
+def run_tar_stream_smoke(checkpoint_dir: Path, expected_min_bytes: int) -> dict[str, Any]:
+    if not checkpoint_dir.exists():
+        return {
+            "attempted": False,
+            "passed": False,
+            "returncode": None,
+            "seconds": 0.0,
+            "stdout": "",
+            "stderr": "checkpoint missing",
+        }
+    rel = checkpoint_dir.relative_to(RUNS_DIR).as_posix()
+    command = f"set -o pipefail; tar -C {RUNS_DIR} -cf - {rel} | wc -c"
+    start = time.time()
+    result = subprocess.run(
+        ["bash", "-lc", command],
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    seconds = round(time.time() - start, 3)
+    stdout = result.stdout.strip()
+    archive_stream_bytes = int(stdout) if stdout.isdigit() else 0
+    return {
+        "attempted": True,
+        "passed": result.returncode == 0 and archive_stream_bytes > expected_min_bytes,
+        "returncode": result.returncode,
+        "seconds": seconds,
+        "command": command,
+        "archive_stream_bytes": archive_stream_bytes,
+        "expected_min_bytes": expected_min_bytes,
+        "stdout": stdout,
+        "stderr": result.stderr.strip(),
+    }
 
 
 def collect_file_inventory(root: Path) -> dict[str, Any]:
@@ -146,6 +188,17 @@ def build_status(args: argparse.Namespace) -> dict[str, Any]:
         "stdout": "",
         "stderr": "checkpoint missing",
     }
+    tar_stream_smoke = run_tar_stream_smoke(checkpoint_dir, inventory["total_size_bytes"]) if args.tar_stream_smoke else {
+        "attempted": False,
+        "passed": None,
+        "returncode": None,
+        "seconds": 0.0,
+        "command": "tar -C runs -cf - openpi_rtc_lora_materialized_policy_checkpoint | wc -c",
+        "archive_stream_bytes": 0,
+        "expected_min_bytes": inventory["total_size_bytes"],
+        "stdout": "",
+        "stderr": "未请求 tar stream smoke；默认不读取 11GB+ checkpoint。",
+    }
 
     local_export_ready = all(
         [
@@ -155,6 +208,7 @@ def build_status(args: argparse.Namespace) -> dict[str, Any]:
             inventory["total_size_bytes"] > 10 * 1024**3,
             inventory["params_data_file_count"] > 0,
             ignore_probe["ignored"],
+            (not args.tar_stream_smoke or tar_stream_smoke["passed"]),
         ]
     )
     upload_blocking = [
@@ -173,6 +227,7 @@ def build_status(args: argparse.Namespace) -> dict[str, Any]:
         "required_files": required_files,
         "inventory": inventory,
         "git_ignore": ignore_probe,
+        "tar_stream_smoke": tar_stream_smoke,
         "recommended_local_archive": {
             "path": f"runs/{archive_name}",
             "git_ignored_by_pattern": "*.tar",
@@ -200,6 +255,7 @@ def write_report(status: dict[str, Any], report_path: Path) -> None:
         f"- 文件数量：`{inv['file_count']}`；目录数量：`{inv['dir_count']}`；总大小：`{inv['total_size_human']}`。",
         f"- 参数数据 shard 数量：`{inv['params_data_file_count']}`。",
         f"- Git 忽略状态：`{status['git_ignore']['ignored']}`。",
+        f"- tar stream smoke：attempted=`{status['tar_stream_smoke']['attempted']}`，passed=`{status['tar_stream_smoke']['passed']}`。",
         "",
         "## 必需文件",
         "",
@@ -217,8 +273,15 @@ def write_report(status: dict[str, Any], report_path: Path) -> None:
     for item in inv["largest_files"]:
         lines.append(f"- `{item['path']}`：`{item['size_human']}`。")
     archive = status["recommended_local_archive"]
+    tar_smoke = status["tar_stream_smoke"]
     lines.extend(
         [
+            "",
+            "## tar stream smoke",
+            "",
+            f"- 命令：`{tar_smoke['command']}`。",
+            f"- 结果：attempted=`{tar_smoke['attempted']}`，passed=`{tar_smoke['passed']}`，耗时 `{tar_smoke['seconds']}` 秒。",
+            f"- archive stream bytes：`{tar_smoke['archive_stream_bytes']}`；expected min bytes：`{tar_smoke['expected_min_bytes']}`。",
             "",
             "## 建议导出命令",
             "",

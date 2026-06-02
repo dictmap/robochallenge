@@ -15,6 +15,7 @@
 - `python3 scripts/validate_repro_workspace.py`：`True`。
 - `python3 scripts/audit_plaintext_secrets.py`：`True`。
 - `python3 scripts/audit_submission_env_template.py`：`True`。
+- `python3 scripts/audit_submission_artifact_manifest.py`：`True`。
 - `python3 scripts/create_checkpoint_archive.py`：`True`。
 - `cp submission/robochallenge_env_template.sh submission/robochallenge_env.local.sh`：`True`。
 - `source submission/robochallenge_env.local.sh`：`True`。
@@ -50,6 +51,8 @@
 - `current_link_missing_as_expected`：`True`。
 - `env_template_audit_passed`：`True`。
 - `env_template_local_copy_ignored`：`True`。
+- `artifact_manifest_passed`：`True`。
+- `artifact_manifest_no_forbidden_tracked`：`True`。
 - `readiness_gate_passed`：`True`。
 - `readiness_currently_blocked`：`True`。
 - `plaintext_scan_passed`：`True`。

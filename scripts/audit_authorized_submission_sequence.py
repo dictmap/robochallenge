@@ -22,6 +22,7 @@ REQUIRED_COMMANDS = [
     "python3 scripts/validate_repro_workspace.py",
     "python3 scripts/audit_plaintext_secrets.py",
     "python3 scripts/audit_submission_env_template.py",
+    "python3 scripts/audit_submission_artifact_manifest.py",
     "python3 scripts/create_checkpoint_archive.py",
     "cp submission/robochallenge_env_template.sh submission/robochallenge_env.local.sh",
     "source submission/robochallenge_env.local.sh",
@@ -128,6 +129,7 @@ def build_status(doc_path: Path) -> dict[str, Any]:
     archive_dry_run = read_json(RUNS_DIR / "checkpoint_archive_dry_run.json")
     link_intake = read_json(RUNS_DIR / "checkpoint_link_intake.json")
     env_template = read_json(RUNS_DIR / "submission_env_template_audit.json")
+    artifact_manifest = read_json(RUNS_DIR / "submission_artifact_manifest.json")
     readiness = read_json(RUNS_DIR / "real_submission_readiness.json")
     plaintext_scan = read_json(RUNS_DIR / "plaintext_secret_scan.json")
     handoff = read_json(RUNS_DIR / "submission_handoff_docs_audit.json")
@@ -142,6 +144,8 @@ def build_status(doc_path: Path) -> dict[str, Any]:
         .get("submission/robochallenge_env.local.sh", {})
         .get("ignored")
         is True,
+        "artifact_manifest_passed": artifact_manifest.get("passed") is True,
+        "artifact_manifest_no_forbidden_tracked": artifact_manifest.get("forbidden_tracked_paths") == [],
         "readiness_gate_passed": readiness.get("passed") is True,
         "readiness_currently_blocked": readiness.get("ready_for_real_submission") is False,
         "plaintext_scan_passed": plaintext_scan.get("passed") is True,
@@ -159,6 +163,12 @@ def build_status(doc_path: Path) -> dict[str, Any]:
             env_template.get("credentials_read") is False,
             env_template.get("credentials_printed") is False,
             env_template.get("secret_values_printed") is False,
+            artifact_manifest.get("platform_contacted") is False,
+            artifact_manifest.get("uploads_performed") is False,
+            artifact_manifest.get("credentials_read") is False,
+            artifact_manifest.get("credentials_printed") is False,
+            artifact_manifest.get("link_values_printed") is False,
+            artifact_manifest.get("secret_values_printed") is False,
             readiness.get("platform_contacted") is False,
             handoff.get("platform_contacted") is False,
         ]

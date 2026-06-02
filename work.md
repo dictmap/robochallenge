@@ -738,6 +738,37 @@
 
 - P0：最终 secret scan、diff check 后提交推送。
 
+## 2026-06-02 第三十九轮：提交准备材料 manifest 审计
+
+### 已完成
+
+- 新增 `scripts/audit_submission_artifact_manifest.py`，生成提交准备材料 manifest，不读取凭据、不上传、不连接 RoboChallenge 平台。
+- manifest 覆盖 README、work.md、核心 Notebook、submission runner/template、handoff 文档、关键复现报告、checkpoint/link/readiness/preflight 报告和 GUI HTML，并为小文件计算 sha256。
+- 审计显式检查 `submission/robochallenge_env.local.sh`、`.env`、`.env.local`、物化 checkpoint 目录、tar、sha256 和分片路径不会被 Git 跟踪。
+- `scripts/audit_submission_preflight_bundle.py` 已把 `submission_artifact_manifest` 纳入一键预检子命令。
+- `scripts/validate_repro_workspace.py` 已纳入 manifest JSON/报告/脚本和通过条件。
+- `submission/REAL_SUBMISSION_HANDOFF.md`、`submission/AUTHORIZED_SUBMISSION_SEQUENCE.md` 和相关审计脚本已补充 manifest 命令。
+- Notebook 新增第 39 节“提交准备材料 manifest 审计”。
+
+### 验证结果
+
+- 本地语法检查已通过：`audit_submission_artifact_manifest.py`、preflight、handoff、authorized sequence 和 validator 均可编译。
+- Notebook 第 39 节已修复 PowerShell 中文写入导致的问号乱码，当前问号计数为 `0`。
+- Linux 端 manifest 审计已通过：`passed=true`，材料数量大于 30，缺失材料和禁止跟踪路径均为 `0`。
+- Linux 端 `bash scripts/run_notebook_preflight.sh` 已通过，第 39 节可在 Notebook 流程中复跑。
+- Linux 端 `python3 scripts/validate_repro_workspace.py` 已通过，新增输出“提交准备材料 manifest 审计已通过”。
+- Linux 端明文凭据扫描已通过：`hit_count=0`。
+- Linux 端 `git diff --check` 已通过；Notebook 和 work.md 行尾已规范为 LF。
+
+### 当前边界
+
+- 本轮只审计小文件材料清单和 Git 忽略边界，不生成 tar、不上传 checkpoint、不读取或伪造真实 token、submission id、checkpoint link。
+- 真实提交仍缺 `ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID` 和真实可访问 checkpoint link。
+
+### 下一步
+
+- P0：提交并推送本轮提交准备材料 manifest 审计产物。
+
 ## 2026-06-02 第三十八轮：真实提交环境变量模板审计
 
 ### 已完成

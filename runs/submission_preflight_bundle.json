@@ -10,7 +10,7 @@
   "download_verified": false,
   "link_shape_ready": false,
   "secret_scan_hit_count": 0,
-  "secret_scan_scanned_files": 151,
+  "secret_scan_scanned_files": 154,
   "subcommands": {
     "checkpoint_link_intake": {
       "script": "scripts/audit_checkpoint_link_intake.py",
@@ -33,6 +33,13 @@
       "stdout_tail": "inted\": false,\n  \"secret_values_printed\": false,\n  \"required_present\": {\n    \"ROBOCHALLENGE_USER_TOKEN\": true,\n    \"ROBOCHALLENGE_SUBMISSION_ID\": true,\n    \"ROBOCHALLENGE_LORA_CHECKPOINT_LINK\": true,\n    \"ROBOCHALLENGE_CHECKPOINT_LINK\": true\n  },\n  \"placeholder_values\": {\n    \"ROBOCHALLENGE_USER_TOKEN\": true,\n    \"ROBOCHALLENGE_SUBMISSION_ID\": true,\n    \"ROBOCHALLENGE_LORA_CHECKPOINT_LINK\": true,\n    \"ROBOCHALLENGE_CHECKPOINT_LINK\": true\n  },\n  \"local_secret_paths\": {\n    \"submission/robochallenge_env.local.sh\": {\n      \"path\": \"submission/robochallenge_env.local.sh\",\n      \"ignored\": true,\n      \"returncode\": 0\n    },\n    \".env\": {\n      \"path\": \".env\",\n      \"ignored\": true,\n      \"returncode\": 0\n    },\n    \".env.local\": {\n      \"path\": \".env.local\",\n      \"ignored\": true,\n      \"returncode\": 0\n    }\n  },\n  \"secret_pattern_hits\": [],\n  \"recommended_local_copy\": \"submission/robochallenge_env.local.sh\",\n  \"blocking\": [\n    \"无模板侧阻塞；真实提交仍取决于用户提供凭据、submission id 和 checkpoint link。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
+    "submission_artifact_manifest": {
+      "script": "scripts/audit_submission_artifact_manifest.py",
+      "returncode": 0,
+      "passed": true,
+      "stdout_tail": "  },\n    \"runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.sha256\": {\n      \"path\": \"runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.sha256\",\n      \"ignored\": true,\n      \"returncode\": 0\n    },\n    \"runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.part-aa\": {\n      \"path\": \"runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.part-aa\",\n      \"ignored\": true,\n      \"returncode\": 0\n    }\n  },\n  \"inputs\": {\n    \"preflight_passed\": true,\n    \"preflight_go_no_go_blocked\": true,\n    \"readiness_currently_blocked\": true,\n    \"env_template_passed\": true,\n    \"secret_scan_passed\": true,\n    \"secret_scan_hit_count_zero\": true\n  },\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false\n  },\n  \"blocking\": [\n    \"提交准备材料 manifest 已完整；真实提交仍需要用户凭据、submission id 和 checkpoint link。\"\n  ]\n}\n",
+      "stderr_tail": ""
+    },
     "real_submission_readiness": {
       "script": "scripts/audit_real_submission_readiness.py",
       "returncode": 0,
@@ -51,7 +58,7 @@
       "script": "scripts/audit_plaintext_secrets.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": "{\n  \"kind\": \"plaintext_secret_scan\",\n  \"passed\": true,\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"secret_values_printed\": false,\n  \"scan_scope\": \"git tracked files plus unignored untracked files\",\n  \"scanned_files\": 151,\n  \"skipped_binary_files\": 0,\n  \"pattern_count\": 7,\n  \"hit_count\": 0,\n  \"hits\": [],\n  \"blocking\": [\n    \"如发现命中项，先移除明文凭据并轮换对应 token，再重新运行本审计。\",\n    \"本审计不替代真实平台权限检查；真实提交仍需要用户提供凭据。\"\n  ]\n}\n",
+      "stdout_tail": "{\n  \"kind\": \"plaintext_secret_scan\",\n  \"passed\": true,\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"secret_values_printed\": false,\n  \"scan_scope\": \"git tracked files plus unignored untracked files\",\n  \"scanned_files\": 154,\n  \"skipped_binary_files\": 0,\n  \"pattern_count\": 7,\n  \"hit_count\": 0,\n  \"hits\": [],\n  \"blocking\": [\n    \"如发现命中项，先移除明文凭据并轮换对应 token，再重新运行本审计。\",\n    \"本审计不替代真实平台权限检查；真实提交仍需要用户提供凭据。\"\n  ]\n}\n",
       "stderr_tail": ""
     }
   },

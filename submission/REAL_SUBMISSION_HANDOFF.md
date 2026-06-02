@@ -100,7 +100,13 @@ python3 scripts/audit_checkpoint_link_intake.py
 python3 scripts/audit_checkpoint_link_download_verification.py
 ```
 
-真实提交前也可以运行一键预检汇总；该命令会串联 link intake、默认下载校验协议、readiness gate、handoff 文档和明文凭据扫描，不上传、不连接 RoboChallenge 平台、不接触下载 host：
+真实提交前也可以先生成提交准备材料 manifest，再运行一键预检汇总；manifest 会列出小型交接文件 sha256，并确认本地凭据副本、checkpoint 目录、tar 和分片不会进入 Git：
+
+```bash
+python3 scripts/audit_submission_artifact_manifest.py
+```
+
+一键预检汇总会串联 link intake、默认下载校验协议、环境变量模板、提交材料 manifest、readiness gate、handoff 文档和明文凭据扫描，不上传、不连接 RoboChallenge 平台、不接触下载 host：
 
 ```bash
 python3 scripts/audit_submission_preflight_bundle.py

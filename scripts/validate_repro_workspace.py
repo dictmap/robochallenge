@@ -52,6 +52,7 @@ REQUIRED = [
     "reports/submission_handoff_docs_audit.md",
     "reports/submission_preflight_bundle.md",
     "reports/submission_env_template_audit.md",
+    "reports/submission_artifact_manifest.md",
     "reports/plaintext_secret_scan.md",
     "reports/robochallenge_submission_package_checklist.md",
     "runs/pi05_base_probe_status.json",
@@ -88,6 +89,7 @@ REQUIRED = [
     "runs/submission_handoff_docs_audit.json",
     "runs/submission_preflight_bundle.json",
     "runs/submission_env_template_audit.json",
+    "runs/submission_artifact_manifest.json",
     "runs/plaintext_secret_scan.json",
     "runs/robochallenge_submission_package_audit.json",
     "submission/README.md",
@@ -122,6 +124,7 @@ REQUIRED = [
     "scripts/audit_submission_handoff_docs.py",
     "scripts/audit_submission_preflight_bundle.py",
     "scripts/audit_submission_env_template.py",
+    "scripts/audit_submission_artifact_manifest.py",
     "scripts/audit_plaintext_secrets.py",
     "scripts/audit_robochallenge_submission_package.py",
 ]
@@ -938,6 +941,36 @@ def main() -> int:
     ):
         print("真实提交环境变量模板审计未通过")
         return 1
+    artifact_manifest = json.loads((ROOT / "runs/submission_artifact_manifest.json").read_text(encoding="utf-8"))
+    artifact_inputs = artifact_manifest.get("inputs", {})
+    artifact_leaks = artifact_manifest.get("leak_flags", {})
+    artifact_contacts = artifact_manifest.get("contact_flags", {})
+    artifact_ignored = artifact_manifest.get("ignored_local_secret_or_large_paths", {})
+    artifact_items = artifact_manifest.get("artifacts", [])
+    if not all(
+        [
+            artifact_manifest.get("kind") == "submission_artifact_manifest",
+            artifact_manifest.get("passed"),
+            artifact_manifest.get("artifact_count", 0) >= 30,
+            len(artifact_items) == artifact_manifest.get("artifact_count"),
+            all(item.get("exists") and len(item.get("sha256", "")) == 64 for item in artifact_items),
+            artifact_manifest.get("missing_required_artifacts") == [],
+            artifact_manifest.get("unhashed_artifacts") == [],
+            artifact_manifest.get("forbidden_tracked_paths") == [],
+            all(item.get("ignored") for item in artifact_ignored.values()),
+            all(artifact_inputs.values()),
+            artifact_manifest.get("platform_contacted") is False,
+            artifact_manifest.get("uploads_performed") is False,
+            artifact_manifest.get("credentials_read") is False,
+            artifact_manifest.get("credentials_printed") is False,
+            artifact_manifest.get("link_values_printed") is False,
+            artifact_manifest.get("secret_values_printed") is False,
+            not any(artifact_leaks.values()),
+            not any(artifact_contacts.values()),
+        ]
+    ):
+        print("提交准备材料 manifest 审计未通过")
+        return 1
     preflight = json.loads((ROOT / "runs/submission_preflight_bundle.json").read_text(encoding="utf-8"))
     preflight_subcommands = preflight.get("subcommands", {})
     preflight_leaks = preflight.get("leak_flags", {})
@@ -946,6 +979,7 @@ def main() -> int:
         "checkpoint_link_intake",
         "checkpoint_link_download_verification",
         "submission_env_template",
+        "submission_artifact_manifest",
         "real_submission_readiness",
         "submission_handoff_docs",
         "plaintext_secret_scan",
@@ -1142,6 +1176,7 @@ def main() -> int:
     print("真实提交 readiness 场景 smoke 已通过")
     print("真实提交交接文档审计已通过")
     print("真实提交环境变量模板审计已通过")
+    print("提交准备材料 manifest 审计已通过")
     print("真实提交前预检汇总已通过")
     print("明文凭据扫描已通过")
     return 0

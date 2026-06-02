@@ -8,6 +8,7 @@
 python3 scripts/validate_repro_workspace.py
 python3 scripts/audit_plaintext_secrets.py
 python3 scripts/audit_submission_env_template.py
+python3 scripts/audit_submission_artifact_manifest.py
 python3 scripts/create_checkpoint_archive.py
 python3 scripts/audit_checkpoint_link_intake.py
 python3 scripts/audit_real_submission_readiness.py

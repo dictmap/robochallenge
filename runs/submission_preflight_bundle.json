@@ -13,7 +13,7 @@
   "baseline_requires_checkpoint_link": false,
   "baseline_requires_checkpoint_upload": false,
   "chinese_utf8_artifact_audit_passed": true,
-  "chinese_utf8_artifact_scanned_file_count": 146,
+  "chinese_utf8_artifact_scanned_file_count": 148,
   "chinese_utf8_artifact_decode_error_count": 0,
   "chinese_utf8_artifact_bad_marker_hit_count": 0,
   "baseline_dry_run_gate_passed": true,
@@ -37,6 +37,12 @@
   "local_env_runtime_content_not_read_before_gate": true,
   "local_env_runtime_real_runner_not_started": true,
   "local_env_runtime_values_not_recorded": true,
+  "submission_variant_gate_passed": true,
+  "submission_variant_bad_rejected": true,
+  "submission_variant_bad_stop_before_preflight": true,
+  "submission_variant_valid_accepted": true,
+  "submission_variant_real_runner_not_started": true,
+  "submission_variant_values_not_recorded": true,
   "placeholder_credential_rejection_passed": true,
   "placeholder_baseline_rejected_before_dry_run": true,
   "placeholder_lora_rejected_before_dry_run": true,
@@ -106,7 +112,7 @@
     "ROBOCHALLENGE_REAL_RUN_CONFIRM"
   ],
   "secret_scan_hit_count": 0,
-  "secret_scan_scanned_files": 235,
+  "secret_scan_scanned_files": 238,
   "subcommands": {
     "checkpoint_link_intake": {
       "script": "scripts/audit_checkpoint_link_intake.py",
@@ -161,7 +167,7 @@
       "script": "scripts/audit_chinese_utf8_artifacts.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": "_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"runs/baseline_submission_quickstart.json\",\n      \"size_bytes\": 3353,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"runs/checkpoint_archive_dry_run.json\",\n      \"size_bytes\": 1887,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"runs/checkpoint_archive_plan.json\",\n      \"size_bytes\": 1728,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    }\n  ],\n  \"decode_error_paths\": [],\n  \"bad_marker_hit_paths\": [],\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"中文交接产物 UTF-8 解码与乱码哨兵扫描通过。\"\n  ]\n}\n",
+      "stdout_tail": "rror\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"runs/baseline_local_env_smoke.json\",\n      \"size_bytes\": 10682,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"runs/baseline_submission_quickstart.json\",\n      \"size_bytes\": 3353,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"runs/checkpoint_archive_dry_run.json\",\n      \"size_bytes\": 1887,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    }\n  ],\n  \"decode_error_paths\": [],\n  \"bad_marker_hit_paths\": [],\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"中文交接产物 UTF-8 解码与乱码哨兵扫描通过。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "real_submission_readiness": {
@@ -196,7 +202,7 @@
       "script": "scripts/audit_plaintext_secrets.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": "{\n  \"kind\": \"plaintext_secret_scan\",\n  \"passed\": true,\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"secret_values_printed\": false,\n  \"scan_scope\": \"git tracked files plus unignored untracked files\",\n  \"scanned_files\": 235,\n  \"skipped_binary_files\": 0,\n  \"pattern_count\": 7,\n  \"hit_count\": 0,\n  \"hits\": [],\n  \"blocking\": [\n    \"如发现命中项，先移除明文凭据并轮换对应 token，再重新运行本审计。\",\n    \"本审计不替代真实平台权限检查；真实提交仍需要用户提供凭据。\"\n  ]\n}\n",
+      "stdout_tail": "{\n  \"kind\": \"plaintext_secret_scan\",\n  \"passed\": true,\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"secret_values_printed\": false,\n  \"scan_scope\": \"git tracked files plus unignored untracked files\",\n  \"scanned_files\": 238,\n  \"skipped_binary_files\": 0,\n  \"pattern_count\": 7,\n  \"hit_count\": 0,\n  \"hits\": [],\n  \"blocking\": [\n    \"如发现命中项，先移除明文凭据并轮换对应 token，再重新运行本审计。\",\n    \"本审计不替代真实平台权限检查；真实提交仍需要用户提供凭据。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "submission_variant_route_packet": {
@@ -267,6 +273,13 @@
       "returncode": 0,
       "passed": true,
       "stdout_tail": "py\",\n        \"returncode\": 0\n      }\n    ]\n  },\n  \"evidence\": {\n    \"bad_permissions_rejected\": true,\n    \"bad_permissions_stop_before_dry_run\": true,\n    \"bad_permissions_no_protected_values\": true,\n    \"owner_only_permissions_accepted\": true,\n    \"owner_only_no_protected_values\": true,\n    \"all_cases_expected_returncodes\": true,\n    \"all_cases_temp_env_removed\": true,\n    \"real_runner_not_started\": true,\n    \"restore_clean_state_passed\": true\n  },\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false\n  },\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"local env 运行时权限 gate 已通过；权限过宽会在 source 前被拒绝，owner-only synthetic 文件可进入授权边界。\"\n  ]\n}\n",
+      "stderr_tail": ""
+    },
+    "submission_variant_gate": {
+      "script": "scripts/audit_submission_variant_gate.py",
+      "returncode": 0,
+      "passed": true,
+      "stdout_tail": "sion_readiness.py\",\n        \"returncode\": 0\n      },\n      {\n        \"command\": \"python3 scripts/audit_submission_blockers_summary.py\",\n        \"returncode\": 0\n      }\n    ]\n  },\n  \"evidence\": {\n    \"bad_variants_rejected\": true,\n    \"bad_variants_stop_before_preflight\": true,\n    \"valid_variants_accepted\": true,\n    \"all_cases_expected_returncodes\": true,\n    \"all_cases_no_protected_values\": true,\n    \"real_runner_not_started\": true,\n    \"restore_clean_state_passed\": true\n  },\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false\n  },\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"提交 variant gate 已通过；拼写错误、大小写错误或空白字符会在授权预检前被拒绝。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "placeholder_credential_rejection": {

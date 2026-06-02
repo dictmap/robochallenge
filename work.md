@@ -2156,3 +2156,33 @@
 
 - P0：提交并推送本轮凭据空白字符 gate 审计。
 - P1：凭据到位后先运行 baseline 授权前只读预检与 dry-run gate；真实 runner 仍必须等待用户明确授权。
+
+## 2026-06-03 第七十六轮：提交 variant gate 前置审计
+
+### 已完成
+
+- 更新 `submission/run_authorized_preflight_template.sh` 与 `submission/run_ready_real_submission_template.sh`，把 `ROBOCHALLENGE_SUBMISSION_VARIANT` 校验前移到 checkpoint link、readiness 和 dry-run 预检之前。
+- 新增 `scripts/audit_submission_variant_gate.py`，覆盖 8 个 synthetic 场景：4 个错误 variant、4 个合法 `baseline`/`lora` variant。
+- 新增机器可读产物 `runs/submission_variant_gate.json` 和中文报告 `reports/submission_variant_gate.md`。
+- 已接入 `scripts/audit_submission_preflight_bundle.py`、`scripts/audit_submission_artifact_manifest.py`、`scripts/render_submission_status_dashboard.py` 和 `scripts/validate_repro_workspace.py`。
+- GUI dashboard 新增 `提交 variant gate` 卡片，当前总计 `source_count=34`、`card_count=34`、`done_count=29`、`blocked_count=4`、`watch_count=1`。
+
+### 验证结果
+
+- Linux 端 `python3 scripts/audit_submission_variant_gate.py` 已通过：`case_count=8`、`bad_case_count=4`、`good_case_count=4`、`bad_variants_rejected=true`、`bad_variants_stop_before_preflight=true`、`valid_variants_accepted=true`、`real_runner_started=false`。
+- 4 个错误场景均在预检前退出 `67`：`basleine` 拼写错误、`lora ` 结尾空格、`BASELINE` 大小写错误、`baseline\n` 换行污染。
+- 4 个合法场景均进入既有 no-contact 授权边界；因为仍缺真实凭据或确认短语，均不会启动真实 runner。
+- Linux 端完整链路 `audit_chinese_utf8_artifacts.py`、`audit_plaintext_secrets.py`、`audit_submission_preflight_bundle.py`、`audit_submission_artifact_manifest.py`、`render_submission_status_dashboard.py`、`validate_repro_workspace.py` 和 `git diff --check` 均已通过。
+- 明文凭据扫描仍为 `hit_count=0`；中文 UTF-8 审计为 `scanned_file_count=148`、`decode_error_count=0`、`bad_marker_hit_count=0`。
+- 本轮没有读取真实 token、submission id、checkpoint link 或真实 local env 内容；没有连接 RoboChallenge 平台，没有上传 checkpoint，没有生成 checkpoint tar，也没有启动真实 runner。
+
+### 当前边界
+
+- 本轮只防止 `ROBOCHALLENGE_SUBMISSION_VARIANT` 拼错、大小写错误或复制粘贴混入空白字符；真实提交仍必须等待用户提供凭据并明确授权。
+- baseline 官方路线仍只等待：提交对象确认、`ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline`、`ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION`。
+- LoRA/web checkpoint 路线仍单独等待 checkpoint 归档、上传授权和真实可访问 checkpoint link；这不是 baseline 官方 ALOHA 最短路线的前置条件。
+
+### 下一步
+
+- P0：提交并推送本轮提交 variant gate 前置审计。
+- P1：凭据到位后先运行 baseline 授权前只读预检与 dry-run gate；真实 runner 仍必须等待用户明确授权。

@@ -30,6 +30,18 @@ PY
   esac
 }
 
+validate_variant() {
+  local value="$1"
+  case "$value" in
+    baseline|lora)
+      ;;
+    *)
+      echo "[ready-real-runner] unsupported submission variant; use baseline or lora" >&2
+      exit 67
+      ;;
+  esac
+}
+
 echo "[ready-real-runner] repo=$REPO_ROOT"
 echo "[ready-real-runner] env_file_present=$([[ -f "$ENV_FILE" ]] && echo true || echo false)"
 
@@ -42,6 +54,8 @@ fi
 VARIANT="${ROBOCHALLENGE_SUBMISSION_VARIANT:-baseline}"
 VERIFY_DOWNLOAD="${ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD:-0}"
 CONFIRM_VALUE="${ROBOCHALLENGE_REAL_RUN_CONFIRM:-}"
+
+validate_variant "$VARIANT"
 
 echo "[ready-real-runner] variant=$VARIANT"
 echo "[ready-real-runner] verify_download=$VERIFY_DOWNLOAD"
@@ -94,10 +108,6 @@ case "$VARIANT" in
     fi
     ROBOCHALLENGE_DRY_RUN=1 bash submission/run_table30v2_aloha_demo_template.sh
     RUNNER=(bash submission/run_table30v2_aloha_demo_template.sh)
-    ;;
-  *)
-    echo "[ready-real-runner] unsupported variant; use lora or baseline" >&2
-    exit 2
     ;;
 esac
 

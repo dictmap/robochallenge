@@ -7,7 +7,7 @@
   "credentials_printed": false,
   "link_values_printed": false,
   "secret_values_printed": false,
-  "artifact_count": 81,
+  "artifact_count": 83,
   "artifacts": [
     {
       "path": "README.md",
@@ -20,8 +20,8 @@
       "path": "work.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 175057,
-      "sha256": "6245a9fcae4b7b1c5807dc9482969c87247905807da4e38363b2c8c23417d90e"
+      "size_bytes": 178054,
+      "sha256": "5c6637d0c5c30b8a595ea6d5d43e8baf7b3689df03e13f2eb3659db1057577e4"
     },
     {
       "path": "notebooks/robochallenge_pi05_submit_cn.ipynb",
@@ -83,15 +83,15 @@
       "path": "submission/run_authorized_preflight_template.sh",
       "exists": true,
       "tracked": true,
-      "size_bytes": 2780,
-      "sha256": "2d0bc47e3825a35d021b624efea58520e4cf76674599549b2d7c4b638a61d47a"
+      "size_bytes": 2926,
+      "sha256": "9b81af2a3285dcd7c503c6bc90a596cb06185e8911d0371a397e024652004a05"
     },
     {
       "path": "submission/run_ready_real_submission_template.sh",
       "exists": true,
       "tracked": true,
-      "size_bytes": 3403,
-      "sha256": "7528173d1108012c505c6b81268d988c77ea0120e1a3b56a148c2eec4ef5f138"
+      "size_bytes": 3549,
+      "sha256": "61d602509ad0c0d086f866f79d84ad711bf4ddc0ea7f6291ca045bb5979733b7"
     },
     {
       "path": "submission/run_authorized_checkpoint_archive_template.sh",
@@ -252,7 +252,7 @@
       "exists": true,
       "tracked": true,
       "size_bytes": 1045,
-      "sha256": "c00bc888da8fafd821caaad70a3ab99e4f20537bd2e7d8482022894b50fa045a"
+      "sha256": "a076f80dae328eece16aaabb7289e6561dfc2c0379ce0320250440d670ad081f"
     },
     {
       "path": "reports/authorized_preflight_template_audit.md",
@@ -339,6 +339,13 @@
       "sha256": "be51af38aef32cf48a7088c1533a356b27e1f4039e7f146e535d3954f767b609"
     },
     {
+      "path": "reports/submission_variant_gate.md",
+      "exists": true,
+      "tracked": false,
+      "size_bytes": 2865,
+      "sha256": "deaa7580b05ca0fda09cc29cfb637dc4bddbae759cd4a72bb1e5528e35c43aea"
+    },
+    {
       "path": "reports/placeholder_credential_rejection.md",
       "exists": true,
       "tracked": true,
@@ -348,7 +355,7 @@
     {
       "path": "reports/credential_whitespace_guard.md",
       "exists": true,
-      "tracked": false,
+      "tracked": true,
       "size_bytes": 2435,
       "sha256": "7b6c49d3735b68b652d9930f8c5b5fa4e9b33a8cf4a230214076b8ed3a390130"
     },
@@ -412,22 +419,22 @@
       "path": "reports/submission_preflight_bundle.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 7606,
-      "sha256": "13052e31aafe340c80aec3c51e82a77790a8768257f4db9779c494448c60fa88"
+      "size_bytes": 7901,
+      "sha256": "0953dce4915ce2982466fcd3c1da2cfd790224098afd3981e8f84761a535956b"
     },
     {
       "path": "reports/plaintext_secret_scan.md",
       "exists": true,
       "tracked": true,
       "size_bytes": 610,
-      "sha256": "5d86077802c072839f81ed00745a8ead38d9b7ff9bdd710e03e8746fb7a673b9"
+      "sha256": "61394ec2909121e52364446f648d274664a807925f7e20709bff42058848c9d2"
     },
     {
       "path": "reports/submission_status_dashboard.html",
       "exists": true,
       "tracked": true,
-      "size_bytes": 20491,
-      "sha256": "ee0e2ffc45964143d6f8debc8b121d0d3177b339ccf2e336c08c900c5bbf998d"
+      "size_bytes": 20992,
+      "sha256": "094b59cc8f46efea1839604f2d9425db47fcc762ea7d7e693d1dafa5bd019f2c"
     },
     {
       "path": "scripts/render_next_user_action_packet.py",
@@ -486,6 +493,13 @@
       "sha256": "a59bbe0108e47989c88a4a14f1935c003681bb19628220f00abc1db88baf462e"
     },
     {
+      "path": "scripts/audit_submission_variant_gate.py",
+      "exists": true,
+      "tracked": false,
+      "size_bytes": 11770,
+      "sha256": "bef72793f347282da8eb4781c380c4a312d0a0a9a5c7111d20efad9eda99fbb3"
+    },
+    {
       "path": "scripts/audit_placeholder_credential_rejection.py",
       "exists": true,
       "tracked": true,
@@ -495,7 +509,7 @@
     {
       "path": "scripts/audit_credential_whitespace_guard.py",
       "exists": true,
-      "tracked": false,
+      "tracked": true,
       "size_bytes": 10941,
       "sha256": "4d04568f724f036a830a7650eec5f310be5c015aa17b56aadb9a330491194bf9"
     },
@@ -691,6 +705,12 @@
     "local_env_runtime_content_not_read_before_gate": true,
     "local_env_runtime_real_runner_not_started": true,
     "local_env_runtime_values_not_recorded": true,
+    "submission_variant_gate_passed": true,
+    "submission_variant_bad_rejected": true,
+    "submission_variant_bad_stop_before_preflight": true,
+    "submission_variant_valid_accepted": true,
+    "submission_variant_real_runner_not_started": true,
+    "submission_variant_values_not_recorded": true,
     "placeholder_credential_rejection_passed": true,
     "placeholder_credential_rejection_case_count": true,
     "placeholder_baseline_rejected_before_dry_run": true,

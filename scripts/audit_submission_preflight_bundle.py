@@ -42,6 +42,7 @@ SUBCOMMANDS = [
     ("baseline_credential_hygiene", "scripts/render_baseline_credential_hygiene.py"),
     ("local_env_permission_contract", "scripts/audit_local_env_permission_contract.py"),
     ("local_env_runtime_permission_gate", "scripts/audit_local_env_runtime_permission_gate.py"),
+    ("submission_variant_gate", "scripts/audit_submission_variant_gate.py"),
     ("placeholder_credential_rejection", "scripts/audit_placeholder_credential_rejection.py"),
     ("credential_whitespace_guard", "scripts/audit_credential_whitespace_guard.py"),
     ("synthetic_dry_run_redaction", "scripts/audit_synthetic_dry_run_redaction.py"),
@@ -117,6 +118,7 @@ def build_status() -> dict[str, Any]:
     baseline_credential_hygiene = read_json(RUNS_DIR / "baseline_credential_hygiene.json")
     local_env_permission = read_json(RUNS_DIR / "local_env_permission_contract.json")
     local_env_runtime_permission = read_json(RUNS_DIR / "local_env_runtime_permission_gate.json")
+    submission_variant_gate = read_json(RUNS_DIR / "submission_variant_gate.json")
     placeholder_credential_rejection = read_json(RUNS_DIR / "placeholder_credential_rejection.json")
     credential_whitespace_guard = read_json(RUNS_DIR / "credential_whitespace_guard.json")
     synthetic_dry_run_redaction = read_json(RUNS_DIR / "synthetic_dry_run_redaction.json")
@@ -152,6 +154,7 @@ def build_status() -> dict[str, Any]:
                 baseline_credential_hygiene,
                 local_env_permission,
                 local_env_runtime_permission,
+                submission_variant_gate,
                 placeholder_credential_rejection,
                 credential_whitespace_guard,
                 synthetic_dry_run_redaction,
@@ -181,6 +184,7 @@ def build_status() -> dict[str, Any]:
         or bool(baseline_credential_hygiene.get("link_values_printed"))
         or bool(local_env_permission.get("link_values_printed"))
         or bool(local_env_runtime_permission.get("link_values_printed"))
+        or bool(submission_variant_gate.get("link_values_printed"))
         or bool(placeholder_credential_rejection.get("link_values_printed"))
         or bool(credential_whitespace_guard.get("link_values_printed"))
         or bool(synthetic_dry_run_redaction.get("link_values_printed"))
@@ -207,6 +211,7 @@ def build_status() -> dict[str, Any]:
         or bool(baseline_credential_hygiene.get("secret_values_printed"))
         or bool(local_env_permission.get("secret_values_printed"))
         or bool(local_env_runtime_permission.get("secret_values_printed"))
+        or bool(submission_variant_gate.get("secret_values_printed"))
         or bool(placeholder_credential_rejection.get("secret_values_printed"))
         or bool(credential_whitespace_guard.get("secret_values_printed"))
         or bool(synthetic_dry_run_redaction.get("secret_values_printed"))
@@ -242,6 +247,7 @@ def build_status() -> dict[str, Any]:
                 baseline_credential_hygiene,
                 local_env_permission,
                 local_env_runtime_permission,
+                submission_variant_gate,
                 placeholder_credential_rejection,
                 credential_whitespace_guard,
                 synthetic_dry_run_redaction,
@@ -277,6 +283,7 @@ def build_status() -> dict[str, Any]:
                 baseline_credential_hygiene,
                 local_env_permission,
                 local_env_runtime_permission,
+                submission_variant_gate,
                 placeholder_credential_rejection,
                 credential_whitespace_guard,
                 synthetic_dry_run_redaction,
@@ -374,6 +381,16 @@ def build_status() -> dict[str, Any]:
         "local_env_runtime_real_runner_not_started": local_env_runtime_permission.get("real_runner_started")
         is False,
         "local_env_runtime_values_not_recorded": local_env_runtime_permission.get("synthetic_values_recorded")
+        is False,
+        "submission_variant_gate_passed": submission_variant_gate.get("passed") is True,
+        "submission_variant_bad_rejected": submission_variant_gate.get("bad_variants_rejected") is True,
+        "submission_variant_bad_stop_before_preflight": submission_variant_gate.get(
+            "bad_variants_stop_before_preflight"
+        )
+        is True,
+        "submission_variant_valid_accepted": submission_variant_gate.get("valid_variants_accepted") is True,
+        "submission_variant_real_runner_not_started": submission_variant_gate.get("real_runner_started") is False,
+        "submission_variant_values_not_recorded": submission_variant_gate.get("synthetic_values_recorded")
         is False,
         "placeholder_credential_rejection_passed": placeholder_credential_rejection.get("passed") is True,
         "placeholder_baseline_rejected_before_dry_run": placeholder_credential_rejection.get(
@@ -552,6 +569,11 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         f"- runtime gate 是否放行 0600：`{status['local_env_runtime_owner_only_accepted']}`。",
         f"- runtime gate 是否在权限检查前不读内容：`{status['local_env_runtime_content_not_read_before_gate']}`。",
         f"- runtime gate 是否未启动真实 runner：`{status['local_env_runtime_real_runner_not_started']}`。",
+        f"- 提交 variant gate：`{status['submission_variant_gate_passed']}`。",
+        f"- 错误 variant 是否被拒绝：`{status['submission_variant_bad_rejected']}`。",
+        f"- 错误 variant 是否停在预检前：`{status['submission_variant_bad_stop_before_preflight']}`。",
+        f"- 合法 variant 是否被接受：`{status['submission_variant_valid_accepted']}`。",
+        f"- variant gate 是否未启动真实 runner：`{status['submission_variant_real_runner_not_started']}`。",
         f"- 占位符凭据拒绝：`{status['placeholder_credential_rejection_passed']}`。",
         f"- baseline 占位符是否在 dry-run 前被拒绝：`{status['placeholder_baseline_rejected_before_dry_run']}`。",
         f"- LoRA 占位符是否在 dry-run 前被拒绝：`{status['placeholder_lora_rejected_before_dry_run']}`。",

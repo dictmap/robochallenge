@@ -13,7 +13,7 @@
 - baseline 是否需要 checkpoint link：`False`。
 - baseline 是否需要 checkpoint upload：`False`。
 - 中文 UTF-8 产物审计：`True`。
-- 中文 UTF-8 扫描文件数：`146`。
+- 中文 UTF-8 扫描文件数：`148`。
 - 中文 UTF-8 解码错误数：`0`。
 - 中文乱码哨兵命中数：`0`。
 - baseline dry-run gate：`True`。
@@ -34,6 +34,11 @@
 - runtime gate 是否放行 0600：`True`。
 - runtime gate 是否在权限检查前不读内容：`True`。
 - runtime gate 是否未启动真实 runner：`True`。
+- 提交 variant gate：`True`。
+- 错误 variant 是否被拒绝：`True`。
+- 错误 variant 是否停在预检前：`True`。
+- 合法 variant 是否被接受：`True`。
+- variant gate 是否未启动真实 runner：`True`。
 - 占位符凭据拒绝：`True`。
 - baseline 占位符是否在 dry-run 前被拒绝：`True`。
 - LoRA 占位符是否在 dry-run 前被拒绝：`True`。
@@ -115,6 +120,7 @@
 - `baseline_credential_hygiene`：returncode=`0`，passed=`True`。
 - `local_env_permission_contract`：returncode=`0`，passed=`True`。
 - `local_env_runtime_permission_gate`：returncode=`0`，passed=`True`。
+- `submission_variant_gate`：returncode=`0`，passed=`True`。
 - `placeholder_credential_rejection`：returncode=`0`，passed=`True`。
 - `credential_whitespace_guard`：returncode=`0`，passed=`True`。
 - `synthetic_dry_run_redaction`：returncode=`0`，passed=`True`。

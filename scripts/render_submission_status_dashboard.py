@@ -35,6 +35,7 @@ SOURCE_FILES = {
     "baseline_credential_hygiene": RUNS_DIR / "baseline_credential_hygiene.json",
     "local_env_permission": RUNS_DIR / "local_env_permission_contract.json",
     "local_env_runtime_permission": RUNS_DIR / "local_env_runtime_permission_gate.json",
+    "submission_variant_gate": RUNS_DIR / "submission_variant_gate.json",
     "placeholder_credentials": RUNS_DIR / "placeholder_credential_rejection.json",
     "credential_whitespace_guard": RUNS_DIR / "credential_whitespace_guard.json",
     "synthetic_dry_run_redaction": RUNS_DIR / "synthetic_dry_run_redaction.json",
@@ -108,6 +109,7 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
     baseline_credential_hygiene = data["baseline_credential_hygiene"]
     local_env_permission = data["local_env_permission"]
     local_env_runtime_permission = data["local_env_runtime_permission"]
+    submission_variant_gate = data["submission_variant_gate"]
     placeholder_credentials = data["placeholder_credentials"]
     credential_whitespace_guard = data["credential_whitespace_guard"]
     synthetic_dry_run = data["synthetic_dry_run_redaction"]
@@ -211,6 +213,18 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
         and local_env_runtime_permission.get("evidence", {}).get("real_runner_not_started") is True
         and not any(local_env_runtime_permission.get("leak_flags", {}).values())
         and not any(local_env_runtime_permission.get("contact_flags", {}).values())
+    )
+    submission_variant_ready = bool(
+        submission_variant_gate.get("passed")
+        and submission_variant_gate.get("bad_variants_rejected") is True
+        and submission_variant_gate.get("bad_variants_stop_before_preflight") is True
+        and submission_variant_gate.get("valid_variants_accepted") is True
+        and submission_variant_gate.get("real_runner_started") is False
+        and submission_variant_gate.get("synthetic_values_recorded") is False
+        and submission_variant_gate.get("evidence", {}).get("all_cases_no_protected_values") is True
+        and submission_variant_gate.get("evidence", {}).get("real_runner_not_started") is True
+        and not any(submission_variant_gate.get("leak_flags", {}).values())
+        and not any(submission_variant_gate.get("contact_flags", {}).values())
     )
     placeholder_credentials_ready = bool(
         placeholder_credentials.get("passed")
@@ -486,6 +500,13 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
             "reports/local_env_runtime_permission_gate.md",
         ),
         card(
+            "提交 variant gate",
+            "done" if submission_variant_ready else "watch",
+            f"{submission_variant_gate.get('case_count', 0)} 个场景",
+            "授权入口只接受 baseline 或 lora；拼写错误、大小写错误或带空白字符会在 checkpoint/readiness 预检前被拒绝。",
+            "reports/submission_variant_gate.md",
+        ),
+        card(
             "占位符凭据拒绝",
             "done" if placeholder_credentials_ready else "watch",
             f"{placeholder_credentials.get('case_count', 0)} 个场景",
@@ -593,6 +614,7 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
     baseline_credential_hygiene = data["baseline_credential_hygiene"]
     local_env_permission = data["local_env_permission"]
     local_env_runtime_permission = data["local_env_runtime_permission"]
+    submission_variant_gate = data["submission_variant_gate"]
     placeholder_credentials = data["placeholder_credentials"]
     credential_whitespace_guard = data["credential_whitespace_guard"]
     synthetic_dry_run = data["synthetic_dry_run_redaction"]
@@ -714,6 +736,20 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
             local_env_runtime_permission.get("contact_flags", {}).values()
         ),
         "local_env_runtime_no_leak": not any(local_env_runtime_permission.get("leak_flags", {}).values()),
+        "submission_variant_gate_passed": submission_variant_gate.get("passed") is True,
+        "submission_variant_case_count": submission_variant_gate.get("case_count"),
+        "submission_variant_bad_rejected": submission_variant_gate.get("bad_variants_rejected") is True,
+        "submission_variant_bad_stop_before_preflight": submission_variant_gate.get(
+            "bad_variants_stop_before_preflight"
+        )
+        is True,
+        "submission_variant_valid_accepted": submission_variant_gate.get("valid_variants_accepted") is True,
+        "submission_variant_real_runner_not_started": submission_variant_gate.get("real_runner_started")
+        is False,
+        "submission_variant_values_not_recorded": submission_variant_gate.get("synthetic_values_recorded")
+        is False,
+        "submission_variant_no_contact": not any(submission_variant_gate.get("contact_flags", {}).values()),
+        "submission_variant_no_leak": not any(submission_variant_gate.get("leak_flags", {}).values()),
         "placeholder_credential_rejection_passed": placeholder_credentials.get("passed") is True,
         "placeholder_credential_rejection_case_count": placeholder_credentials.get("case_count"),
         "placeholder_baseline_rejected_before_dry_run": placeholder_credentials.get("baseline_placeholder_rejected")

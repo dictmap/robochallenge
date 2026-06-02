@@ -30,8 +30,13 @@ REQUIRED_COMMANDS = [
     "python3 scripts/audit_real_submission_readiness.py",
     "python3 scripts/audit_submission_blockers_summary.py",
     "python3 scripts/audit_ready_real_runner_template.py",
+    "python3 scripts/audit_authorized_checkpoint_archive_template.py",
     "bash submission/run_authorized_preflight_template.sh",
-    "python3 scripts/create_checkpoint_archive.py --execute --confirm-create-large-archive",
+    "bash submission/run_authorized_checkpoint_archive_template.sh",
+    (
+        "ROBOCHALLENGE_ARCHIVE_CONFIRM=CREATE_ROBOCHALLENGE_CHECKPOINT_ARCHIVE "
+        "bash submission/run_authorized_checkpoint_archive_template.sh"
+    ),
     "ROBOCHALLENGE_DRY_RUN=1 bash submission/run_table30v2_aloha_lora_demo_template.sh",
     "ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION bash submission/run_ready_real_submission_template.sh",
     (
@@ -57,6 +62,10 @@ REQUIRED_GUARDRAILS = {
     "link_gate_before_readiness": ["audit_checkpoint_link_intake.py", "audit_real_submission_readiness.py"],
     "dry_run_before_real_runner": ["ROBOCHALLENGE_DRY_RUN=1", "bash submission/run_table30v2_aloha_lora_demo_template.sh"],
     "dry_run_no_checkpoint_plaintext": ["checkpoint 长度", "checkpoint link 明文"],
+    "archive_confirmation_required": [
+        "ROBOCHALLENGE_ARCHIVE_CONFIRM=CREATE_ROBOCHALLENGE_CHECKPOINT_ARCHIVE",
+        "stop before creating tar",
+    ],
     "real_runner_confirmation_required": [
         "ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION",
         "停在真实 runner 前",
@@ -150,6 +159,7 @@ def build_status(doc_path: Path) -> dict[str, Any]:
     blockers_summary = read_json(RUNS_DIR / "submission_blockers_summary.json")
     authorized_preflight = read_json(RUNS_DIR / "authorized_preflight_template_audit.json")
     ready_real_runner = read_json(RUNS_DIR / "ready_real_runner_template_audit.json")
+    authorized_archive = read_json(RUNS_DIR / "authorized_checkpoint_archive_template_audit.json")
     plaintext_scan = read_json(RUNS_DIR / "plaintext_secret_scan.json")
     handoff = read_json(RUNS_DIR / "submission_handoff_docs_audit.json")
 
@@ -185,6 +195,15 @@ def build_status(doc_path: Path) -> dict[str, Any]:
             "passed"
         )
         is True,
+        "authorized_checkpoint_archive_template_passed": authorized_archive.get("passed") is True,
+        "authorized_checkpoint_archive_no_confirm_smoke_passed": authorized_archive.get("no_confirm_smoke", {}).get(
+            "passed"
+        )
+        is True,
+        "authorized_checkpoint_archive_not_created": authorized_archive.get("no_confirm_smoke", {}).get(
+            "archive_created"
+        )
+        is False,
         "plaintext_scan_passed": plaintext_scan.get("passed") is True,
         "plaintext_hit_count_zero": plaintext_scan.get("hit_count") == 0,
         "handoff_docs_passed": handoff.get("passed") is True,
@@ -225,6 +244,12 @@ def build_status(doc_path: Path) -> dict[str, Any]:
             ready_real_runner.get("credentials_printed") is False,
             ready_real_runner.get("link_values_printed") is False,
             ready_real_runner.get("secret_values_printed") is False,
+            authorized_archive.get("platform_contacted") is False,
+            authorized_archive.get("uploads_performed") is False,
+            authorized_archive.get("credentials_read") is False,
+            authorized_archive.get("credentials_printed") is False,
+            authorized_archive.get("link_values_printed") is False,
+            authorized_archive.get("secret_values_printed") is False,
             handoff.get("platform_contacted") is False,
         ]
     )

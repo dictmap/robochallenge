@@ -1268,3 +1268,31 @@
 
 - P0：提交并推送本轮强确认真实 runner 入口产物。
 - P1：用户提供真实凭据后，先运行 `bash submission/run_authorized_preflight_template.sh`，再用 `ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION bash submission/run_ready_real_submission_template.sh` 进入真实 runner。
+
+## 2026-06-02 第四十五轮：授权后 checkpoint 归档强确认入口审计
+
+### 已完成
+
+- 新增 `submission/run_authorized_checkpoint_archive_template.sh`，作为 12GB+ LoRA 物化 checkpoint 归档的强确认入口。
+- 新增 `scripts/audit_authorized_checkpoint_archive_template.py`，离线审计该入口的 bash 语法、必要片段、禁止上传/runner 片段、无确认 smoke 和归档未生成状态。
+- Notebook `notebooks/robochallenge_pi05_submit_cn.ipynb` 新增第 42 节“授权后 checkpoint 归档模板审计”，核心操作可在 Jupyter 中复跑。
+- `submission/AUTHORIZED_SUBMISSION_SEQUENCE.md` 和 `submission/REAL_SUBMISSION_HANDOFF.md` 已从裸 `tar/sha256sum` 最短流程改为受控入口：先运行 `bash submission/run_authorized_checkpoint_archive_template.sh` dry-run；只有用户明确授权后才使用 `ROBOCHALLENGE_ARCHIVE_CONFIRM=CREATE_ROBOCHALLENGE_CHECKPOINT_ARCHIVE bash submission/run_authorized_checkpoint_archive_template.sh`。
+- `scripts/audit_submission_preflight_bundle.py`、`scripts/audit_submission_artifact_manifest.py`、`scripts/audit_submission_blockers_summary.py`、`scripts/audit_authorized_submission_sequence.py`、`scripts/audit_submission_handoff_docs.py`、`scripts/audit_notebook_structure.py` 和 `scripts/validate_repro_workspace.py` 已纳入该归档入口审计。
+
+### 验证结果
+
+- Linux 端 `python3 scripts/audit_authorized_checkpoint_archive_template.py` 已通过：`passed=true`，`bash_n.passed=true`。
+- 无确认 smoke 已通过：返回非零、命中 `missing explicit archive confirmation` 和 `stop before creating tar`，`archive_created=false`，`sha256_created=false`，`upload_performed=false`，`credentials_read=false`，`platform_contacted=false`。
+- Notebook 结构审计已通过：`cell_count=87`，第 42 节标记、`RUN_AUTHORIZED_CHECKPOINT_ARCHIVE_TEMPLATE_AUDIT` 和 `scripts/audit_authorized_checkpoint_archive_template.py` 均存在，且无乱码哨兵命中。
+- Linux 端提交材料审计链已通过：handoff docs、authorized sequence、plaintext secrets、preflight bundle、artifact manifest、blockers summary 和总体验证均通过。
+- Linux 端 `git diff --check` 已通过。
+
+### 当前边界
+
+- 本轮不生成 tar、不计算真实 sha256、不上传 checkpoint、不连接 RoboChallenge 平台、不读取或伪造真实 token/submission id/checkpoint link。
+- 真实提交仍处于 `go_no_go=blocked`：还缺 `ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、真实可访问 checkpoint link，以及用户对 checkpoint 归档/上传和真实 runner 的明确授权。
+
+### 下一步
+
+- P0：提交并推送本轮授权后 checkpoint 归档强确认入口产物。
+- P1：用户提供真实凭据、checkpoint link 和归档/上传授权后，先运行 `bash submission/run_authorized_preflight_template.sh`；如果要生成 LoRA checkpoint tar，再设置 `ROBOCHALLENGE_ARCHIVE_CONFIRM=CREATE_ROBOCHALLENGE_CHECKPOINT_ARCHIVE` 执行归档入口。

@@ -26,6 +26,7 @@ SUBCOMMANDS = [
     ("real_submission_readiness", "scripts/audit_real_submission_readiness.py"),
     ("authorized_preflight_template", "scripts/audit_authorized_preflight_template.py"),
     ("ready_real_runner_template", "scripts/audit_ready_real_runner_template.py"),
+    ("authorized_checkpoint_archive_template", "scripts/audit_authorized_checkpoint_archive_template.py"),
     ("submission_handoff_docs", "scripts/audit_submission_handoff_docs.py"),
     ("plaintext_secret_scan", "scripts/audit_plaintext_secrets.py"),
     ("submission_artifact_manifest", "scripts/audit_submission_artifact_manifest.py"),
@@ -80,6 +81,7 @@ def build_status() -> dict[str, Any]:
     readiness = read_json(RUNS_DIR / "real_submission_readiness.json")
     authorized_preflight = read_json(RUNS_DIR / "authorized_preflight_template_audit.json")
     ready_real_runner = read_json(RUNS_DIR / "ready_real_runner_template_audit.json")
+    authorized_archive = read_json(RUNS_DIR / "authorized_checkpoint_archive_template_audit.json")
     handoff = read_json(RUNS_DIR / "submission_handoff_docs_audit.json")
     secret_scan = read_json(RUNS_DIR / "plaintext_secret_scan.json")
 
@@ -94,6 +96,7 @@ def build_status() -> dict[str, Any]:
                 readiness,
                 authorized_preflight,
                 ready_real_runner,
+                authorized_archive,
                 handoff,
                 secret_scan,
             ]
@@ -103,12 +106,14 @@ def build_status() -> dict[str, Any]:
         or bool(artifact_manifest.get("link_values_printed"))
         or bool(notebook_structure.get("link_values_printed"))
         or bool(authorized_preflight.get("link_values_printed"))
-        or bool(ready_real_runner.get("link_values_printed")),
+        or bool(ready_real_runner.get("link_values_printed"))
+        or bool(authorized_archive.get("link_values_printed")),
         "secret_values_printed": bool(secret_scan.get("secret_values_printed"))
         or bool(artifact_manifest.get("secret_values_printed"))
         or bool(notebook_structure.get("secret_values_printed"))
         or bool(authorized_preflight.get("secret_values_printed"))
-        or bool(ready_real_runner.get("secret_values_printed")),
+        or bool(ready_real_runner.get("secret_values_printed"))
+        or bool(authorized_archive.get("secret_values_printed")),
     }
     contact_flags = {
         "platform_contacted": any(
@@ -121,6 +126,7 @@ def build_status() -> dict[str, Any]:
                 readiness,
                 authorized_preflight,
                 ready_real_runner,
+                authorized_archive,
                 handoff,
                 secret_scan,
             ]
@@ -135,6 +141,7 @@ def build_status() -> dict[str, Any]:
                 readiness,
                 authorized_preflight,
                 ready_real_runner,
+                authorized_archive,
                 handoff,
                 secret_scan,
             ]

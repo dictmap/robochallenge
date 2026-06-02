@@ -38,6 +38,9 @@ REQUIRED_MARKERS = [
     "第 41 节：强确认真实 runner 模板审计",
     "RUN_READY_REAL_RUNNER_TEMPLATE_AUDIT",
     "scripts/audit_ready_real_runner_template.py",
+    "第 42 节：授权后 checkpoint 归档模板审计",
+    "RUN_AUTHORIZED_CHECKPOINT_ARCHIVE_TEMPLATE_AUDIT",
+    "scripts/audit_authorized_checkpoint_archive_template.py",
 ]
 
 

@@ -23,7 +23,7 @@
   "sha256_git_ignored": true,
   "tar_available": true,
   "disk": {
-    "free_space_bucket_gb": 480,
+    "free_space_bucket_gb": 470,
     "expected_archive_bytes": 11879987200,
     "expected_archive_gb": 11.064,
     "margin_factor_required": 2,

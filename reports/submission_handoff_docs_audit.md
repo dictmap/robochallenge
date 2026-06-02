@@ -21,6 +21,7 @@
 - `submission/run_table30v2_aloha_lora_demo_template.sh`：`True`。
 - `submission/run_authorized_preflight_template.sh`：`True`。
 - `submission/run_ready_real_submission_template.sh`：`True`。
+- `submission/run_authorized_checkpoint_archive_template.sh`：`True`。
 - `submission/AUTHORIZED_SUBMISSION_SEQUENCE.md`：`True`。
 - `submission/robochallenge_env_template.sh`：`True`。
 - `runs/openpi_rtc_lora_materialized_policy_checkpoint`：`True`。
@@ -33,6 +34,7 @@
 - `scripts/audit_submission_blockers_summary.py`：`True`。
 - `scripts/audit_authorized_preflight_template.py`：`True`。
 - `scripts/audit_ready_real_runner_template.py`：`True`。
+- `scripts/audit_authorized_checkpoint_archive_template.py`：`True`。
 - `scripts/audit_real_submission_readiness.py`：`True`。
 - `scripts/audit_submission_preflight_bundle.py`：`True`。
 
@@ -46,14 +48,15 @@
 - `submission_blockers_summary`：`True`。
 - `authorized_preflight_template`：`True`。
 - `ready_real_runner_template`：`True`。
+- `authorized_checkpoint_archive_template`：`True`。
+- `authorized_checkpoint_archive_dry_run`：`True`。
+- `authorized_checkpoint_archive_confirm`：`True`。
 - `authorized_preflight_runner`：`True`。
 - `ready_real_runner`：`True`。
 - `ready_real_runner_baseline`：`True`。
 - `submission_preflight_bundle`：`True`。
 - `authorized_submission_sequence`：`True`。
 - `readiness_gate`：`True`。
-- `tar_create`：`True`。
-- `sha256_create`：`True`。
 - `lora_runner_dry_run`：`True`。
 - `baseline_runner`：`True`。
 - `lora_runner`：`True`。
@@ -72,6 +75,7 @@
 - `says_download_verify_no_plaintext`：`True`。
 - `uses_placeholders_instead_of_values`：`True`。
 - `says_real_runner_requires_confirmation`：`True`。
+- `says_archive_requires_confirmation`：`True`。
 
 ## 输入证据
 
@@ -87,6 +91,8 @@
 - `link_download_no_plaintext`：`True`。
 - `ready_real_runner_template_passed`：`True`。
 - `ready_real_runner_no_confirm_blocks`：`True`。
+- `authorized_checkpoint_archive_template_passed`：`True`。
+- `authorized_checkpoint_archive_no_confirm_blocks`：`True`。
 
 ## Blocking
 

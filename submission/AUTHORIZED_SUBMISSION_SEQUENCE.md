@@ -14,6 +14,8 @@ python3 scripts/audit_checkpoint_link_intake.py
 python3 scripts/audit_real_submission_readiness.py
 python3 scripts/audit_submission_blockers_summary.py
 python3 scripts/audit_ready_real_runner_template.py
+python3 scripts/audit_authorized_checkpoint_archive_template.py
+bash submission/run_authorized_checkpoint_archive_template.sh
 bash submission/run_authorized_preflight_template.sh
 ```
 
@@ -21,10 +23,10 @@ bash submission/run_authorized_preflight_template.sh
 
 ## 1. 用户授权后生成本地归档
 
-只有用户明确授权生成约 12GB checkpoint tar 时，才执行：
+只有用户明确授权生成约 12GB checkpoint tar 时，才设置确认短语执行受控入口。没有确认短语时，该入口必须输出 `stop before creating tar` 并停在生成 tar 前：
 
 ```bash
-python3 scripts/create_checkpoint_archive.py --execute --confirm-create-large-archive
+ROBOCHALLENGE_ARCHIVE_CONFIRM=CREATE_ROBOCHALLENGE_CHECKPOINT_ARCHIVE bash submission/run_authorized_checkpoint_archive_template.sh
 ```
 
 生成后检查：

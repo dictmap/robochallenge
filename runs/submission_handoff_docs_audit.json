@@ -16,6 +16,7 @@
     "submission/run_table30v2_aloha_lora_demo_template.sh": true,
     "submission/run_authorized_preflight_template.sh": true,
     "submission/run_ready_real_submission_template.sh": true,
+    "submission/run_authorized_checkpoint_archive_template.sh": true,
     "submission/AUTHORIZED_SUBMISSION_SEQUENCE.md": true,
     "submission/robochallenge_env_template.sh": true,
     "runs/openpi_rtc_lora_materialized_policy_checkpoint": true,
@@ -28,6 +29,7 @@
     "scripts/audit_submission_blockers_summary.py": true,
     "scripts/audit_authorized_preflight_template.py": true,
     "scripts/audit_ready_real_runner_template.py": true,
+    "scripts/audit_authorized_checkpoint_archive_template.py": true,
     "scripts/audit_real_submission_readiness.py": true,
     "scripts/audit_submission_preflight_bundle.py": true
   },
@@ -40,14 +42,15 @@
     "submission_blockers_summary": true,
     "authorized_preflight_template": true,
     "ready_real_runner_template": true,
+    "authorized_checkpoint_archive_template": true,
+    "authorized_checkpoint_archive_dry_run": true,
+    "authorized_checkpoint_archive_confirm": true,
     "authorized_preflight_runner": true,
     "ready_real_runner": true,
     "ready_real_runner_baseline": true,
     "submission_preflight_bundle": true,
     "authorized_submission_sequence": true,
     "readiness_gate": true,
-    "tar_create": true,
-    "sha256_create": true,
     "lora_runner_dry_run": true,
     "baseline_runner": true,
     "lora_runner": true
@@ -64,7 +67,8 @@
     "says_download_verify_no_contact_by_default": true,
     "says_download_verify_no_plaintext": true,
     "uses_placeholders_instead_of_values": true,
-    "says_real_runner_requires_confirmation": true
+    "says_real_runner_requires_confirmation": true,
+    "says_archive_requires_confirmation": true
   },
   "input_evidence": {
     "real_submission_gate_exists": true,
@@ -78,7 +82,9 @@
     "link_download_host_not_contacted": true,
     "link_download_no_plaintext": true,
     "ready_real_runner_template_passed": true,
-    "ready_real_runner_no_confirm_blocks": true
+    "ready_real_runner_no_confirm_blocks": true,
+    "authorized_checkpoint_archive_template_passed": true,
+    "authorized_checkpoint_archive_no_confirm_blocks": true
   },
   "blocking": [
     "无文档侧阻塞；真实提交仍取决于用户凭据、授权上传和真实 checkpoint link。"

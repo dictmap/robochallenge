@@ -1,0 +1,72 @@
+{
+  "kind": "authorized_checkpoint_archive_template_audit",
+  "passed": true,
+  "platform_contacted": false,
+  "uploads_performed": false,
+  "credentials_read": false,
+  "credentials_printed": false,
+  "link_values_printed": false,
+  "secret_values_printed": false,
+  "template_path": "submission/run_authorized_checkpoint_archive_template.sh",
+  "confirmation_phrase": "CREATE_ROBOCHALLENGE_CHECKPOINT_ARCHIVE",
+  "bash_n": {
+    "returncode": 0,
+    "passed": true,
+    "stderr": ""
+  },
+  "required_fragments": {
+    "runs_archive_plan": true,
+    "runs_split_plan": true,
+    "runs_archive_dry_run": true,
+    "requires_archive_confirm_env": true,
+    "confirmation_phrase": true,
+    "execute_gate": true,
+    "stops_before_tar": true,
+    "upload_separate_authorization": true
+  },
+  "forbidden_fragments": {
+    "uploads_with_rclone": false,
+    "uploads_with_aws": false,
+    "uploads_with_curl": false,
+    "uploads_with_gh_release": false,
+    "uploads_with_hf": false,
+    "calls_lora_runner": false,
+    "calls_baseline_runner": false,
+    "mentions_demo_py": false,
+    "reads_user_token": false,
+    "reads_submission_id": false
+  },
+  "secret_patterns_found": [],
+  "no_confirm_smoke": {
+    "returncode": 1,
+    "stdout_tail": "ize_gib\": 3.064,\n      \"exists\": false,\n      \"git_ignored\": true\n    }\n  ],\n  \"archive_absent\": true,\n  \"sha256_absent\": true,\n  \"existing_part_count\": 0,\n  \"all_parts_git_ignored\": true,\n  \"commands\": {\n    \"split_archive\": \"split -b 4G -d -a 3 runs/openpi_rtc_lora_materialized_policy_checkpoint.tar runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.part-\",\n    \"list_parts\": \"ls -lh runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.part-*\",\n    \"verify_reassembled_archive\": \"sha256sum -c runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.sha256\",\n    \"reassemble_archive\": \"cat runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.part-* > runs/openpi_rtc_lora_materialized_policy_checkpoint.tar\",\n    \"commands_safe\": true\n  },\n  \"blocking\": [\n    \"本审计不生成 tar、不生成分片、不上传 checkpoint。\",\n    \"真实分片上传仍需要用户先授权生成 tar/sha256，并选择存储通道。\",\n    \"拿到真实可访问 checkpoint link 后，仍需运行 checkpoint link intake 和 readiness gate。\"\n  ]\n}\n{\n  \"kind\": \"checkpoint_archive_dry_run\",\n  \"passed\": true,\n  \"dry_run\": true,\n  \"execute_requested\": false,\n  \"confirm_create_large_archive\": false,\n  \"explicit_execute_gate\": false,\n  \"missing_execute_confirmation\": false,\n  \"archive_created\": false,\n  \"sha256_created\": false,\n  \"upload_performed\": false,\n  \"credentials_read\": false,\n  \"platform_contacted\": false,\n  \"checkpoint_dir\": \"runs/openpi_rtc_lora_materialized_policy_checkpoint\",\n  \"archive_path\": \"runs/openpi_rtc_lora_materialized_policy_checkpoint.tar\",\n  \"sha256_path\": \"runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.sha256\",\n  \"checkpoint_dir_exists\": true,\n  \"archive_absent_before\": true,\n  \"sha256_absent_before\": true,\n  \"archive_absent_after\": true,\n  \"sha256_absent_after\": true,\n  \"archive_git_ignored\": true,\n  \"sha256_git_ignored\": true,\n  \"tar_available\": true,\n  \"disk\": {\n    \"free_space_bucket_gb\": 470,\n    \"expected_archive_bytes\": 11879987200,\n    \"expected_archive_gb\": 11.064,\n    \"margin_factor_required\": 2,\n    \"free_space_margin_passed\": true\n  },\n  \"commands\": {\n    \"dry_run\": \"python3 scripts/create_checkpoint_archive.py\",\n    \"execute\": \"python3 scripts/create_checkpoint_archive.py --execute --confirm-create-large-archive\",\n    \"tar_invocation\": \"tar -C runs -cf runs/openpi_rtc_lora_materialized_policy_checkpoint.tar openpi_rtc_lora_materialized_policy_checkpoint\",\n    \"sha256_method\": \"python hashlib.sha256 -> runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.sha256\",\n    \"uses_shell\": false,\n    \"destructive_commands\": false\n  },\n  \"blocking\": [\n    \"默认 dry-run 不生成 tar；真正生成约 12GB 归档必须显式使用 --execute --confirm-create-large-archive。\",\n    \"本脚本不上传 checkpoint、不读取凭据、不连接 RoboChallenge 平台。\",\n    \"真实提交仍需要用户提供 token、submission id 和可访问 checkpoint link。\"\n  ]\n}\n[authorized-checkpoint-archive] missing explicit archive confirmation\n[authorized-checkpoint-archive] set ROBOCHALLENGE_ARCHIVE_CONFIRM=CREATE_ROBOCHALLENGE_CHECKPOINT_ARCHIVE only after user authorizes local 12GB+ tar creation\n[authorized-checkpoint-archive] stop before creating tar\n",
+    "stderr_tail": "",
+    "archive_absent_before": true,
+    "sha256_absent_before": true,
+    "archive_absent_after": true,
+    "sha256_absent_after": true,
+    "missing_confirmation": true,
+    "stops_before_creating_tar": true,
+    "archive_created": false,
+    "sha256_created": false,
+    "upload_performed": false,
+    "credentials_read": false,
+    "platform_contacted": false,
+    "dry_run_passed": true,
+    "confirm_phrase_accepted": false,
+    "passed": true
+  },
+  "input_evidence": {
+    "archive_plan_passed": true,
+    "split_plan_passed": true,
+    "archive_dry_run_passed": true,
+    "archive_not_created": true,
+    "sha256_not_created": true,
+    "upload_not_performed": true,
+    "credentials_not_read": true,
+    "platform_not_contacted": true
+  },
+  "blocking": [
+    "授权后 checkpoint 归档模板已通过；没有确认短语时不会生成 tar。"
+  ]
+}

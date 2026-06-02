@@ -20,6 +20,7 @@ python3 scripts/audit_authorized_submission_sequence.py
 python3 scripts/audit_submission_blockers_summary.py
 python3 scripts/audit_authorized_preflight_template.py
 python3 scripts/audit_ready_real_runner_template.py
+python3 scripts/audit_authorized_checkpoint_archive_template.py
 ```
 
 先在 Linux 仓库根目录执行：
@@ -28,11 +29,11 @@ python3 scripts/audit_ready_real_runner_template.py
 python3 scripts/audit_real_submission_readiness.py
 ```
 
-如果走 LoRA checkpoint 提交路线，必须先由用户确认上传通道和存储位置，然后再打包本地物化 checkpoint：
+如果走 LoRA checkpoint 提交路线，必须先由用户确认上传通道和存储位置，然后再通过受控入口打包本地物化 checkpoint。没有确认短语时，该入口只会复跑 archive plan、split plan 和 dry-run，然后输出 `stop before creating tar` 停在生成 tar 前：
 
 ```bash
-tar -C runs -cf runs/openpi_rtc_lora_materialized_policy_checkpoint.tar openpi_rtc_lora_materialized_policy_checkpoint
-sha256sum runs/openpi_rtc_lora_materialized_policy_checkpoint.tar > runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.sha256
+bash submission/run_authorized_checkpoint_archive_template.sh
+ROBOCHALLENGE_ARCHIVE_CONFIRM=CREATE_ROBOCHALLENGE_CHECKPOINT_ARCHIVE bash submission/run_authorized_checkpoint_archive_template.sh
 ```
 
 上传完成后，先复制 tracked 模板到被 Git 忽略的本地副本，再只编辑本地副本。下面命令不会保存真实值到仓库：
@@ -93,7 +94,7 @@ bash submission/run_table30v2_aloha_demo_template.sh
 - 不要伪造 RoboChallenge token、submission id 或 checkpoint link。
 - 不要把真实 token、submission id、checkpoint link 写入 Git、Notebook、报告或命令历史截图。
 - 不要在未获得用户授权时上传 checkpoint 或生成公开下载链接。
-- 不要把 `runs/openpi_rtc_lora_materialized_policy_checkpoint.tar` 或 checkpoint 目录提交进 Git。
+- 不要把 `runs/openpi_rtc_lora_materialized_policy_checkpoint.tar`、`runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.sha256` 或 checkpoint 目录提交进 Git。
 - 如果 `scripts/audit_real_submission_readiness.py` 仍显示 `ready_for_real_submission=false`，就不要启动真实提交 runner。
 - 如果没有设置 `ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION`，强确认入口必须停在真实 runner 前。
 

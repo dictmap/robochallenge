@@ -55,6 +55,7 @@ REQUIRED = [
     "reports/notebook_structure_audit.md",
     "reports/authorized_preflight_template_audit.md",
     "reports/ready_real_runner_template_audit.md",
+    "reports/authorized_checkpoint_archive_template_audit.md",
     "reports/submission_artifact_manifest.md",
     "reports/submission_blockers_summary.md",
     "reports/plaintext_secret_scan.md",
@@ -96,6 +97,7 @@ REQUIRED = [
     "runs/notebook_structure_audit.json",
     "runs/authorized_preflight_template_audit.json",
     "runs/ready_real_runner_template_audit.json",
+    "runs/authorized_checkpoint_archive_template_audit.json",
     "runs/submission_artifact_manifest.json",
     "runs/submission_blockers_summary.json",
     "runs/plaintext_secret_scan.json",
@@ -109,6 +111,7 @@ REQUIRED = [
     "submission/run_table30v2_aloha_lora_demo_template.sh",
     "submission/run_authorized_preflight_template.sh",
     "submission/run_ready_real_submission_template.sh",
+    "submission/run_authorized_checkpoint_archive_template.sh",
     "scripts/probe_pi05_base_model.sh",
     "scripts/audit_pi06_pi07_public_release.py",
     "scripts/audit_table30v2_aloha_mapping.py",
@@ -137,6 +140,7 @@ REQUIRED = [
     "scripts/audit_notebook_structure.py",
     "scripts/audit_authorized_preflight_template.py",
     "scripts/audit_ready_real_runner_template.py",
+    "scripts/audit_authorized_checkpoint_archive_template.py",
     "scripts/audit_submission_artifact_manifest.py",
     "scripts/audit_submission_blockers_summary.py",
     "scripts/audit_plaintext_secrets.py",
@@ -1041,6 +1045,41 @@ def main() -> int:
     ):
         print("强确认真实 runner 模板审计未通过")
         return 1
+    authorized_archive = json.loads(
+        (ROOT / "runs/authorized_checkpoint_archive_template_audit.json").read_text(encoding="utf-8")
+    )
+    authorized_archive_smoke = authorized_archive.get("no_confirm_smoke", {})
+    if not all(
+        [
+            authorized_archive.get("kind") == "authorized_checkpoint_archive_template_audit",
+            authorized_archive.get("passed"),
+            authorized_archive.get("platform_contacted") is False,
+            authorized_archive.get("uploads_performed") is False,
+            authorized_archive.get("credentials_read") is False,
+            authorized_archive.get("credentials_printed") is False,
+            authorized_archive.get("link_values_printed") is False,
+            authorized_archive.get("secret_values_printed") is False,
+            authorized_archive.get("template_path") == "submission/run_authorized_checkpoint_archive_template.sh",
+            authorized_archive.get("confirmation_phrase") == "CREATE_ROBOCHALLENGE_CHECKPOINT_ARCHIVE",
+            authorized_archive.get("bash_n", {}).get("passed"),
+            all(authorized_archive.get("required_fragments", {}).values()),
+            not any(authorized_archive.get("forbidden_fragments", {}).values()),
+            authorized_archive.get("secret_patterns_found") == [],
+            authorized_archive_smoke.get("passed"),
+            authorized_archive_smoke.get("missing_confirmation"),
+            authorized_archive_smoke.get("stops_before_creating_tar"),
+            authorized_archive_smoke.get("archive_created") is False,
+            authorized_archive_smoke.get("sha256_created") is False,
+            authorized_archive_smoke.get("upload_performed") is False,
+            authorized_archive_smoke.get("credentials_read") is False,
+            authorized_archive_smoke.get("platform_contacted") is False,
+            authorized_archive_smoke.get("archive_absent_after"),
+            authorized_archive_smoke.get("sha256_absent_after"),
+            all(authorized_archive.get("input_evidence", {}).values()),
+        ]
+    ):
+        print("授权后 checkpoint 归档模板审计未通过")
+        return 1
     artifact_manifest = json.loads((ROOT / "runs/submission_artifact_manifest.json").read_text(encoding="utf-8"))
     artifact_inputs = artifact_manifest.get("inputs", {})
     artifact_leaks = artifact_manifest.get("leak_flags", {})
@@ -1084,6 +1123,7 @@ def main() -> int:
         "real_submission_readiness",
         "authorized_preflight_template",
         "ready_real_runner_template",
+        "authorized_checkpoint_archive_template",
         "submission_handoff_docs",
         "plaintext_secret_scan",
     }
@@ -1319,6 +1359,7 @@ def main() -> int:
     print("Notebook 结构与编码审计已通过")
     print("授权后安全预检模板审计已通过")
     print("强确认真实 runner 模板审计已通过")
+    print("授权后 checkpoint 归档模板审计已通过")
     print("提交准备材料 manifest 审计已通过")
     print("真实提交前预检汇总已通过")
     print("真实提交阻塞项摘要已通过")

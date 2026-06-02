@@ -30,6 +30,7 @@ REQUIRED_PATHS = [
     "submission/run_table30v2_aloha_lora_demo_template.sh",
     "submission/run_authorized_preflight_template.sh",
     "submission/run_ready_real_submission_template.sh",
+    "submission/run_authorized_checkpoint_archive_template.sh",
     "submission/AUTHORIZED_SUBMISSION_SEQUENCE.md",
     "submission/robochallenge_env_template.sh",
     "runs/openpi_rtc_lora_materialized_policy_checkpoint",
@@ -42,6 +43,7 @@ REQUIRED_PATHS = [
     "scripts/audit_submission_blockers_summary.py",
     "scripts/audit_authorized_preflight_template.py",
     "scripts/audit_ready_real_runner_template.py",
+    "scripts/audit_authorized_checkpoint_archive_template.py",
     "scripts/audit_real_submission_readiness.py",
     "scripts/audit_submission_preflight_bundle.py",
 ]
@@ -55,6 +57,12 @@ REQUIRED_COMMAND_FRAGMENTS = {
     "submission_blockers_summary": "python3 scripts/audit_submission_blockers_summary.py",
     "authorized_preflight_template": "python3 scripts/audit_authorized_preflight_template.py",
     "ready_real_runner_template": "python3 scripts/audit_ready_real_runner_template.py",
+    "authorized_checkpoint_archive_template": "python3 scripts/audit_authorized_checkpoint_archive_template.py",
+    "authorized_checkpoint_archive_dry_run": "bash submission/run_authorized_checkpoint_archive_template.sh",
+    "authorized_checkpoint_archive_confirm": (
+        "ROBOCHALLENGE_ARCHIVE_CONFIRM=CREATE_ROBOCHALLENGE_CHECKPOINT_ARCHIVE "
+        "bash submission/run_authorized_checkpoint_archive_template.sh"
+    ),
     "authorized_preflight_runner": "bash submission/run_authorized_preflight_template.sh",
     "ready_real_runner": (
         "ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION "
@@ -68,14 +76,6 @@ REQUIRED_COMMAND_FRAGMENTS = {
     "submission_preflight_bundle": "python3 scripts/audit_submission_preflight_bundle.py",
     "authorized_submission_sequence": "python3 scripts/audit_authorized_submission_sequence.py",
     "readiness_gate": "python3 scripts/audit_real_submission_readiness.py",
-    "tar_create": (
-        "tar -C runs -cf runs/openpi_rtc_lora_materialized_policy_checkpoint.tar "
-        "openpi_rtc_lora_materialized_policy_checkpoint"
-    ),
-    "sha256_create": (
-        "sha256sum runs/openpi_rtc_lora_materialized_policy_checkpoint.tar > "
-        "runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.sha256"
-    ),
     "lora_runner_dry_run": "ROBOCHALLENGE_DRY_RUN=1 bash submission/run_table30v2_aloha_lora_demo_template.sh",
     "baseline_runner": "bash submission/run_table30v2_aloha_demo_template.sh",
     "lora_runner": "bash submission/run_table30v2_aloha_lora_demo_template.sh",
@@ -123,6 +123,7 @@ def build_status(doc_path: Path) -> dict[str, Any]:
     upload_audit = read_json(RUNS_DIR / "checkpoint_upload_channels_audit.json")
     link_download = read_json(RUNS_DIR / "checkpoint_link_download_verification.json")
     ready_real_runner = read_json(RUNS_DIR / "ready_real_runner_template_audit.json")
+    authorized_archive = read_json(RUNS_DIR / "authorized_checkpoint_archive_template_audit.json")
 
     env_mentions = {key: key in text for key in REQUIRED_ENV_KEYS}
     path_mentions = {path: path in text for path in REQUIRED_PATHS}
@@ -145,6 +146,9 @@ def build_status(doc_path: Path) -> dict[str, Any]:
         "says_real_runner_requires_confirmation": "ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION"
         in text
         and "停在真实 runner 前" in text,
+        "says_archive_requires_confirmation": "ROBOCHALLENGE_ARCHIVE_CONFIRM=CREATE_ROBOCHALLENGE_CHECKPOINT_ARCHIVE"
+        in text
+        and "stop before creating tar" in text,
     }
     secret_hits = scan_secret_patterns(text)
     input_evidence = {
@@ -160,6 +164,11 @@ def build_status(doc_path: Path) -> dict[str, Any]:
         "link_download_no_plaintext": link_download.get("link_value_printed") is False,
         "ready_real_runner_template_passed": ready_real_runner.get("passed") is True,
         "ready_real_runner_no_confirm_blocks": ready_real_runner.get("synthetic_no_confirm_smoke", {}).get("passed")
+        is True,
+        "authorized_checkpoint_archive_template_passed": authorized_archive.get("passed") is True,
+        "authorized_checkpoint_archive_no_confirm_blocks": authorized_archive.get("no_confirm_smoke", {}).get(
+            "passed"
+        )
         is True,
     }
     passed = bool(
@@ -179,6 +188,8 @@ def build_status(doc_path: Path) -> dict[str, Any]:
         and input_evidence["link_download_no_plaintext"]
         and input_evidence["ready_real_runner_template_passed"]
         and input_evidence["ready_real_runner_no_confirm_blocks"]
+        and input_evidence["authorized_checkpoint_archive_template_passed"]
+        and input_evidence["authorized_checkpoint_archive_no_confirm_blocks"]
     )
     blocking = []
     if not exists:
@@ -209,6 +220,10 @@ def build_status(doc_path: Path) -> dict[str, Any]:
         blocking.append("强确认真实 runner 模板审计尚未通过。")
     if not input_evidence["ready_real_runner_no_confirm_blocks"]:
         blocking.append("强确认真实 runner 模板未证明无确认时会阻断。")
+    if not input_evidence["authorized_checkpoint_archive_template_passed"]:
+        blocking.append("授权后 checkpoint 归档模板审计尚未通过。")
+    if not input_evidence["authorized_checkpoint_archive_no_confirm_blocks"]:
+        blocking.append("授权后 checkpoint 归档模板未证明无确认时会阻断。")
     if blocking == []:
         blocking.append("无文档侧阻塞；真实提交仍取决于用户凭据、授权上传和真实 checkpoint link。")
 

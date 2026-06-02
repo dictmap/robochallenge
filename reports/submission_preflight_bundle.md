@@ -13,7 +13,7 @@
 - baseline 是否需要 checkpoint link：`False`。
 - baseline 是否需要 checkpoint upload：`False`。
 - 中文 UTF-8 产物审计：`True`。
-- 中文 UTF-8 扫描文件数：`138`。
+- 中文 UTF-8 扫描文件数：`140`。
 - 中文 UTF-8 解码错误数：`0`。
 - 中文乱码哨兵命中数：`0`。
 - baseline dry-run gate：`True`。
@@ -22,6 +22,13 @@
 - baseline 凭据卫生：`True`。
 - local env 是否被 Git 忽略：`True`。
 - 是否读取 local env 内容：`False`。
+- local env 权限契约：`True`。
+- local env 是否建议 chmod 600：`True`。
+- local env 权限审计是否 Git 忽略：`True`。
+- local env 权限审计是否未跟踪：`True`。
+- local env 权限审计是否未读取内容：`True`。
+- local env 是否 owner-only：`True`。
+- local env synthetic chmod smoke：`True`。
 - 占位符凭据拒绝：`True`。
 - baseline 占位符是否在 dry-run 前被拒绝：`True`。
 - LoRA 占位符是否在 dry-run 前被拒绝：`True`。
@@ -89,6 +96,7 @@
 - `route_aware_submission_blockers`：returncode=`0`，passed=`True`。
 - `baseline_dry_run_gate`：returncode=`0`，passed=`True`。
 - `baseline_credential_hygiene`：returncode=`0`，passed=`True`。
+- `local_env_permission_contract`：returncode=`0`，passed=`True`。
 - `placeholder_credential_rejection`：returncode=`0`，passed=`True`。
 - `synthetic_dry_run_redaction`：returncode=`0`，passed=`True`。
 - `baseline_local_env_smoke`：returncode=`0`，passed=`True`。

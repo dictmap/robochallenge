@@ -2035,3 +2035,32 @@
 
 - P0：提交并推送本轮 synthetic dry-run 脱敏审计。
 - P1：继续补凭据到位后的 no-contact 授权预检链；真实 runner 仍不得在没有用户明确授权时执行。
+
+## 2026-06-03 第七十二轮：local env 权限契约审计
+
+### 已完成
+
+- 新增 `scripts/audit_local_env_permission_contract.py`，专门审计 `submission/robochallenge_env.local.sh` 的 Git 忽略、未跟踪、owner-only 权限与 `chmod 600` 契约；审计只读取模板和文件元数据，不读取真实 local env 内容。
+- 新增机器可读产物 `runs/local_env_permission_contract.json` 和中文报告 `reports/local_env_permission_contract.md`。
+- 更新 `submission/robochallenge_env_template.sh`，在复制本地凭据副本后明确加入 `chmod 600 submission/robochallenge_env.local.sh`。
+- 已接入 `scripts/audit_submission_preflight_bundle.py`、`scripts/audit_submission_artifact_manifest.py`、`scripts/render_submission_status_dashboard.py` 和 `scripts/validate_repro_workspace.py`。
+- GUI dashboard 新增 `Local env 权限` 卡片，当前总计 `source_count=30`、`card_count=30`、`done_count=25`、`blocked_count=4`、`watch_count=1`。
+
+### 验证结果
+
+- Linux 端 `python3 scripts/audit_local_env_permission_contract.py` 已通过：`passed=true`、`local_env_exists=false`、`local_env_content_read=false`、`local_env_owner_only_permissions=true`、`synthetic_chmod_smoke.mode_octal=0o600`、`synthetic_chmod_smoke.owner_only_permissions=true`。
+- Linux 端 UTF-8 审计已通过：`scanned_file_count=140`、`decode_error_count=0`、`bad_marker_hit_count=0`。
+- Linux 端明文凭据扫描已通过：`hit_count=0`、`secret_values_printed=false`。
+- Linux 端完整链路 `audit_submission_preflight_bundle.py`、`audit_submission_artifact_manifest.py`、`render_submission_status_dashboard.py`、`validate_repro_workspace.py` 和 `git diff --check` 均已通过。
+- 本轮没有读取真实 token、submission id、checkpoint link 或 local env 内容；没有连接 RoboChallenge 平台，没有上传 checkpoint，没有生成 checkpoint tar，也没有启动真实 runner。
+
+### 当前边界
+
+- baseline 官方路线仍只等待：提交对象确认、`ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline`、`ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION`。
+- 如果用户后续创建真实 `submission/robochallenge_env.local.sh`，必须保持 Git 忽略、未跟踪，并在 Linux 上执行 `chmod 600 submission/robochallenge_env.local.sh` 后再跑授权预检。
+- LoRA/web checkpoint 路线仍单独等待 checkpoint 归档、上传授权和真实可访问 checkpoint link；这不是 baseline 官方 ALOHA 最短路线的前置条件。
+
+### 下一步
+
+- P0：提交并推送本轮 local env 权限契约审计。
+- P1：凭据到位后先运行 baseline 授权前只读预检与 dry-run gate；真实 runner 仍必须等待用户明确授权。

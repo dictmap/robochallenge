@@ -40,6 +40,7 @@ SUBCOMMANDS = [
     ("route_aware_submission_blockers", "scripts/render_route_aware_submission_blockers.py"),
     ("baseline_dry_run_gate", "scripts/render_baseline_dry_run_gate.py"),
     ("baseline_credential_hygiene", "scripts/render_baseline_credential_hygiene.py"),
+    ("local_env_permission_contract", "scripts/audit_local_env_permission_contract.py"),
     ("placeholder_credential_rejection", "scripts/audit_placeholder_credential_rejection.py"),
     ("synthetic_dry_run_redaction", "scripts/audit_synthetic_dry_run_redaction.py"),
     ("baseline_local_env_smoke", "scripts/render_baseline_local_env_smoke.py"),
@@ -111,6 +112,7 @@ def build_status() -> dict[str, Any]:
     baseline_quickstart = read_json(RUNS_DIR / "baseline_submission_quickstart.json")
     baseline_dry_run_gate = read_json(RUNS_DIR / "baseline_dry_run_gate.json")
     baseline_credential_hygiene = read_json(RUNS_DIR / "baseline_credential_hygiene.json")
+    local_env_permission = read_json(RUNS_DIR / "local_env_permission_contract.json")
     placeholder_credential_rejection = read_json(RUNS_DIR / "placeholder_credential_rejection.json")
     synthetic_dry_run_redaction = read_json(RUNS_DIR / "synthetic_dry_run_redaction.json")
     baseline_local_env_smoke = read_json(RUNS_DIR / "baseline_local_env_smoke.json")
@@ -142,6 +144,7 @@ def build_status() -> dict[str, Any]:
                 baseline_quickstart,
                 baseline_dry_run_gate,
                 baseline_credential_hygiene,
+                local_env_permission,
                 placeholder_credential_rejection,
                 synthetic_dry_run_redaction,
                 baseline_local_env_smoke,
@@ -167,6 +170,7 @@ def build_status() -> dict[str, Any]:
         or bool(baseline_quickstart.get("link_values_printed"))
         or bool(baseline_dry_run_gate.get("link_values_printed"))
         or bool(baseline_credential_hygiene.get("link_values_printed"))
+        or bool(local_env_permission.get("link_values_printed"))
         or bool(placeholder_credential_rejection.get("link_values_printed"))
         or bool(synthetic_dry_run_redaction.get("link_values_printed"))
         or bool(baseline_local_env_smoke.get("link_values_printed"))
@@ -189,6 +193,7 @@ def build_status() -> dict[str, Any]:
         or bool(baseline_quickstart.get("secret_values_printed"))
         or bool(baseline_dry_run_gate.get("secret_values_printed"))
         or bool(baseline_credential_hygiene.get("secret_values_printed"))
+        or bool(local_env_permission.get("secret_values_printed"))
         or bool(placeholder_credential_rejection.get("secret_values_printed"))
         or bool(synthetic_dry_run_redaction.get("secret_values_printed"))
         or bool(baseline_local_env_smoke.get("secret_values_printed"))
@@ -220,6 +225,7 @@ def build_status() -> dict[str, Any]:
                 baseline_quickstart,
                 baseline_dry_run_gate,
                 baseline_credential_hygiene,
+                local_env_permission,
                 placeholder_credential_rejection,
                 synthetic_dry_run_redaction,
                 baseline_local_env_smoke,
@@ -251,6 +257,7 @@ def build_status() -> dict[str, Any]:
                 baseline_quickstart,
                 baseline_dry_run_gate,
                 baseline_credential_hygiene,
+                local_env_permission,
                 placeholder_credential_rejection,
                 synthetic_dry_run_redaction,
                 baseline_local_env_smoke,
@@ -313,6 +320,23 @@ def build_status() -> dict[str, Any]:
         "baseline_credential_hygiene_local_env_content_read": baseline_credential_hygiene.get(
             "local_env_content_read"
         ),
+        "local_env_permission_contract_passed": local_env_permission.get("passed") is True,
+        "local_env_permission_chmod_600_recommended": local_env_permission.get("recommended_chmod_command")
+        == "chmod 600 submission/robochallenge_env.local.sh",
+        "local_env_permission_gitignored": local_env_permission.get("evidence", {}).get("local_env_gitignored")
+        is True,
+        "local_env_permission_not_tracked": local_env_permission.get("evidence", {}).get("local_env_not_tracked")
+        is True,
+        "local_env_permission_template_recommends_chmod": local_env_permission.get("evidence", {}).get(
+            "env_template_recommends_chmod_600"
+        )
+        is True,
+        "local_env_permission_owner_only": local_env_permission.get("local_env_owner_only_permissions") is True,
+        "local_env_permission_content_not_read": local_env_permission.get("local_env_content_read") is False,
+        "local_env_permission_synthetic_chmod_passed": local_env_permission.get(
+            "synthetic_chmod_smoke", {}
+        ).get("owner_only_permissions")
+        is True,
         "placeholder_credential_rejection_passed": placeholder_credential_rejection.get("passed") is True,
         "placeholder_baseline_rejected_before_dry_run": placeholder_credential_rejection.get(
             "baseline_placeholder_rejected"
@@ -442,6 +466,13 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         f"- baseline 凭据卫生：`{status['baseline_credential_hygiene_passed']}`。",
         f"- local env 是否被 Git 忽略：`{status['baseline_credential_hygiene_local_env_gitignored']}`。",
         f"- 是否读取 local env 内容：`{status['baseline_credential_hygiene_local_env_content_read']}`。",
+        f"- local env 权限契约：`{status['local_env_permission_contract_passed']}`。",
+        f"- local env 是否建议 chmod 600：`{status['local_env_permission_chmod_600_recommended']}`。",
+        f"- local env 权限审计是否 Git 忽略：`{status['local_env_permission_gitignored']}`。",
+        f"- local env 权限审计是否未跟踪：`{status['local_env_permission_not_tracked']}`。",
+        f"- local env 权限审计是否未读取内容：`{status['local_env_permission_content_not_read']}`。",
+        f"- local env 是否 owner-only：`{status['local_env_permission_owner_only']}`。",
+        f"- local env synthetic chmod smoke：`{status['local_env_permission_synthetic_chmod_passed']}`。",
         f"- 占位符凭据拒绝：`{status['placeholder_credential_rejection_passed']}`。",
         f"- baseline 占位符是否在 dry-run 前被拒绝：`{status['placeholder_baseline_rejected_before_dry_run']}`。",
         f"- LoRA 占位符是否在 dry-run 前被拒绝：`{status['placeholder_lora_rejected_before_dry_run']}`。",

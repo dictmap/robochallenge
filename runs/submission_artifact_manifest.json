@@ -7,7 +7,7 @@
   "credentials_printed": false,
   "link_values_printed": false,
   "secret_values_printed": false,
-  "artifact_count": 73,
+  "artifact_count": 75,
   "artifacts": [
     {
       "path": "README.md",
@@ -20,8 +20,8 @@
       "path": "work.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 162588,
-      "sha256": "bab7b2981a395df5851fc302aed1b6f3b298f5c9017bbf5e438169a4bbee0fed"
+      "size_bytes": 165377,
+      "sha256": "74048d7486f32a31e1f0dda926ab60a2cf0c25346e04cab9179b797a876f94c0"
     },
     {
       "path": "notebooks/robochallenge_pi05_submit_cn.ipynb",
@@ -55,8 +55,8 @@
       "path": "submission/robochallenge_env_template.sh",
       "exists": true,
       "tracked": true,
-      "size_bytes": 1001,
-      "sha256": "a8c03b923f80fb6e0dfb51120cd8cf2231c3b94e22e968b0670b3042b2f89e53"
+      "size_bytes": 1053,
+      "sha256": "823feb4e6075b0fc0d6ff1b14e7d90e831de5d6e0284c9bc93d5b352a34107d8"
     },
     {
       "path": "submission/submission_manifest_template.json",
@@ -252,7 +252,7 @@
       "exists": true,
       "tracked": true,
       "size_bytes": 1045,
-      "sha256": "62989a0b490ca2246585eca719944284ba0ead59b4e0be82287862875e76a863"
+      "sha256": "31cc02b2120db78ff841961d65a15b2e62a540fec3262bd026cc0d17ec1cc0a8"
     },
     {
       "path": "reports/authorized_preflight_template_audit.md",
@@ -325,6 +325,13 @@
       "sha256": "76ee43531cb291c5c3f0e319aaa439f7ea4651388af0223e9ce6a8e938a0d673"
     },
     {
+      "path": "reports/local_env_permission_contract.md",
+      "exists": true,
+      "tracked": false,
+      "size_bytes": 1566,
+      "sha256": "08bf60a84ff5ba2d5e0d1a5ea78df581d69a68830be6ab58ae56319ece1b2968"
+    },
+    {
       "path": "reports/placeholder_credential_rejection.md",
       "exists": true,
       "tracked": true,
@@ -334,7 +341,7 @@
     {
       "path": "reports/synthetic_dry_run_redaction.md",
       "exists": true,
-      "tracked": false,
+      "tracked": true,
       "size_bytes": 1388,
       "sha256": "d56d5ebc13935738b6ae11f35d195e187efb077b8e3a11b60a0b4272fc5762cb"
     },
@@ -384,22 +391,22 @@
       "path": "reports/submission_preflight_bundle.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 6143,
-      "sha256": "3a67aed65ab083a7595ec09e269bcf2c051a3cb01b1162948f935e9f3bb90c66"
+      "size_bytes": 6549,
+      "sha256": "0e4f6245fc59f201765b1bc56ee2bfea992eadb527a89a221f0a0ab6645dcd78"
     },
     {
       "path": "reports/plaintext_secret_scan.md",
       "exists": true,
       "tracked": true,
       "size_bytes": 610,
-      "sha256": "75bcb8d374c01f9bb1b772ac32d787a970bccaed0e7873c8082e1b243e921951"
+      "sha256": "eace455197e3e4bff59ffba1808f3470b2bf73535a7b7db5b8fba37202871950"
     },
     {
       "path": "reports/submission_status_dashboard.html",
       "exists": true,
       "tracked": true,
-      "size_bytes": 18474,
-      "sha256": "a73a800c24821f89551f5adc0b93051994408aa186cace54e847a0892f62132a"
+      "size_bytes": 18981,
+      "sha256": "0f9ca3e0734dbbeb19fc59f07f62d2673c372432ed67f8bf3ee0e9341c3f4c3b"
     },
     {
       "path": "scripts/render_next_user_action_packet.py",
@@ -444,6 +451,13 @@
       "sha256": "91a8ccbf133f4854092b47a8290a9213a2eb79fa31f43cc0c377d70771e95528"
     },
     {
+      "path": "scripts/audit_local_env_permission_contract.py",
+      "exists": true,
+      "tracked": false,
+      "size_bytes": 8185,
+      "sha256": "23641d0614747f2434def6a1220f8fad150dcec67bf763f3254527f7142ab4e4"
+    },
+    {
       "path": "scripts/audit_placeholder_credential_rejection.py",
       "exists": true,
       "tracked": true,
@@ -453,7 +467,7 @@
     {
       "path": "scripts/audit_synthetic_dry_run_redaction.py",
       "exists": true,
-      "tracked": false,
+      "tracked": true,
       "size_bytes": 8876,
       "sha256": "9c99d957d941185e8d55d63422e123d0c2ff6dc4847b7b25cfbc1e6fa3095994"
     },
@@ -622,6 +636,13 @@
     "baseline_credential_hygiene_does_not_read_local_env": true,
     "baseline_credential_hygiene_no_upload": true,
     "baseline_credential_hygiene_no_link": true,
+    "local_env_permission_contract_passed": true,
+    "local_env_permission_chmod_600_recommended": true,
+    "local_env_permission_gitignored": true,
+    "local_env_permission_not_tracked": true,
+    "local_env_permission_content_not_read": true,
+    "local_env_permission_owner_only": true,
+    "local_env_permission_synthetic_chmod_passed": true,
     "placeholder_credential_rejection_passed": true,
     "placeholder_credential_rejection_case_count": true,
     "placeholder_baseline_rejected_before_dry_run": true,

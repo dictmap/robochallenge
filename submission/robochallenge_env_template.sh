@@ -2,6 +2,7 @@
 # RoboChallenge 真实提交环境变量模板。
 # 使用方式：
 #   cp submission/robochallenge_env_template.sh submission/robochallenge_env.local.sh
+#   chmod 600 submission/robochallenge_env.local.sh
 #   $EDITOR submission/robochallenge_env.local.sh
 #   source submission/robochallenge_env.local.sh
 #

@@ -64,6 +64,7 @@ REQUIRED_ARTIFACTS = [
     "reports/baseline_submission_quickstart.md",
     "reports/baseline_dry_run_gate.md",
     "reports/baseline_credential_hygiene.md",
+    "reports/local_env_permission_contract.md",
     "reports/placeholder_credential_rejection.md",
     "reports/synthetic_dry_run_redaction.md",
     "reports/baseline_local_env_smoke.md",
@@ -81,6 +82,7 @@ REQUIRED_ARTIFACTS = [
     "scripts/render_baseline_submission_quickstart.py",
     "scripts/render_baseline_dry_run_gate.py",
     "scripts/render_baseline_credential_hygiene.py",
+    "scripts/audit_local_env_permission_contract.py",
     "scripts/audit_placeholder_credential_rejection.py",
     "scripts/audit_synthetic_dry_run_redaction.py",
     "scripts/render_baseline_local_env_smoke.py",
@@ -199,6 +201,7 @@ def build_status() -> dict[str, Any]:
     baseline_quickstart = read_json(RUNS_DIR / "baseline_submission_quickstart.json")
     baseline_dry_run_gate = read_json(RUNS_DIR / "baseline_dry_run_gate.json")
     baseline_credential_hygiene = read_json(RUNS_DIR / "baseline_credential_hygiene.json")
+    local_env_permission = read_json(RUNS_DIR / "local_env_permission_contract.json")
     placeholder_credential_rejection = read_json(RUNS_DIR / "placeholder_credential_rejection.json")
     synthetic_dry_run_redaction = read_json(RUNS_DIR / "synthetic_dry_run_redaction.json")
     baseline_local_env_smoke = read_json(RUNS_DIR / "baseline_local_env_smoke.json")
@@ -303,6 +306,19 @@ def build_status() -> dict[str, Any]:
         is False,
         "baseline_credential_hygiene_no_link": baseline_credential_hygiene.get("requires_checkpoint_link")
         is False,
+        "local_env_permission_contract_passed": local_env_permission.get("passed") is True,
+        "local_env_permission_chmod_600_recommended": local_env_permission.get("recommended_chmod_command")
+        == "chmod 600 submission/robochallenge_env.local.sh",
+        "local_env_permission_gitignored": local_env_permission.get("evidence", {}).get("local_env_gitignored")
+        is True,
+        "local_env_permission_not_tracked": local_env_permission.get("evidence", {}).get("local_env_not_tracked")
+        is True,
+        "local_env_permission_content_not_read": local_env_permission.get("local_env_content_read") is False,
+        "local_env_permission_owner_only": local_env_permission.get("local_env_owner_only_permissions") is True,
+        "local_env_permission_synthetic_chmod_passed": local_env_permission.get(
+            "synthetic_chmod_smoke", {}
+        ).get("owner_only_permissions")
+        is True,
         "placeholder_credential_rejection_passed": placeholder_credential_rejection.get("passed") is True,
         "placeholder_credential_rejection_case_count": placeholder_credential_rejection.get("case_count") == 4,
         "placeholder_baseline_rejected_before_dry_run": placeholder_credential_rejection.get(
@@ -442,6 +458,7 @@ def build_status() -> dict[str, Any]:
                 baseline_quickstart,
                 baseline_dry_run_gate,
                 baseline_credential_hygiene,
+                local_env_permission,
                 placeholder_credential_rejection,
                 synthetic_dry_run_redaction,
                 baseline_local_env_smoke,
@@ -467,6 +484,7 @@ def build_status() -> dict[str, Any]:
         or bool(baseline_quickstart.get("link_values_printed"))
         or bool(baseline_dry_run_gate.get("link_values_printed"))
         or bool(baseline_credential_hygiene.get("link_values_printed"))
+        or bool(local_env_permission.get("link_values_printed"))
         or bool(placeholder_credential_rejection.get("link_values_printed"))
         or bool(synthetic_dry_run_redaction.get("link_values_printed"))
         or bool(baseline_local_env_smoke.get("link_values_printed"))
@@ -484,6 +502,7 @@ def build_status() -> dict[str, Any]:
         or bool(baseline_quickstart.get("secret_values_printed"))
         or bool(baseline_dry_run_gate.get("secret_values_printed"))
         or bool(baseline_credential_hygiene.get("secret_values_printed"))
+        or bool(local_env_permission.get("secret_values_printed"))
         or bool(placeholder_credential_rejection.get("secret_values_printed"))
         or bool(synthetic_dry_run_redaction.get("secret_values_printed"))
         or bool(baseline_local_env_smoke.get("secret_values_printed"))
@@ -511,6 +530,7 @@ def build_status() -> dict[str, Any]:
                 baseline_quickstart,
                 baseline_dry_run_gate,
                 baseline_credential_hygiene,
+                local_env_permission,
                 placeholder_credential_rejection,
                 synthetic_dry_run_redaction,
                 baseline_local_env_smoke,
@@ -541,6 +561,7 @@ def build_status() -> dict[str, Any]:
                 baseline_quickstart,
                 baseline_dry_run_gate,
                 baseline_credential_hygiene,
+                local_env_permission,
                 placeholder_credential_rejection,
                 synthetic_dry_run_redaction,
                 baseline_local_env_smoke,

@@ -33,6 +33,7 @@ SOURCE_FILES = {
     "baseline_submission_quickstart": RUNS_DIR / "baseline_submission_quickstart.json",
     "baseline_dry_run_gate": RUNS_DIR / "baseline_dry_run_gate.json",
     "baseline_credential_hygiene": RUNS_DIR / "baseline_credential_hygiene.json",
+    "local_env_permission": RUNS_DIR / "local_env_permission_contract.json",
     "placeholder_credentials": RUNS_DIR / "placeholder_credential_rejection.json",
     "synthetic_dry_run_redaction": RUNS_DIR / "synthetic_dry_run_redaction.json",
     "baseline_local_env_smoke": RUNS_DIR / "baseline_local_env_smoke.json",
@@ -102,6 +103,7 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
     baseline_quickstart = data["baseline_submission_quickstart"]
     baseline_dry_run_gate = data["baseline_dry_run_gate"]
     baseline_credential_hygiene = data["baseline_credential_hygiene"]
+    local_env_permission = data["local_env_permission"]
     placeholder_credentials = data["placeholder_credentials"]
     synthetic_dry_run = data["synthetic_dry_run_redaction"]
     baseline_local_env_smoke = data["baseline_local_env_smoke"]
@@ -180,6 +182,17 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
         and baseline_credential_hygiene.get("local_env_gitignored") is True
         and baseline_credential_hygiene.get("local_env_tracked") is False
         and baseline_credential_hygiene.get("local_env_content_read") is False
+    )
+    local_env_permission_ready = bool(
+        local_env_permission.get("passed")
+        and local_env_permission.get("recommended_chmod_command") == "chmod 600 submission/robochallenge_env.local.sh"
+        and local_env_permission.get("local_env_content_read") is False
+        and local_env_permission.get("local_env_owner_only_permissions") is True
+        and local_env_permission.get("evidence", {}).get("local_env_gitignored") is True
+        and local_env_permission.get("evidence", {}).get("local_env_not_tracked") is True
+        and local_env_permission.get("synthetic_chmod_smoke", {}).get("owner_only_permissions") is True
+        and not any(local_env_permission.get("leak_flags", {}).values())
+        and not any(local_env_permission.get("contact_flags", {}).values())
     )
     placeholder_credentials_ready = bool(
         placeholder_credentials.get("passed")
@@ -418,6 +431,13 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
             "reports/baseline_credential_hygiene.md",
         ),
         card(
+            "Local env 权限",
+            "done" if local_env_permission_ready else "watch",
+            "chmod 600",
+            "真实 token/submission id 写入 local env 后，文件必须 Git 忽略、未跟踪且权限收敛到 owner-only；本审计不读取内容。",
+            "reports/local_env_permission_contract.md",
+        ),
+        card(
             "占位符凭据拒绝",
             "done" if placeholder_credentials_ready else "watch",
             f"{placeholder_credentials.get('case_count', 0)} 个场景",
@@ -509,6 +529,7 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
     baseline_quickstart = data["baseline_submission_quickstart"]
     baseline_dry_run_gate = data["baseline_dry_run_gate"]
     baseline_credential_hygiene = data["baseline_credential_hygiene"]
+    local_env_permission = data["local_env_permission"]
     placeholder_credentials = data["placeholder_credentials"]
     synthetic_dry_run = data["synthetic_dry_run_redaction"]
     baseline_local_env_smoke = data["baseline_local_env_smoke"]
@@ -592,6 +613,21 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
             "local_env_content_read"
         )
         is False,
+        "local_env_permission_contract_passed": local_env_permission.get("passed") is True,
+        "local_env_permission_chmod_600_recommended": local_env_permission.get("recommended_chmod_command")
+        == "chmod 600 submission/robochallenge_env.local.sh",
+        "local_env_permission_gitignored": local_env_permission.get("evidence", {}).get("local_env_gitignored")
+        is True,
+        "local_env_permission_not_tracked": local_env_permission.get("evidence", {}).get("local_env_not_tracked")
+        is True,
+        "local_env_permission_content_not_read": local_env_permission.get("local_env_content_read") is False,
+        "local_env_permission_owner_only": local_env_permission.get("local_env_owner_only_permissions") is True,
+        "local_env_permission_synthetic_chmod_passed": local_env_permission.get(
+            "synthetic_chmod_smoke", {}
+        ).get("owner_only_permissions")
+        is True,
+        "local_env_permission_no_contact": not any(local_env_permission.get("contact_flags", {}).values()),
+        "local_env_permission_no_leak": not any(local_env_permission.get("leak_flags", {}).values()),
         "placeholder_credential_rejection_passed": placeholder_credentials.get("passed") is True,
         "placeholder_credential_rejection_case_count": placeholder_credentials.get("case_count"),
         "placeholder_baseline_rejected_before_dry_run": placeholder_credentials.get("baseline_placeholder_rejected")

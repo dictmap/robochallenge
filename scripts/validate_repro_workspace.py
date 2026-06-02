@@ -67,6 +67,7 @@ REQUIRED = [
     "reports/baseline_submission_quickstart.md",
     "reports/baseline_dry_run_gate.md",
     "reports/baseline_credential_hygiene.md",
+    "reports/local_env_permission_contract.md",
     "reports/placeholder_credential_rejection.md",
     "reports/synthetic_dry_run_redaction.md",
     "reports/baseline_local_env_smoke.md",
@@ -126,6 +127,7 @@ REQUIRED = [
     "runs/baseline_submission_quickstart.json",
     "runs/baseline_dry_run_gate.json",
     "runs/baseline_credential_hygiene.json",
+    "runs/local_env_permission_contract.json",
     "runs/placeholder_credential_rejection.json",
     "runs/synthetic_dry_run_redaction.json",
     "runs/baseline_local_env_smoke.json",
@@ -186,6 +188,7 @@ REQUIRED = [
     "scripts/render_baseline_submission_quickstart.py",
     "scripts/render_baseline_dry_run_gate.py",
     "scripts/render_baseline_credential_hygiene.py",
+    "scripts/audit_local_env_permission_contract.py",
     "scripts/audit_placeholder_credential_rejection.py",
     "scripts/audit_synthetic_dry_run_redaction.py",
     "scripts/render_baseline_local_env_smoke.py",
@@ -944,6 +947,15 @@ def main() -> int:
             dashboard.get("baseline_credential_hygiene_local_env_gitignored") is True,
             dashboard.get("baseline_credential_hygiene_local_env_not_tracked") is True,
             dashboard.get("baseline_credential_hygiene_does_not_read_local_env") is True,
+            dashboard.get("local_env_permission_contract_passed") is True,
+            dashboard.get("local_env_permission_chmod_600_recommended") is True,
+            dashboard.get("local_env_permission_gitignored") is True,
+            dashboard.get("local_env_permission_not_tracked") is True,
+            dashboard.get("local_env_permission_content_not_read") is True,
+            dashboard.get("local_env_permission_owner_only") is True,
+            dashboard.get("local_env_permission_synthetic_chmod_passed") is True,
+            dashboard.get("local_env_permission_no_contact") is True,
+            dashboard.get("local_env_permission_no_leak") is True,
             dashboard.get("placeholder_credential_rejection_passed") is True,
             dashboard.get("placeholder_credential_rejection_case_count") == 4,
             dashboard.get("placeholder_baseline_rejected_before_dry_run") is True,
@@ -1046,6 +1058,7 @@ def main() -> int:
             "Baseline 最短路径" in dashboard_titles,
             "Baseline dry-run gate" in dashboard_titles,
             "Baseline 凭据卫生" in dashboard_titles,
+            "Local env 权限" in dashboard_titles,
             "占位符凭据拒绝" in dashboard_titles,
             "Synthetic dry-run 脱敏" in dashboard_titles,
             "Baseline local env smoke" in dashboard_titles,
@@ -1844,6 +1857,42 @@ def main() -> int:
     ):
         print("baseline 凭据卫生证据包审计未通过")
         return 1
+    local_env_permission = json.loads(
+        (ROOT / "runs/local_env_permission_contract.json").read_text(encoding="utf-8")
+    )
+    local_env_permission_evidence = local_env_permission.get("evidence", {})
+    local_env_permission_leaks = local_env_permission.get("leak_flags", {})
+    local_env_permission_contacts = local_env_permission.get("contact_flags", {})
+    local_env_permission_synthetic = local_env_permission.get("synthetic_chmod_smoke", {})
+    if not all(
+        [
+            local_env_permission.get("kind") == "local_env_permission_contract",
+            local_env_permission.get("passed"),
+            local_env_permission.get("recommended_route") == "baseline_official_aloha",
+            local_env_permission.get("recommended_local_env") == "submission/robochallenge_env.local.sh",
+            local_env_permission.get("recommended_chmod_command")
+            == "chmod 600 submission/robochallenge_env.local.sh",
+            local_env_permission.get("local_env_content_read") is False,
+            local_env_permission.get("local_env_owner_only_permissions") is True,
+            local_env_permission.get("local_env_group_or_other_has_any_permission") is False,
+            local_env_permission_synthetic.get("created") is True,
+            local_env_permission_synthetic.get("removed_after_run") is True,
+            local_env_permission_synthetic.get("mode_octal") == "0o600",
+            local_env_permission_synthetic.get("owner_only_permissions") is True,
+            local_env_permission_synthetic.get("owner_readable") is True,
+            all(local_env_permission_evidence.values()),
+            not any(local_env_permission_leaks.values()),
+            not any(local_env_permission_contacts.values()),
+            local_env_permission.get("platform_contacted") is False,
+            local_env_permission.get("uploads_performed") is False,
+            local_env_permission.get("credentials_read") is False,
+            local_env_permission.get("credentials_printed") is False,
+            local_env_permission.get("link_values_printed") is False,
+            local_env_permission.get("secret_values_printed") is False,
+        ]
+    ):
+        print("local env 权限契约审计未通过")
+        return 1
     placeholder_rejection = json.loads(
         (ROOT / "runs/placeholder_credential_rejection.json").read_text(encoding="utf-8")
     )
@@ -2209,6 +2258,7 @@ def main() -> int:
         "baseline_submission_quickstart",
         "baseline_dry_run_gate",
         "baseline_credential_hygiene",
+        "local_env_permission_contract",
         "placeholder_credential_rejection",
         "synthetic_dry_run_redaction",
         "baseline_local_env_smoke",
@@ -2237,6 +2287,13 @@ def main() -> int:
             preflight.get("baseline_credential_hygiene_passed") is True,
             preflight.get("baseline_credential_hygiene_local_env_gitignored") is True,
             preflight.get("baseline_credential_hygiene_local_env_content_read") is False,
+            preflight.get("local_env_permission_contract_passed") is True,
+            preflight.get("local_env_permission_chmod_600_recommended") is True,
+            preflight.get("local_env_permission_gitignored") is True,
+            preflight.get("local_env_permission_not_tracked") is True,
+            preflight.get("local_env_permission_content_not_read") is True,
+            preflight.get("local_env_permission_owner_only") is True,
+            preflight.get("local_env_permission_synthetic_chmod_passed") is True,
             preflight.get("placeholder_credential_rejection_passed") is True,
             preflight.get("placeholder_baseline_rejected_before_dry_run") is True,
             preflight.get("placeholder_lora_rejected_before_dry_run") is True,
@@ -2531,6 +2588,7 @@ def main() -> int:
     print("网页表单字段包审计已通过")
     print("提交路线拆分包审计已通过")
     print("baseline 最短提交路径包审计已通过")
+    print("local env 权限契约审计已通过")
     print("占位符凭据拒绝审计已通过")
     print("synthetic dry-run 脱敏审计已通过")
     print("路线感知阻塞摘要审计已通过")

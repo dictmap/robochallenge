@@ -1,0 +1,50 @@
+{
+  "kind": "local_env_permission_contract",
+  "passed": true,
+  "recommended_route": "baseline_official_aloha",
+  "recommended_local_env": "submission/robochallenge_env.local.sh",
+  "recommended_chmod_command": "chmod 600 submission/robochallenge_env.local.sh",
+  "local_env_exists": false,
+  "local_env_mode_octal": "",
+  "local_env_owner_only_permissions": true,
+  "local_env_group_or_other_has_any_permission": false,
+  "local_env_content_read": false,
+  "synthetic_chmod_smoke": {
+    "created": true,
+    "removed_after_run": true,
+    "mode_octal": "0o600",
+    "owner_only_permissions": true,
+    "owner_readable": true
+  },
+  "evidence": {
+    "env_template_exists": true,
+    "env_template_mentions_local_copy": true,
+    "env_template_recommends_chmod_600": true,
+    "local_env_gitignored": true,
+    "local_env_not_tracked": true,
+    "local_env_content_not_read": true,
+    "local_env_absent_or_owner_only": true,
+    "synthetic_chmod_600_owner_only": true,
+    "synthetic_chmod_600_owner_readable": true,
+    "synthetic_file_removed_after_run": true
+  },
+  "leak_flags": {
+    "credentials_printed": false,
+    "link_values_printed": false,
+    "secret_values_printed": false
+  },
+  "contact_flags": {
+    "platform_contacted": false,
+    "uploads_performed": false,
+    "download_host_contacted": false
+  },
+  "platform_contacted": false,
+  "uploads_performed": false,
+  "credentials_read": false,
+  "credentials_printed": false,
+  "link_values_printed": false,
+  "secret_values_printed": false,
+  "blocking": [
+    "local env 权限契约已通过；真实凭据文件应保持 Git 忽略、未跟踪且 chmod 600。"
+  ]
+}

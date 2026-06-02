@@ -1570,3 +1570,31 @@
 
 - P0：提交并推送本轮 route-aware 阻塞摘要、GUI 卡片、manifest 和验证链更新。
 - P1：用户拿到 token/submission id 后，先按 baseline quickstart 跑授权预检和 dry-run gate，不进入 LoRA 上传流程。
+
+## 2026-06-03 第五十六轮：交接文档路线感知固化
+
+### 已完成
+
+- 更新 `submission/REAL_SUBMISSION_HANDOFF.md`：明确 baseline 官方路线不需要 checkpoint link、checkpoint upload 或归档授权；LoRA/web checkpoint 路线才需要上传和真实 checkpoint link。
+- 更新 `submission/AUTHORIZED_SUBMISSION_SEQUENCE.md`：把“选择提交路线”前置，默认先跑 `render_route_aware_submission_blockers.py` 和 `render_baseline_submission_quickstart.py`；归档、上传、link 回填只作为 LoRA/web 分支。
+- 更新 `submission/README.md` 和根 `README.md`，把 baseline quickstart 写成当前推荐路线，LoRA/web checkpoint 上传保留为可选分支。
+- 扩展 `scripts/audit_submission_handoff_docs.py` 和 `scripts/audit_authorized_submission_sequence.py`，现在会强制检查 route-aware 文档证据：baseline 不需要 link/upload，LoRA/web 需要 link/upload。
+- 修正两个审计脚本的成功提示，避免仍用旧的“所有真实执行都等待 checkpoint link”表达。
+
+### 验证结果
+
+- Linux 端 `python3 -m py_compile scripts/audit_submission_handoff_docs.py scripts/audit_authorized_submission_sequence.py` 已通过。
+- Linux 端 `python3 scripts/audit_submission_handoff_docs.py` 已通过：route-aware guardrails 全为 true，`passed=true`。
+- Linux 端 `python3 scripts/audit_authorized_submission_sequence.py` 已通过：route-aware guardrails 全为 true，`passed=true`。
+- 完整 no-contact 链已通过：明文凭据扫描、handoff/sequence 审计、preflight、blockers summary、manifest、GUI、总体验证和 `git diff --check` 均通过。
+- 明文扫描仍为 `hit_count=0`；本轮没有读取 token、submission id 或 checkpoint link，没有连接 RoboChallenge 平台，没有上传 checkpoint，没有生成 tar，没有启动真实 runner。
+
+### 当前边界
+
+- baseline 官方路线仍只等待用户确认目标、`ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline` 和真实 runner 强确认。
+- LoRA/web checkpoint 路线额外等待用户授权归档/上传并提供真实 checkpoint link。
+
+### 下一步
+
+- P0：提交并推送本轮交接文档和文档审计规则更新。
+- P1：用户拿到 token/submission id 后，从 `reports/baseline_submission_quickstart.md` 或 Notebook 第 44/45 节开始跑 baseline 授权预检。

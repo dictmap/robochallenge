@@ -28,13 +28,15 @@
     "scripts/audit_submission_env_template.py": true,
     "scripts/audit_submission_artifact_manifest.py": true,
     "scripts/audit_submission_blockers_summary.py": true,
+    "scripts/render_route_aware_submission_blockers.py": true,
     "scripts/audit_jupyter_input_template.py": true,
     "scripts/audit_jupyter_authorized_preflight_template.py": true,
     "scripts/audit_authorized_preflight_template.py": true,
     "scripts/audit_ready_real_runner_template.py": true,
     "scripts/audit_authorized_checkpoint_archive_template.py": true,
     "scripts/audit_real_submission_readiness.py": true,
-    "scripts/audit_submission_preflight_bundle.py": true
+    "scripts/audit_submission_preflight_bundle.py": true,
+    "reports/route_aware_submission_blockers.md": true
   },
   "command_mentions": {
     "checkpoint_link_intake": true,
@@ -43,6 +45,7 @@
     "submission_env_template": true,
     "submission_artifact_manifest": true,
     "submission_blockers_summary": true,
+    "route_aware_submission_blockers": true,
     "jupyter_input_template": true,
     "jupyter_authorized_preflight_template": true,
     "jupyter_input_enable_flag": true,
@@ -78,7 +81,12 @@
     "says_archive_requires_confirmation": true,
     "says_jupyter_input_default_safe": true,
     "says_jupyter_preflight_default_safe": true,
-    "says_jupyter_values_stay_local": true
+    "says_jupyter_values_stay_local": true,
+    "says_route_aware_summary_exists": true,
+    "says_baseline_no_checkpoint_link": true,
+    "says_baseline_no_upload_or_archive": true,
+    "says_lora_web_requires_link": true,
+    "says_global_readiness_is_not_baseline_gate": true
   },
   "input_evidence": {
     "real_submission_gate_exists": true,
@@ -101,9 +109,14 @@
     "ready_real_runner_template_passed": true,
     "ready_real_runner_no_confirm_blocks": true,
     "authorized_checkpoint_archive_template_passed": true,
-    "authorized_checkpoint_archive_no_confirm_blocks": true
+    "authorized_checkpoint_archive_no_confirm_blocks": true,
+    "route_aware_blockers_passed": true,
+    "route_aware_recommended_baseline": true,
+    "route_aware_baseline_no_link": true,
+    "route_aware_baseline_no_upload": true,
+    "route_aware_lora_web_needs_link": true
   },
   "blocking": [
-    "无文档侧阻塞；真实提交仍取决于用户凭据、授权上传和真实 checkpoint link。"
+    "无文档侧阻塞；baseline 仍取决于用户 token、submission id 和真实 runner 强确认，LoRA/web checkpoint 路线额外取决于授权上传和真实 checkpoint link。"
   ]
 }

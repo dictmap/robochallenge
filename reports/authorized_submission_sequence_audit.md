@@ -19,6 +19,8 @@
 - `python3 scripts/create_checkpoint_archive.py`：`True`。
 - `python3 scripts/audit_jupyter_input_template.py`：`True`。
 - `python3 scripts/audit_jupyter_authorized_preflight_template.py`：`True`。
+- `python3 scripts/render_route_aware_submission_blockers.py`：`True`。
+- `python3 scripts/render_baseline_submission_quickstart.py`：`True`。
 - `cp submission/robochallenge_env_template.sh submission/robochallenge_env.local.sh`：`True`。
 - `source submission/robochallenge_env.local.sh`：`True`。
 - `python3 scripts/audit_checkpoint_link_intake.py`：`True`。
@@ -39,6 +41,7 @@
 
 - `ROBOCHALLENGE_USER_TOKEN`：`True`。
 - `ROBOCHALLENGE_SUBMISSION_ID`：`True`。
+- `ROBOCHALLENGE_SUBMISSION_VARIANT`：`True`。
 - `ROBOCHALLENGE_LORA_CHECKPOINT_LINK`：`True`。
 
 ## 路径覆盖
@@ -46,6 +49,8 @@
 - `notebooks/robochallenge_pi05_submit_cn.ipynb`：`True`。
 - `scripts/audit_jupyter_input_template.py`：`True`。
 - `scripts/audit_jupyter_authorized_preflight_template.py`：`True`。
+- `scripts/render_route_aware_submission_blockers.py`：`True`。
+- `scripts/render_baseline_submission_quickstart.py`：`True`。
 - `submission/robochallenge_env.local.sh`：`True`。
 
 ## 安全护栏
@@ -55,6 +60,10 @@
 - `jupyter_input_default_safe`：`True`。
 - `jupyter_preflight_default_safe`：`True`。
 - `jupyter_values_stay_local`：`True`。
+- `route_aware_baseline_no_link`：`True`。
+- `baseline_quickstart_first`：`True`。
+- `baseline_local_env_link_optional`：`True`。
+- `lora_web_link_branch`：`True`。
 - `no_auto_without_authorization`：`True`。
 - `no_git_checkpoint`：`True`。
 - `link_gate_before_readiness`：`True`。
@@ -82,6 +91,13 @@
 - `jupyter_authorized_preflight_runner_not_started`：`True`。
 - `artifact_manifest_passed`：`True`。
 - `artifact_manifest_no_forbidden_tracked`：`True`。
+- `route_aware_blockers_passed`：`True`。
+- `route_aware_recommended_baseline`：`True`。
+- `route_aware_baseline_no_link`：`True`。
+- `route_aware_baseline_no_upload`：`True`。
+- `route_aware_lora_web_needs_link`：`True`。
+- `baseline_quickstart_passed`：`True`。
+- `baseline_quickstart_no_link`：`True`。
 - `readiness_gate_passed`：`True`。
 - `readiness_currently_blocked`：`True`。
 - `blockers_summary_passed`：`True`。
@@ -101,4 +117,4 @@
 
 ## Blocking
 
-- 清单侧无阻塞；真实执行仍需要用户授权、真实凭据和真实 checkpoint link。
+- 清单侧无阻塞；baseline 仍需要用户 token、submission id 和真实 runner 强确认，LoRA/web checkpoint 路线额外需要授权上传和真实 checkpoint link。

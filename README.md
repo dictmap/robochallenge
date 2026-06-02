@@ -101,7 +101,8 @@
 - `scripts/audit_openpi_rtc_lora_path.py`：审计 `openpi_rtc` LoRA 低显存路线并验证 `pi05_base` 权重合并。
 - `scripts/audit_lora_checkpoint_export_readiness.py`：审计 LoRA 完整物化 checkpoint 是否具备导出/上传前置条件。
 - `scripts/audit_checkpoint_upload_channels.py`：审计本机是否具备 checkpoint 上传工具、凭据迹象和本地打包前置条件。
-- `scripts/audit_real_submission_readiness.py`：审计真实提交前 token、submission_id、checkpoint link 和 runner 条件。
+- `scripts/audit_real_submission_readiness.py`：审计真实提交前 token、submission_id、checkpoint link 和 runner 条件；checkpoint link 只作为 LoRA/web checkpoint 路线的硬前置。
+- `scripts/render_route_aware_submission_blockers.py`：把 baseline 官方路线和 LoRA/web checkpoint 路线的阻塞项拆开，避免把 LoRA link 阻塞误读为 baseline 前置。
 - `scripts/audit_robochallenge_submission_package.py`：生成并审计提交包清单、manifest 和无凭据启动模板。
 - `scripts/run_pi05_base_download_background.sh`：后台下载 `pi05_base` 的辅助脚本。
 - `scripts/run_pi05_base_load_smoke_background.sh`：后台执行参数读取 smoke 的辅助脚本。
@@ -110,8 +111,8 @@
 
 ## 下一轮 P0
 
-1. 用户选择并授权一个 RoboChallenge 评测端可访问的存储位置，把 `runs/openpi_rtc_lora_materialized_policy_checkpoint` 打包上传成 checkpoint link；仓库本身不会提交 12GB+ 权重目录。
-2. 若继续走当前可运行提交路线，等待用户提供 `ROBOCHALLENGE_USER_TOKEN` 和 `ROBOCHALLENGE_SUBMISSION_ID` 后，再分别运行 baseline runner 和 LoRA runner 做真实提交入口验证。
+1. 默认先走官方 Table30v2 ALOHA baseline 路线：等待用户提供 `ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`，并确认 `ROBOCHALLENGE_SUBMISSION_VARIANT=baseline` 后，运行 `reports/baseline_submission_quickstart.md` 中的授权预检和 dry-run gate。
+2. 只有用户明确选择 LoRA/web checkpoint 路线时，才选择并授权 RoboChallenge 评测端可访问的存储位置，把 `runs/openpi_rtc_lora_materialized_policy_checkpoint` 打包上传成 checkpoint link；仓库本身不会提交 12GB+ 权重目录。
 3. 若目标改回原始 Table30，先补原始 Table30 数据/配置入口；不能把当前 Table30v2 ALOHA 证据当作 Table30 原榜单证据。
 
 ## 2026-06-02 恢复审计更新
@@ -139,14 +140,14 @@
 - 已在 Linux 远端生成完整 LoRA 推理 checkpoint：`runs/openpi_rtc_lora_materialized_policy_checkpoint`，大小约 `12G`，该目录被 `.gitignore` 排除。
 - 物化状态：`runs/openpi_rtc_lora_inference_checkpoint_materialize_status.json`，`passed=true`，`direct_demo_checkpoint_ready=true`。
 - `create_trained_policy` 加载 smoke：`runs/openpi_rtc_lora_materialized_policy_smoke_status.json`，`passed=true`，policy 类型 `Policy`，模型类型 `Pi0`。
-- 提交包审计已更新：LoRA checkpoint 本地已可被 `demo.py/create_trained_policy` 消费；真实网站提交仍需要 `ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID` 和可访问的 checkpoint link。
+- 提交包审计已更新：LoRA checkpoint 本地已可被 `demo.py/create_trained_policy` 消费；baseline 官方路线仍优先使用已有官方 ALOHA checkpoint，不需要 checkpoint link。只有选择 LoRA/web checkpoint 路线时，真实网站提交才需要 `ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID` 和可访问的 checkpoint link。
 
 ## 2026-06-02 LoRA 提交 runner 更新
 
 - 已新增 `submission/run_table30v2_aloha_lora_demo_template.sh`，默认 checkpoint 为 `runs/openpi_rtc_lora_materialized_policy_checkpoint`。
 - `scripts/audit_robochallenge_submission_package.py` 现在同时生成 baseline runner 和 LoRA runner，并对二者执行 `bash -n` 与无凭据 fail-fast 检查。
 - `scripts/validate_repro_workspace.py` 已把 LoRA runner、manifest 双 runner 字段和无明文凭据检查纳入最低交接验证。
-- 真实提交仍等待用户提供 `ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`，以及 LoRA checkpoint 的网站可访问链接。
+- baseline 官方路线仍等待用户提供 `ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID` 和真实 runner 强确认；LoRA/web checkpoint 路线额外等待 LoRA checkpoint 的网站可访问链接。
 
 ## 2026-06-02 LoRA checkpoint 导出就绪更新
 
@@ -155,4 +156,4 @@
 - 审计目标是本地 `runs/openpi_rtc_lora_materialized_policy_checkpoint`：检查 Orbax params metadata、manifest、norm stats、数据 shard、总大小和 Git 忽略状态。
 - 已支持 `--tar-stream-smoke`：执行 `tar -C runs -cf - openpi_rtc_lora_materialized_policy_checkpoint | wc -c`，验证报告中的打包源目录可完整读取，并记录 archive stream 字节数，但不生成 12GB+ tar 文件。
 - 报告给出可手动执行的本地 tar/sha256 命令；默认不自动打包 12GB+ 文件，也不上传到任何外部服务。
-- 当前本地导出就绪，但网站提交仍需要真实 checkpoint link、`ROBOCHALLENGE_USER_TOKEN` 和 `ROBOCHALLENGE_SUBMISSION_ID`。
+- 当前本地导出就绪；这只说明 LoRA/web checkpoint 路线可进入上传准备。baseline 官方路线不依赖该 checkpoint link，只等待 `ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID` 和真实 runner 强确认。

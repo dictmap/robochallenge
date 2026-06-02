@@ -26,6 +26,8 @@ REQUIRED_COMMANDS = [
     "python3 scripts/create_checkpoint_archive.py",
     "python3 scripts/audit_jupyter_input_template.py",
     "python3 scripts/audit_jupyter_authorized_preflight_template.py",
+    "python3 scripts/render_route_aware_submission_blockers.py",
+    "python3 scripts/render_baseline_submission_quickstart.py",
     "cp submission/robochallenge_env_template.sh submission/robochallenge_env.local.sh",
     "source submission/robochallenge_env.local.sh",
     "python3 scripts/audit_checkpoint_link_intake.py",
@@ -53,6 +55,7 @@ REQUIRED_COMMANDS = [
 REQUIRED_ENV_KEYS = [
     "ROBOCHALLENGE_USER_TOKEN",
     "ROBOCHALLENGE_SUBMISSION_ID",
+    "ROBOCHALLENGE_SUBMISSION_VARIANT",
     "ROBOCHALLENGE_LORA_CHECKPOINT_LINK",
 ]
 
@@ -60,6 +63,8 @@ REQUIRED_PATHS = [
     "notebooks/robochallenge_pi05_submit_cn.ipynb",
     "scripts/audit_jupyter_input_template.py",
     "scripts/audit_jupyter_authorized_preflight_template.py",
+    "scripts/render_route_aware_submission_blockers.py",
+    "scripts/render_baseline_submission_quickstart.py",
     "submission/robochallenge_env.local.sh",
 ]
 
@@ -78,6 +83,24 @@ REQUIRED_GUARDRAILS = {
         "默认只执行静态审计",
     ],
     "jupyter_values_stay_local": ["真实值只能进入", "Git 忽略", "不写入 tracked 模板、Git、Notebook、报告"],
+    "route_aware_baseline_no_link": [
+        "路线感知摘要",
+        "baseline 不需要 checkpoint link",
+        "LoRA/web checkpoint 路线仍必须显示需要归档/上传授权和真实 checkpoint link",
+    ],
+    "baseline_quickstart_first": [
+        "默认先走官方 Table30v2 ALOHA baseline",
+        "render_baseline_submission_quickstart.py",
+        "不需要生成 tar、不需要上传 checkpoint、不需要 checkpoint link",
+    ],
+    "baseline_local_env_link_optional": [
+        "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline",
+        "ROBOCHALLENGE_CHECKPOINT_LINK` 可以留空",
+    ],
+    "lora_web_link_branch": [
+        "只有明确选择 LoRA/web checkpoint 路线",
+        "才继续执行下面的归档、上传和 link 回填步骤",
+    ],
     "no_auto_without_authorization": ["没有用户明确授权", "不生成 tar", "不上传 checkpoint"],
     "no_git_checkpoint": ["不要把 `runs/openpi_rtc_lora_materialized_policy_checkpoint.tar`", "提交进 Git"],
     "link_gate_before_readiness": ["audit_checkpoint_link_intake.py", "audit_real_submission_readiness.py"],
@@ -179,6 +202,8 @@ def build_status(doc_path: Path) -> dict[str, Any]:
     jupyter_input = read_json(RUNS_DIR / "jupyter_input_template_audit.json")
     jupyter_authorized = read_json(RUNS_DIR / "jupyter_authorized_preflight_template_audit.json")
     artifact_manifest = read_json(RUNS_DIR / "submission_artifact_manifest.json")
+    route_aware_blockers = read_json(RUNS_DIR / "route_aware_submission_blockers.json")
+    baseline_quickstart = read_json(RUNS_DIR / "baseline_submission_quickstart.json")
     readiness = read_json(RUNS_DIR / "real_submission_readiness.json")
     blockers_summary = read_json(RUNS_DIR / "submission_blockers_summary.json")
     authorized_preflight = read_json(RUNS_DIR / "authorized_preflight_template_audit.json")
@@ -207,6 +232,13 @@ def build_status(doc_path: Path) -> dict[str, Any]:
         "jupyter_authorized_preflight_runner_not_started": jupyter_authorized.get("runner_started") is False,
         "artifact_manifest_passed": artifact_manifest.get("passed") is True,
         "artifact_manifest_no_forbidden_tracked": artifact_manifest.get("forbidden_tracked_paths") == [],
+        "route_aware_blockers_passed": route_aware_blockers.get("passed") is True,
+        "route_aware_recommended_baseline": route_aware_blockers.get("recommended_route") == "baseline_official_aloha",
+        "route_aware_baseline_no_link": route_aware_blockers.get("baseline_requires_checkpoint_link") is False,
+        "route_aware_baseline_no_upload": route_aware_blockers.get("baseline_requires_checkpoint_upload") is False,
+        "route_aware_lora_web_needs_link": route_aware_blockers.get("lora_web_requires_checkpoint_link") is True,
+        "baseline_quickstart_passed": baseline_quickstart.get("passed") is True,
+        "baseline_quickstart_no_link": baseline_quickstart.get("requires_checkpoint_link") is False,
         "readiness_gate_passed": readiness.get("passed") is True,
         "readiness_currently_blocked": readiness.get("ready_for_real_submission") is False,
         "blockers_summary_passed": blockers_summary.get("passed") is True,
@@ -335,7 +367,10 @@ def build_status(doc_path: Path) -> dict[str, Any]:
     if not no_contact:
         blocking.append("审计输入显示曾连接平台或执行上传。")
     if not blocking:
-        blocking.append("清单侧无阻塞；真实执行仍需要用户授权、真实凭据和真实 checkpoint link。")
+        blocking.append(
+            "清单侧无阻塞；baseline 仍需要用户 token、submission id 和真实 runner 强确认，"
+            "LoRA/web checkpoint 路线额外需要授权上传和真实 checkpoint link。"
+        )
 
     return {
         "kind": "authorized_submission_sequence_audit",

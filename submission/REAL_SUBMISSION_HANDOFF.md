@@ -9,7 +9,9 @@
 - LoRA 完整物化 checkpoint 已生成并通过 policy 加载 smoke：`runs/openpi_rtc_lora_materialized_policy_checkpoint`。
 - LoRA checkpoint 导出结构已通过 tar stream smoke，但还没有生成真实 tar 文件。
 - 上传通道审计只确认本机工具和凭据迹象，不会执行上传。
-- 真实提交 readiness gate 已能准确报告缺失的凭据和 checkpoint link。
+- 路线感知阻塞摘要已把 baseline 与 LoRA/web checkpoint 路线拆开：`reports/route_aware_submission_blockers.md`。
+- baseline 官方路线不需要 checkpoint link、checkpoint upload 或归档授权；LoRA/web checkpoint 路线才需要上传和真实 checkpoint link。
+- 真实提交 readiness gate 仍保留全局 Web/LoRA 检查，因此会报告 checkpoint link 缺失；以路线感知摘要判断 baseline 最短路径。
 
 ## 用户拿到凭据后的最短流程
 
@@ -29,6 +31,7 @@ python3 scripts/audit_jupyter_authorized_preflight_template.py
 完整顺序清单见 `submission/AUTHORIZED_SUBMISSION_SEQUENCE.md`。修改清单后先运行：
 
 ```bash
+python3 scripts/render_route_aware_submission_blockers.py
 python3 scripts/audit_authorized_submission_sequence.py
 python3 scripts/audit_submission_blockers_summary.py
 python3 scripts/audit_authorized_preflight_template.py
@@ -42,14 +45,14 @@ python3 scripts/audit_authorized_checkpoint_archive_template.py
 python3 scripts/audit_real_submission_readiness.py
 ```
 
-如果走 LoRA checkpoint 提交路线，必须先由用户确认上传通道和存储位置，然后再通过受控入口打包本地物化 checkpoint。没有确认短语时，该入口只会复跑 archive plan、split plan 和 dry-run，然后输出 `stop before creating tar` 停在生成 tar 前：
+如果走 LoRA/web checkpoint 提交路线，必须先由用户确认上传通道和存储位置，然后再通过受控入口打包本地物化 checkpoint。没有确认短语时，该入口只会复跑 archive plan、split plan 和 dry-run，然后输出 `stop before creating tar` 停在生成 tar 前：
 
 ```bash
 bash submission/run_authorized_checkpoint_archive_template.sh
 ROBOCHALLENGE_ARCHIVE_CONFIRM=CREATE_ROBOCHALLENGE_CHECKPOINT_ARCHIVE bash submission/run_authorized_checkpoint_archive_template.sh
 ```
 
-上传完成后，先复制 tracked 模板到被 Git 忽略的本地副本，再只编辑本地副本。下面命令不会保存真实值到仓库：
+如果走 baseline 官方路线，跳过本段归档/上传/link 流程，只需在本地副本中设置 `ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID` 和 `ROBOCHALLENGE_SUBMISSION_VARIANT=baseline`。如果走 LoRA/web checkpoint 路线，上传完成后再复制 tracked 模板到被 Git 忽略的本地副本，并只编辑本地副本。下面命令不会保存真实值到仓库：
 
 tracked 模板只允许保留 `<真实 user token>`、`<真实 submission id>` 和 `<真实 checkpoint 下载 URL>` 占位符；真实值只能进入 `submission/robochallenge_env.local.sh`。
 
@@ -63,6 +66,7 @@ source submission/robochallenge_env.local.sh
 再次运行 readiness gate：
 
 ```bash
+python3 scripts/render_route_aware_submission_blockers.py
 python3 scripts/audit_real_submission_readiness.py
 ```
 
@@ -117,12 +121,12 @@ bash submission/run_table30v2_aloha_demo_template.sh
 - robot type：当前 runner 使用 `aloha`。
 - task：当前已验证任务是 `pack_the_toothbrush_holder`。
 - inference code：建议填写当前 GitHub 仓库主分支链接。
-- checkpoint link：必须由用户授权上传后填写真实可访问链接。
+- checkpoint link：baseline 官方 runner 路线不需要；只有 LoRA/web checkpoint 路线才必须由用户授权上传后填写真实可访问链接。
 - fine-tuning / restore evidence：使用仓库内 Notebook、reports 和 scripts 作为证据，不上传明文凭据。
 
-## Checkpoint Link 回填前检查
+## LoRA/web Checkpoint Link 回填前检查
 
-拿到真实 checkpoint 下载链接后，先在当前 shell 中设置链接环境变量，再运行离线形态审计：
+只有选择 LoRA/web checkpoint 路线并拿到真实 checkpoint 下载链接后，才在当前 shell 中设置链接环境变量，再运行离线形态审计：
 
 ```bash
 python3 scripts/audit_checkpoint_link_intake.py

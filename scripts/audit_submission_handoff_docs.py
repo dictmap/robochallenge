@@ -42,6 +42,7 @@ REQUIRED_PATHS = [
     "scripts/audit_submission_env_template.py",
     "scripts/audit_submission_artifact_manifest.py",
     "scripts/audit_submission_blockers_summary.py",
+    "scripts/render_route_aware_submission_blockers.py",
     "scripts/audit_jupyter_input_template.py",
     "scripts/audit_jupyter_authorized_preflight_template.py",
     "scripts/audit_authorized_preflight_template.py",
@@ -49,6 +50,7 @@ REQUIRED_PATHS = [
     "scripts/audit_authorized_checkpoint_archive_template.py",
     "scripts/audit_real_submission_readiness.py",
     "scripts/audit_submission_preflight_bundle.py",
+    "reports/route_aware_submission_blockers.md",
 ]
 
 REQUIRED_COMMAND_FRAGMENTS = {
@@ -58,6 +60,7 @@ REQUIRED_COMMAND_FRAGMENTS = {
     "submission_env_template": "python3 scripts/audit_submission_env_template.py",
     "submission_artifact_manifest": "python3 scripts/audit_submission_artifact_manifest.py",
     "submission_blockers_summary": "python3 scripts/audit_submission_blockers_summary.py",
+    "route_aware_submission_blockers": "python3 scripts/render_route_aware_submission_blockers.py",
     "jupyter_input_template": "python3 scripts/audit_jupyter_input_template.py",
     "jupyter_authorized_preflight_template": "python3 scripts/audit_jupyter_authorized_preflight_template.py",
     "jupyter_input_enable_flag": "RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE=True",
@@ -133,6 +136,7 @@ def build_status(doc_path: Path) -> dict[str, Any]:
     jupyter_authorized = read_json(RUNS_DIR / "jupyter_authorized_preflight_template_audit.json")
     ready_real_runner = read_json(RUNS_DIR / "ready_real_runner_template_audit.json")
     authorized_archive = read_json(RUNS_DIR / "authorized_checkpoint_archive_template_audit.json")
+    route_aware_blockers = read_json(RUNS_DIR / "route_aware_submission_blockers.json")
 
     env_mentions = {key: key in text for key in REQUIRED_ENV_KEYS}
     path_mentions = {path: path in text for path in REQUIRED_PATHS}
@@ -168,6 +172,11 @@ def build_status(doc_path: Path) -> dict[str, Any]:
         "says_jupyter_values_stay_local": "Notebook 源码" in text
         and "Notebook 输出" in text
         and "submission/robochallenge_env.local.sh" in text,
+        "says_route_aware_summary_exists": "reports/route_aware_submission_blockers.md" in text,
+        "says_baseline_no_checkpoint_link": "baseline 官方路线不需要 checkpoint link" in text,
+        "says_baseline_no_upload_or_archive": "checkpoint upload 或归档授权" in text,
+        "says_lora_web_requires_link": "LoRA/web checkpoint 路线才需要上传和真实 checkpoint link" in text,
+        "says_global_readiness_is_not_baseline_gate": "以路线感知摘要判断 baseline 最短路径" in text,
     }
     secret_hits = scan_secret_patterns(text)
     input_evidence = {
@@ -197,6 +206,11 @@ def build_status(doc_path: Path) -> dict[str, Any]:
             "passed"
         )
         is True,
+        "route_aware_blockers_passed": route_aware_blockers.get("passed") is True,
+        "route_aware_recommended_baseline": route_aware_blockers.get("recommended_route") == "baseline_official_aloha",
+        "route_aware_baseline_no_link": route_aware_blockers.get("baseline_requires_checkpoint_link") is False,
+        "route_aware_baseline_no_upload": route_aware_blockers.get("baseline_requires_checkpoint_upload") is False,
+        "route_aware_lora_web_needs_link": route_aware_blockers.get("lora_web_requires_checkpoint_link") is True,
     }
     passed = bool(
         exists
@@ -255,7 +269,10 @@ def build_status(doc_path: Path) -> dict[str, Any]:
     if not input_evidence["authorized_checkpoint_archive_no_confirm_blocks"]:
         blocking.append("授权后 checkpoint 归档模板未证明无确认时会阻断。")
     if blocking == []:
-        blocking.append("无文档侧阻塞；真实提交仍取决于用户凭据、授权上传和真实 checkpoint link。")
+        blocking.append(
+            "无文档侧阻塞；baseline 仍取决于用户 token、submission id 和真实 runner 强确认，"
+            "LoRA/web checkpoint 路线额外取决于授权上传和真实 checkpoint link。"
+        )
 
     return {
         "kind": "submission_handoff_docs_audit",

@@ -7,7 +7,7 @@
   "credentials_printed": false,
   "link_values_printed": false,
   "secret_values_printed": false,
-  "artifact_count": 85,
+  "artifact_count": 87,
   "artifacts": [
     {
       "path": "README.md",
@@ -20,8 +20,8 @@
       "path": "work.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 186304,
-      "sha256": "f3e4daf24f45e23b141a03576272da8a0a7adea4bd1ce7650f2a383bda0f911b"
+      "size_bytes": 188854,
+      "sha256": "70722c6e1b6a9e234b5b1854fa2487b2faa877ef9d398e10be4f22971c3fd942"
     },
     {
       "path": "notebooks/robochallenge_pi05_submit_cn.ipynb",
@@ -409,6 +409,13 @@
       "sha256": "1d31c9f61397183ff8f4dd8e092b27f9fccf3f4951fd40266d732d974a4f1e4a"
     },
     {
+      "path": "reports/submission_target_confirmation_packet.md",
+      "exists": true,
+      "tracked": false,
+      "size_bytes": 2258,
+      "sha256": "748bc59be2068c5f58da62603539ab4a66092e9b76b01e44e321bf26a325a642"
+    },
+    {
       "path": "reports/submission_handoff_docs_audit.md",
       "exists": true,
       "tracked": true,
@@ -426,22 +433,22 @@
       "path": "reports/submission_preflight_bundle.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 8532,
-      "sha256": "8385b6a585bed7728deb5d49e5fb1b1566b61aa35ed5c1285b07bfe2936b71e0"
+      "size_bytes": 8831,
+      "sha256": "03a70f5e6d61b5952bc52ea093d46d0f6eb1a3ff39e6ef96fb96d886ed677350"
     },
     {
       "path": "reports/plaintext_secret_scan.md",
       "exists": true,
       "tracked": true,
       "size_bytes": 610,
-      "sha256": "262d063bf26f436c63608c8ca2a54f113698c876ac88582be27ad3d8d961b0ad"
+      "sha256": "6c22f07d17e904e5e1f36f7e43a3cdaa97d3301c797818172d57f69287ef6c37"
     },
     {
       "path": "reports/submission_status_dashboard.html",
       "exists": true,
       "tracked": true,
-      "size_bytes": 21471,
-      "sha256": "2a89e1dc979a692bc5b80a9eda145ac301935481b87f863189e3bcf4934d5d48"
+      "size_bytes": 21990,
+      "sha256": "5126afdc2ee36acf2de189fbd8392dea7d4b7337a09cd6f042825e2f4f2f3d0f"
     },
     {
       "path": "scripts/render_next_user_action_packet.py",
@@ -570,6 +577,13 @@
       "sha256": "9192bb769e06e1e0480a263a97ad6ae79814eba77ad6855b1613cc89edf0d14e"
     },
     {
+      "path": "scripts/render_submission_target_confirmation_packet.py",
+      "exists": true,
+      "tracked": false,
+      "size_bytes": 9670,
+      "sha256": "ea55934743df710c44a3ead0454f67513865c84790a90c845bc1c60652d0a485"
+    },
+    {
       "path": "scripts/audit_jupyter_input_template.py",
       "exists": true,
       "tracked": true,
@@ -693,6 +707,13 @@
     "web_form_field_packet_baseline_excludes_checkpoint_archive": true,
     "web_form_field_packet_route_blocking_no_checkpoint_link": true,
     "web_form_field_packet_route_blocking_no_checkpoint_archive": true,
+    "submission_target_confirmation_packet_passed": true,
+    "submission_target_confirmation_recommended_baseline": true,
+    "submission_target_confirmation_not_user_confirmed": true,
+    "submission_target_confirmation_does_not_confirm_for_user": true,
+    "submission_target_confirmation_task_exact": true,
+    "submission_target_confirmation_robot_exact": true,
+    "submission_target_confirmation_benchmark_exact": true,
     "submission_variant_route_packet_passed": true,
     "submission_variant_route_packet_baseline_default": true,
     "submission_variant_route_packet_has_two_routes": true,

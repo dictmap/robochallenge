@@ -14,6 +14,10 @@
 - LoRA runner 就绪：`False`。
 - checkpoint link 形态就绪：`False`。
 - 推荐提交路线：`baseline_official_aloha`。
+- 提交对象确认包：`True`。
+- 推荐目标确认值：`CONFIRM_TABLE30V2_ALOHA_BASELINE`。
+- 是否已经替用户确认目标：`False`。
+- 确认包目标：`Table30v2 / aloha / pack_the_toothbrush_holder`。
 - baseline 是否需要 checkpoint link：`False`。
 - baseline 是否需要 checkpoint upload：`False`。
 - 中文 UTF-8 产物审计：`True`。
@@ -122,6 +126,7 @@
 - `plaintext_secret_scan`：returncode=`0`，passed=`True`。
 - `submission_variant_route_packet`：returncode=`0`，passed=`True`。
 - `baseline_submission_quickstart`：returncode=`0`，passed=`True`。
+- `submission_target_confirmation_packet`：returncode=`0`，passed=`True`。
 - `authorized_execution_checklist`：returncode=`0`，passed=`True`。
 - `next_user_action_packet`：returncode=`0`，passed=`True`。
 - `web_form_field_packet`：returncode=`0`，passed=`True`。

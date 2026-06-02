@@ -34,6 +34,7 @@ SUBCOMMANDS = [
     ("plaintext_secret_scan", "scripts/audit_plaintext_secrets.py"),
     ("submission_variant_route_packet", "scripts/render_submission_variant_route_packet.py"),
     ("baseline_submission_quickstart", "scripts/render_baseline_submission_quickstart.py"),
+    ("submission_target_confirmation_packet", "scripts/render_submission_target_confirmation_packet.py"),
     ("authorized_execution_checklist", "scripts/audit_authorized_execution_checklist.py"),
     ("next_user_action_packet", "scripts/render_next_user_action_packet.py"),
     ("web_form_field_packet", "scripts/render_web_form_field_packet.py"),
@@ -113,6 +114,7 @@ def build_status() -> dict[str, Any]:
     secret_scan = read_json(RUNS_DIR / "plaintext_secret_scan.json")
     action_packet = read_json(RUNS_DIR / "next_user_action_packet.json")
     web_form_packet = read_json(RUNS_DIR / "web_form_field_packet.json")
+    target_confirmation = read_json(RUNS_DIR / "submission_target_confirmation_packet.json")
     route_packet = read_json(RUNS_DIR / "submission_variant_route_packet.json")
     baseline_quickstart = read_json(RUNS_DIR / "baseline_submission_quickstart.json")
     baseline_dry_run_gate = read_json(RUNS_DIR / "baseline_dry_run_gate.json")
@@ -150,6 +152,7 @@ def build_status() -> dict[str, Any]:
                 secret_scan,
                 action_packet,
                 web_form_packet,
+                target_confirmation,
                 route_packet,
                 baseline_quickstart,
                 baseline_dry_run_gate,
@@ -181,6 +184,7 @@ def build_status() -> dict[str, Any]:
         or bool(authorized_archive.get("link_values_printed"))
         or bool(action_packet.get("link_values_printed"))
         or bool(web_form_packet.get("link_values_printed"))
+        or bool(target_confirmation.get("link_values_printed"))
         or bool(route_packet.get("link_values_printed"))
         or bool(baseline_quickstart.get("link_values_printed"))
         or bool(baseline_dry_run_gate.get("link_values_printed"))
@@ -209,6 +213,7 @@ def build_status() -> dict[str, Any]:
         or bool(authorized_archive.get("secret_values_printed"))
         or bool(action_packet.get("secret_values_printed"))
         or bool(web_form_packet.get("secret_values_printed"))
+        or bool(target_confirmation.get("secret_values_printed"))
         or bool(route_packet.get("secret_values_printed"))
         or bool(baseline_quickstart.get("secret_values_printed"))
         or bool(baseline_dry_run_gate.get("secret_values_printed"))
@@ -246,6 +251,7 @@ def build_status() -> dict[str, Any]:
                 secret_scan,
                 action_packet,
                 web_form_packet,
+                target_confirmation,
                 route_packet,
                 baseline_quickstart,
                 baseline_dry_run_gate,
@@ -283,6 +289,7 @@ def build_status() -> dict[str, Any]:
                 secret_scan,
                 action_packet,
                 web_form_packet,
+                target_confirmation,
                 route_packet,
                 baseline_quickstart,
                 baseline_dry_run_gate,
@@ -349,6 +356,14 @@ def build_status() -> dict[str, Any]:
         "download_verified": link_download.get("verification", {}).get("download_verified"),
         "link_shape_ready": link_intake.get("current_env", {}).get("link_shape_ready"),
         "recommended_route": route_aware_blockers.get("recommended_route"),
+        "submission_target_confirmation_packet_passed": target_confirmation.get("passed") is True,
+        "submission_target_confirmation_value": target_confirmation.get("recommended_confirmation_value"),
+        "submission_target_user_confirmed": target_confirmation.get("target_user_confirmed"),
+        "submission_target_does_not_confirm_for_user": target_confirmation.get("does_not_confirm_for_user")
+        is True,
+        "submission_target_target_task": target_confirmation.get("target", {}).get("task_name"),
+        "submission_target_target_robot": target_confirmation.get("target", {}).get("robot_type"),
+        "submission_target_target_benchmark": target_confirmation.get("target", {}).get("benchmark"),
         "baseline_requires_checkpoint_link": route_aware_blockers.get("baseline_requires_checkpoint_link"),
         "baseline_requires_checkpoint_upload": route_aware_blockers.get("baseline_requires_checkpoint_upload"),
         "chinese_utf8_artifact_audit_passed": chinese_utf8.get("passed") is True,
@@ -581,6 +596,10 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         f"- LoRA runner 就绪：`{status['local_lora_runner_ready']}`。",
         f"- checkpoint link 形态就绪：`{status['link_shape_ready']}`。",
         f"- 推荐提交路线：`{status['recommended_route']}`。",
+        f"- 提交对象确认包：`{status['submission_target_confirmation_packet_passed']}`。",
+        f"- 推荐目标确认值：`{status['submission_target_confirmation_value']}`。",
+        f"- 是否已经替用户确认目标：`{status['submission_target_user_confirmed']}`。",
+        f"- 确认包目标：`{status['submission_target_target_benchmark']} / {status['submission_target_target_robot']} / {status['submission_target_target_task']}`。",
         f"- baseline 是否需要 checkpoint link：`{status['baseline_requires_checkpoint_link']}`。",
         f"- baseline 是否需要 checkpoint upload：`{status['baseline_requires_checkpoint_upload']}`。",
         f"- 中文 UTF-8 产物审计：`{status['chinese_utf8_artifact_audit_passed']}`。",

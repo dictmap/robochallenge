@@ -79,6 +79,7 @@ REQUIRED = [
     "reports/baseline_final_handoff_packet.md",
     "reports/baseline_final_handoff_rehearsal.md",
     "reports/route_aware_submission_blockers.md",
+    "reports/submission_target_confirmation_packet.md",
     "reports/submission_artifact_manifest.md",
     "reports/submission_blockers_summary.md",
     "reports/plaintext_secret_scan.md",
@@ -144,6 +145,7 @@ REQUIRED = [
     "runs/baseline_final_handoff_packet.json",
     "runs/baseline_final_handoff_rehearsal.json",
     "runs/route_aware_submission_blockers.json",
+    "runs/submission_target_confirmation_packet.json",
     "runs/submission_artifact_manifest.json",
     "runs/submission_blockers_summary.json",
     "runs/plaintext_secret_scan.json",
@@ -210,6 +212,7 @@ REQUIRED = [
     "scripts/render_baseline_final_handoff_packet.py",
     "scripts/render_baseline_final_handoff_rehearsal.py",
     "scripts/render_route_aware_submission_blockers.py",
+    "scripts/render_submission_target_confirmation_packet.py",
     "scripts/audit_submission_artifact_manifest.py",
     "scripts/audit_submission_blockers_summary.py",
     "scripts/audit_plaintext_secrets.py",
@@ -955,6 +958,15 @@ def main() -> int:
             "Checkpoint Link" not in set(dashboard.get("web_form_recommended_route_blocking_names", [])),
             "Checkpoint Upload / Archive"
             not in set(dashboard.get("web_form_recommended_route_blocking_names", [])),
+            dashboard.get("submission_target_confirmation_packet_passed") is True,
+            dashboard.get("submission_target_confirmation_value") == "CONFIRM_TABLE30V2_ALOHA_BASELINE",
+            dashboard.get("submission_target_user_confirmed") is False,
+            dashboard.get("submission_target_does_not_confirm_for_user") is True,
+            dashboard.get("submission_target_benchmark") == "Table30v2",
+            dashboard.get("submission_target_robot_type") == "aloha",
+            dashboard.get("submission_target_task_name") == "pack_the_toothbrush_holder",
+            dashboard.get("submission_target_no_contact") is True,
+            dashboard.get("submission_target_no_leak") is True,
             dashboard.get("submission_variant_route_packet_passed") is True,
             dashboard.get("submission_variant_recommended_default") == "baseline_official_aloha",
             dashboard.get("submission_variant_route_count") == 2,
@@ -1759,6 +1771,43 @@ def main() -> int:
         ]
     ):
         print("网页表单字段包审计未通过")
+        return 1
+    target_confirmation = json.loads(
+        (ROOT / "runs/submission_target_confirmation_packet.json").read_text(encoding="utf-8")
+    )
+    target_confirmation_evidence = target_confirmation.get("evidence", {})
+    target_confirmation_leaks = target_confirmation.get("leak_flags", {})
+    target_confirmation_contacts = target_confirmation.get("contact_flags", {})
+    target_confirmation_target = target_confirmation.get("target", {})
+    if not all(
+        [
+            target_confirmation.get("kind") == "submission_target_confirmation_packet",
+            target_confirmation.get("passed"),
+            target_confirmation.get("confirmation_id") == "SUBMISSION_TARGET_CONFIRMATION",
+            target_confirmation.get("target_user_confirmed") is False,
+            target_confirmation.get("recommended_confirmation_value") == "CONFIRM_TABLE30V2_ALOHA_BASELINE",
+            target_confirmation.get("recommended_route") == "baseline_official_aloha",
+            target_confirmation.get("submission_variant") == "baseline",
+            target_confirmation.get("does_not_confirm_for_user") is True,
+            target_confirmation.get("does_not_contact_platform") is True,
+            target_confirmation.get("does_not_read_credentials") is True,
+            target_confirmation.get("does_not_upload") is True,
+            target_confirmation_target.get("benchmark") == "Table30v2",
+            target_confirmation_target.get("robot_type") == "aloha",
+            target_confirmation_target.get("task_name") == "pack_the_toothbrush_holder",
+            target_confirmation_target.get("checkpoint_exists") is True,
+            all(target_confirmation_evidence.values()),
+            not any(target_confirmation_leaks.values()),
+            not any(target_confirmation_contacts.values()),
+            target_confirmation.get("platform_contacted") is False,
+            target_confirmation.get("uploads_performed") is False,
+            target_confirmation.get("credentials_read") is False,
+            target_confirmation.get("credentials_printed") is False,
+            target_confirmation.get("link_values_printed") is False,
+            target_confirmation.get("secret_values_printed") is False,
+        ]
+    ):
+        print("提交对象确认包审计未通过")
         return 1
     route_packet = json.loads((ROOT / "runs/submission_variant_route_packet.json").read_text(encoding="utf-8"))
     route_evidence = route_packet.get("evidence", {})
@@ -2611,6 +2660,7 @@ def main() -> int:
         "authorized_execution_checklist",
         "next_user_action_packet",
         "web_form_field_packet",
+        "submission_target_confirmation_packet",
         "submission_variant_route_packet",
         "baseline_submission_quickstart",
         "baseline_dry_run_gate",
@@ -2646,6 +2696,13 @@ def main() -> int:
             "Checkpoint Link" not in set(preflight.get("web_form_recommended_route_blocking_names", [])),
             "Checkpoint Upload / Archive"
             not in set(preflight.get("web_form_recommended_route_blocking_names", [])),
+            preflight.get("submission_target_confirmation_packet_passed") is True,
+            preflight.get("submission_target_confirmation_value") == "CONFIRM_TABLE30V2_ALOHA_BASELINE",
+            preflight.get("submission_target_user_confirmed") is False,
+            preflight.get("submission_target_does_not_confirm_for_user") is True,
+            preflight.get("submission_target_target_benchmark") == "Table30v2",
+            preflight.get("submission_target_target_robot") == "aloha",
+            preflight.get("submission_target_target_task") == "pack_the_toothbrush_holder",
             preflight.get("local_baseline_runner_ready") is False,
             preflight.get("local_lora_runner_ready") is False,
             preflight.get("verify_download_requested") is False,

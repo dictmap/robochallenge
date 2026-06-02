@@ -3,7 +3,7 @@
 ## 结论
 
 - 审计状态：`passed=True`。
-- 材料数量：`85`。
+- 材料数量：`87`。
 - 缺失材料数量：`0`。
 - 禁止跟踪路径数量：`0`。
 - 是否连接平台：`False`。
@@ -14,7 +14,7 @@
 ## 材料清单
 
 - `README.md`：exists=`True`，tracked=`True`，size=`19168`，sha256=`58dff8b9599520d8de819ab2dd636d7e1d46962e276499858d6f51f4151f620c`。
-- `work.md`：exists=`True`，tracked=`True`，size=`186304`，sha256=`f3e4daf24f45e23b141a03576272da8a0a7adea4bd1ce7650f2a383bda0f911b`。
+- `work.md`：exists=`True`，tracked=`True`，size=`188854`，sha256=`70722c6e1b6a9e234b5b1854fa2487b2faa877ef9d398e10be4f22971c3fd942`。
 - `notebooks/robochallenge_pi05_submit_cn.ipynb`：exists=`True`，tracked=`True`，size=`97941`，sha256=`3063649288beb3fb268eeaa30964120cbd090119580c74134dcfba6739b26609`。
 - `submission/README.md`：exists=`True`，tracked=`True`，size=`1736`，sha256=`1e56978190bcd369dce7fab828d6d7125b6777e62e7a4f6a78cb914c9ea5535b`。
 - `submission/REAL_SUBMISSION_HANDOFF.md`：exists=`True`，tracked=`True`，size=`9131`，sha256=`1e77c1e65175f5ad5996d7b4b6950ffa838c6cd34d025ee13a5738a48a2b8f93`。
@@ -70,11 +70,12 @@
 - `reports/baseline_final_handoff_packet.md`：exists=`True`，tracked=`True`，size=`4232`，sha256=`ad27bae6de1e649403f0e8207ca6b7f404d1dac5f7100a1f0cbc5940610639e8`。
 - `reports/baseline_final_handoff_rehearsal.md`：exists=`True`，tracked=`True`，size=`2839`，sha256=`8157049c294b8ea1f57e24c0975e475ed6eec6ce9cbbb10846fa494fefbdaaca`。
 - `reports/route_aware_submission_blockers.md`：exists=`True`，tracked=`True`，size=`3779`，sha256=`1d31c9f61397183ff8f4dd8e092b27f9fccf3f4951fd40266d732d974a4f1e4a`。
+- `reports/submission_target_confirmation_packet.md`：exists=`True`，tracked=`False`，size=`2258`，sha256=`748bc59be2068c5f58da62603539ab4a66092e9b76b01e44e321bf26a325a642`。
 - `reports/submission_handoff_docs_audit.md`：exists=`True`，tracked=`True`，size=`5768`，sha256=`65fad9790e12b656f34652f15f4016740f9953f9bdd44b2419390358f32dc04c`。
 - `reports/authorized_submission_sequence_audit.md`：exists=`True`，tracked=`True`，size=`5771`，sha256=`2c373b72177573448649a3c29568c6eb61c8eb1b68b6c6e4cd602836845e39cc`。
-- `reports/submission_preflight_bundle.md`：exists=`True`，tracked=`True`，size=`8532`，sha256=`8385b6a585bed7728deb5d49e5fb1b1566b61aa35ed5c1285b07bfe2936b71e0`。
-- `reports/plaintext_secret_scan.md`：exists=`True`，tracked=`True`，size=`610`，sha256=`262d063bf26f436c63608c8ca2a54f113698c876ac88582be27ad3d8d961b0ad`。
-- `reports/submission_status_dashboard.html`：exists=`True`，tracked=`True`，size=`21471`，sha256=`2a89e1dc979a692bc5b80a9eda145ac301935481b87f863189e3bcf4934d5d48`。
+- `reports/submission_preflight_bundle.md`：exists=`True`，tracked=`True`，size=`8831`，sha256=`03a70f5e6d61b5952bc52ea093d46d0f6eb1a3ff39e6ef96fb96d886ed677350`。
+- `reports/plaintext_secret_scan.md`：exists=`True`，tracked=`True`，size=`610`，sha256=`6c22f07d17e904e5e1f36f7e43a3cdaa97d3301c797818172d57f69287ef6c37`。
+- `reports/submission_status_dashboard.html`：exists=`True`，tracked=`True`，size=`21990`，sha256=`5126afdc2ee36acf2de189fbd8392dea7d4b7337a09cd6f042825e2f4f2f3d0f`。
 - `scripts/render_next_user_action_packet.py`：exists=`True`，tracked=`True`，size=`17070`，sha256=`bb27664b00e92d96955e6ae878a4c5faf7493c1e8fa0229f1cf5e186feca7490`。
 - `scripts/render_web_form_field_packet.py`：exists=`True`，tracked=`True`，size=`15558`，sha256=`bb93e4e858a1221289aa72263ba1384af17117ad30100c02d8e91f9aca204ebc`。
 - `scripts/render_submission_variant_route_packet.py`：exists=`True`，tracked=`True`，size=`14345`，sha256=`208f35442ab2425bc937267ff6ea8909aab0330460c38547038fd41345773b2b`。
@@ -93,6 +94,7 @@
 - `scripts/render_baseline_final_handoff_packet.py`：exists=`True`，tracked=`True`，size=`15256`，sha256=`8310edbdbe66e0bf12e18c6ab75cb75bf26addc9eb6e0d8ca50f9f490030428e`。
 - `scripts/render_baseline_final_handoff_rehearsal.py`：exists=`True`，tracked=`True`，size=`17083`，sha256=`bb096820daadf10b129090bc7c611404ffc09c2686bce04d3940da7d074dac22`。
 - `scripts/render_route_aware_submission_blockers.py`：exists=`True`，tracked=`True`，size=`11346`，sha256=`9192bb769e06e1e0480a263a97ad6ae79814eba77ad6855b1613cc89edf0d14e`。
+- `scripts/render_submission_target_confirmation_packet.py`：exists=`True`，tracked=`False`，size=`9670`，sha256=`ea55934743df710c44a3ead0454f67513865c84790a90c845bc1c60652d0a485`。
 - `scripts/audit_jupyter_input_template.py`：exists=`True`，tracked=`True`，size=`13811`，sha256=`f9db1d790f5e92c57025b69c9fc3e6b14e1596354ef7e4dfb84da3ff6aa422a6`。
 - `scripts/audit_jupyter_authorized_preflight_template.py`：exists=`True`，tracked=`True`，size=`12746`，sha256=`71a1ae721f3712bb2c0a4ec2b7ee7ec0f7f44c50425fffdd4c3f5148330a4d8c`。
 - `scripts/audit_jupyter_final_handoff_template.py`：exists=`True`，tracked=`True`，size=`14047`，sha256=`db2056c05bec5a59ede9c37e52fc43efe5a878202cff3716bab40bd303f2f72d`。
@@ -158,6 +160,13 @@
 - `web_form_field_packet_baseline_excludes_checkpoint_archive`：`True`。
 - `web_form_field_packet_route_blocking_no_checkpoint_link`：`True`。
 - `web_form_field_packet_route_blocking_no_checkpoint_archive`：`True`。
+- `submission_target_confirmation_packet_passed`：`True`。
+- `submission_target_confirmation_recommended_baseline`：`True`。
+- `submission_target_confirmation_not_user_confirmed`：`True`。
+- `submission_target_confirmation_does_not_confirm_for_user`：`True`。
+- `submission_target_confirmation_task_exact`：`True`。
+- `submission_target_confirmation_robot_exact`：`True`。
+- `submission_target_confirmation_benchmark_exact`：`True`。
 - `submission_variant_route_packet_passed`：`True`。
 - `submission_variant_route_packet_baseline_default`：`True`。
 - `submission_variant_route_packet_has_two_routes`：`True`。

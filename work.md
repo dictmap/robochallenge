@@ -2263,3 +2263,31 @@
 
 - P0：提交并推送本轮 Web 表单路线感知字段包审计。
 - P1：凭据到位后先运行 baseline 授权前只读预检与 dry-run gate；真实 runner 仍必须等待用户明确授权。
+## 2026-06-03 第八十轮：提交对象确认包审计
+
+### 已完成
+
+- 新增 `scripts/render_submission_target_confirmation_packet.py`，专门把 `SUBMISSION_TARGET_CONFIRMATION` 拆成可核对的机器字段与中文报告。
+- 新增产物 `runs/submission_target_confirmation_packet.json` 和 `reports/submission_target_confirmation_packet.md`。
+- 确认包固定当前可复现目标为 `Table30v2 / aloha / pack_the_toothbrush_holder`，推荐路线为 `baseline_official_aloha`，推荐 variant 为 `baseline`，推荐确认值为 `CONFIRM_TABLE30V2_ALOHA_BASELINE`。
+- 明确 `target_user_confirmed=false` 与 `does_not_confirm_for_user=true`，即本包只整理证据，不替用户确认参赛目标。
+- 已接入 `scripts/audit_submission_preflight_bundle.py`、`scripts/audit_submission_artifact_manifest.py`、`scripts/render_submission_status_dashboard.py` 和 `scripts/validate_repro_workspace.py`。
+- GUI dashboard 新增“提交对象确认”卡片，状态为待确认。
+
+### 验证结果
+
+- Linux 端完整 no-contact 链路已通过：`py_compile`、`render_submission_target_confirmation_packet.py`、`audit_chinese_utf8_artifacts.py`、`audit_plaintext_secrets.py`、`audit_submission_preflight_bundle.py`、`audit_submission_artifact_manifest.py`、`render_submission_status_dashboard.py`、`validate_repro_workspace.py` 和 `git diff --check` 均通过。
+- `runs/submission_target_confirmation_packet.json` 实测：`passed=true`，`recommended_confirmation_value=CONFIRM_TABLE30V2_ALOHA_BASELINE`，`target_user_confirmed=false`，目标为 `Table30v2 / aloha / pack_the_toothbrush_holder`。
+- GUI dashboard 实测变为 `source_count=36`、`card_count=36`、`done_count=30`、`blocked_count=5`、`watch_count=1`、`ready_for_real_submission=false`。
+- 明文凭据扫描仍为 `hit_count=0`；中文 UTF-8 审计仍为 `scanned_file_count=152`、`decode_error_count=0`、`bad_marker_hit_count=0`。
+
+### 当前边界
+
+- 本轮没有读取真实 token、submission id、checkpoint link 或真实 local env 内容。
+- 没有连接 RoboChallenge 平台，没有上传 checkpoint，没有生成 checkpoint tar，也没有启动真实 runner。
+- `SUBMISSION_TARGET_CONFIRMATION` 现在有可核对确认包，但仍必须由用户明确确认后才能视为完成。
+
+### 下一步
+
+- P0：提交并推送本轮提交对象确认包审计。
+- P1：用户确认目标并提供 token/submission id 后，先跑 baseline 授权前只读预检与 dry-run gate；真实 runner 仍必须等待用户明确授权。

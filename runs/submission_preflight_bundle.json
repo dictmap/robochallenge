@@ -22,6 +22,13 @@
   "download_verified": false,
   "link_shape_ready": false,
   "recommended_route": "baseline_official_aloha",
+  "submission_target_confirmation_packet_passed": true,
+  "submission_target_confirmation_value": "CONFIRM_TABLE30V2_ALOHA_BASELINE",
+  "submission_target_user_confirmed": false,
+  "submission_target_does_not_confirm_for_user": true,
+  "submission_target_target_task": "pack_the_toothbrush_holder",
+  "submission_target_target_robot": "aloha",
+  "submission_target_target_benchmark": "Table30v2",
   "baseline_requires_checkpoint_link": false,
   "baseline_requires_checkpoint_upload": false,
   "chinese_utf8_artifact_audit_passed": true,
@@ -131,7 +138,7 @@
     "ROBOCHALLENGE_REAL_RUN_CONFIRM"
   ],
   "secret_scan_hit_count": 0,
-  "secret_scan_scanned_files": 241,
+  "secret_scan_scanned_files": 244,
   "subcommands": {
     "checkpoint_link_intake": {
       "script": "scripts/audit_checkpoint_link_intake.py",
@@ -221,7 +228,7 @@
       "script": "scripts/audit_plaintext_secrets.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": "{\n  \"kind\": \"plaintext_secret_scan\",\n  \"passed\": true,\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"secret_values_printed\": false,\n  \"scan_scope\": \"git tracked files plus unignored untracked files\",\n  \"scanned_files\": 241,\n  \"skipped_binary_files\": 0,\n  \"pattern_count\": 7,\n  \"hit_count\": 0,\n  \"hits\": [],\n  \"blocking\": [\n    \"如发现命中项，先移除明文凭据并轮换对应 token，再重新运行本审计。\",\n    \"本审计不替代真实平台权限检查；真实提交仍需要用户提供凭据。\"\n  ]\n}\n",
+      "stdout_tail": "{\n  \"kind\": \"plaintext_secret_scan\",\n  \"passed\": true,\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"secret_values_printed\": false,\n  \"scan_scope\": \"git tracked files plus unignored untracked files\",\n  \"scanned_files\": 244,\n  \"skipped_binary_files\": 0,\n  \"pattern_count\": 7,\n  \"hit_count\": 0,\n  \"hits\": [],\n  \"blocking\": [\n    \"如发现命中项，先移除明文凭据并轮换对应 token，再重新运行本审计。\",\n    \"本审计不替代真实平台权限检查；真实提交仍需要用户提供凭据。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "submission_variant_route_packet": {
@@ -236,6 +243,13 @@
       "returncode": 0,
       "passed": true,
       "stdout_tail": "ue,\n    \"baseline_is_recommended_default\": true,\n    \"baseline_route_ready_without_credentials\": true,\n    \"baseline_checkpoint_ready\": true,\n    \"baseline_does_not_need_upload\": true,\n    \"baseline_does_not_need_checkpoint_link\": true,\n    \"ready_runner_template_passed\": true,\n    \"ready_runner_default_baseline\": true,\n    \"synthetic_baseline_no_confirm_dry_run\": true,\n    \"package_audit_passed\": true,\n    \"readiness_gate_passed\": true,\n    \"secret_scan_clean\": true\n  },\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false\n  },\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"baseline 最短路径已固化；真实提交仍等待用户 token、submission id 和强确认。\"\n  ]\n}\n",
+      "stderr_tail": ""
+    },
+    "submission_target_confirmation_packet": {
+      "script": "scripts/render_submission_target_confirmation_packet.py",
+      "returncode": 0,
+      "passed": true,
+      "stdout_tail": "erter\": true,\n    \"mapping_lengths_match\": true,\n    \"dry_run_transform_smoke_present\": true,\n    \"quickstart_recommends_baseline\": true,\n    \"quickstart_baseline_needs_no_link\": true,\n    \"route_aware_recommends_baseline\": true,\n    \"route_aware_baseline_keeps_target_confirmation_blocking\": true,\n    \"web_form_recommends_baseline\": true,\n    \"web_form_keeps_target_confirmation_out_of_field_blocking\": true,\n    \"secret_scan_clean\": true\n  },\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false\n  },\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"确认包已生成；仍需用户明确确认提交 Table30v2 ALOHA baseline 后，才可视为满足 SUBMISSION_TARGET_CONFIRMATION。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "authorized_execution_checklist": {

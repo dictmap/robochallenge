@@ -105,10 +105,10 @@
         <h1>RoboChallenge pi0.5 提交状态面板</h1>
         <p class="sub">静态 GUI 汇总当前复现、LoRA checkpoint、上传/link/readiness 阻塞和授权后执行顺序。面板由 JSON 审计结果生成，不读取或显示真实凭据。</p>
       </div>
-      <div class="stamp">生成时间<br>2026-06-02 17:13:05 UTC</div>
+      <div class="stamp">生成时间<br>2026-06-02 17:26:28 UTC</div>
     </header>
     <section class="summary">
-      <div class="metric"><b>12</b><span>已完成项</span></div>
+      <div class="metric"><b>13</b><span>已完成项</span></div>
       <div class="metric"><b>4</b><span>待授权项</span></div>
       <div class="metric"><b>否</b><span>真实提交就绪</span></div>
       <div class="metric"><b>否</b><span>checkpoint link 就绪</span></div>
@@ -254,6 +254,16 @@
               <h2>网页表单字段</h2>
               <p class="value">7/12 已就绪</p>
               <p>benchmark、robot、task、prompt、代码链接已整理；token、submission id 和 checkpoint link 仍待用户补齐。</p>
+            </article>
+
+            <article class="card done">
+              <div class="card-top">
+                <span class="state">已完成</span>
+                <a href="../reports/submission_variant_route_packet.md">报告</a>
+              </div>
+              <h2>提交路线拆分</h2>
+              <p class="value">baseline 优先</p>
+              <p>官方 ALOHA baseline 本地 runner 不需要 LoRA tar/link；LoRA 网页 checkpoint 路线仍需上传和 link。</p>
             </article>
 
             <article class="card done">

@@ -1,0 +1,95 @@
+{
+  "kind": "submission_variant_route_packet",
+  "passed": true,
+  "recommended_default": "baseline_official_aloha",
+  "route_count": 2,
+  "routes": [
+    {
+      "id": "baseline_official_aloha",
+      "label": "官方 Table30v2 ALOHA baseline",
+      "recommended": true,
+      "local_runner_ready_without_credentials": true,
+      "local_checkpoint_ready": true,
+      "requires_checkpoint_upload": false,
+      "requires_checkpoint_link_for_local_runner": false,
+      "requires_checkpoint_upload_for_public_link": false,
+      "current_blocking": [
+        "SUBMISSION_TARGET_CONFIRMATION",
+        "ROBOCHALLENGE_USER_TOKEN",
+        "ROBOCHALLENGE_SUBMISSION_ID",
+        "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline",
+        "ROBOCHALLENGE_REAL_RUN_CONFIRM"
+      ],
+      "evidence": {
+        "package_audit_passed": true,
+        "mapping_ready": true,
+        "official_checkpoint_exists": true,
+        "runner_template_ready_without_credentials": true,
+        "token_present": false,
+        "submission_id_present": false
+      },
+      "note": "本地 runner 路线使用 Linux 上已存在的官方 ALOHA checkpoint，不需要先生成 LoRA tar，也不需要 checkpoint link。仍需要用户 token、submission id、提交对象确认和真实 runner 强确认。"
+    },
+    {
+      "id": "lora_materialized",
+      "label": "LoRA 物化 checkpoint",
+      "recommended": false,
+      "local_runner_ready_without_credentials": true,
+      "local_checkpoint_ready": true,
+      "requires_checkpoint_upload": false,
+      "requires_checkpoint_link_for_local_runner": false,
+      "requires_checkpoint_upload_for_public_link": true,
+      "current_blocking": [
+        "SUBMISSION_TARGET_CONFIRMATION",
+        "ROBOCHALLENGE_USER_TOKEN",
+        "ROBOCHALLENGE_SUBMISSION_ID",
+        "ROBOCHALLENGE_SUBMISSION_VARIANT=lora",
+        "CHECKPOINT_ARCHIVE_AUTHORIZATION",
+        "ROBOCHALLENGE_CHECKPOINT_LINK",
+        "ROBOCHALLENGE_REAL_RUN_CONFIRM"
+      ],
+      "evidence": {
+        "package_audit_passed": true,
+        "mapping_ready": true,
+        "materialized_checkpoint_exists": true,
+        "lora_export_ready": true,
+        "policy_smoke_passed": true,
+        "runner_template_ready_without_credentials": true,
+        "upload_channels_audited": true,
+        "uploads_performed": false,
+        "checkpoint_link_present": false
+      },
+      "note": "本地 LoRA 物化 checkpoint 已能被 policy 加载；如果作为网页可访问 checkpoint 提交，仍需要用户授权归档/上传并回填真实 HTTPS checkpoint link。"
+    }
+  ],
+  "evidence": {
+    "package_audit_passed": true,
+    "readiness_gate_passed": true,
+    "action_packet_passed": true,
+    "web_form_packet_passed": true,
+    "baseline_local_route_ready_without_credentials": true,
+    "baseline_does_not_need_upload_or_link": true,
+    "lora_local_checkpoint_ready": true,
+    "lora_public_link_still_needs_upload": true,
+    "secret_scan_clean": true
+  },
+  "leak_flags": {
+    "credentials_printed": false,
+    "link_values_printed": false,
+    "secret_values_printed": false
+  },
+  "contact_flags": {
+    "platform_contacted": false,
+    "uploads_performed": false,
+    "download_host_contacted": false
+  },
+  "platform_contacted": false,
+  "uploads_performed": false,
+  "credentials_read": false,
+  "credentials_printed": false,
+  "link_values_printed": false,
+  "secret_values_printed": false,
+  "blocking": [
+    "提交路线已拆分；默认建议先走官方 ALOHA baseline 本地 runner 路线。"
+  ]
+}

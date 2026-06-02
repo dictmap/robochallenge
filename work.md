@@ -1486,3 +1486,30 @@
 ### 下一步
 - P0：提交并推送本轮网页表单字段包、GUI 卡片和审计链更新。
 - P1：用户拿到凭据后，先看 `reports/web_form_field_packet.md` 确认表单字段，再按 Notebook 第 44/45 节写入 local env 并跑授权预检。
+
+## 2026-06-03 第五十三轮：提交路线拆分包与 GUI 卡片
+
+### 已完成
+- 新增 `scripts/render_submission_variant_route_packet.py`，把官方 Table30v2 ALOHA baseline 路线和 LoRA 物化 checkpoint 路线拆开审计。
+- 新增机器可读产物 `runs/submission_variant_route_packet.json` 和中文报告 `reports/submission_variant_route_packet.md`。
+- 路线包明确默认建议先走 `baseline_official_aloha`：本地 runner 使用 Linux 上已存在的官方 ALOHA checkpoint，不需要生成 LoRA tar，也不需要 checkpoint link。
+- 路线包同时保留 `lora_materialized`：本地 checkpoint 和 policy smoke 已就绪；如作为网页可访问 checkpoint 提交，仍需要用户授权归档/上传并回填真实 HTTPS link。
+- 更新 `scripts/audit_submission_preflight_bundle.py`、`scripts/audit_submission_artifact_manifest.py`、`scripts/render_submission_status_dashboard.py` 和 `scripts/validate_repro_workspace.py`，把路线拆分包纳入预检、manifest、GUI 和总体验证。
+- GUI 面板新增“提交路线拆分”卡片，避免把 LoRA checkpoint link/upload 阻塞误读为官方 baseline 本地 runner 的硬前置。
+
+### 验证结果
+
+- 本地 `python -X utf8 -m py_compile scripts\render_submission_variant_route_packet.py scripts\audit_submission_preflight_bundle.py scripts\audit_submission_artifact_manifest.py scripts\render_submission_status_dashboard.py scripts\validate_repro_workspace.py` 已通过。
+- 本地 `python -X utf8 scripts\render_submission_variant_route_packet.py` 已通过：`passed=true`，`recommended_default=baseline_official_aloha`，`route_count=2`。
+- baseline 路线证据：`local_runner_ready_without_credentials=true`、`local_checkpoint_ready=true`、`requires_checkpoint_upload=false`、`requires_checkpoint_link_for_local_runner=false`。
+- LoRA 路线证据：`local_runner_ready_without_credentials=true`、`local_checkpoint_ready=true`、`requires_checkpoint_upload_for_public_link=true`。
+
+### 当前边界
+
+- 本轮没有读取真实 token、submission id 或 checkpoint link，没有接触 RoboChallenge 平台，没有上传 checkpoint，没有生成 checkpoint tar，也没有启动真实 runner。
+- 真实提交仍需要用户提供 `ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`，并确认提交 variant 和真实 runner 强确认；LoRA 网页 checkpoint 路线还需要归档/上传授权和真实 checkpoint link。
+
+### 下一步
+
+- P0：同步到 Linux 端，复跑路线包、预检汇总、manifest、GUI、总体验证和 `git diff --check`，然后提交推送。
+- P1：用户拿到凭据后，默认先按 baseline 官方 ALOHA 路线跑授权预检；只有明确选择 LoRA 网页 checkpoint 路线时，再进入归档/上传/link 流程。

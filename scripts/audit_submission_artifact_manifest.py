@@ -58,6 +58,7 @@ REQUIRED_ARTIFACTS = [
     "reports/authorized_execution_checklist.md",
     "reports/next_user_action_packet.md",
     "reports/web_form_field_packet.md",
+    "reports/submission_variant_route_packet.md",
     "reports/submission_handoff_docs_audit.md",
     "reports/authorized_submission_sequence_audit.md",
     "reports/submission_preflight_bundle.md",
@@ -65,6 +66,7 @@ REQUIRED_ARTIFACTS = [
     "reports/submission_status_dashboard.html",
     "scripts/render_next_user_action_packet.py",
     "scripts/render_web_form_field_packet.py",
+    "scripts/render_submission_variant_route_packet.py",
     "scripts/audit_jupyter_input_template.py",
     "scripts/audit_jupyter_authorized_preflight_template.py",
     "scripts/audit_authorized_execution_checklist.py",
@@ -169,6 +171,7 @@ def build_status() -> dict[str, Any]:
     authorized_execution = read_json(RUNS_DIR / "authorized_execution_checklist.json")
     action_packet = read_json(RUNS_DIR / "next_user_action_packet.json")
     web_form_packet = read_json(RUNS_DIR / "web_form_field_packet.json")
+    route_packet = read_json(RUNS_DIR / "submission_variant_route_packet.json")
     readiness = read_json(RUNS_DIR / "real_submission_readiness.json")
     env_template = read_json(RUNS_DIR / "submission_env_template_audit.json")
     secret_scan = read_json(RUNS_DIR / "plaintext_secret_scan.json")
@@ -186,6 +189,10 @@ def build_status() -> dict[str, Any]:
         "next_user_action_packet_passed": action_packet.get("passed") is True,
         "web_form_field_packet_passed": web_form_packet.get("passed") is True,
         "web_form_field_packet_currently_not_ready": web_form_packet.get("web_form_ready") is False,
+        "submission_variant_route_packet_passed": route_packet.get("passed") is True,
+        "submission_variant_route_packet_baseline_default": route_packet.get("recommended_default")
+        == "baseline_official_aloha",
+        "submission_variant_route_packet_has_two_routes": route_packet.get("route_count") == 2,
         "readiness_currently_blocked": readiness.get("ready_for_real_submission") is False,
         "env_template_passed": env_template.get("passed") is True,
         "secret_scan_passed": secret_scan.get("passed") is True,
@@ -205,6 +212,7 @@ def build_status() -> dict[str, Any]:
                 authorized_execution,
                 action_packet,
                 web_form_packet,
+                route_packet,
                 readiness,
                 env_template,
             ]
@@ -217,12 +225,14 @@ def build_status() -> dict[str, Any]:
         or bool(authorized_archive.get("link_values_printed"))
         or bool(authorized_execution.get("link_values_printed"))
         or bool(action_packet.get("link_values_printed"))
-        or bool(web_form_packet.get("link_values_printed")),
+        or bool(web_form_packet.get("link_values_printed"))
+        or bool(route_packet.get("link_values_printed")),
         "secret_values_printed": bool(secret_scan.get("secret_values_printed"))
         or bool(jupyter_input.get("secret_values_printed"))
         or bool(jupyter_authorized.get("secret_values_printed"))
         or bool(action_packet.get("secret_values_printed"))
-        or bool(web_form_packet.get("secret_values_printed")),
+        or bool(web_form_packet.get("secret_values_printed"))
+        or bool(route_packet.get("secret_values_printed")),
     }
     contact_flags = {
         "platform_contacted": any(
@@ -238,6 +248,7 @@ def build_status() -> dict[str, Any]:
                 authorized_execution,
                 action_packet,
                 web_form_packet,
+                route_packet,
                 readiness,
                 env_template,
                 secret_scan,
@@ -256,6 +267,7 @@ def build_status() -> dict[str, Any]:
                 authorized_execution,
                 action_packet,
                 web_form_packet,
+                route_packet,
                 readiness,
                 env_template,
                 secret_scan,
@@ -280,7 +292,10 @@ def build_status() -> dict[str, Any]:
     if any(contact_flags.values()):
         blocking.append("输入审计显示曾连接平台、上传或接触下载 host。")
     if not blocking:
-        blocking.append("提交准备材料 manifest 已完整；真实提交仍需要用户凭据、submission id 和 checkpoint link。")
+        blocking.append(
+            "提交准备材料 manifest 已完整；baseline runner 仍需要用户凭据和 submission id，"
+            "LoRA 或网页 checkpoint 路线仍需要上传授权和 checkpoint link。"
+        )
 
     passed = bool(
         not missing_required

@@ -7,7 +7,7 @@
   "credentials_printed": false,
   "link_values_printed": false,
   "secret_values_printed": false,
-  "artifact_count": 49,
+  "artifact_count": 51,
   "artifacts": [
     {
       "path": "README.md",
@@ -20,8 +20,8 @@
       "path": "work.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 109239,
-      "sha256": "d813e416dc469f36a51911a1266b7a55729053e9c2c559199f21c98d21463a10"
+      "size_bytes": 112024,
+      "sha256": "f4fae00fd103c921a121c1f31f27778a033f6086538d5af321d062d4d46a92a4"
     },
     {
       "path": "notebooks/robochallenge_pi05_submit_cn.ipynb",
@@ -278,9 +278,16 @@
     {
       "path": "reports/web_form_field_packet.md",
       "exists": true,
-      "tracked": false,
+      "tracked": true,
       "size_bytes": 3609,
       "sha256": "ef7a9f53388bf14839fc62d300dba96e957f3c0d7352979123403616be51ecbe"
+    },
+    {
+      "path": "reports/submission_variant_route_packet.md",
+      "exists": true,
+      "tracked": false,
+      "size_bytes": 3262,
+      "sha256": "9615b04f4dc3a3946369ee923e6fde50e7616bb1af954fc06155ddc73bf4c3ea"
     },
     {
       "path": "reports/submission_handoff_docs_audit.md",
@@ -300,22 +307,22 @@
       "path": "reports/submission_preflight_bundle.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 2281,
-      "sha256": "067c2a7512f2b882676cd72322f74cea16f55243fee887d924c28b72e29b5cb6"
+      "size_bytes": 2353,
+      "sha256": "7153baf81a175cd3864e050bfbceb39c63a72fb5b27fd0ba00cd98b8ea1f3b32"
     },
     {
       "path": "reports/plaintext_secret_scan.md",
       "exists": true,
       "tracked": true,
       "size_bytes": 610,
-      "sha256": "527ca7cb43ae0fe464cbc7e4439524b0e06d54bbf51ab0b2faeba2ef9e56dd9e"
+      "sha256": "c05c308b670415f5383cf3f7c625f2fc3273986e17b115d4c1557c31b3fa9262"
     },
     {
       "path": "reports/submission_status_dashboard.html",
       "exists": true,
       "tracked": true,
       "size_bytes": 12448,
-      "sha256": "c59e320a1586fdeb60b7062b44b2ad78970cc2144d56ecbca7dd250e09d0996d"
+      "sha256": "1f0f8842aa3456ad53cffc489b2769917312b915e1623be458c2cdd4efa1785c"
     },
     {
       "path": "scripts/render_next_user_action_packet.py",
@@ -327,9 +334,16 @@
     {
       "path": "scripts/render_web_form_field_packet.py",
       "exists": true,
-      "tracked": false,
+      "tracked": true,
       "size_bytes": 11389,
       "sha256": "308afc6bd0b412bbed8c4c2f4188666050449fa3d5ed3580559422fdcff37b34"
+    },
+    {
+      "path": "scripts/render_submission_variant_route_packet.py",
+      "exists": true,
+      "tracked": false,
+      "size_bytes": 14665,
+      "sha256": "8c09f4814254926d9b3e2eb46463f70896d98bebedaf56b5a7659dd1c128f699"
     },
     {
       "path": "scripts/audit_jupyter_input_template.py",
@@ -406,6 +420,9 @@
     "next_user_action_packet_passed": true,
     "web_form_field_packet_passed": true,
     "web_form_field_packet_currently_not_ready": true,
+    "submission_variant_route_packet_passed": true,
+    "submission_variant_route_packet_baseline_default": true,
+    "submission_variant_route_packet_has_two_routes": true,
     "readiness_currently_blocked": true,
     "env_template_passed": true,
     "secret_scan_passed": true,
@@ -422,6 +439,6 @@
     "download_host_contacted": false
   },
   "blocking": [
-    "提交准备材料 manifest 已完整；真实提交仍需要用户凭据、submission id 和 checkpoint link。"
+    "提交准备材料 manifest 已完整；baseline runner 仍需要用户凭据和 submission id，LoRA 或网页 checkpoint 路线仍需要上传授权和 checkpoint link。"
   ]
 }

@@ -29,6 +29,7 @@ SOURCE_FILES = {
     "authorized_execution": RUNS_DIR / "authorized_execution_checklist.json",
     "next_user_action_packet": RUNS_DIR / "next_user_action_packet.json",
     "web_form_field_packet": RUNS_DIR / "web_form_field_packet.json",
+    "submission_variant_route_packet": RUNS_DIR / "submission_variant_route_packet.json",
     "jupyter_input": RUNS_DIR / "jupyter_input_template_audit.json",
     "jupyter_authorized": RUNS_DIR / "jupyter_authorized_preflight_template_audit.json",
     "link_intake": RUNS_DIR / "checkpoint_link_intake.json",
@@ -86,6 +87,7 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
     authorized_execution = data["authorized_execution"]
     action_packet = data["next_user_action_packet"]
     web_form_packet = data["web_form_field_packet"]
+    route_packet = data["submission_variant_route_packet"]
     jupyter_input = data["jupyter_input"]
     jupyter_authorized = data["jupyter_authorized"]
     link_intake = data["link_intake"]
@@ -124,6 +126,11 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
         web_form_packet.get("passed")
         and web_form_packet.get("field_count", 0) >= 10
         and web_form_packet.get("web_form_ready") is False
+    )
+    route_packet_ready = bool(
+        route_packet.get("passed")
+        and route_packet.get("recommended_default") == "baseline_official_aloha"
+        and route_packet.get("route_count") == 2
     )
     jupyter_input_ready = bool(
         jupyter_input.get("passed")
@@ -244,6 +251,13 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
             "reports/web_form_field_packet.md",
         ),
         card(
+            "提交路线拆分",
+            "done" if route_packet_ready else "watch",
+            "baseline 优先",
+            "官方 ALOHA baseline 本地 runner 不需要 LoRA tar/link；LoRA 网页 checkpoint 路线仍需上传和 link。",
+            "reports/submission_variant_route_packet.md",
+        ),
+        card(
             "Jupyter 安全填空",
             "done" if jupyter_input_ready else "watch",
             "local env 入口",
@@ -275,6 +289,7 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
     authorized_execution = data["authorized_execution"]
     action_packet = data["next_user_action_packet"]
     web_form_packet = data["web_form_field_packet"]
+    route_packet = data["submission_variant_route_packet"]
     jupyter_input = data["jupyter_input"]
     jupyter_authorized = data["jupyter_authorized"]
     sequence = data["authorized_sequence"]
@@ -314,6 +329,9 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
         "web_form_field_count": web_form_packet.get("field_count"),
         "web_form_ready_field_count": web_form_packet.get("ready_field_count"),
         "web_form_packet_currently_not_ready": web_form_packet.get("web_form_ready") is False,
+        "submission_variant_route_packet_passed": route_packet.get("passed") is True,
+        "submission_variant_recommended_default": route_packet.get("recommended_default"),
+        "submission_variant_route_count": route_packet.get("route_count"),
         "jupyter_input_template_passed": jupyter_input.get("passed") is True,
         "jupyter_input_default_off": jupyter_input.get("run_flag_default_false") is True,
         "jupyter_local_env_ignored": jupyter_input.get("local_env_ignored", {}).get("ignored") is True,

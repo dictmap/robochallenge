@@ -34,6 +34,7 @@ SUBCOMMANDS = [
     ("authorized_execution_checklist", "scripts/audit_authorized_execution_checklist.py"),
     ("next_user_action_packet", "scripts/render_next_user_action_packet.py"),
     ("web_form_field_packet", "scripts/render_web_form_field_packet.py"),
+    ("submission_variant_route_packet", "scripts/render_submission_variant_route_packet.py"),
     ("submission_artifact_manifest", "scripts/audit_submission_artifact_manifest.py"),
 ]
 
@@ -93,6 +94,7 @@ def build_status() -> dict[str, Any]:
     secret_scan = read_json(RUNS_DIR / "plaintext_secret_scan.json")
     action_packet = read_json(RUNS_DIR / "next_user_action_packet.json")
     web_form_packet = read_json(RUNS_DIR / "web_form_field_packet.json")
+    route_packet = read_json(RUNS_DIR / "submission_variant_route_packet.json")
 
     leak_flags = {
         "credentials_printed": any(
@@ -112,6 +114,7 @@ def build_status() -> dict[str, Any]:
                 secret_scan,
                 action_packet,
                 web_form_packet,
+                route_packet,
             ]
         ),
         "link_values_printed": bool(link_intake.get("link_values_printed"))
@@ -124,7 +127,8 @@ def build_status() -> dict[str, Any]:
         or bool(ready_real_runner.get("link_values_printed"))
         or bool(authorized_archive.get("link_values_printed"))
         or bool(action_packet.get("link_values_printed"))
-        or bool(web_form_packet.get("link_values_printed")),
+        or bool(web_form_packet.get("link_values_printed"))
+        or bool(route_packet.get("link_values_printed")),
         "secret_values_printed": bool(secret_scan.get("secret_values_printed"))
         or bool(artifact_manifest.get("secret_values_printed"))
         or bool(notebook_structure.get("secret_values_printed"))
@@ -134,7 +138,8 @@ def build_status() -> dict[str, Any]:
         or bool(ready_real_runner.get("secret_values_printed"))
         or bool(authorized_archive.get("secret_values_printed"))
         or bool(action_packet.get("secret_values_printed"))
-        or bool(web_form_packet.get("secret_values_printed")),
+        or bool(web_form_packet.get("secret_values_printed"))
+        or bool(route_packet.get("secret_values_printed")),
     }
     contact_flags = {
         "platform_contacted": any(
@@ -154,6 +159,7 @@ def build_status() -> dict[str, Any]:
                 secret_scan,
                 action_packet,
                 web_form_packet,
+                route_packet,
             ]
         ),
         "uploads_performed": any(
@@ -173,6 +179,7 @@ def build_status() -> dict[str, Any]:
                 secret_scan,
                 action_packet,
                 web_form_packet,
+                route_packet,
             ]
             for key in ["uploads_performed", "upload_performed"]
         ),

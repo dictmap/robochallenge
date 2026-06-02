@@ -61,6 +61,7 @@ REQUIRED = [
     "reports/authorized_execution_checklist.md",
     "reports/next_user_action_packet.md",
     "reports/web_form_field_packet.md",
+    "reports/submission_variant_route_packet.md",
     "reports/submission_artifact_manifest.md",
     "reports/submission_blockers_summary.md",
     "reports/plaintext_secret_scan.md",
@@ -108,6 +109,7 @@ REQUIRED = [
     "runs/authorized_execution_checklist.json",
     "runs/next_user_action_packet.json",
     "runs/web_form_field_packet.json",
+    "runs/submission_variant_route_packet.json",
     "runs/submission_artifact_manifest.json",
     "runs/submission_blockers_summary.json",
     "runs/plaintext_secret_scan.json",
@@ -156,6 +158,7 @@ REQUIRED = [
     "scripts/audit_authorized_execution_checklist.py",
     "scripts/render_next_user_action_packet.py",
     "scripts/render_web_form_field_packet.py",
+    "scripts/render_submission_variant_route_packet.py",
     "scripts/audit_submission_artifact_manifest.py",
     "scripts/audit_submission_blockers_summary.py",
     "scripts/audit_plaintext_secrets.py",
@@ -835,9 +838,9 @@ def main() -> int:
             "<html lang=\"zh-CN\">" in dashboard_html_text,
             "RoboChallenge pi0.5 提交状态面板" in dashboard_html_text,
             "当前阻塞" in dashboard_html_text,
-            dashboard.get("source_count") >= 17,
-            dashboard.get("card_count") >= 17,
-            dashboard.get("done_count", 0) >= 12,
+            dashboard.get("source_count") >= 18,
+            dashboard.get("card_count") >= 18,
+            dashboard.get("done_count", 0) >= 13,
             dashboard.get("blocked_count", 0) >= 4,
             dashboard.get("ready_for_real_submission") is False,
             dashboard.get("web_form_ready") is False,
@@ -859,6 +862,9 @@ def main() -> int:
             dashboard.get("web_form_field_count", 0) >= 10,
             dashboard.get("web_form_ready_field_count", 0) >= 6,
             dashboard.get("web_form_packet_currently_not_ready") is True,
+            dashboard.get("submission_variant_route_packet_passed") is True,
+            dashboard.get("submission_variant_recommended_default") == "baseline_official_aloha",
+            dashboard.get("submission_variant_route_count") == 2,
             dashboard.get("jupyter_input_template_passed") is True,
             dashboard.get("jupyter_input_default_off") is True,
             dashboard.get("jupyter_local_env_ignored") is True,
@@ -878,6 +884,7 @@ def main() -> int:
             "授权执行清单" in dashboard_titles,
             "下一步动作包" in dashboard_titles,
             "网页表单字段" in dashboard_titles,
+            "提交路线拆分" in dashboard_titles,
             "Jupyter 安全填空" in dashboard_titles,
             "Jupyter 授权预检" in dashboard_titles,
             "真实提交 gate" in dashboard_titles,
@@ -1337,6 +1344,64 @@ def main() -> int:
     ):
         print("网页表单字段包审计未通过")
         return 1
+    route_packet = json.loads((ROOT / "runs/submission_variant_route_packet.json").read_text(encoding="utf-8"))
+    route_evidence = route_packet.get("evidence", {})
+    route_leaks = route_packet.get("leak_flags", {})
+    route_contacts = route_packet.get("contact_flags", {})
+    routes = route_packet.get("routes", [])
+    route_by_id = {item.get("id"): item for item in routes}
+    baseline_route = route_by_id.get("baseline_official_aloha", {})
+    lora_route = route_by_id.get("lora_materialized", {})
+    baseline_blocking = set(baseline_route.get("current_blocking", []))
+    lora_blocking = set(lora_route.get("current_blocking", []))
+    if not all(
+        [
+            route_packet.get("kind") == "submission_variant_route_packet",
+            route_packet.get("passed"),
+            route_packet.get("recommended_default") == "baseline_official_aloha",
+            route_packet.get("route_count") == 2,
+            len(routes) == 2,
+            baseline_route.get("recommended") is True,
+            baseline_route.get("local_runner_ready_without_credentials") is True,
+            baseline_route.get("local_checkpoint_ready") is True,
+            baseline_route.get("requires_checkpoint_upload") is False,
+            baseline_route.get("requires_checkpoint_link_for_local_runner") is False,
+            baseline_route.get("requires_checkpoint_upload_for_public_link") is False,
+            {
+                "SUBMISSION_TARGET_CONFIRMATION",
+                "ROBOCHALLENGE_USER_TOKEN",
+                "ROBOCHALLENGE_SUBMISSION_ID",
+                "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline",
+                "ROBOCHALLENGE_REAL_RUN_CONFIRM",
+            }.issubset(baseline_blocking),
+            lora_route.get("recommended") is False,
+            lora_route.get("local_runner_ready_without_credentials") is True,
+            lora_route.get("local_checkpoint_ready") is True,
+            lora_route.get("requires_checkpoint_upload") is False,
+            lora_route.get("requires_checkpoint_link_for_local_runner") is False,
+            lora_route.get("requires_checkpoint_upload_for_public_link") is True,
+            {
+                "SUBMISSION_TARGET_CONFIRMATION",
+                "ROBOCHALLENGE_USER_TOKEN",
+                "ROBOCHALLENGE_SUBMISSION_ID",
+                "ROBOCHALLENGE_SUBMISSION_VARIANT=lora",
+                "CHECKPOINT_ARCHIVE_AUTHORIZATION",
+                "ROBOCHALLENGE_CHECKPOINT_LINK",
+                "ROBOCHALLENGE_REAL_RUN_CONFIRM",
+            }.issubset(lora_blocking),
+            all(route_evidence.values()),
+            not any(route_leaks.values()),
+            not any(route_contacts.values()),
+            route_packet.get("platform_contacted") is False,
+            route_packet.get("uploads_performed") is False,
+            route_packet.get("credentials_read") is False,
+            route_packet.get("credentials_printed") is False,
+            route_packet.get("link_values_printed") is False,
+            route_packet.get("secret_values_printed") is False,
+        ]
+    ):
+        print("提交路线拆分包审计未通过")
+        return 1
     artifact_manifest = json.loads((ROOT / "runs/submission_artifact_manifest.json").read_text(encoding="utf-8"))
     artifact_inputs = artifact_manifest.get("inputs", {})
     artifact_leaks = artifact_manifest.get("leak_flags", {})
@@ -1387,6 +1452,7 @@ def main() -> int:
         "authorized_execution_checklist",
         "next_user_action_packet",
         "web_form_field_packet",
+        "submission_variant_route_packet",
         "submission_artifact_manifest",
     }
     if not all(
@@ -1627,6 +1693,7 @@ def main() -> int:
     print("授权执行清单审计已通过")
     print("下一步用户动作包审计已通过")
     print("网页表单字段包审计已通过")
+    print("提交路线拆分包审计已通过")
     print("提交准备材料 manifest 审计已通过")
     print("真实提交前预检汇总已通过")
     print("真实提交阻塞项摘要已通过")

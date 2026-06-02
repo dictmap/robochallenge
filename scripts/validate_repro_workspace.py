@@ -54,6 +54,7 @@ REQUIRED = [
     "reports/submission_env_template_audit.md",
     "reports/notebook_structure_audit.md",
     "reports/authorized_preflight_template_audit.md",
+    "reports/ready_real_runner_template_audit.md",
     "reports/submission_artifact_manifest.md",
     "reports/submission_blockers_summary.md",
     "reports/plaintext_secret_scan.md",
@@ -94,6 +95,7 @@ REQUIRED = [
     "runs/submission_env_template_audit.json",
     "runs/notebook_structure_audit.json",
     "runs/authorized_preflight_template_audit.json",
+    "runs/ready_real_runner_template_audit.json",
     "runs/submission_artifact_manifest.json",
     "runs/submission_blockers_summary.json",
     "runs/plaintext_secret_scan.json",
@@ -106,6 +108,7 @@ REQUIRED = [
     "submission/run_table30v2_aloha_demo_template.sh",
     "submission/run_table30v2_aloha_lora_demo_template.sh",
     "submission/run_authorized_preflight_template.sh",
+    "submission/run_ready_real_submission_template.sh",
     "scripts/probe_pi05_base_model.sh",
     "scripts/audit_pi06_pi07_public_release.py",
     "scripts/audit_table30v2_aloha_mapping.py",
@@ -133,6 +136,7 @@ REQUIRED = [
     "scripts/audit_submission_env_template.py",
     "scripts/audit_notebook_structure.py",
     "scripts/audit_authorized_preflight_template.py",
+    "scripts/audit_ready_real_runner_template.py",
     "scripts/audit_submission_artifact_manifest.py",
     "scripts/audit_submission_blockers_summary.py",
     "scripts/audit_plaintext_secrets.py",
@@ -1004,6 +1008,39 @@ def main() -> int:
     ):
         print("授权后安全预检模板审计未通过")
         return 1
+    ready_real_runner = json.loads((ROOT / "runs/ready_real_runner_template_audit.json").read_text(encoding="utf-8"))
+    ready_real_no_credentials = ready_real_runner.get("no_credentials_smoke", {})
+    ready_real_no_confirm = ready_real_runner.get("synthetic_no_confirm_smoke", {})
+    if not all(
+        [
+            ready_real_runner.get("kind") == "ready_real_runner_template_audit",
+            ready_real_runner.get("passed"),
+            ready_real_runner.get("platform_contacted") is False,
+            ready_real_runner.get("uploads_performed") is False,
+            ready_real_runner.get("credentials_read") is False,
+            ready_real_runner.get("credentials_printed") is False,
+            ready_real_runner.get("link_values_printed") is False,
+            ready_real_runner.get("secret_values_printed") is False,
+            ready_real_runner.get("template_path") == "submission/run_ready_real_submission_template.sh",
+            ready_real_runner.get("confirmation_phrase") == "RUN_REAL_ROBOCHALLENGE_SUBMISSION",
+            ready_real_runner.get("bash_n", {}).get("passed"),
+            all(ready_real_runner.get("required_fragments", {}).values()),
+            not any(ready_real_runner.get("forbidden_fragments", {}).values()),
+            ready_real_runner.get("secret_patterns_found") == [],
+            ready_real_no_credentials.get("passed"),
+            ready_real_no_credentials.get("ready_false"),
+            not ready_real_no_credentials.get("dry_run_called"),
+            not ready_real_no_credentials.get("real_runner_started"),
+            ready_real_no_confirm.get("passed"),
+            ready_real_no_confirm.get("dry_run_called"),
+            ready_real_no_confirm.get("missing_confirmation"),
+            ready_real_no_confirm.get("stops_before_real_runner"),
+            not ready_real_no_confirm.get("real_runner_started"),
+            ready_real_runner.get("clean_state_restore", {}).get("passed"),
+        ]
+    ):
+        print("强确认真实 runner 模板审计未通过")
+        return 1
     artifact_manifest = json.loads((ROOT / "runs/submission_artifact_manifest.json").read_text(encoding="utf-8"))
     artifact_inputs = artifact_manifest.get("inputs", {})
     artifact_leaks = artifact_manifest.get("leak_flags", {})
@@ -1046,6 +1083,7 @@ def main() -> int:
         "submission_artifact_manifest",
         "real_submission_readiness",
         "authorized_preflight_template",
+        "ready_real_runner_template",
         "submission_handoff_docs",
         "plaintext_secret_scan",
     }
@@ -1280,6 +1318,7 @@ def main() -> int:
     print("真实提交环境变量模板审计已通过")
     print("Notebook 结构与编码审计已通过")
     print("授权后安全预检模板审计已通过")
+    print("强确认真实 runner 模板审计已通过")
     print("提交准备材料 manifest 审计已通过")
     print("真实提交前预检汇总已通过")
     print("真实提交阻塞项摘要已通过")

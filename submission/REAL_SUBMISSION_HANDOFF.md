@@ -19,6 +19,7 @@
 python3 scripts/audit_authorized_submission_sequence.py
 python3 scripts/audit_submission_blockers_summary.py
 python3 scripts/audit_authorized_preflight_template.py
+python3 scripts/audit_ready_real_runner_template.py
 ```
 
 先在 Linux 仓库根目录执行：
@@ -63,13 +64,25 @@ bash submission/run_authorized_preflight_template.sh
 ROBOCHALLENGE_DRY_RUN=1 bash submission/run_table30v2_aloha_lora_demo_template.sh
 ```
 
-确认 dry-run 输出正常后，再执行：
+确认 dry-run 输出正常后，推荐只通过强确认入口执行真实 runner。该入口会重新执行 link/download/readiness，并先跑 dry-run；没有确认短语时会停在真实 runner 前：
+
+```bash
+ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION bash submission/run_ready_real_submission_template.sh
+```
+
+底层 LoRA runner 只作为强确认入口调用的执行模板，不建议手动绕过：
 
 ```bash
 bash submission/run_table30v2_aloha_lora_demo_template.sh
 ```
 
-如果只提交官方 Table30v2 ALOHA baseline，则设置 `ROBOCHALLENGE_USER_TOKEN` 和 `ROBOCHALLENGE_SUBMISSION_ID` 后执行：
+如果只提交官方 Table30v2 ALOHA baseline，则设置 `ROBOCHALLENGE_USER_TOKEN` 和 `ROBOCHALLENGE_SUBMISSION_ID` 后，通过同一个强确认入口并切换 variant：
+
+```bash
+ROBOCHALLENGE_SUBMISSION_VARIANT=baseline ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION bash submission/run_ready_real_submission_template.sh
+```
+
+底层 baseline runner 只作为强确认入口调用的执行模板：
 
 ```bash
 bash submission/run_table30v2_aloha_demo_template.sh
@@ -82,6 +95,7 @@ bash submission/run_table30v2_aloha_demo_template.sh
 - 不要在未获得用户授权时上传 checkpoint 或生成公开下载链接。
 - 不要把 `runs/openpi_rtc_lora_materialized_policy_checkpoint.tar` 或 checkpoint 目录提交进 Git。
 - 如果 `scripts/audit_real_submission_readiness.py` 仍显示 `ready_for_real_submission=false`，就不要启动真实提交 runner。
+- 如果没有设置 `ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION`，强确认入口必须停在真实 runner 前。
 
 ## Web 表单填写边界
 

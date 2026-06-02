@@ -1238,3 +1238,33 @@
 
 - P0：提交并推送本轮授权后安全预检模板产物。
 - P1：用户提供真实凭据和 checkpoint link 后，先运行 `bash submission/run_authorized_preflight_template.sh`；只有 readiness 为 true 且 dry-run 通过后，才进入真实 runner。
+
+## 2026-06-02 第四十四轮：强确认真实 runner 入口审计
+
+### 已完成
+
+- 新增 `submission/run_ready_real_submission_template.sh`，作为真实 runner 的强确认入口；它会先复跑 link/download/readiness，再执行 dry-run，最后只有在确认短语匹配时才启动真实 runner。
+- 新增 `scripts/audit_ready_real_runner_template.py`，离线审计强确认入口的语法、必要片段、禁止上传片段、无凭据 smoke 和 synthetic 无确认 smoke。
+- Notebook `notebooks/robochallenge_pi05_submit_cn.ipynb` 新增第 41 节“强确认真实 runner 模板审计”，核心操作可在 Jupyter 中复跑。
+- 修复 manifest/preflight 的自引用问题：`audit_submission_artifact_manifest.py` 不再要求当前 preflight 已通过，只要求 preflight 状态存在且 go/no-go 为 blocked。
+- `submission/REAL_SUBMISSION_HANDOFF.md` 和 `submission/AUTHORIZED_SUBMISSION_SEQUENCE.md` 已改为推荐通过强确认入口执行真实 runner。
+- `scripts/audit_submission_handoff_docs.py`、`scripts/audit_authorized_submission_sequence.py`、`scripts/audit_submission_preflight_bundle.py`、`scripts/audit_submission_blockers_summary.py`、`scripts/audit_notebook_structure.py` 和 `scripts/validate_repro_workspace.py` 已纳入该入口审计。
+
+### 验证结果
+
+- Linux 端 `python3 scripts/audit_ready_real_runner_template.py` 已通过：`passed=true`，`bash_n.passed=true`。
+- 无凭据 smoke 已通过：返回非零、`ready_false=true`、未 dry-run、未启动真实 runner、未提及 `demo.py`。
+- synthetic 无确认 smoke 已通过：只执行 dry-run，随后因缺少 `ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION` 停在真实 runner 前。
+- Notebook 结构审计已通过：`cell_count=85`，第 41 节标记、`RUN_READY_REAL_RUNNER_TEMPLATE_AUDIT` 和 `scripts/audit_ready_real_runner_template.py` 均存在。
+- Linux 端提交材料审计链已通过：handoff docs、authorized sequence、plaintext secrets、preflight bundle、artifact manifest、blockers summary 和总体验证均通过。
+- Linux 端 `git diff --check` 已通过。
+
+### 当前边界
+
+- 本轮不连接 RoboChallenge 平台、不上传 checkpoint、不生成大 tar、不读取或伪造真实 token/submission id/checkpoint link。
+- 强确认入口只有在用户补齐真实凭据、checkpoint link，并设置确认短语后才会调用真实 runner；当前仍处于 `go_no_go=blocked`。
+
+### 下一步
+
+- P0：提交并推送本轮强确认真实 runner 入口产物。
+- P1：用户提供真实凭据后，先运行 `bash submission/run_authorized_preflight_template.sh`，再用 `ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION bash submission/run_ready_real_submission_template.sh` 进入真实 runner。

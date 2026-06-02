@@ -10,7 +10,7 @@
   "notebook_path": "notebooks/robochallenge_pi05_submit_cn.ipynb",
   "nbformat": 4,
   "nbformat_minor": 5,
-  "cell_count": 83,
+  "cell_count": 85,
   "missing_id_indexes": [],
   "duplicate_ids": [],
   "code_cells_with_outputs": [],
@@ -21,7 +21,10 @@
     "# RoboChallenge pi0.5 复现与提交操作手册": true,
     "第 40 节：真实提交阻塞项摘要": true,
     "RUN_SUBMISSION_BLOCKERS_SUMMARY": true,
-    "scripts/audit_submission_blockers_summary.py": true
+    "scripts/audit_submission_blockers_summary.py": true,
+    "第 41 节：强确认真实 runner 模板审计": true,
+    "RUN_READY_REAL_RUNNER_TEMPLATE_AUDIT": true,
+    "scripts/audit_ready_real_runner_template.py": true
   },
   "blocking": [
     "Notebook 结构、编码和提交阻塞项章节已通过静态审计。"

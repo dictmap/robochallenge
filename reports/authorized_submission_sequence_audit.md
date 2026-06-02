@@ -22,9 +22,12 @@
 - `python3 scripts/audit_checkpoint_link_intake.py`：`True`。
 - `python3 scripts/audit_real_submission_readiness.py`：`True`。
 - `python3 scripts/audit_submission_blockers_summary.py`：`True`。
+- `python3 scripts/audit_ready_real_runner_template.py`：`True`。
 - `bash submission/run_authorized_preflight_template.sh`：`True`。
 - `python3 scripts/create_checkpoint_archive.py --execute --confirm-create-large-archive`：`True`。
 - `ROBOCHALLENGE_DRY_RUN=1 bash submission/run_table30v2_aloha_lora_demo_template.sh`：`True`。
+- `ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION bash submission/run_ready_real_submission_template.sh`：`True`。
+- `ROBOCHALLENGE_SUBMISSION_VARIANT=baseline ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION bash submission/run_ready_real_submission_template.sh`：`True`。
 - `bash submission/run_table30v2_aloha_lora_demo_template.sh`：`True`。
 - `bash submission/run_table30v2_aloha_demo_template.sh`：`True`。
 
@@ -43,6 +46,7 @@
 - `link_gate_before_readiness`：`True`。
 - `dry_run_before_real_runner`：`True`。
 - `dry_run_no_checkpoint_plaintext`：`True`。
+- `real_runner_confirmation_required`：`True`。
 - `stop_on_not_ready`：`True`。
 - `stop_on_bad_link`：`True`。
 
@@ -63,6 +67,9 @@
 - `blockers_summary_ready_false`：`True`。
 - `authorized_preflight_template_passed`：`True`。
 - `authorized_preflight_no_credentials_smoke_passed`：`True`。
+- `ready_real_runner_template_passed`：`True`。
+- `ready_real_runner_no_credentials_smoke_passed`：`True`。
+- `ready_real_runner_no_confirm_smoke_passed`：`True`。
 - `plaintext_scan_passed`：`True`。
 - `plaintext_hit_count_zero`：`True`。
 - `handoff_docs_passed`：`True`。

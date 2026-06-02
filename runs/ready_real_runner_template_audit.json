@@ -1,0 +1,88 @@
+{
+  "kind": "ready_real_runner_template_audit",
+  "passed": true,
+  "platform_contacted": false,
+  "uploads_performed": false,
+  "credentials_read": false,
+  "credentials_printed": false,
+  "link_values_printed": false,
+  "secret_values_printed": false,
+  "template_path": "submission/run_ready_real_submission_template.sh",
+  "confirmation_phrase": "RUN_REAL_ROBOCHALLENGE_SUBMISSION",
+  "bash_n": {
+    "returncode": 0,
+    "passed": true,
+    "stderr": ""
+  },
+  "required_fragments": {
+    "sources_local_env_file": true,
+    "runs_link_intake": true,
+    "runs_download_default": true,
+    "download_verify_guarded": true,
+    "runs_readiness": true,
+    "reads_readiness_json": true,
+    "checks_lora_ready": true,
+    "checks_baseline_ready": true,
+    "lora_dry_run_first": true,
+    "baseline_dry_run_first": true,
+    "requires_confirmation": true,
+    "confirmation_phrase": true,
+    "lora_real_runner_available": true,
+    "baseline_real_runner_available": true
+  },
+  "forbidden_fragments": {
+    "creates_large_archive": false,
+    "uploads_with_rclone": false,
+    "uploads_with_aws": false,
+    "uploads_with_curl": false
+  },
+  "secret_patterns_found": [],
+  "no_credentials_smoke": {
+    "returncode": 1,
+    "stdout_tail": "alse,\n        \"length\": 0,\n        \"looks_like_https_url\": false,\n        \"has_archive_hint\": false,\n        \"placeholder_like\": false,\n        \"accepted_shape\": false\n      }\n    },\n    \"accepted_link_keys\": [],\n    \"selected_link_key\": \"\",\n    \"link_shape_ready\": false\n  },\n  \"tooling\": {\n    \"curl\": {\n      \"available\": true,\n      \"version\": \"curl 7.81.0 (x86_64-pc-linux-gnu) libcurl/7.81.0 OpenSSL/3.0.2 zlib/1.2.11 brotli/1.0.9 zstd/1.4.8 libidn2/2.3.2 libpsl/0.21.0 (+libidn2/2.3.2) libssh/0.9.6/openssl/zlib nghttp2/1.43.0 librtmp/2.3 OpenLDAP/2.5.18\"\n    }\n  },\n  \"planned_commands\": {\n    \"head\": \"curl -L --fail --head --max-time 30 [REDACTED_CHECKPOINT_LINK]\",\n    \"range_smoke\": \"curl -L --fail --range 0-1048575 --output /dev/null --max-time 30 [REDACTED_CHECKPOINT_LINK]\"\n  },\n  \"checks\": {\n    \"link_intake_passed\": true,\n    \"split_plan_passed\": true,\n    \"curl_available\": true,\n    \"commands_redacted\": true,\n    \"commands_no_shell_redirection\": true\n  },\n  \"verification\": {\n    \"attempted\": false,\n    \"download_verified\": false,\n    \"download_host_contacted\": false,\n    \"link_value_printed\": false,\n    \"head\": {},\n    \"range_smoke\": {}\n  },\n  \"expected_archive_gib\": 11.064,\n  \"expected_part_count\": 3,\n  \"blocking\": [\n    \"缺少真实 checkpoint link；当前只能审计下载校验协议，不能联网验证。\",\n    \"未请求 --verify-download；本轮不联网、不下载、不接触 checkpoint link host。\"\n  ]\n}\n{\n  \"kind\": \"real_submission_readiness\",\n  \"passed\": true,\n  \"ready_for_real_submission\": false,\n  \"web_form_ready\": false,\n  \"local_baseline_runner_ready\": false,\n  \"local_lora_runner_ready\": false,\n  \"platform_contacted\": false,\n  \"credentials_printed\": false,\n  \"env\": {\n    \"ROBOCHALLENGE_USER_TOKEN\": {\n      \"present\": false,\n      \"length\": 0,\n      \"looks_like_url\": false\n    },\n    \"ROBOCHALLENGE_SUBMISSION_ID\": {\n      \"present\": false,\n      \"length\": 0,\n      \"looks_like_url\": false\n    },\n    \"ROBOCHALLENGE_CHECKPOINT_LINK\": {\n      \"present\": false,\n      \"length\": 0,\n      \"looks_like_url\": false\n    },\n    \"ROBOCHALLENGE_LORA_CHECKPOINT_LINK\": {\n      \"present\": false,\n      \"length\": 0,\n      \"looks_like_url\": false\n    }\n  },\n  \"runner_checks\": {\n    \"baseline\": {\n      \"exists\": true,\n      \"passed\": true,\n      \"returncode\": 0,\n      \"stderr\": \"\"\n    },\n    \"lora\": {\n      \"exists\": true,\n      \"passed\": true,\n      \"returncode\": 0,\n      \"stderr\": \"\"\n    }\n  },\n  \"inputs\": {\n    \"submission_audit_passed\": true,\n    \"export_audit_local_ready\": true,\n    \"upload_audit_passed\": true,\n    \"uploads_performed\": false,\n    \"manifest_status\": \"template_pending_credentials\",\n    \"baseline_checkpoint_exists\": true,\n    \"lora_checkpoint_exists\": true\n  },\n  \"blocking\": [\n    \"缺少 ROBOCHALLENGE_USER_TOKEN。\",\n    \"缺少 ROBOCHALLENGE_SUBMISSION_ID。\",\n    \"缺少真实可访问 checkpoint link；可使用 ROBOCHALLENGE_CHECKPOINT_LINK 或 ROBOCHALLENGE_LORA_CHECKPOINT_LINK 记录。\",\n    \"尚未执行 checkpoint 上传，本地 tar 文件也未生成。\"\n  ]\n}\n[ready-real-runner] ready_for_real_submission=false\n[ready-real-runner] stop before dry-run and real runner\n",
+    "stderr_tail": "",
+    "printed_protected_values": false,
+    "leaked_value_count": 0,
+    "ready_false": true,
+    "dry_run_called": false,
+    "missing_confirmation": false,
+    "stops_before_real_runner": false,
+    "real_runner_started": false,
+    "demo_mentioned": false,
+    "passed": true
+  },
+  "synthetic_no_confirm_smoke": {
+    "returncode": 1,
+    "stdout_tail": "nt\": true,\n        \"placeholder_like\": false,\n        \"accepted_shape\": true\n      }\n    },\n    \"accepted_link_keys\": [\n      \"ROBOCHALLENGE_LORA_CHECKPOINT_LINK\"\n    ],\n    \"selected_link_key\": \"ROBOCHALLENGE_LORA_CHECKPOINT_LINK\",\n    \"link_shape_ready\": true\n  },\n  \"tooling\": {\n    \"curl\": {\n      \"available\": true,\n      \"version\": \"curl 7.81.0 (x86_64-pc-linux-gnu) libcurl/7.81.0 OpenSSL/3.0.2 zlib/1.2.11 brotli/1.0.9 zstd/1.4.8 libidn2/2.3.2 libpsl/0.21.0 (+libidn2/2.3.2) libssh/0.9.6/openssl/zlib nghttp2/1.43.0 librtmp/2.3 OpenLDAP/2.5.18\"\n    }\n  },\n  \"planned_commands\": {\n    \"head\": \"curl -L --fail --head --max-time 30 [REDACTED_CHECKPOINT_LINK]\",\n    \"range_smoke\": \"curl -L --fail --range 0-1048575 --output /dev/null --max-time 30 [REDACTED_CHECKPOINT_LINK]\"\n  },\n  \"checks\": {\n    \"link_intake_passed\": true,\n    \"split_plan_passed\": true,\n    \"curl_available\": true,\n    \"commands_redacted\": true,\n    \"commands_no_shell_redirection\": true\n  },\n  \"verification\": {\n    \"attempted\": false,\n    \"download_verified\": false,\n    \"download_host_contacted\": false,\n    \"link_value_printed\": false,\n    \"head\": {},\n    \"range_smoke\": {}\n  },\n  \"expected_archive_gib\": 11.064,\n  \"expected_part_count\": 3,\n  \"blocking\": [\n    \"未请求 --verify-download；本轮不联网、不下载、不接触 checkpoint link host。\"\n  ]\n}\n{\n  \"kind\": \"real_submission_readiness\",\n  \"passed\": true,\n  \"ready_for_real_submission\": true,\n  \"web_form_ready\": true,\n  \"local_baseline_runner_ready\": true,\n  \"local_lora_runner_ready\": true,\n  \"platform_contacted\": false,\n  \"credentials_printed\": false,\n  \"env\": {\n    \"ROBOCHALLENGE_USER_TOKEN\": {\n      \"present\": true,\n      \"length\": 22,\n      \"looks_like_url\": false\n    },\n    \"ROBOCHALLENGE_SUBMISSION_ID\": {\n      \"present\": true,\n      \"length\": 27,\n      \"looks_like_url\": false\n    },\n    \"ROBOCHALLENGE_CHECKPOINT_LINK\": {\n      \"present\": false,\n      \"length\": 0,\n      \"looks_like_url\": false\n    },\n    \"ROBOCHALLENGE_LORA_CHECKPOINT_LINK\": {\n      \"present\": true,\n      \"length\": 74,\n      \"looks_like_url\": true\n    }\n  },\n  \"runner_checks\": {\n    \"baseline\": {\n      \"exists\": true,\n      \"passed\": true,\n      \"returncode\": 0,\n      \"stderr\": \"\"\n    },\n    \"lora\": {\n      \"exists\": true,\n      \"passed\": true,\n      \"returncode\": 0,\n      \"stderr\": \"\"\n    }\n  },\n  \"inputs\": {\n    \"submission_audit_passed\": true,\n    \"export_audit_local_ready\": true,\n    \"upload_audit_passed\": true,\n    \"uploads_performed\": false,\n    \"manifest_status\": \"template_pending_credentials\",\n    \"baseline_checkpoint_exists\": true,\n    \"lora_checkpoint_exists\": true\n  },\n  \"blocking\": [\n    \"尚未执行 checkpoint 上传，本地 tar 文件也未生成。\"\n  ]\n}\ndry_run=true\ncheckpoint_length=51\nprompt_length=122\nuser_token_length=22\nsubmission_id_length=27\nrobot_type=aloha\n[ready-real-runner] missing explicit real-run confirmation\n[ready-real-runner] set ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION only after user authorizes platform submission\n[ready-real-runner] stop before real runner\n",
+    "stderr_tail": "",
+    "printed_protected_values": false,
+    "leaked_value_count": 0,
+    "ready_false": false,
+    "dry_run_called": true,
+    "missing_confirmation": true,
+    "stops_before_real_runner": true,
+    "real_runner_started": false,
+    "demo_mentioned": false,
+    "passed": true
+  },
+  "clean_state_restore": {
+    "passed": true,
+    "commands": [
+      {
+        "command": "python3 scripts/audit_checkpoint_link_intake.py",
+        "returncode": 0
+      },
+      {
+        "command": "python3 scripts/audit_checkpoint_link_download_verification.py",
+        "returncode": 0
+      },
+      {
+        "command": "python3 scripts/audit_real_submission_readiness.py",
+        "returncode": 0
+      }
+    ]
+  },
+  "blocking": [
+    "强确认真实 runner 模板已通过；没有确认短语时不会启动真实 runner。"
+  ]
+}

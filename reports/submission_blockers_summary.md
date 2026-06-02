@@ -20,6 +20,7 @@
 - `env_template_ready`：`True`。
 - `notebook_structure_ready`：`True`。
 - `authorized_preflight_template_ready`：`True`。
+- `ready_real_runner_template_ready`：`True`。
 - `upload_channels_audited`：`True`。
 - `preflight_bundle_ready`：`True`。
 - `secret_scan_clean`：`True`。

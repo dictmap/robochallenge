@@ -13,6 +13,7 @@ python3 scripts/create_checkpoint_archive.py
 python3 scripts/audit_checkpoint_link_intake.py
 python3 scripts/audit_real_submission_readiness.py
 python3 scripts/audit_submission_blockers_summary.py
+python3 scripts/audit_ready_real_runner_template.py
 bash submission/run_authorized_preflight_template.sh
 ```
 
@@ -76,11 +77,25 @@ dry-run 只能打印 checkpoint 长度、prompt 长度、token 长度和 submiss
 
 ## 6. 真实 LoRA 提交 runner
 
+推荐只通过强确认入口启动真实 runner。该入口会重新执行 link/download/readiness，并先跑 dry-run；没有确认短语时会停在真实 runner 前：
+
+```bash
+ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION bash submission/run_ready_real_submission_template.sh
+```
+
+底层 LoRA runner 只作为强确认入口调用的执行模板，不建议手动绕过：
+
 ```bash
 bash submission/run_table30v2_aloha_lora_demo_template.sh
 ```
 
-如果只提交官方 Table30v2 ALOHA baseline，则在 readiness gate 通过后执行：
+如果只提交官方 Table30v2 ALOHA baseline，则先切换 variant 后使用同一个强确认入口：
+
+```bash
+ROBOCHALLENGE_SUBMISSION_VARIANT=baseline ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION bash submission/run_ready_real_submission_template.sh
+```
+
+底层 baseline runner 只作为强确认入口调用的执行模板：
 
 ```bash
 bash submission/run_table30v2_aloha_demo_template.sh

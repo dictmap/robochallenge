@@ -27,11 +27,12 @@
 - `checkpoint_link_download_verification`：returncode=`0`，passed=`True`。
 - `submission_env_template`：returncode=`0`，passed=`True`。
 - `notebook_structure`：returncode=`0`，passed=`True`。
-- `submission_artifact_manifest`：returncode=`0`，passed=`True`。
 - `real_submission_readiness`：returncode=`0`，passed=`True`。
 - `authorized_preflight_template`：returncode=`0`，passed=`True`。
+- `ready_real_runner_template`：returncode=`0`，passed=`True`。
 - `submission_handoff_docs`：returncode=`0`，passed=`True`。
 - `plaintext_secret_scan`：returncode=`0`，passed=`True`。
+- `submission_artifact_manifest`：returncode=`0`，passed=`True`。
 
 ## Blocking
 

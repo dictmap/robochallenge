@@ -35,6 +35,9 @@ REQUIRED_MARKERS = [
     "第 40 节：真实提交阻塞项摘要",
     "RUN_SUBMISSION_BLOCKERS_SUMMARY",
     "scripts/audit_submission_blockers_summary.py",
+    "第 41 节：强确认真实 runner 模板审计",
+    "RUN_READY_REAL_RUNNER_TEMPLATE_AUDIT",
+    "scripts/audit_ready_real_runner_template.py",
 ]
 
 

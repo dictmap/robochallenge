@@ -29,6 +29,7 @@ REQUIRED_PATHS = [
     "submission/run_table30v2_aloha_demo_template.sh",
     "submission/run_table30v2_aloha_lora_demo_template.sh",
     "submission/run_authorized_preflight_template.sh",
+    "submission/run_ready_real_submission_template.sh",
     "submission/AUTHORIZED_SUBMISSION_SEQUENCE.md",
     "submission/robochallenge_env_template.sh",
     "runs/openpi_rtc_lora_materialized_policy_checkpoint",
@@ -40,6 +41,7 @@ REQUIRED_PATHS = [
     "scripts/audit_submission_artifact_manifest.py",
     "scripts/audit_submission_blockers_summary.py",
     "scripts/audit_authorized_preflight_template.py",
+    "scripts/audit_ready_real_runner_template.py",
     "scripts/audit_real_submission_readiness.py",
     "scripts/audit_submission_preflight_bundle.py",
 ]
@@ -52,7 +54,17 @@ REQUIRED_COMMAND_FRAGMENTS = {
     "submission_artifact_manifest": "python3 scripts/audit_submission_artifact_manifest.py",
     "submission_blockers_summary": "python3 scripts/audit_submission_blockers_summary.py",
     "authorized_preflight_template": "python3 scripts/audit_authorized_preflight_template.py",
+    "ready_real_runner_template": "python3 scripts/audit_ready_real_runner_template.py",
     "authorized_preflight_runner": "bash submission/run_authorized_preflight_template.sh",
+    "ready_real_runner": (
+        "ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION "
+        "bash submission/run_ready_real_submission_template.sh"
+    ),
+    "ready_real_runner_baseline": (
+        "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline "
+        "ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION "
+        "bash submission/run_ready_real_submission_template.sh"
+    ),
     "submission_preflight_bundle": "python3 scripts/audit_submission_preflight_bundle.py",
     "authorized_submission_sequence": "python3 scripts/audit_authorized_submission_sequence.py",
     "readiness_gate": "python3 scripts/audit_real_submission_readiness.py",
@@ -110,6 +122,7 @@ def build_status(doc_path: Path) -> dict[str, Any]:
     export_audit = read_json(RUNS_DIR / "lora_checkpoint_export_readiness.json")
     upload_audit = read_json(RUNS_DIR / "checkpoint_upload_channels_audit.json")
     link_download = read_json(RUNS_DIR / "checkpoint_link_download_verification.json")
+    ready_real_runner = read_json(RUNS_DIR / "ready_real_runner_template_audit.json")
 
     env_mentions = {key: key in text for key in REQUIRED_ENV_KEYS}
     path_mentions = {path: path in text for path in REQUIRED_PATHS}
@@ -129,6 +142,9 @@ def build_status(doc_path: Path) -> dict[str, Any]:
         "says_download_verify_no_contact_by_default": "默认不联网、不下载" in text,
         "says_download_verify_no_plaintext": "不打印链接明文" in text and "HEAD 和 1MiB Range smoke" in text,
         "uses_placeholders_instead_of_values": "<真实 user token>" in text and "<真实 checkpoint 下载 URL>" in text,
+        "says_real_runner_requires_confirmation": "ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION"
+        in text
+        and "停在真实 runner 前" in text,
     }
     secret_hits = scan_secret_patterns(text)
     input_evidence = {
@@ -142,6 +158,9 @@ def build_status(doc_path: Path) -> dict[str, Any]:
         "link_download_not_requested": link_download.get("verify_download_requested") is False,
         "link_download_host_not_contacted": link_download.get("verification", {}).get("download_host_contacted") is False,
         "link_download_no_plaintext": link_download.get("link_value_printed") is False,
+        "ready_real_runner_template_passed": ready_real_runner.get("passed") is True,
+        "ready_real_runner_no_confirm_blocks": ready_real_runner.get("synthetic_no_confirm_smoke", {}).get("passed")
+        is True,
     }
     passed = bool(
         exists
@@ -158,6 +177,8 @@ def build_status(doc_path: Path) -> dict[str, Any]:
         and input_evidence["link_download_not_requested"]
         and input_evidence["link_download_host_not_contacted"]
         and input_evidence["link_download_no_plaintext"]
+        and input_evidence["ready_real_runner_template_passed"]
+        and input_evidence["ready_real_runner_no_confirm_blocks"]
     )
     blocking = []
     if not exists:
@@ -184,6 +205,10 @@ def build_status(doc_path: Path) -> dict[str, Any]:
         blocking.append("checkpoint 上传通道审计尚未通过。")
     if not input_evidence["link_download_audit_passed"]:
         blocking.append("checkpoint link 下载校验审计尚未通过。")
+    if not input_evidence["ready_real_runner_template_passed"]:
+        blocking.append("强确认真实 runner 模板审计尚未通过。")
+    if not input_evidence["ready_real_runner_no_confirm_blocks"]:
+        blocking.append("强确认真实 runner 模板未证明无确认时会阻断。")
     if blocking == []:
         blocking.append("无文档侧阻塞；真实提交仍取决于用户凭据、授权上传和真实 checkpoint link。")
 

@@ -1,0 +1,158 @@
+{
+  "kind": "local_env_runtime_permission_gate",
+  "passed": true,
+  "recommended_route": "baseline_official_aloha",
+  "case_count": 4,
+  "synthetic_values_recorded": false,
+  "synthetic_token_length": 33,
+  "synthetic_submission_id_length": 38,
+  "bad_permissions_rejected": true,
+  "owner_only_permissions_accepted": true,
+  "content_read_before_permission_check": false,
+  "real_runner_started": false,
+  "cases": [
+    {
+      "name": "authorized_bad_permissions",
+      "script": "submission/run_authorized_preflight_template.sh",
+      "mode_octal": "0o644",
+      "returncode": 65,
+      "expected_returncodes": [
+        65
+      ],
+      "returncode_expected": true,
+      "permission_rejected": true,
+      "permission_accepted": false,
+      "stdout_tail": "[authorized-preflight] repo=/home/yjl/robochallenge/repo\n[authorized-preflight] env_file_present=true\n",
+      "stderr_tail": "[authorized-preflight] local env permissions are too broad: 0o644\n[authorized-preflight] run: chmod 600 /tmp/robochallenge-runtime-env-gate-uinnuax9/robochallenge_env.local.sh\n",
+      "printed_protected_values": false,
+      "dry_run_called": false,
+      "ready_false": false,
+      "missing_confirmation": false,
+      "real_runner_started": false,
+      "platform_contacted": false,
+      "uploads_performed": false,
+      "passed": true,
+      "synthetic_env_file_removed_after_case": true
+    },
+    {
+      "name": "ready_bad_permissions",
+      "script": "submission/run_ready_real_submission_template.sh",
+      "mode_octal": "0o644",
+      "returncode": 65,
+      "expected_returncodes": [
+        65
+      ],
+      "returncode_expected": true,
+      "permission_rejected": true,
+      "permission_accepted": false,
+      "stdout_tail": "[ready-real-runner] repo=/home/yjl/robochallenge/repo\n[ready-real-runner] env_file_present=true\n",
+      "stderr_tail": "[ready-real-runner] local env permissions are too broad: 0o644\n[ready-real-runner] run: chmod 600 /tmp/robochallenge-runtime-env-gate-t795jqfv/robochallenge_env.local.sh\n",
+      "printed_protected_values": false,
+      "dry_run_called": false,
+      "ready_false": false,
+      "missing_confirmation": false,
+      "real_runner_started": false,
+      "platform_contacted": false,
+      "uploads_performed": false,
+      "passed": true,
+      "synthetic_env_file_removed_after_case": true
+    },
+    {
+      "name": "authorized_owner_only",
+      "script": "submission/run_authorized_preflight_template.sh",
+      "mode_octal": "0o600",
+      "returncode": 0,
+      "expected_returncodes": [
+        0
+      ],
+      "returncode_expected": true,
+      "permission_rejected": false,
+      "permission_accepted": true,
+      "stdout_tail": "CHALLENGE_REAL_RUN_CONFIRM\",\n    \"缺少真实可访问 checkpoint link；可使用 ROBOCHALLENGE_CHECKPOINT_LINK 或 ROBOCHALLENGE_LORA_CHECKPOINT_LINK 记录。\",\n    \"尚未执行 checkpoint 上传，本地 tar 文件也未生成。\",\n    \"缺少 checkpoint link；请设置 ROBOCHALLENGE_CHECKPOINT_LINK 或 ROBOCHALLENGE_LORA_CHECKPOINT_LINK。\",\n    \"缺少真实 checkpoint link；当前只能审计下载校验协议，不能联网验证。\",\n    \"未请求 --verify-download；本轮不联网、不下载、不接触 checkpoint link host。\",\n    \"需要用户提供真实 ROBOCHALLENGE_USER_TOKEN。\",\n    \"需要用户提供真实 ROBOCHALLENGE_SUBMISSION_ID。\",\n    \"需要确认本次要提交的是 Table30v2 ALOHA 还是原始 Table30；当前可运行链路是 Table30v2 ALOHA。\",\n    \"若要提交 LoRA 版本，还需要把本地 12GB+ checkpoint 放到网站可访问的 checkpoint link。\"\n  ],\n  \"blocking_count\": 14,\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false\n  },\n  \"next_command_after_user_inputs\": \"python3 scripts/audit_real_submission_readiness.py\"\n}\ndry_run=true\ncheckpoint_length=74\nprompt_length=122\nuser_token_length=33\nsubmission_id_length=38\nrobot_type=aloha\n[authorized-preflight] dry-run passed; real runner still requires explicit user authorization\n",
+      "stderr_tail": "[authorized-preflight] blockers summary still reports route-aware user decisions; continuing dry-run only\n",
+      "printed_protected_values": false,
+      "dry_run_called": true,
+      "ready_false": false,
+      "missing_confirmation": false,
+      "real_runner_started": false,
+      "platform_contacted": false,
+      "uploads_performed": false,
+      "passed": true,
+      "synthetic_env_file_removed_after_case": true
+    },
+    {
+      "name": "ready_owner_only",
+      "script": "submission/run_ready_real_submission_template.sh",
+      "mode_octal": "0o600",
+      "returncode": 1,
+      "expected_returncodes": [
+        1
+      ],
+      "returncode_expected": true,
+      "permission_rejected": false,
+      "permission_accepted": true,
+      "stdout_tail": "url\": false\n    },\n    \"ROBOCHALLENGE_LORA_CHECKPOINT_LINK\": {\n      \"present\": false,\n      \"length\": 0,\n      \"looks_like_url\": false\n    }\n  },\n  \"runner_checks\": {\n    \"baseline\": {\n      \"exists\": true,\n      \"passed\": true,\n      \"returncode\": 0,\n      \"stderr\": \"\"\n    },\n    \"lora\": {\n      \"exists\": true,\n      \"passed\": true,\n      \"returncode\": 0,\n      \"stderr\": \"\"\n    }\n  },\n  \"inputs\": {\n    \"submission_audit_passed\": true,\n    \"export_audit_local_ready\": true,\n    \"upload_audit_passed\": true,\n    \"uploads_performed\": false,\n    \"manifest_status\": \"template_pending_credentials\",\n    \"baseline_checkpoint_exists\": true,\n    \"lora_checkpoint_exists\": true\n  },\n  \"blocking\": [\n    \"缺少真实可访问 checkpoint link；可使用 ROBOCHALLENGE_CHECKPOINT_LINK 或 ROBOCHALLENGE_LORA_CHECKPOINT_LINK 记录。\",\n    \"尚未执行 checkpoint 上传，本地 tar 文件也未生成。\"\n  ]\n}\ndry_run=true\ncheckpoint_length=74\nprompt_length=122\nuser_token_length=33\nsubmission_id_length=38\nrobot_type=aloha\n[ready-real-runner] missing explicit real-run confirmation\n[ready-real-runner] set ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION only after user authorizes platform submission\n[ready-real-runner] stop before real runner\n",
+      "stderr_tail": "",
+      "printed_protected_values": false,
+      "dry_run_called": true,
+      "ready_false": false,
+      "missing_confirmation": true,
+      "real_runner_started": false,
+      "platform_contacted": false,
+      "uploads_performed": false,
+      "passed": true,
+      "synthetic_env_file_removed_after_case": true
+    }
+  ],
+  "clean_state_restore": {
+    "passed": true,
+    "commands": [
+      {
+        "command": "python3 scripts/audit_checkpoint_link_intake.py",
+        "returncode": 0
+      },
+      {
+        "command": "python3 scripts/audit_checkpoint_link_download_verification.py",
+        "returncode": 0
+      },
+      {
+        "command": "python3 scripts/audit_real_submission_readiness.py",
+        "returncode": 0
+      },
+      {
+        "command": "python3 scripts/audit_submission_blockers_summary.py",
+        "returncode": 0
+      }
+    ]
+  },
+  "evidence": {
+    "bad_permissions_rejected": true,
+    "bad_permissions_stop_before_dry_run": true,
+    "bad_permissions_no_protected_values": true,
+    "owner_only_permissions_accepted": true,
+    "owner_only_no_protected_values": true,
+    "all_cases_expected_returncodes": true,
+    "all_cases_temp_env_removed": true,
+    "real_runner_not_started": true,
+    "restore_clean_state_passed": true
+  },
+  "leak_flags": {
+    "credentials_printed": false,
+    "link_values_printed": false,
+    "secret_values_printed": false
+  },
+  "contact_flags": {
+    "platform_contacted": false,
+    "uploads_performed": false,
+    "download_host_contacted": false
+  },
+  "platform_contacted": false,
+  "uploads_performed": false,
+  "credentials_read": false,
+  "credentials_printed": false,
+  "link_values_printed": false,
+  "secret_values_printed": false,
+  "blocking": [
+    "local env 运行时权限 gate 已通过；权限过宽会在 source 前被拒绝，owner-only synthetic 文件可进入授权边界。"
+  ]
+}

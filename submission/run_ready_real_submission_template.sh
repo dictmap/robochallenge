@@ -8,10 +8,33 @@ CONFIRM_PHRASE="RUN_REAL_ROBOCHALLENGE_SUBMISSION"
 
 cd "$REPO_ROOT"
 
+check_local_env_permissions() {
+  local path="$1"
+  local mode
+  mode="$(python3 - "$path" <<'PY'
+import os
+import stat
+import sys
+
+print(oct(stat.S_IMODE(os.stat(sys.argv[1]).st_mode)))
+PY
+)"
+  case "$mode" in
+    0o600|0o400)
+      ;;
+    *)
+      echo "[ready-real-runner] local env permissions are too broad: $mode" >&2
+      echo "[ready-real-runner] run: chmod 600 $path" >&2
+      exit 65
+      ;;
+  esac
+}
+
 echo "[ready-real-runner] repo=$REPO_ROOT"
 echo "[ready-real-runner] env_file_present=$([[ -f "$ENV_FILE" ]] && echo true || echo false)"
 
 if [[ -f "$ENV_FILE" ]]; then
+  check_local_env_permissions "$ENV_FILE"
   # shellcheck source=/dev/null
   source "$ENV_FILE"
 fi

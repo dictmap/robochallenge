@@ -74,6 +74,7 @@ def write_synthetic_env(path: Path) -> None:
         + "\n",
         encoding="utf-8",
     )
+    path.chmod(0o600)
 
 
 def snapshot_files() -> dict[str, bytes | None]:

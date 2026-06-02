@@ -2093,3 +2093,34 @@
 
 - P0：提交并推送本轮 bash xtrace 防泄漏审计。
 - P1：凭据到位后先运行 baseline 授权前只读预检与 dry-run gate；真实 runner 仍必须等待用户明确授权。
+
+## 2026-06-03 第七十四轮：local env runtime 权限 gate 审计
+
+### 已完成
+
+- 更新 `submission/run_authorized_preflight_template.sh` 与 `submission/run_ready_real_submission_template.sh`，在 `source "$ENV_FILE"` 前新增 `check_local_env_permissions`。
+- 新增 `scripts/audit_local_env_runtime_permission_gate.py`，用临时 synthetic local env 覆盖 4 个场景：授权预检 `0644`、ready runner `0644`、授权预检 `0600`、ready runner `0600`。
+- `0644` 场景要求在读取 env 内容前退出 `65` 并提示 `chmod 600`；`0600` 场景要求可进入既有授权边界，但仍不得启动真实 runner。
+- 同步更新 `render_baseline_local_env_smoke.py` 与 `render_baseline_final_handoff_rehearsal.py`，让既有 synthetic local env 演练文件写入后立即 `chmod 600`。
+- 已接入 `scripts/audit_submission_preflight_bundle.py`、`scripts/audit_submission_artifact_manifest.py`、`scripts/render_submission_status_dashboard.py` 和 `scripts/validate_repro_workspace.py`。
+- GUI dashboard 新增 `Local env runtime gate` 卡片，当前总计 `source_count=32`、`card_count=32`、`done_count=27`、`blocked_count=4`、`watch_count=1`。
+
+### 验证结果
+
+- Linux 端 `python3 scripts/audit_local_env_runtime_permission_gate.py` 已通过：`case_count=4`、`bad_permissions_rejected=true`、`owner_only_permissions_accepted=true`、`content_read_before_permission_check=false`、`real_runner_started=false`、`synthetic_values_recorded=false`。
+- `authorized_bad_permissions` 与 `ready_bad_permissions` 均 `returncode=65`，均未进入 dry-run，均未打印 synthetic token/submission id。
+- `authorized_owner_only` 与 `ready_owner_only` 均通过权限 gate；ready runner 仍停在真实 runner 前。
+- Linux 端完整链路 `audit_chinese_utf8_artifacts.py`、`audit_plaintext_secrets.py`、`audit_submission_preflight_bundle.py`、`audit_submission_artifact_manifest.py`、`render_submission_status_dashboard.py`、`validate_repro_workspace.py` 和 `git diff --check` 均已通过。
+- 明文凭据扫描仍为 `hit_count=0`；中文 UTF-8 审计仍为 `decode_error_count=0`、`bad_marker_hit_count=0`。
+- 本轮没有读取真实 token、submission id、checkpoint link 或真实 local env 内容；没有连接 RoboChallenge 平台，没有上传 checkpoint，没有生成 checkpoint tar，也没有启动真实 runner。
+
+### 当前边界
+
+- baseline 官方路线仍只等待：提交对象确认、`ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline`、`ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION`。
+- 如果用户后续创建真实 `submission/robochallenge_env.local.sh`，权限过宽会被 wrapper 在 `source` 前拒绝；需要在 Linux 上执行 `chmod 600 submission/robochallenge_env.local.sh` 后再运行授权预检。
+- LoRA/web checkpoint 路线仍单独等待 checkpoint 归档、上传授权和真实可访问 checkpoint link；这不是 baseline 官方 ALOHA 最短路线的前置条件。
+
+### 下一步
+
+- P0：提交并推送本轮 local env runtime 权限 gate 审计。
+- P1：凭据到位后先运行 baseline 授权前只读预检与 dry-run gate；真实 runner 仍必须等待用户明确授权。

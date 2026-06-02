@@ -65,6 +65,7 @@ REQUIRED_ARTIFACTS = [
     "reports/baseline_dry_run_gate.md",
     "reports/baseline_credential_hygiene.md",
     "reports/local_env_permission_contract.md",
+    "reports/local_env_runtime_permission_gate.md",
     "reports/placeholder_credential_rejection.md",
     "reports/synthetic_dry_run_redaction.md",
     "reports/shell_xtrace_secret_guard.md",
@@ -84,6 +85,7 @@ REQUIRED_ARTIFACTS = [
     "scripts/render_baseline_dry_run_gate.py",
     "scripts/render_baseline_credential_hygiene.py",
     "scripts/audit_local_env_permission_contract.py",
+    "scripts/audit_local_env_runtime_permission_gate.py",
     "scripts/audit_placeholder_credential_rejection.py",
     "scripts/audit_synthetic_dry_run_redaction.py",
     "scripts/audit_shell_xtrace_secret_guard.py",
@@ -204,6 +206,7 @@ def build_status() -> dict[str, Any]:
     baseline_dry_run_gate = read_json(RUNS_DIR / "baseline_dry_run_gate.json")
     baseline_credential_hygiene = read_json(RUNS_DIR / "baseline_credential_hygiene.json")
     local_env_permission = read_json(RUNS_DIR / "local_env_permission_contract.json")
+    local_env_runtime_permission = read_json(RUNS_DIR / "local_env_runtime_permission_gate.json")
     placeholder_credential_rejection = read_json(RUNS_DIR / "placeholder_credential_rejection.json")
     synthetic_dry_run_redaction = read_json(RUNS_DIR / "synthetic_dry_run_redaction.json")
     shell_xtrace_secret_guard = read_json(RUNS_DIR / "shell_xtrace_secret_guard.json")
@@ -322,6 +325,23 @@ def build_status() -> dict[str, Any]:
             "synthetic_chmod_smoke", {}
         ).get("owner_only_permissions")
         is True,
+        "local_env_runtime_permission_gate_passed": local_env_runtime_permission.get("passed") is True,
+        "local_env_runtime_bad_permissions_rejected": local_env_runtime_permission.get(
+            "bad_permissions_rejected"
+        )
+        is True,
+        "local_env_runtime_owner_only_accepted": local_env_runtime_permission.get(
+            "owner_only_permissions_accepted"
+        )
+        is True,
+        "local_env_runtime_content_not_read_before_gate": local_env_runtime_permission.get(
+            "content_read_before_permission_check"
+        )
+        is False,
+        "local_env_runtime_real_runner_not_started": local_env_runtime_permission.get("real_runner_started")
+        is False,
+        "local_env_runtime_values_not_recorded": local_env_runtime_permission.get("synthetic_values_recorded")
+        is False,
         "placeholder_credential_rejection_passed": placeholder_credential_rejection.get("passed") is True,
         "placeholder_credential_rejection_case_count": placeholder_credential_rejection.get("case_count") == 4,
         "placeholder_baseline_rejected_before_dry_run": placeholder_credential_rejection.get(
@@ -488,6 +508,7 @@ def build_status() -> dict[str, Any]:
                 baseline_dry_run_gate,
                 baseline_credential_hygiene,
                 local_env_permission,
+                local_env_runtime_permission,
                 placeholder_credential_rejection,
                 synthetic_dry_run_redaction,
                 shell_xtrace_secret_guard,
@@ -515,6 +536,7 @@ def build_status() -> dict[str, Any]:
         or bool(baseline_dry_run_gate.get("link_values_printed"))
         or bool(baseline_credential_hygiene.get("link_values_printed"))
         or bool(local_env_permission.get("link_values_printed"))
+        or bool(local_env_runtime_permission.get("link_values_printed"))
         or bool(placeholder_credential_rejection.get("link_values_printed"))
         or bool(synthetic_dry_run_redaction.get("link_values_printed"))
         or bool(shell_xtrace_secret_guard.get("link_values_printed"))
@@ -534,6 +556,7 @@ def build_status() -> dict[str, Any]:
         or bool(baseline_dry_run_gate.get("secret_values_printed"))
         or bool(baseline_credential_hygiene.get("secret_values_printed"))
         or bool(local_env_permission.get("secret_values_printed"))
+        or bool(local_env_runtime_permission.get("secret_values_printed"))
         or bool(placeholder_credential_rejection.get("secret_values_printed"))
         or bool(synthetic_dry_run_redaction.get("secret_values_printed"))
         or bool(shell_xtrace_secret_guard.get("secret_values_printed"))
@@ -563,6 +586,7 @@ def build_status() -> dict[str, Any]:
                 baseline_dry_run_gate,
                 baseline_credential_hygiene,
                 local_env_permission,
+                local_env_runtime_permission,
                 placeholder_credential_rejection,
                 synthetic_dry_run_redaction,
                 shell_xtrace_secret_guard,
@@ -595,6 +619,7 @@ def build_status() -> dict[str, Any]:
                 baseline_dry_run_gate,
                 baseline_credential_hygiene,
                 local_env_permission,
+                local_env_runtime_permission,
                 placeholder_credential_rejection,
                 synthetic_dry_run_redaction,
                 shell_xtrace_secret_guard,

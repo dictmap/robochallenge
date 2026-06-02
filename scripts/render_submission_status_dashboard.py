@@ -34,6 +34,7 @@ SOURCE_FILES = {
     "baseline_dry_run_gate": RUNS_DIR / "baseline_dry_run_gate.json",
     "baseline_credential_hygiene": RUNS_DIR / "baseline_credential_hygiene.json",
     "local_env_permission": RUNS_DIR / "local_env_permission_contract.json",
+    "local_env_runtime_permission": RUNS_DIR / "local_env_runtime_permission_gate.json",
     "placeholder_credentials": RUNS_DIR / "placeholder_credential_rejection.json",
     "synthetic_dry_run_redaction": RUNS_DIR / "synthetic_dry_run_redaction.json",
     "shell_xtrace_secret_guard": RUNS_DIR / "shell_xtrace_secret_guard.json",
@@ -105,6 +106,7 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
     baseline_dry_run_gate = data["baseline_dry_run_gate"]
     baseline_credential_hygiene = data["baseline_credential_hygiene"]
     local_env_permission = data["local_env_permission"]
+    local_env_runtime_permission = data["local_env_runtime_permission"]
     placeholder_credentials = data["placeholder_credentials"]
     synthetic_dry_run = data["synthetic_dry_run_redaction"]
     shell_xtrace = data["shell_xtrace_secret_guard"]
@@ -195,6 +197,18 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
         and local_env_permission.get("synthetic_chmod_smoke", {}).get("owner_only_permissions") is True
         and not any(local_env_permission.get("leak_flags", {}).values())
         and not any(local_env_permission.get("contact_flags", {}).values())
+    )
+    local_env_runtime_permission_ready = bool(
+        local_env_runtime_permission.get("passed")
+        and local_env_runtime_permission.get("bad_permissions_rejected") is True
+        and local_env_runtime_permission.get("owner_only_permissions_accepted") is True
+        and local_env_runtime_permission.get("content_read_before_permission_check") is False
+        and local_env_runtime_permission.get("real_runner_started") is False
+        and local_env_runtime_permission.get("synthetic_values_recorded") is False
+        and local_env_runtime_permission.get("evidence", {}).get("bad_permissions_stop_before_dry_run") is True
+        and local_env_runtime_permission.get("evidence", {}).get("real_runner_not_started") is True
+        and not any(local_env_runtime_permission.get("leak_flags", {}).values())
+        and not any(local_env_runtime_permission.get("contact_flags", {}).values())
     )
     placeholder_credentials_ready = bool(
         placeholder_credentials.get("passed")
@@ -452,6 +466,13 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
             "reports/local_env_permission_contract.md",
         ),
         card(
+            "Local env runtime gate",
+            "done" if local_env_runtime_permission_ready else "watch",
+            "source 前拦截",
+            "两个授权入口会在 source local env 前检查权限；0644 会被拒绝，0600 synthetic 文件可进入授权边界且不启动真实 runner。",
+            "reports/local_env_runtime_permission_gate.md",
+        ),
+        card(
             "占位符凭据拒绝",
             "done" if placeholder_credentials_ready else "watch",
             f"{placeholder_credentials.get('case_count', 0)} 个场景",
@@ -551,6 +572,7 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
     baseline_dry_run_gate = data["baseline_dry_run_gate"]
     baseline_credential_hygiene = data["baseline_credential_hygiene"]
     local_env_permission = data["local_env_permission"]
+    local_env_runtime_permission = data["local_env_runtime_permission"]
     placeholder_credentials = data["placeholder_credentials"]
     synthetic_dry_run = data["synthetic_dry_run_redaction"]
     shell_xtrace = data["shell_xtrace_secret_guard"]
@@ -650,6 +672,27 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
         is True,
         "local_env_permission_no_contact": not any(local_env_permission.get("contact_flags", {}).values()),
         "local_env_permission_no_leak": not any(local_env_permission.get("leak_flags", {}).values()),
+        "local_env_runtime_permission_gate_passed": local_env_runtime_permission.get("passed") is True,
+        "local_env_runtime_bad_permissions_rejected": local_env_runtime_permission.get(
+            "bad_permissions_rejected"
+        )
+        is True,
+        "local_env_runtime_owner_only_accepted": local_env_runtime_permission.get(
+            "owner_only_permissions_accepted"
+        )
+        is True,
+        "local_env_runtime_content_not_read_before_gate": local_env_runtime_permission.get(
+            "content_read_before_permission_check"
+        )
+        is False,
+        "local_env_runtime_real_runner_not_started": local_env_runtime_permission.get("real_runner_started")
+        is False,
+        "local_env_runtime_values_not_recorded": local_env_runtime_permission.get("synthetic_values_recorded")
+        is False,
+        "local_env_runtime_no_contact": not any(
+            local_env_runtime_permission.get("contact_flags", {}).values()
+        ),
+        "local_env_runtime_no_leak": not any(local_env_runtime_permission.get("leak_flags", {}).values()),
         "placeholder_credential_rejection_passed": placeholder_credentials.get("passed") is True,
         "placeholder_credential_rejection_case_count": placeholder_credentials.get("case_count"),
         "placeholder_baseline_rejected_before_dry_run": placeholder_credentials.get("baseline_placeholder_rejected")

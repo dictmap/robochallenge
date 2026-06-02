@@ -68,6 +68,7 @@ REQUIRED = [
     "reports/baseline_dry_run_gate.md",
     "reports/baseline_credential_hygiene.md",
     "reports/local_env_permission_contract.md",
+    "reports/local_env_runtime_permission_gate.md",
     "reports/placeholder_credential_rejection.md",
     "reports/synthetic_dry_run_redaction.md",
     "reports/shell_xtrace_secret_guard.md",
@@ -129,6 +130,7 @@ REQUIRED = [
     "runs/baseline_dry_run_gate.json",
     "runs/baseline_credential_hygiene.json",
     "runs/local_env_permission_contract.json",
+    "runs/local_env_runtime_permission_gate.json",
     "runs/placeholder_credential_rejection.json",
     "runs/synthetic_dry_run_redaction.json",
     "runs/shell_xtrace_secret_guard.json",
@@ -191,6 +193,7 @@ REQUIRED = [
     "scripts/render_baseline_dry_run_gate.py",
     "scripts/render_baseline_credential_hygiene.py",
     "scripts/audit_local_env_permission_contract.py",
+    "scripts/audit_local_env_runtime_permission_gate.py",
     "scripts/audit_placeholder_credential_rejection.py",
     "scripts/audit_synthetic_dry_run_redaction.py",
     "scripts/audit_shell_xtrace_secret_guard.py",
@@ -959,6 +962,14 @@ def main() -> int:
             dashboard.get("local_env_permission_synthetic_chmod_passed") is True,
             dashboard.get("local_env_permission_no_contact") is True,
             dashboard.get("local_env_permission_no_leak") is True,
+            dashboard.get("local_env_runtime_permission_gate_passed") is True,
+            dashboard.get("local_env_runtime_bad_permissions_rejected") is True,
+            dashboard.get("local_env_runtime_owner_only_accepted") is True,
+            dashboard.get("local_env_runtime_content_not_read_before_gate") is True,
+            dashboard.get("local_env_runtime_real_runner_not_started") is True,
+            dashboard.get("local_env_runtime_values_not_recorded") is True,
+            dashboard.get("local_env_runtime_no_contact") is True,
+            dashboard.get("local_env_runtime_no_leak") is True,
             dashboard.get("placeholder_credential_rejection_passed") is True,
             dashboard.get("placeholder_credential_rejection_case_count") == 4,
             dashboard.get("placeholder_baseline_rejected_before_dry_run") is True,
@@ -1908,6 +1919,57 @@ def main() -> int:
     ):
         print("local env 权限契约审计未通过")
         return 1
+    local_env_runtime = json.loads(
+        (ROOT / "runs/local_env_runtime_permission_gate.json").read_text(encoding="utf-8")
+    )
+    local_env_runtime_evidence = local_env_runtime.get("evidence", {})
+    local_env_runtime_leaks = local_env_runtime.get("leak_flags", {})
+    local_env_runtime_contacts = local_env_runtime.get("contact_flags", {})
+    local_env_runtime_cases = {item.get("name"): item for item in local_env_runtime.get("cases", [])}
+    bad_runtime_cases = [
+        local_env_runtime_cases.get("authorized_bad_permissions", {}),
+        local_env_runtime_cases.get("ready_bad_permissions", {}),
+    ]
+    owner_runtime_cases = [
+        local_env_runtime_cases.get("authorized_owner_only", {}),
+        local_env_runtime_cases.get("ready_owner_only", {}),
+    ]
+    if not all(
+        [
+            local_env_runtime.get("kind") == "local_env_runtime_permission_gate",
+            local_env_runtime.get("passed"),
+            local_env_runtime.get("recommended_route") == "baseline_official_aloha",
+            local_env_runtime.get("case_count") == 4,
+            len(local_env_runtime_cases) == 4,
+            local_env_runtime.get("bad_permissions_rejected") is True,
+            local_env_runtime.get("owner_only_permissions_accepted") is True,
+            local_env_runtime.get("content_read_before_permission_check") is False,
+            local_env_runtime.get("real_runner_started") is False,
+            local_env_runtime.get("synthetic_values_recorded") is False,
+            all(item.get("mode_octal") == "0o644" for item in bad_runtime_cases),
+            all(item.get("returncode") == 65 for item in bad_runtime_cases),
+            all(item.get("permission_rejected") is True for item in bad_runtime_cases),
+            all(item.get("dry_run_called") is False for item in bad_runtime_cases),
+            all(item.get("printed_protected_values") is False for item in bad_runtime_cases),
+            all(item.get("mode_octal") == "0o600" for item in owner_runtime_cases),
+            all(item.get("returncode") in {0, 1} for item in owner_runtime_cases),
+            all(item.get("permission_accepted") is True for item in owner_runtime_cases),
+            all(item.get("printed_protected_values") is False for item in owner_runtime_cases),
+            all(item.get("real_runner_started") is False for item in owner_runtime_cases),
+            all(item.get("synthetic_env_file_removed_after_case") is True for item in local_env_runtime_cases.values()),
+            all(local_env_runtime_evidence.values()),
+            not any(local_env_runtime_leaks.values()),
+            not any(local_env_runtime_contacts.values()),
+            local_env_runtime.get("platform_contacted") is False,
+            local_env_runtime.get("uploads_performed") is False,
+            local_env_runtime.get("credentials_read") is False,
+            local_env_runtime.get("credentials_printed") is False,
+            local_env_runtime.get("link_values_printed") is False,
+            local_env_runtime.get("secret_values_printed") is False,
+        ]
+    ):
+        print("local env runtime 权限 gate 审计未通过")
+        return 1
     placeholder_rejection = json.loads(
         (ROOT / "runs/placeholder_credential_rejection.json").read_text(encoding="utf-8")
     )
@@ -2316,6 +2378,7 @@ def main() -> int:
         "baseline_dry_run_gate",
         "baseline_credential_hygiene",
         "local_env_permission_contract",
+        "local_env_runtime_permission_gate",
         "placeholder_credential_rejection",
         "synthetic_dry_run_redaction",
         "shell_xtrace_secret_guard",
@@ -2352,6 +2415,12 @@ def main() -> int:
             preflight.get("local_env_permission_content_not_read") is True,
             preflight.get("local_env_permission_owner_only") is True,
             preflight.get("local_env_permission_synthetic_chmod_passed") is True,
+            preflight.get("local_env_runtime_permission_gate_passed") is True,
+            preflight.get("local_env_runtime_bad_permissions_rejected") is True,
+            preflight.get("local_env_runtime_owner_only_accepted") is True,
+            preflight.get("local_env_runtime_content_not_read_before_gate") is True,
+            preflight.get("local_env_runtime_real_runner_not_started") is True,
+            preflight.get("local_env_runtime_values_not_recorded") is True,
             preflight.get("placeholder_credential_rejection_passed") is True,
             preflight.get("placeholder_baseline_rejected_before_dry_run") is True,
             preflight.get("placeholder_lora_rejected_before_dry_run") is True,

@@ -1,0 +1,61 @@
+{
+  "kind": "real_submission_readiness",
+  "passed": true,
+  "ready_for_real_submission": false,
+  "web_form_ready": false,
+  "local_baseline_runner_ready": false,
+  "local_lora_runner_ready": false,
+  "platform_contacted": false,
+  "credentials_printed": false,
+  "env": {
+    "ROBOCHALLENGE_USER_TOKEN": {
+      "present": false,
+      "length": 0,
+      "looks_like_url": false
+    },
+    "ROBOCHALLENGE_SUBMISSION_ID": {
+      "present": false,
+      "length": 0,
+      "looks_like_url": false
+    },
+    "ROBOCHALLENGE_CHECKPOINT_LINK": {
+      "present": false,
+      "length": 0,
+      "looks_like_url": false
+    },
+    "ROBOCHALLENGE_LORA_CHECKPOINT_LINK": {
+      "present": false,
+      "length": 0,
+      "looks_like_url": false
+    }
+  },
+  "runner_checks": {
+    "baseline": {
+      "exists": true,
+      "passed": true,
+      "returncode": 0,
+      "stderr": ""
+    },
+    "lora": {
+      "exists": true,
+      "passed": true,
+      "returncode": 0,
+      "stderr": ""
+    }
+  },
+  "inputs": {
+    "submission_audit_passed": true,
+    "export_audit_local_ready": true,
+    "upload_audit_passed": true,
+    "uploads_performed": false,
+    "manifest_status": "template_pending_credentials",
+    "baseline_checkpoint_exists": true,
+    "lora_checkpoint_exists": true
+  },
+  "blocking": [
+    "缺少 ROBOCHALLENGE_USER_TOKEN。",
+    "缺少 ROBOCHALLENGE_SUBMISSION_ID。",
+    "缺少真实可访问 checkpoint link；可使用 ROBOCHALLENGE_CHECKPOINT_LINK 或 ROBOCHALLENGE_LORA_CHECKPOINT_LINK 记录。",
+    "尚未执行 checkpoint 上传，本地 tar 文件也未生成。"
+  ]
+}

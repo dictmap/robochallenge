@@ -40,6 +40,7 @@ REQUIRED = [
     "reports/openpi_rtc_lora_materialized_policy_smoke.md",
     "reports/lora_checkpoint_export_readiness.md",
     "reports/checkpoint_upload_channels_audit.md",
+    "reports/real_submission_readiness.md",
     "reports/robochallenge_submission_package_checklist.md",
     "runs/pi05_base_probe_status.json",
     "runs/pi06_pi07_public_audit.json",
@@ -63,6 +64,7 @@ REQUIRED = [
     "runs/openpi_rtc_lora_materialized_policy_smoke_status.json",
     "runs/lora_checkpoint_export_readiness.json",
     "runs/checkpoint_upload_channels_audit.json",
+    "runs/real_submission_readiness.json",
     "runs/robochallenge_submission_package_audit.json",
     "submission/README.md",
     "submission/submission_manifest_template.json",
@@ -81,6 +83,7 @@ REQUIRED = [
     "scripts/smoke_openpi_rtc_materialized_policy.py",
     "scripts/audit_lora_checkpoint_export_readiness.py",
     "scripts/audit_checkpoint_upload_channels.py",
+    "scripts/audit_real_submission_readiness.py",
     "scripts/audit_robochallenge_submission_package.py",
 ]
 
@@ -556,6 +559,30 @@ def main() -> int:
     ):
         print("Checkpoint 上传通道审计未通过")
         return 1
+    real_submission = json.loads((ROOT / "runs/real_submission_readiness.json").read_text(encoding="utf-8"))
+    real_env = real_submission.get("env", {})
+    real_inputs = real_submission.get("inputs", {})
+    if not all(
+        [
+            real_submission.get("passed"),
+            real_submission.get("ready_for_real_submission") is False,
+            real_submission.get("web_form_ready") is False,
+            real_submission.get("local_baseline_runner_ready") is False,
+            real_submission.get("local_lora_runner_ready") is False,
+            real_submission.get("platform_contacted") is False,
+            real_submission.get("credentials_printed") is False,
+            real_submission.get("runner_checks", {}).get("baseline", {}).get("passed"),
+            real_submission.get("runner_checks", {}).get("lora", {}).get("passed"),
+            real_inputs.get("submission_audit_passed"),
+            real_inputs.get("export_audit_local_ready"),
+            real_inputs.get("upload_audit_passed"),
+            real_inputs.get("uploads_performed") is False,
+            real_env.get("ROBOCHALLENGE_USER_TOKEN", {}).get("present") is False,
+            real_env.get("ROBOCHALLENGE_SUBMISSION_ID", {}).get("present") is False,
+        ]
+    ):
+        print("真实提交 readiness gate 未通过或当前阻塞状态未准确记录")
+        return 1
     if not all(
         [
             lora_grad.get("mode") == "lora_grad",
@@ -682,6 +709,7 @@ def main() -> int:
     print("openpi_rtc LoRA 完整物化 policy 加载 smoke 已通过")
     print("LoRA checkpoint 导出就绪审计已通过")
     print("Checkpoint 上传通道审计已通过")
+    print("真实提交 readiness gate 已通过")
     return 0
 
 

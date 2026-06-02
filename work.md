@@ -656,3 +656,32 @@
 
 - P0：运行 workspace validator、notebook preflight、secret scan 和 diff check 后提交推送。
 - P1：用户确认上传通道后，按对应工具执行打包/上传，并把真实 checkpoint link 回填到 RoboChallenge。
+
+## 2026-06-02 第二十三轮：真实提交 readiness gate
+
+### 已完成
+
+- 新增 `scripts/audit_real_submission_readiness.py`，汇总真实提交前置条件。
+- 检查 `ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、`ROBOCHALLENGE_CHECKPOINT_LINK` 和 `ROBOCHALLENGE_LORA_CHECKPOINT_LINK` 是否存在，但不打印具体值。
+- 检查 baseline/LoRA runner 是否存在并通过 `bash -n`。
+- 引用提交包审计、LoRA checkpoint 导出审计和上传通道审计，区分“本地 runner 准备好”和“真实 Web 提交准备好”。
+- 已将 readiness gate 纳入 `scripts/validate_repro_workspace.py`。
+
+### 验证结果
+
+- readiness gate：`passed=true`，`ready_for_real_submission=false`。
+- Web 表单就绪：`false`；本地 baseline runner 就绪：`false`；本地 LoRA runner 就绪：`false`。
+- `platform_contacted=false`，`credentials_printed=false`。
+- baseline/LoRA runner 均存在并通过 `bash -n`。
+- 输入证据已就绪：提交包审计、LoRA 导出审计、上传通道审计均通过；baseline checkpoint 与 LoRA checkpoint 均存在。
+- 阻塞项准确记录：缺少 `ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、真实 checkpoint link，且尚未执行 checkpoint 上传。
+
+### 当前边界
+
+- readiness gate 只做本地前置检查，不连接 RoboChallenge 平台，不提交任务。
+- 真实提交仍需要用户授权上传通道、真实 checkpoint link、`ROBOCHALLENGE_USER_TOKEN` 和 `ROBOCHALLENGE_SUBMISSION_ID`。
+
+### 下一步
+
+- P0：运行 workspace validator、notebook preflight、secret scan 和 diff check 后提交推送。
+- P1：用户提供真实凭据和 checkpoint link 后，再运行 readiness gate；通过后才能执行 baseline/LoRA runner。

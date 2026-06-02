@@ -31,6 +31,7 @@ REQUIRED_PATHS = [
     "submission/run_authorized_preflight_template.sh",
     "submission/run_ready_real_submission_template.sh",
     "submission/run_authorized_checkpoint_archive_template.sh",
+    "notebooks/robochallenge_pi05_submit_cn.ipynb",
     "submission/AUTHORIZED_SUBMISSION_SEQUENCE.md",
     "submission/robochallenge_env_template.sh",
     "runs/openpi_rtc_lora_materialized_policy_checkpoint",
@@ -41,6 +42,8 @@ REQUIRED_PATHS = [
     "scripts/audit_submission_env_template.py",
     "scripts/audit_submission_artifact_manifest.py",
     "scripts/audit_submission_blockers_summary.py",
+    "scripts/audit_jupyter_input_template.py",
+    "scripts/audit_jupyter_authorized_preflight_template.py",
     "scripts/audit_authorized_preflight_template.py",
     "scripts/audit_ready_real_runner_template.py",
     "scripts/audit_authorized_checkpoint_archive_template.py",
@@ -55,6 +58,10 @@ REQUIRED_COMMAND_FRAGMENTS = {
     "submission_env_template": "python3 scripts/audit_submission_env_template.py",
     "submission_artifact_manifest": "python3 scripts/audit_submission_artifact_manifest.py",
     "submission_blockers_summary": "python3 scripts/audit_submission_blockers_summary.py",
+    "jupyter_input_template": "python3 scripts/audit_jupyter_input_template.py",
+    "jupyter_authorized_preflight_template": "python3 scripts/audit_jupyter_authorized_preflight_template.py",
+    "jupyter_input_enable_flag": "RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE=True",
+    "jupyter_authorized_preflight_enable_flag": "RUN_JUPYTER_AUTHORIZED_PREFLIGHT=True",
     "authorized_preflight_template": "python3 scripts/audit_authorized_preflight_template.py",
     "ready_real_runner_template": "python3 scripts/audit_ready_real_runner_template.py",
     "authorized_checkpoint_archive_template": "python3 scripts/audit_authorized_checkpoint_archive_template.py",
@@ -122,6 +129,8 @@ def build_status(doc_path: Path) -> dict[str, Any]:
     export_audit = read_json(RUNS_DIR / "lora_checkpoint_export_readiness.json")
     upload_audit = read_json(RUNS_DIR / "checkpoint_upload_channels_audit.json")
     link_download = read_json(RUNS_DIR / "checkpoint_link_download_verification.json")
+    jupyter_input = read_json(RUNS_DIR / "jupyter_input_template_audit.json")
+    jupyter_authorized = read_json(RUNS_DIR / "jupyter_authorized_preflight_template_audit.json")
     ready_real_runner = read_json(RUNS_DIR / "ready_real_runner_template_audit.json")
     authorized_archive = read_json(RUNS_DIR / "authorized_checkpoint_archive_template_audit.json")
 
@@ -149,6 +158,16 @@ def build_status(doc_path: Path) -> dict[str, Any]:
         "says_archive_requires_confirmation": "ROBOCHALLENGE_ARCHIVE_CONFIRM=CREATE_ROBOCHALLENGE_CHECKPOINT_ARCHIVE"
         in text
         and "stop before creating tar" in text,
+        "says_jupyter_input_default_safe": "RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE=False" in text
+        and "RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE=True" in text
+        and "默认" in text,
+        "says_jupyter_preflight_default_safe": "RUN_JUPYTER_AUTHORIZED_PREFLIGHT_TEMPLATE_AUDIT=True"
+        in text
+        and "RUN_JUPYTER_AUTHORIZED_PREFLIGHT=False" in text
+        and "RUN_JUPYTER_AUTHORIZED_PREFLIGHT=True" in text,
+        "says_jupyter_values_stay_local": "Notebook 源码" in text
+        and "Notebook 输出" in text
+        and "submission/robochallenge_env.local.sh" in text,
     }
     secret_hits = scan_secret_patterns(text)
     input_evidence = {
@@ -162,6 +181,14 @@ def build_status(doc_path: Path) -> dict[str, Any]:
         "link_download_not_requested": link_download.get("verify_download_requested") is False,
         "link_download_host_not_contacted": link_download.get("verification", {}).get("download_host_contacted") is False,
         "link_download_no_plaintext": link_download.get("link_value_printed") is False,
+        "jupyter_input_template_passed": jupyter_input.get("passed") is True,
+        "jupyter_input_default_false": jupyter_input.get("run_flag_default_false") is True,
+        "jupyter_input_local_env_ignored": jupyter_input.get("local_env_ignored", {}).get("ignored") is True,
+        "jupyter_authorized_preflight_template_passed": jupyter_authorized.get("passed") is True,
+        "jupyter_authorized_preflight_audit_default_true": jupyter_authorized.get("audit_default_true") is True,
+        "jupyter_authorized_preflight_execution_default_false": jupyter_authorized.get("execution_default_false")
+        is True,
+        "jupyter_authorized_preflight_runner_not_started": jupyter_authorized.get("runner_started") is False,
         "ready_real_runner_template_passed": ready_real_runner.get("passed") is True,
         "ready_real_runner_no_confirm_blocks": ready_real_runner.get("synthetic_no_confirm_smoke", {}).get("passed")
         is True,
@@ -178,18 +205,7 @@ def build_status(doc_path: Path) -> dict[str, Any]:
         and all(command_mentions.values())
         and all(guardrails.values())
         and not secret_hits
-        and input_evidence["real_submission_gate_passed"]
-        and input_evidence["export_audit_local_ready"]
-        and input_evidence["upload_audit_passed"]
-        and input_evidence["upload_not_performed"]
-        and input_evidence["link_download_audit_passed"]
-        and input_evidence["link_download_not_requested"]
-        and input_evidence["link_download_host_not_contacted"]
-        and input_evidence["link_download_no_plaintext"]
-        and input_evidence["ready_real_runner_template_passed"]
-        and input_evidence["ready_real_runner_no_confirm_blocks"]
-        and input_evidence["authorized_checkpoint_archive_template_passed"]
-        and input_evidence["authorized_checkpoint_archive_no_confirm_blocks"]
+        and all(input_evidence.values())
     )
     blocking = []
     if not exists:
@@ -216,6 +232,20 @@ def build_status(doc_path: Path) -> dict[str, Any]:
         blocking.append("checkpoint 上传通道审计尚未通过。")
     if not input_evidence["link_download_audit_passed"]:
         blocking.append("checkpoint link 下载校验审计尚未通过。")
+    if not input_evidence["jupyter_input_template_passed"]:
+        blocking.append("Jupyter 第 44 节安全填空入口审计尚未通过。")
+    if not input_evidence["jupyter_input_default_false"]:
+        blocking.append("Jupyter 第 44 节安全填空入口未证明默认关闭。")
+    if not input_evidence["jupyter_input_local_env_ignored"]:
+        blocking.append("Jupyter 第 44 节本地 env 文件未证明被 Git 忽略。")
+    if not input_evidence["jupyter_authorized_preflight_template_passed"]:
+        blocking.append("Jupyter 第 45 节授权预检入口审计尚未通过。")
+    if not input_evidence["jupyter_authorized_preflight_audit_default_true"]:
+        blocking.append("Jupyter 第 45 节未证明默认只跑静态审计。")
+    if not input_evidence["jupyter_authorized_preflight_execution_default_false"]:
+        blocking.append("Jupyter 第 45 节未证明授权预检默认关闭。")
+    if not input_evidence["jupyter_authorized_preflight_runner_not_started"]:
+        blocking.append("Jupyter 第 45 节未证明不会启动真实 runner。")
     if not input_evidence["ready_real_runner_template_passed"]:
         blocking.append("强确认真实 runner 模板审计尚未通过。")
     if not input_evidence["ready_real_runner_no_confirm_blocks"]:

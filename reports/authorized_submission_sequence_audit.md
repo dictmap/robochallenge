@@ -17,6 +17,8 @@
 - `python3 scripts/audit_submission_env_template.py`：`True`。
 - `python3 scripts/audit_submission_artifact_manifest.py`：`True`。
 - `python3 scripts/create_checkpoint_archive.py`：`True`。
+- `python3 scripts/audit_jupyter_input_template.py`：`True`。
+- `python3 scripts/audit_jupyter_authorized_preflight_template.py`：`True`。
 - `cp submission/robochallenge_env_template.sh submission/robochallenge_env.local.sh`：`True`。
 - `source submission/robochallenge_env.local.sh`：`True`。
 - `python3 scripts/audit_checkpoint_link_intake.py`：`True`。
@@ -39,10 +41,20 @@
 - `ROBOCHALLENGE_SUBMISSION_ID`：`True`。
 - `ROBOCHALLENGE_LORA_CHECKPOINT_LINK`：`True`。
 
+## 路径覆盖
+
+- `notebooks/robochallenge_pi05_submit_cn.ipynb`：`True`。
+- `scripts/audit_jupyter_input_template.py`：`True`。
+- `scripts/audit_jupyter_authorized_preflight_template.py`：`True`。
+- `submission/robochallenge_env.local.sh`：`True`。
+
 ## 安全护栏
 
 - `no_credentials_saved`：`True`。
 - `local_env_copy_only`：`True`。
+- `jupyter_input_default_safe`：`True`。
+- `jupyter_preflight_default_safe`：`True`。
+- `jupyter_values_stay_local`：`True`。
 - `no_auto_without_authorization`：`True`。
 - `no_git_checkpoint`：`True`。
 - `link_gate_before_readiness`：`True`。
@@ -61,6 +73,13 @@
 - `current_link_missing_as_expected`：`True`。
 - `env_template_audit_passed`：`True`。
 - `env_template_local_copy_ignored`：`True`。
+- `jupyter_input_template_passed`：`True`。
+- `jupyter_input_default_false`：`True`。
+- `jupyter_input_local_env_ignored`：`True`。
+- `jupyter_authorized_preflight_template_passed`：`True`。
+- `jupyter_authorized_preflight_audit_default_true`：`True`。
+- `jupyter_authorized_preflight_execution_default_false`：`True`。
+- `jupyter_authorized_preflight_runner_not_started`：`True`。
 - `artifact_manifest_passed`：`True`。
 - `artifact_manifest_no_forbidden_tracked`：`True`。
 - `readiness_gate_passed`：`True`。

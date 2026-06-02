@@ -783,6 +783,7 @@ def main() -> int:
     sequence_commands = authorized_sequence.get("commands", {})
     sequence_command_present = sequence_commands.get("present", {})
     sequence_inputs = authorized_sequence.get("input_evidence", {})
+    sequence_paths = authorized_sequence.get("path_mentions", {})
     if not all(
         [
             authorized_sequence.get("kind") == "authorized_submission_sequence_audit",
@@ -796,12 +797,20 @@ def main() -> int:
             sequence_commands.get("critical_order_passed"),
             all(sequence_command_present.values()),
             all(authorized_sequence.get("env_mentions", {}).values()),
+            all(sequence_paths.values()),
             all(authorized_sequence.get("guardrails", {}).values()),
             all(sequence_inputs.values()),
             authorized_sequence.get("secret_patterns_found") == [],
             authorized_sequence.get("no_contact_evidence"),
             sequence_inputs.get("readiness_currently_blocked"),
             sequence_inputs.get("current_link_missing_as_expected"),
+            sequence_inputs.get("jupyter_input_template_passed"),
+            sequence_inputs.get("jupyter_input_default_false"),
+            sequence_inputs.get("jupyter_input_local_env_ignored"),
+            sequence_inputs.get("jupyter_authorized_preflight_template_passed"),
+            sequence_inputs.get("jupyter_authorized_preflight_audit_default_true"),
+            sequence_inputs.get("jupyter_authorized_preflight_execution_default_false"),
+            sequence_inputs.get("jupyter_authorized_preflight_runner_not_started"),
         ]
     ):
         print("用户授权后提交顺序审计未通过")
@@ -959,6 +968,13 @@ def main() -> int:
             handoff_inputs.get("link_download_not_requested"),
             handoff_inputs.get("link_download_host_not_contacted"),
             handoff_inputs.get("link_download_no_plaintext"),
+            handoff_inputs.get("jupyter_input_template_passed"),
+            handoff_inputs.get("jupyter_input_default_false"),
+            handoff_inputs.get("jupyter_input_local_env_ignored"),
+            handoff_inputs.get("jupyter_authorized_preflight_template_passed"),
+            handoff_inputs.get("jupyter_authorized_preflight_audit_default_true"),
+            handoff_inputs.get("jupyter_authorized_preflight_execution_default_false"),
+            handoff_inputs.get("jupyter_authorized_preflight_runner_not_started"),
         ]
     ):
         print("真实提交交接文档审计未通过")

@@ -24,6 +24,8 @@ REQUIRED_COMMANDS = [
     "python3 scripts/audit_submission_env_template.py",
     "python3 scripts/audit_submission_artifact_manifest.py",
     "python3 scripts/create_checkpoint_archive.py",
+    "python3 scripts/audit_jupyter_input_template.py",
+    "python3 scripts/audit_jupyter_authorized_preflight_template.py",
     "cp submission/robochallenge_env_template.sh submission/robochallenge_env.local.sh",
     "source submission/robochallenge_env.local.sh",
     "python3 scripts/audit_checkpoint_link_intake.py",
@@ -54,9 +56,28 @@ REQUIRED_ENV_KEYS = [
     "ROBOCHALLENGE_LORA_CHECKPOINT_LINK",
 ]
 
+REQUIRED_PATHS = [
+    "notebooks/robochallenge_pi05_submit_cn.ipynb",
+    "scripts/audit_jupyter_input_template.py",
+    "scripts/audit_jupyter_authorized_preflight_template.py",
+    "submission/robochallenge_env.local.sh",
+]
+
 REQUIRED_GUARDRAILS = {
     "no_credentials_saved": ["不保存", "user_token", "submission_id"],
     "local_env_copy_only": ["submission/robochallenge_env.local.sh", "tracked 模板"],
+    "jupyter_input_default_safe": [
+        "RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE=False",
+        "RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE=True",
+        "getpass",
+    ],
+    "jupyter_preflight_default_safe": [
+        "RUN_JUPYTER_AUTHORIZED_PREFLIGHT_TEMPLATE_AUDIT=True",
+        "RUN_JUPYTER_AUTHORIZED_PREFLIGHT=False",
+        "RUN_JUPYTER_AUTHORIZED_PREFLIGHT=True",
+        "默认只执行静态审计",
+    ],
+    "jupyter_values_stay_local": ["真实值只能进入", "Git 忽略", "不写入 tracked 模板、Git、Notebook、报告"],
     "no_auto_without_authorization": ["没有用户明确授权", "不生成 tar", "不上传 checkpoint"],
     "no_git_checkpoint": ["不要把 `runs/openpi_rtc_lora_materialized_policy_checkpoint.tar`", "提交进 Git"],
     "link_gate_before_readiness": ["audit_checkpoint_link_intake.py", "audit_real_submission_readiness.py"],
@@ -146,6 +167,7 @@ def build_status(doc_path: Path) -> dict[str, Any]:
     text = doc_path.read_text(encoding="utf-8") if exists else ""
     commands = command_order(text)
     env_mentions = {key: key in text for key in REQUIRED_ENV_KEYS}
+    path_mentions = {path: path in text for path in REQUIRED_PATHS}
     guardrails = {
         name: all(fragment in text for fragment in fragments) for name, fragments in REQUIRED_GUARDRAILS.items()
     }
@@ -154,6 +176,8 @@ def build_status(doc_path: Path) -> dict[str, Any]:
     archive_dry_run = read_json(RUNS_DIR / "checkpoint_archive_dry_run.json")
     link_intake = read_json(RUNS_DIR / "checkpoint_link_intake.json")
     env_template = read_json(RUNS_DIR / "submission_env_template_audit.json")
+    jupyter_input = read_json(RUNS_DIR / "jupyter_input_template_audit.json")
+    jupyter_authorized = read_json(RUNS_DIR / "jupyter_authorized_preflight_template_audit.json")
     artifact_manifest = read_json(RUNS_DIR / "submission_artifact_manifest.json")
     readiness = read_json(RUNS_DIR / "real_submission_readiness.json")
     blockers_summary = read_json(RUNS_DIR / "submission_blockers_summary.json")
@@ -173,6 +197,14 @@ def build_status(doc_path: Path) -> dict[str, Any]:
         .get("submission/robochallenge_env.local.sh", {})
         .get("ignored")
         is True,
+        "jupyter_input_template_passed": jupyter_input.get("passed") is True,
+        "jupyter_input_default_false": jupyter_input.get("run_flag_default_false") is True,
+        "jupyter_input_local_env_ignored": jupyter_input.get("local_env_ignored", {}).get("ignored") is True,
+        "jupyter_authorized_preflight_template_passed": jupyter_authorized.get("passed") is True,
+        "jupyter_authorized_preflight_audit_default_true": jupyter_authorized.get("audit_default_true") is True,
+        "jupyter_authorized_preflight_execution_default_false": jupyter_authorized.get("execution_default_false")
+        is True,
+        "jupyter_authorized_preflight_runner_not_started": jupyter_authorized.get("runner_started") is False,
         "artifact_manifest_passed": artifact_manifest.get("passed") is True,
         "artifact_manifest_no_forbidden_tracked": artifact_manifest.get("forbidden_tracked_paths") == [],
         "readiness_gate_passed": readiness.get("passed") is True,
@@ -219,6 +251,19 @@ def build_status(doc_path: Path) -> dict[str, Any]:
             env_template.get("credentials_read") is False,
             env_template.get("credentials_printed") is False,
             env_template.get("secret_values_printed") is False,
+            jupyter_input.get("platform_contacted") is False,
+            jupyter_input.get("uploads_performed") is False,
+            jupyter_input.get("credentials_read") is False,
+            jupyter_input.get("credentials_printed") is False,
+            jupyter_input.get("link_values_printed") is False,
+            jupyter_input.get("secret_values_printed") is False,
+            jupyter_authorized.get("platform_contacted") is False,
+            jupyter_authorized.get("uploads_performed") is False,
+            jupyter_authorized.get("credentials_read") is False,
+            jupyter_authorized.get("credentials_printed") is False,
+            jupyter_authorized.get("link_values_printed") is False,
+            jupyter_authorized.get("secret_values_printed") is False,
+            jupyter_authorized.get("runner_started") is False,
             artifact_manifest.get("platform_contacted") is False,
             artifact_manifest.get("uploads_performed") is False,
             artifact_manifest.get("credentials_read") is False,
@@ -259,6 +304,7 @@ def build_status(doc_path: Path) -> dict[str, Any]:
         and all(commands["present"].values())
         and commands["critical_order_passed"]
         and all(env_mentions.values())
+        and all(path_mentions.values())
         and all(guardrails.values())
         and all(input_evidence.values())
         and not secret_hits
@@ -275,6 +321,9 @@ def build_status(doc_path: Path) -> dict[str, Any]:
     for key, ok in env_mentions.items():
         if not ok:
             blocking.append(f"清单缺少环境变量 `{key}`。")
+    for path, ok in path_mentions.items():
+        if not ok:
+            blocking.append(f"清单缺少路径 `{path}`。")
     for name, ok in guardrails.items():
         if not ok:
             blocking.append(f"清单缺少安全护栏 `{name}`。")
@@ -299,6 +348,7 @@ def build_status(doc_path: Path) -> dict[str, Any]:
         "link_values_printed": False,
         "commands": commands,
         "env_mentions": env_mentions,
+        "path_mentions": path_mentions,
         "guardrails": guardrails,
         "input_evidence": input_evidence,
         "secret_patterns_found": secret_hits,
@@ -328,6 +378,9 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         lines.append(f"- `{command}`：`{ok}`。")
     lines.extend(["", "## 环境变量覆盖", ""])
     for key, ok in status["env_mentions"].items():
+        lines.append(f"- `{key}`：`{ok}`。")
+    lines.extend(["", "## 路径覆盖", ""])
+    for key, ok in status["path_mentions"].items():
         lines.append(f"- `{key}`：`{ok}`。")
     lines.extend(["", "## 安全护栏", ""])
     for key, ok in status["guardrails"].items():

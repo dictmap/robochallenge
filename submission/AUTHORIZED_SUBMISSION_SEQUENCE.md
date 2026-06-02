@@ -10,6 +10,8 @@ python3 scripts/audit_plaintext_secrets.py
 python3 scripts/audit_submission_env_template.py
 python3 scripts/audit_submission_artifact_manifest.py
 python3 scripts/create_checkpoint_archive.py
+python3 scripts/audit_jupyter_input_template.py
+python3 scripts/audit_jupyter_authorized_preflight_template.py
 python3 scripts/audit_checkpoint_link_intake.py
 python3 scripts/audit_real_submission_readiness.py
 python3 scripts/audit_submission_blockers_summary.py
@@ -55,6 +57,8 @@ source submission/robochallenge_env.local.sh
 
 本地副本需要填入 `ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID` 和 `ROBOCHALLENGE_LORA_CHECKPOINT_LINK`；tracked 模板中这些字段必须保持 `<真实 user token>`、`<真实 submission id>` 和 `<真实 checkpoint 下载 URL>` 这类占位符。
 
+Jupyter 路线优先使用 `notebooks/robochallenge_pi05_submit_cn.ipynb`。第 44 节默认 `RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE=False`，只有用户确认填入真实值时才改为 `RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE=True`；该节使用 `getpass` 写入 `submission/robochallenge_env.local.sh`，本地副本已被 Git 忽略。真实值只能进入这个本地副本，不写入 tracked 模板、Git、Notebook、报告或命令历史截图。
+
 ```bash
 source submission/robochallenge_env.local.sh
 ```
@@ -66,6 +70,8 @@ python3 scripts/audit_checkpoint_link_intake.py
 python3 scripts/audit_real_submission_readiness.py
 bash submission/run_authorized_preflight_template.sh
 ```
+
+Jupyter 路线可继续运行第 45 节。该节默认 `RUN_JUPYTER_AUTHORIZED_PREFLIGHT_TEMPLATE_AUDIT=True` 且 `RUN_JUPYTER_AUTHORIZED_PREFLIGHT=False`，默认只执行静态审计；确认第 44 节已经写入 local env 后，才把开关改为 `RUN_JUPYTER_AUTHORIZED_PREFLIGHT=True`，实际预检仍只调用 `bash submission/run_authorized_preflight_template.sh`。
 
 只有当 link intake 接受真实链接形态，且 readiness gate 显示可进入真实提交时，才继续。
 

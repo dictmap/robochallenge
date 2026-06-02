@@ -22,6 +22,7 @@
 - `submission/run_authorized_preflight_template.sh`：`True`。
 - `submission/run_ready_real_submission_template.sh`：`True`。
 - `submission/run_authorized_checkpoint_archive_template.sh`：`True`。
+- `notebooks/robochallenge_pi05_submit_cn.ipynb`：`True`。
 - `submission/AUTHORIZED_SUBMISSION_SEQUENCE.md`：`True`。
 - `submission/robochallenge_env_template.sh`：`True`。
 - `runs/openpi_rtc_lora_materialized_policy_checkpoint`：`True`。
@@ -32,6 +33,8 @@
 - `scripts/audit_submission_env_template.py`：`True`。
 - `scripts/audit_submission_artifact_manifest.py`：`True`。
 - `scripts/audit_submission_blockers_summary.py`：`True`。
+- `scripts/audit_jupyter_input_template.py`：`True`。
+- `scripts/audit_jupyter_authorized_preflight_template.py`：`True`。
 - `scripts/audit_authorized_preflight_template.py`：`True`。
 - `scripts/audit_ready_real_runner_template.py`：`True`。
 - `scripts/audit_authorized_checkpoint_archive_template.py`：`True`。
@@ -46,6 +49,10 @@
 - `submission_env_template`：`True`。
 - `submission_artifact_manifest`：`True`。
 - `submission_blockers_summary`：`True`。
+- `jupyter_input_template`：`True`。
+- `jupyter_authorized_preflight_template`：`True`。
+- `jupyter_input_enable_flag`：`True`。
+- `jupyter_authorized_preflight_enable_flag`：`True`。
 - `authorized_preflight_template`：`True`。
 - `ready_real_runner_template`：`True`。
 - `authorized_checkpoint_archive_template`：`True`。
@@ -76,6 +83,9 @@
 - `uses_placeholders_instead_of_values`：`True`。
 - `says_real_runner_requires_confirmation`：`True`。
 - `says_archive_requires_confirmation`：`True`。
+- `says_jupyter_input_default_safe`：`True`。
+- `says_jupyter_preflight_default_safe`：`True`。
+- `says_jupyter_values_stay_local`：`True`。
 
 ## 输入证据
 
@@ -89,6 +99,13 @@
 - `link_download_not_requested`：`True`。
 - `link_download_host_not_contacted`：`True`。
 - `link_download_no_plaintext`：`True`。
+- `jupyter_input_template_passed`：`True`。
+- `jupyter_input_default_false`：`True`。
+- `jupyter_input_local_env_ignored`：`True`。
+- `jupyter_authorized_preflight_template_passed`：`True`。
+- `jupyter_authorized_preflight_audit_default_true`：`True`。
+- `jupyter_authorized_preflight_execution_default_false`：`True`。
+- `jupyter_authorized_preflight_runner_not_started`：`True`。
 - `ready_real_runner_template_passed`：`True`。
 - `ready_real_runner_no_confirm_blocks`：`True`。
 - `authorized_checkpoint_archive_template_passed`：`True`。

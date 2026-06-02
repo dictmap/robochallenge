@@ -24,7 +24,7 @@
     "split_part_ignored": true
   },
   "disk": {
-    "free_space_bucket_gb": 470,
+    "free_space_bucket_gb": 460,
     "required_bytes": 11879987200,
     "required_gb_rounded": 11.064,
     "margin_factor_required": 2,

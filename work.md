@@ -1403,3 +1403,30 @@
 ### 下一步
 - P0：提交并推送本轮授权后 Jupyter 预检入口、审计脚本、GUI 和总体验证更新。
 - P1：用户拿到真实凭据和 checkpoint link 后，先运行 Notebook 第 44 节写入 local env，再手动开启第 45 节 `RUN_JUPYTER_AUTHORIZED_PREFLIGHT=True` 复跑授权预检；只有预检显示 ready 后，才进入归档/上传或真实 runner 强确认入口。
+
+## 2026-06-03 第五十轮：Jupyter 真实提交交接路径固化
+
+### 已完成
+- 更新 `submission/REAL_SUBMISSION_HANDOFF.md`，把 `notebooks/robochallenge_pi05_submit_cn.ipynb` 第 44 节和第 45 节写成推荐的真实提交前安全入口，并保留 shell 命令作为 fallback。
+- 更新 `submission/AUTHORIZED_SUBMISSION_SEQUENCE.md`，在用户授权后的执行顺序里加入 `python3 scripts/audit_jupyter_input_template.py` 和 `python3 scripts/audit_jupyter_authorized_preflight_template.py`，并明确第 44 节只写入被 Git 忽略的 `submission/robochallenge_env.local.sh`。
+- 扩展 `scripts/audit_submission_handoff_docs.py`：现在会检查 Notebook 路径、两个 Jupyter 审计脚本、`RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE=True`、`RUN_JUPYTER_AUTHORIZED_PREFLIGHT=True` 以及第 44/45 节默认关闭证据。
+- 扩展 `scripts/audit_authorized_submission_sequence.py`：现在会把 Notebook 路径覆盖、Jupyter 默认关闭、local env 被忽略、授权预检不启动 runner 纳入 `passed` 判定。
+- 更新 `scripts/validate_repro_workspace.py`，总验证会硬性检查 handoff/sequence 两份文档中的新增 Jupyter 证据。
+
+### 验证结果
+
+- Linux 端语法检查已通过：`python3 -m py_compile scripts/audit_submission_handoff_docs.py scripts/audit_authorized_submission_sequence.py scripts/validate_repro_workspace.py`。
+- Linux 端新增审计链已通过：`python3 scripts/audit_jupyter_input_template.py`、`python3 scripts/audit_jupyter_authorized_preflight_template.py`、`python3 scripts/audit_submission_handoff_docs.py`、`python3 scripts/audit_authorized_submission_sequence.py` 和 `python3 scripts/validate_repro_workspace.py` 均通过。
+- 刷新后的 `runs/submission_handoff_docs_audit.json` 中，`jupyter_input_template_passed=true`、`jupyter_input_default_false=true`、`jupyter_input_local_env_ignored=true`、`jupyter_authorized_preflight_execution_default_false=true`、`jupyter_authorized_preflight_runner_not_started=true`。
+- 刷新后的 `runs/authorized_submission_sequence_audit.json` 中，`path_mentions` 已覆盖 Notebook、第 44 节审计脚本、第 45 节审计脚本和 local env；所有 Jupyter 输入证据均为 `true`。
+- 完整 no-contact 链仍通过：明文凭据扫描、真实提交前预检汇总、artifact manifest、blockers summary、GUI 渲染、总体验证和 `git diff --check` 均通过。
+- 派生归档审计只更新了磁盘剩余空间桶 `470GB -> 460GB`；`archive_created=false`、`upload_performed=false`、`platform_contacted=false` 保持不变。
+
+### 当前边界
+
+- 本轮没有读取真实 token、submission id 或 checkpoint link，没有接触 RoboChallenge 平台，没有上传 checkpoint，没有生成 checkpoint tar，也没有启动真实 runner。
+- 真实提交仍处于 `go_no_go=blocked`：还缺 `ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、真实可访问 checkpoint link，以及用户对 checkpoint 归档/上传和真实 runner 的明确授权。
+
+### 下一步
+- P0：提交并推送本轮 Jupyter handoff/sequence 固化、审计脚本和派生报告。
+- P1：用户拿到真实凭据后，优先按 Notebook 第 44 节写入 local env，再手动开启第 45 节做授权预检；预检 ready 之后再进入 checkpoint 归档/上传或真实 runner 强确认入口。

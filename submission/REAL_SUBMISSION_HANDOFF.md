@@ -13,6 +13,19 @@
 
 ## 用户拿到凭据后的最短流程
 
+推荐优先走 Jupyter 安全入口，避免在 shell 历史里留下敏感值。入口在 `notebooks/robochallenge_pi05_submit_cn.ipynb`：
+
+- 第 44 节“安全填空本地 env 入口”默认 `RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE=False`，不询问、不读取、不写入真实凭据；用户确认后才把开关改成 `RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE=True`，只写入被 Git 忽略的 `submission/robochallenge_env.local.sh`。
+- 第 45 节“授权后 Jupyter 预检入口”默认 `RUN_JUPYTER_AUTHORIZED_PREFLIGHT_TEMPLATE_AUDIT=True` 且 `RUN_JUPYTER_AUTHORIZED_PREFLIGHT=False`，默认只做静态审计，不读取 local env；第 44 节写入本地 env 后，用户确认再改成 `RUN_JUPYTER_AUTHORIZED_PREFLIGHT=True`。
+- 真实值只能进入 `submission/robochallenge_env.local.sh`，不要把真实 token、submission id 或 checkpoint link 写入 Notebook 源码、Notebook 输出、Git、报告或截图。
+
+Notebook 入口也有独立审计，修改后先运行：
+
+```bash
+python3 scripts/audit_jupyter_input_template.py
+python3 scripts/audit_jupyter_authorized_preflight_template.py
+```
+
 完整顺序清单见 `submission/AUTHORIZED_SUBMISSION_SEQUENCE.md`。修改清单后先运行：
 
 ```bash

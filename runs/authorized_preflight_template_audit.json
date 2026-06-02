@@ -1,0 +1,51 @@
+{
+  "kind": "authorized_preflight_template_audit",
+  "passed": true,
+  "platform_contacted": false,
+  "uploads_performed": false,
+  "credentials_read": false,
+  "credentials_printed": false,
+  "link_values_printed": false,
+  "secret_values_printed": false,
+  "template_path": "submission/run_authorized_preflight_template.sh",
+  "bash_n": {
+    "returncode": 0,
+    "passed": true,
+    "stderr": ""
+  },
+  "required_fragments": {
+    "sources_local_env_file": true,
+    "runs_link_intake": true,
+    "runs_link_download_default": true,
+    "download_verify_guarded": true,
+    "runs_readiness": true,
+    "runs_blockers_summary": true,
+    "reads_readiness_json": true,
+    "lora_dry_run_only": true,
+    "baseline_dry_run_only": true,
+    "requires_explicit_real_authorization": true
+  },
+  "forbidden_fragments": {
+    "calls_lora_real_runner": false,
+    "calls_baseline_real_runner": false
+  },
+  "secret_patterns_found": [],
+  "no_credentials_smoke": {
+    "returncode": 0,
+    "passed": true,
+    "stdout_tail": "\n    \"upload_channels_audited\": true,\n    \"preflight_bundle_ready\": true,\n    \"secret_scan_clean\": true\n  },\n  \"required_user_inputs\": [\n    {\n      \"id\": \"ROBOCHALLENGE_USER_TOKEN\",\n      \"label\": \"RoboChallenge user token\",\n      \"source\": \"用户登录 RoboChallenge 后提供；只能放入本地 shell 或被 Git 忽略的 local env 文件。\"\n    },\n    {\n      \"id\": \"ROBOCHALLENGE_SUBMISSION_ID\",\n      \"label\": \"RoboChallenge submission id\",\n      \"source\": \"用户在 RoboChallenge My Submission/Detail 页面确认；不能伪造。\"\n    },\n    {\n      \"id\": \"CHECKPOINT_UPLOAD_AUTHORIZATION\",\n      \"label\": \"checkpoint 上传授权\",\n      \"source\": \"如果提交 LoRA 物化 checkpoint，用户需要确认是否生成 12GB+ tar 并选择上传通道。\"\n    },\n    {\n      \"id\": \"ROBOCHALLENGE_CHECKPOINT_LINK\",\n      \"label\": \"真实可访问 checkpoint link\",\n      \"source\": \"由用户授权上传后得到；只做脱敏形态检查，默认不联网验证。\"\n    }\n  ],\n  \"blocking\": [\n    \"缺少 ROBOCHALLENGE_USER_TOKEN。\",\n    \"缺少 ROBOCHALLENGE_SUBMISSION_ID。\",\n    \"缺少真实可访问 checkpoint link；可使用 ROBOCHALLENGE_CHECKPOINT_LINK 或 ROBOCHALLENGE_LORA_CHECKPOINT_LINK 记录。\",\n    \"尚未执行 checkpoint 上传，本地 tar 文件也未生成。\",\n    \"缺少 checkpoint link；请设置 ROBOCHALLENGE_CHECKPOINT_LINK 或 ROBOCHALLENGE_LORA_CHECKPOINT_LINK。\",\n    \"缺少真实 checkpoint link；当前只能审计下载校验协议，不能联网验证。\",\n    \"未请求 --verify-download；本轮不联网、不下载、不接触 checkpoint link host。\",\n    \"需要用户提供真实 ROBOCHALLENGE_USER_TOKEN。\",\n    \"需要用户提供真实 ROBOCHALLENGE_SUBMISSION_ID。\",\n    \"需要确认本次要提交的是 Table30v2 ALOHA 还是原始 Table30；当前可运行链路是 Table30v2 ALOHA。\",\n    \"若要提交 LoRA 版本，还需要把本地 12GB+ checkpoint 放到网站可访问的 checkpoint link。\"\n  ],\n  \"blocking_count\": 11,\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false\n  },\n  \"next_command_after_user_inputs\": \"python3 scripts/audit_real_submission_readiness.py\"\n}\n[authorized-preflight] ready_for_real_submission=false\n[authorized-preflight] stop before runner dry-run; see reports/submission_blockers_summary.md\n",
+    "stderr_tail": "",
+    "env_file_present_false": true,
+    "verify_download_disabled": true,
+    "stops_before_runner": true,
+    "ready_false": true,
+    "real_runner_not_called": true
+  },
+  "input_evidence": {
+    "readiness_currently_blocked": true,
+    "blockers_summary_go_no_go_blocked": true
+  },
+  "blocking": [
+    "授权后安全预检模板已通过；默认不联网、不上传、不运行真实 runner。"
+  ]
+}

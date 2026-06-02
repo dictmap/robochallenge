@@ -29,6 +29,7 @@ REQUIRED_ARTIFACTS = [
     "submission/submission_manifest_template.json",
     "submission/run_table30v2_aloha_demo_template.sh",
     "submission/run_table30v2_aloha_lora_demo_template.sh",
+    "submission/run_authorized_preflight_template.sh",
     "reports/pi05_base_repro.md",
     "reports/pi06_pi07_public_release_audit.md",
     "reports/table30_vs_table30v2.md",
@@ -47,6 +48,7 @@ REQUIRED_ARTIFACTS = [
     "reports/real_submission_readiness_scenarios.md",
     "reports/submission_env_template_audit.md",
     "reports/notebook_structure_audit.md",
+    "reports/authorized_preflight_template_audit.md",
     "reports/submission_handoff_docs_audit.md",
     "reports/authorized_submission_sequence_audit.md",
     "reports/submission_preflight_bundle.md",
@@ -145,6 +147,7 @@ def build_status() -> dict[str, Any]:
 
     preflight = read_json(RUNS_DIR / "submission_preflight_bundle.json")
     notebook_structure = read_json(RUNS_DIR / "notebook_structure_audit.json")
+    authorized_preflight = read_json(RUNS_DIR / "authorized_preflight_template_audit.json")
     readiness = read_json(RUNS_DIR / "real_submission_readiness.json")
     env_template = read_json(RUNS_DIR / "submission_env_template_audit.json")
     secret_scan = read_json(RUNS_DIR / "plaintext_secret_scan.json")
@@ -153,6 +156,7 @@ def build_status() -> dict[str, Any]:
         "preflight_passed": preflight.get("passed") is True,
         "preflight_go_no_go_blocked": preflight.get("go_no_go") == "blocked",
         "notebook_structure_passed": notebook_structure.get("passed") is True,
+        "authorized_preflight_template_passed": authorized_preflight.get("passed") is True,
         "readiness_currently_blocked": readiness.get("ready_for_real_submission") is False,
         "env_template_passed": env_template.get("passed") is True,
         "secret_scan_passed": secret_scan.get("passed") is True,
@@ -160,19 +164,21 @@ def build_status() -> dict[str, Any]:
     }
     leak_flags = {
         "credentials_printed": any(
-            bool(item.get("credentials_printed")) for item in [preflight, notebook_structure, readiness, env_template]
+            bool(item.get("credentials_printed"))
+            for item in [preflight, notebook_structure, authorized_preflight, readiness, env_template]
         ),
-        "link_values_printed": bool(preflight.get("leak_flags", {}).get("link_values_printed")),
+        "link_values_printed": bool(preflight.get("leak_flags", {}).get("link_values_printed"))
+        or bool(authorized_preflight.get("link_values_printed")),
         "secret_values_printed": bool(secret_scan.get("secret_values_printed")),
     }
     contact_flags = {
         "platform_contacted": any(
             bool(item.get("platform_contacted"))
-            for item in [preflight, notebook_structure, readiness, env_template, secret_scan]
+            for item in [preflight, notebook_structure, authorized_preflight, readiness, env_template, secret_scan]
         ),
         "uploads_performed": any(
             bool(item.get("uploads_performed") or item.get("upload_performed"))
-            for item in [preflight, notebook_structure, readiness, env_template, secret_scan]
+            for item in [preflight, notebook_structure, authorized_preflight, readiness, env_template, secret_scan]
         ),
         "download_host_contacted": bool(preflight.get("contact_flags", {}).get("download_host_contacted")),
     }

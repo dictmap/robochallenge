@@ -13,6 +13,7 @@ python3 scripts/create_checkpoint_archive.py
 python3 scripts/audit_checkpoint_link_intake.py
 python3 scripts/audit_real_submission_readiness.py
 python3 scripts/audit_submission_blockers_summary.py
+bash submission/run_authorized_preflight_template.sh
 ```
 
 预期状态：在没有真实凭据和 checkpoint link 时，`go_no_go=blocked`，`ready_for_real_submission=false`，`link_shape_ready=false`，并且所有审计都不得打印凭据或链接明文。
@@ -60,6 +61,7 @@ source submission/robochallenge_env.local.sh
 ```bash
 python3 scripts/audit_checkpoint_link_intake.py
 python3 scripts/audit_real_submission_readiness.py
+bash submission/run_authorized_preflight_template.sh
 ```
 
 只有当 link intake 接受真实链接形态，且 readiness gate 显示可进入真实提交时，才继续。

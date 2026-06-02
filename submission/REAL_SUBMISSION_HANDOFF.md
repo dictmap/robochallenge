@@ -18,6 +18,7 @@
 ```bash
 python3 scripts/audit_authorized_submission_sequence.py
 python3 scripts/audit_submission_blockers_summary.py
+python3 scripts/audit_authorized_preflight_template.py
 ```
 
 先在 Linux 仓库根目录执行：
@@ -48,6 +49,12 @@ source submission/robochallenge_env.local.sh
 
 ```bash
 python3 scripts/audit_real_submission_readiness.py
+```
+
+也可以直接运行授权后安全预检模板。该脚本会 source 本地 env 副本，默认只做离线 link/readiness/blockers 检查；只有 readiness 通过时才执行对应 runner 的 `ROBOCHALLENGE_DRY_RUN=1`，不会启动真实 runner：
+
+```bash
+bash submission/run_authorized_preflight_template.sh
 ```
 
 如果 gate 显示 LoRA runner 已就绪，先做不连接平台的 dry-run。该命令只打印 checkpoint 长度、prompt 长度和凭据长度，不会打印 token、submission id、checkpoint/link 明文，也不会调用 `demo.py`：

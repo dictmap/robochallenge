@@ -29,6 +29,7 @@
 - `notebook_structure`：returncode=`0`，passed=`True`。
 - `submission_artifact_manifest`：returncode=`0`，passed=`True`。
 - `real_submission_readiness`：returncode=`0`，passed=`True`。
+- `authorized_preflight_template`：returncode=`0`，passed=`True`。
 - `submission_handoff_docs`：returncode=`0`，passed=`True`。
 - `plaintext_secret_scan`：returncode=`0`，passed=`True`。
 

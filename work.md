@@ -1210,3 +1210,31 @@
 ### 下一步
 
 - P0：提交并推送本轮 Notebook 结构审计产物。
+
+## 2026-06-02 第四十三轮：授权后安全预检模板审计
+
+### 已完成
+
+- 新增 `submission/run_authorized_preflight_template.sh`，用于用户补齐 token、submission id、checkpoint link 后先做安全预检；默认不联网、不上传、不运行真实 runner。
+- 新增 `scripts/audit_authorized_preflight_template.py`，审计模板片段、`bash -n`、明文凭据模式和无凭据 smoke。
+- 修复模板中的自引用审计问题：`audit_submission_blockers_summary.py` 的返回码会延后处理，未 ready 时仍能安全停在 dry-run 前。
+- `submission/REAL_SUBMISSION_HANDOFF.md` 和 `submission/AUTHORIZED_SUBMISSION_SEQUENCE.md` 已加入授权后安全预检命令。
+- `scripts/audit_submission_preflight_bundle.py`、`scripts/audit_submission_artifact_manifest.py`、`scripts/audit_submission_blockers_summary.py`、`scripts/audit_submission_handoff_docs.py`、`scripts/audit_authorized_submission_sequence.py` 和 `scripts/validate_repro_workspace.py` 已纳入该模板审计证据。
+
+### 验证结果
+
+- Linux 端 `python3 scripts/audit_authorized_preflight_template.py` 已通过：`passed=true`，`bash_n.passed=true`。
+- 无凭据 smoke 已通过：`env_file_present_false=true`，`verify_download_disabled=true`，`ready_false=true`，`stops_before_runner=true`，`real_runner_not_called=true`。
+- Linux 端提交材料审计链已通过：authorized sequence、handoff docs、Notebook structure、plaintext secrets、preflight bundle、artifact manifest、blockers summary 均为通过状态。
+- Linux 端 `python3 scripts/validate_repro_workspace.py` 已通过，并新增输出“授权后安全预检模板审计已通过”。
+- Linux 端 `git diff --check` 已通过。
+
+### 当前边界
+
+- 本轮只压缩并审计“用户授权后”的安全预检入口，不接触 RoboChallenge 平台，不上传 checkpoint，不生成大 tar，不读取或伪造真实凭据。
+- 真实提交仍需要 `ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、真实可访问 checkpoint link，以及用户对 12GB+ checkpoint 归档/上传的明确授权。
+
+### 下一步
+
+- P0：提交并推送本轮授权后安全预检模板产物。
+- P1：用户提供真实凭据和 checkpoint link 后，先运行 `bash submission/run_authorized_preflight_template.sh`；只有 readiness 为 true 且 dry-run 通过后，才进入真实 runner。

@@ -22,6 +22,7 @@
 - `python3 scripts/audit_checkpoint_link_intake.py`：`True`。
 - `python3 scripts/audit_real_submission_readiness.py`：`True`。
 - `python3 scripts/audit_submission_blockers_summary.py`：`True`。
+- `bash submission/run_authorized_preflight_template.sh`：`True`。
 - `python3 scripts/create_checkpoint_archive.py --execute --confirm-create-large-archive`：`True`。
 - `ROBOCHALLENGE_DRY_RUN=1 bash submission/run_table30v2_aloha_lora_demo_template.sh`：`True`。
 - `bash submission/run_table30v2_aloha_lora_demo_template.sh`：`True`。
@@ -60,6 +61,8 @@
 - `blockers_summary_passed`：`True`。
 - `blockers_summary_go_no_go_blocked`：`True`。
 - `blockers_summary_ready_false`：`True`。
+- `authorized_preflight_template_passed`：`True`。
+- `authorized_preflight_no_credentials_smoke_passed`：`True`。
 - `plaintext_scan_passed`：`True`。
 - `plaintext_hit_count_zero`：`True`。
 - `handoff_docs_passed`：`True`。

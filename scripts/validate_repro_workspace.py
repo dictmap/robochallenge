@@ -53,6 +53,7 @@ REQUIRED = [
     "reports/submission_preflight_bundle.md",
     "reports/submission_env_template_audit.md",
     "reports/notebook_structure_audit.md",
+    "reports/authorized_preflight_template_audit.md",
     "reports/submission_artifact_manifest.md",
     "reports/submission_blockers_summary.md",
     "reports/plaintext_secret_scan.md",
@@ -92,6 +93,7 @@ REQUIRED = [
     "runs/submission_preflight_bundle.json",
     "runs/submission_env_template_audit.json",
     "runs/notebook_structure_audit.json",
+    "runs/authorized_preflight_template_audit.json",
     "runs/submission_artifact_manifest.json",
     "runs/submission_blockers_summary.json",
     "runs/plaintext_secret_scan.json",
@@ -103,6 +105,7 @@ REQUIRED = [
     "submission/submission_manifest_template.json",
     "submission/run_table30v2_aloha_demo_template.sh",
     "submission/run_table30v2_aloha_lora_demo_template.sh",
+    "submission/run_authorized_preflight_template.sh",
     "scripts/probe_pi05_base_model.sh",
     "scripts/audit_pi06_pi07_public_release.py",
     "scripts/audit_table30v2_aloha_mapping.py",
@@ -129,6 +132,7 @@ REQUIRED = [
     "scripts/audit_submission_preflight_bundle.py",
     "scripts/audit_submission_env_template.py",
     "scripts/audit_notebook_structure.py",
+    "scripts/audit_authorized_preflight_template.py",
     "scripts/audit_submission_artifact_manifest.py",
     "scripts/audit_submission_blockers_summary.py",
     "scripts/audit_plaintext_secrets.py",
@@ -972,6 +976,34 @@ def main() -> int:
     ):
         print("Notebook 结构与编码审计未通过")
         return 1
+    authorized_preflight = json.loads((ROOT / "runs/authorized_preflight_template_audit.json").read_text(encoding="utf-8"))
+    authorized_preflight_smoke = authorized_preflight.get("no_credentials_smoke", {})
+    if not all(
+        [
+            authorized_preflight.get("kind") == "authorized_preflight_template_audit",
+            authorized_preflight.get("passed"),
+            authorized_preflight.get("platform_contacted") is False,
+            authorized_preflight.get("uploads_performed") is False,
+            authorized_preflight.get("credentials_read") is False,
+            authorized_preflight.get("credentials_printed") is False,
+            authorized_preflight.get("link_values_printed") is False,
+            authorized_preflight.get("secret_values_printed") is False,
+            authorized_preflight.get("template_path") == "submission/run_authorized_preflight_template.sh",
+            authorized_preflight.get("bash_n", {}).get("passed"),
+            all(authorized_preflight.get("required_fragments", {}).values()),
+            not any(authorized_preflight.get("forbidden_fragments", {}).values()),
+            authorized_preflight.get("secret_patterns_found") == [],
+            authorized_preflight_smoke.get("passed"),
+            authorized_preflight_smoke.get("env_file_present_false"),
+            authorized_preflight_smoke.get("verify_download_disabled"),
+            authorized_preflight_smoke.get("stops_before_runner"),
+            authorized_preflight_smoke.get("ready_false"),
+            authorized_preflight_smoke.get("real_runner_not_called"),
+            all(authorized_preflight.get("input_evidence", {}).values()),
+        ]
+    ):
+        print("授权后安全预检模板审计未通过")
+        return 1
     artifact_manifest = json.loads((ROOT / "runs/submission_artifact_manifest.json").read_text(encoding="utf-8"))
     artifact_inputs = artifact_manifest.get("inputs", {})
     artifact_leaks = artifact_manifest.get("leak_flags", {})
@@ -1013,6 +1045,7 @@ def main() -> int:
         "notebook_structure",
         "submission_artifact_manifest",
         "real_submission_readiness",
+        "authorized_preflight_template",
         "submission_handoff_docs",
         "plaintext_secret_scan",
     }
@@ -1246,6 +1279,7 @@ def main() -> int:
     print("真实提交交接文档审计已通过")
     print("真实提交环境变量模板审计已通过")
     print("Notebook 结构与编码审计已通过")
+    print("授权后安全预检模板审计已通过")
     print("提交准备材料 manifest 审计已通过")
     print("真实提交前预检汇总已通过")
     print("真实提交阻塞项摘要已通过")

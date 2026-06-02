@@ -14,6 +14,7 @@
   "path_mentions": {
     "submission/run_table30v2_aloha_demo_template.sh": true,
     "submission/run_table30v2_aloha_lora_demo_template.sh": true,
+    "submission/run_authorized_preflight_template.sh": true,
     "submission/AUTHORIZED_SUBMISSION_SEQUENCE.md": true,
     "submission/robochallenge_env_template.sh": true,
     "runs/openpi_rtc_lora_materialized_policy_checkpoint": true,
@@ -24,6 +25,7 @@
     "scripts/audit_submission_env_template.py": true,
     "scripts/audit_submission_artifact_manifest.py": true,
     "scripts/audit_submission_blockers_summary.py": true,
+    "scripts/audit_authorized_preflight_template.py": true,
     "scripts/audit_real_submission_readiness.py": true,
     "scripts/audit_submission_preflight_bundle.py": true
   },
@@ -34,6 +36,8 @@
     "submission_env_template": true,
     "submission_artifact_manifest": true,
     "submission_blockers_summary": true,
+    "authorized_preflight_template": true,
+    "authorized_preflight_runner": true,
     "submission_preflight_bundle": true,
     "authorized_submission_sequence": true,
     "readiness_gate": true,

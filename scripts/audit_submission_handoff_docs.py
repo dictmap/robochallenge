@@ -28,6 +28,7 @@ REQUIRED_ENV_KEYS = [
 REQUIRED_PATHS = [
     "submission/run_table30v2_aloha_demo_template.sh",
     "submission/run_table30v2_aloha_lora_demo_template.sh",
+    "submission/run_authorized_preflight_template.sh",
     "submission/AUTHORIZED_SUBMISSION_SEQUENCE.md",
     "submission/robochallenge_env_template.sh",
     "runs/openpi_rtc_lora_materialized_policy_checkpoint",
@@ -38,6 +39,7 @@ REQUIRED_PATHS = [
     "scripts/audit_submission_env_template.py",
     "scripts/audit_submission_artifact_manifest.py",
     "scripts/audit_submission_blockers_summary.py",
+    "scripts/audit_authorized_preflight_template.py",
     "scripts/audit_real_submission_readiness.py",
     "scripts/audit_submission_preflight_bundle.py",
 ]
@@ -49,6 +51,8 @@ REQUIRED_COMMAND_FRAGMENTS = {
     "submission_env_template": "python3 scripts/audit_submission_env_template.py",
     "submission_artifact_manifest": "python3 scripts/audit_submission_artifact_manifest.py",
     "submission_blockers_summary": "python3 scripts/audit_submission_blockers_summary.py",
+    "authorized_preflight_template": "python3 scripts/audit_authorized_preflight_template.py",
+    "authorized_preflight_runner": "bash submission/run_authorized_preflight_template.sh",
     "submission_preflight_bundle": "python3 scripts/audit_submission_preflight_bundle.py",
     "authorized_submission_sequence": "python3 scripts/audit_authorized_submission_sequence.py",
     "readiness_gate": "python3 scripts/audit_real_submission_readiness.py",

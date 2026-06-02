@@ -17,6 +17,7 @@
 - 已跑通 LoRA reduced 数值前向：`bfloat16`、1-copy、`max_token_len=64`、`action_horizon=10` 下 `forward.passed=true`，见 `reports/openpi_rtc_lora_numeric_forward_reduced.md`。
 - 已跑通 LoRA reduced trainable-filter 反向与 scoped checkpoint dry-run：`lora_grad.passed=true`，远端写出 `runs/openpi_rtc_lora_grad_checkpoint/trainable_params_step1.npz`，见 `reports/openpi_rtc_lora_numeric_grad_reduced.md`。
 - 已将 LoRA scoped checkpoint 物化为本地完整 policy checkpoint，`create_trained_policy` 加载 smoke 通过，并新增 LoRA `demo.py` runner 模板，见 `reports/openpi_rtc_lora_materialized_policy_smoke.md` 和 `submission/run_table30v2_aloha_lora_demo_template.sh`。
+- 已新增 LoRA checkpoint 导出就绪审计，确认本地 12GB+ checkpoint 具备打包/上传前置条件，但真实上传和 checkpoint link 仍需要用户授权，见 `reports/lora_checkpoint_export_readiness.md`。
 - Linux 上已有 RoboChallenge pi0.5 多任务 baseline：`/home/yjl/yjl/RoboChallenge/baseline_pi05_multitask`。
 - 已有 ALOHA checkpoint：`/home/yjl/yjl/RoboChallenge/checkpoints/table30v2_multitask_baseline_aloha`。
 - 核心操作已经写入中文 Jupyter：`notebooks/robochallenge_pi05_submit_cn.ipynb`。
@@ -60,6 +61,7 @@
 - `reports/openpi_rtc_lora_numeric_grad_reduced.md`：LoRA reduced trainable-filter grad 与 scoped checkpoint dry-run 结果。
 - `reports/openpi_rtc_lora_inference_checkpoint_materialize.md`：LoRA 完整推理 checkpoint 物化结果。
 - `reports/openpi_rtc_lora_materialized_policy_smoke.md`：LoRA 完整物化 checkpoint 的 `create_trained_policy` 加载 smoke 结果。
+- `reports/lora_checkpoint_export_readiness.md`：LoRA 完整物化 checkpoint 的导出/上传前置条件审计。
 - `reports/robochallenge_submission_package_checklist.md`：RoboChallenge 提交包清单、入口参数、凭据缺口和链接位说明。
 - `runs/table30v2_aloha_dry_run_status.json`：dry-run converter 的机器可读状态。
 - `runs/table30v2_aloha_dry_run_samples.jsonl`：5 帧抽样的 LeRobot-like schema 与数值摘要。
@@ -77,6 +79,7 @@
 - `runs/openpi_rtc_lora_numeric_grad_reduced_status.json`：LoRA reduced trainable-filter grad/checkpoint smoke 机器可读状态。
 - `runs/openpi_rtc_lora_inference_checkpoint_materialize_status.json`：LoRA 完整推理 checkpoint 物化机器可读状态。
 - `runs/openpi_rtc_lora_materialized_policy_smoke_status.json`：LoRA 完整物化 checkpoint 加载 smoke 机器可读状态。
+- `runs/lora_checkpoint_export_readiness.json`：LoRA checkpoint 导出就绪机器可读状态。
 - `runs/robochallenge_submission_package_audit.json`：提交包清单和启动模板的机器可读审计状态。
 - `submission/submission_manifest_template.json`：不含明文凭据的提交 manifest 模板。
 - `submission/run_table30v2_aloha_demo_template.sh`：Table30v2 ALOHA baseline 的 `demo.py` 启动模板。
@@ -90,6 +93,7 @@
 - `scripts/audit_openpi_rtc_train_entry.py`：审计 `openpi_rtc` 训练入口并运行抽象 `train_step` 前向/反向 shape smoke。
 - `scripts/run_openpi_rtc_numeric_dry_run.py`：分阶段运行 `openpi_rtc` 数值 dry-run，支持权重预检、forward、grad、head_grad 和低显存覆盖参数。
 - `scripts/audit_openpi_rtc_lora_path.py`：审计 `openpi_rtc` LoRA 低显存路线并验证 `pi05_base` 权重合并。
+- `scripts/audit_lora_checkpoint_export_readiness.py`：审计 LoRA 完整物化 checkpoint 是否具备导出/上传前置条件。
 - `scripts/audit_robochallenge_submission_package.py`：生成并审计提交包清单、manifest 和无凭据启动模板。
 - `scripts/run_pi05_base_download_background.sh`：后台下载 `pi05_base` 的辅助脚本。
 - `scripts/run_pi05_base_load_smoke_background.sh`：后台执行参数读取 smoke 的辅助脚本。
@@ -98,7 +102,7 @@
 
 ## 下一轮 P0
 
-1. 将本地 `runs/openpi_rtc_lora_materialized_policy_checkpoint` 上传或挂载成 RoboChallenge 网站可访问的 checkpoint link；仓库本身不会提交 12GB+ 权重目录。
+1. 用户选择并授权一个 RoboChallenge 评测端可访问的存储位置，把 `runs/openpi_rtc_lora_materialized_policy_checkpoint` 打包上传成 checkpoint link；仓库本身不会提交 12GB+ 权重目录。
 2. 若继续走当前可运行提交路线，等待用户提供 `ROBOCHALLENGE_USER_TOKEN` 和 `ROBOCHALLENGE_SUBMISSION_ID` 后，再分别运行 baseline runner 和 LoRA runner 做真实提交入口验证。
 3. 若目标改回原始 Table30，先补原始 Table30 数据/配置入口；不能把当前 Table30v2 ALOHA 证据当作 Table30 原榜单证据。
 
@@ -135,3 +139,11 @@
 - `scripts/audit_robochallenge_submission_package.py` 现在同时生成 baseline runner 和 LoRA runner，并对二者执行 `bash -n` 与无凭据 fail-fast 检查。
 - `scripts/validate_repro_workspace.py` 已把 LoRA runner、manifest 双 runner 字段和无明文凭据检查纳入最低交接验证。
 - 真实提交仍等待用户提供 `ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`，以及 LoRA checkpoint 的网站可访问链接。
+
+## 2026-06-02 LoRA checkpoint 导出就绪更新
+
+- 已新增 `scripts/audit_lora_checkpoint_export_readiness.py`。
+- 已生成 `reports/lora_checkpoint_export_readiness.md` 和 `runs/lora_checkpoint_export_readiness.json`。
+- 审计目标是本地 `runs/openpi_rtc_lora_materialized_policy_checkpoint`：检查 Orbax params metadata、manifest、norm stats、数据 shard、总大小和 Git 忽略状态。
+- 报告给出可手动执行的本地 tar/sha256 命令；默认不自动打包 12GB+ 文件，也不上传到任何外部服务。
+- 当前本地导出就绪，但网站提交仍需要真实 checkpoint link、`ROBOCHALLENGE_USER_TOKEN` 和 `ROBOCHALLENGE_SUBMISSION_ID`。

@@ -1,0 +1,127 @@
+{
+  "kind": "lora_checkpoint_export_readiness",
+  "passed": true,
+  "local_export_ready": true,
+  "web_submission_ready": false,
+  "checkpoint_dir": "runs/openpi_rtc_lora_materialized_policy_checkpoint",
+  "required_files": [
+    {
+      "path": "runs/openpi_rtc_lora_materialized_policy_checkpoint/params/_METADATA",
+      "exists": true,
+      "size_bytes": 28345,
+      "size_human": "27.68 KB"
+    },
+    {
+      "path": "runs/openpi_rtc_lora_materialized_policy_checkpoint/params/_CHECKPOINT_METADATA",
+      "exists": true,
+      "size_bytes": 258,
+      "size_human": "258.00 B"
+    },
+    {
+      "path": "runs/openpi_rtc_lora_materialized_policy_checkpoint/params/manifest.ocdbt",
+      "exists": true,
+      "size_bytes": 118,
+      "size_human": "118.00 B"
+    },
+    {
+      "path": "runs/openpi_rtc_lora_materialized_policy_checkpoint/params/ocdbt.process_0/manifest.ocdbt",
+      "exists": true,
+      "size_bytes": 539,
+      "size_human": "539.00 B"
+    },
+    {
+      "path": "runs/openpi_rtc_lora_materialized_policy_checkpoint/assets/cvpr_multitask_aloha/norm_stats.json",
+      "exists": true,
+      "size_bytes": 3452,
+      "size_human": "3.37 KB"
+    }
+  ],
+  "inventory": {
+    "file_count": 18,
+    "dir_count": 6,
+    "total_size_bytes": 11879949503,
+    "total_size_human": "11.06 GB",
+    "largest_files": [
+      {
+        "path": "params/ocdbt.process_0/d/c230cdef20308244d8966b0378828d28",
+        "size_bytes": 2498058166,
+        "size_human": "2.33 GB"
+      },
+      {
+        "path": "params/ocdbt.process_0/d/0f9a64a5e24d82eab428ba2d781a631c",
+        "size_bytes": 2497629139,
+        "size_human": "2.33 GB"
+      },
+      {
+        "path": "params/ocdbt.process_0/d/ea0eb1da0b1de430d7b9540e7446e9cc",
+        "size_bytes": 2240306606,
+        "size_human": "2.09 GB"
+      },
+      {
+        "path": "params/ocdbt.process_0/d/ea277db0c77abb39d8748fad4dbdd60f",
+        "size_bytes": 1957002178,
+        "size_human": "1.82 GB"
+      },
+      {
+        "path": "params/ocdbt.process_0/d/5047410dcf11cdce9de44cfb044a0fe7",
+        "size_bytes": 1262632503,
+        "size_human": "1.18 GB"
+      },
+      {
+        "path": "params/ocdbt.process_0/d/d9e48255aa77ab30ba91b7dadddedd62",
+        "size_bytes": 834370169,
+        "size_human": "795.72 MB"
+      },
+      {
+        "path": "params/ocdbt.process_0/d/f6a9cd18b93097e1b73f86ca8e3858fa",
+        "size_bytes": 349949765,
+        "size_human": "333.74 MB"
+      },
+      {
+        "path": "params/ocdbt.process_0/d/f159d091fe1d1b4d3b69f71cbd8557c6",
+        "size_bytes": 144939937,
+        "size_human": "138.23 MB"
+      },
+      {
+        "path": "params/ocdbt.process_0/d/42a081e7991955a76ae1b67d122f30f7",
+        "size_bytes": 95020445,
+        "size_human": "90.62 MB"
+      },
+      {
+        "path": "params/_METADATA",
+        "size_bytes": 28345,
+        "size_human": "27.68 KB"
+      },
+      {
+        "path": "params/ocdbt.process_0/d/aad9216614f8c61b4a9d5c180807e9f4",
+        "size_bytes": 3684,
+        "size_human": "3.60 KB"
+      },
+      {
+        "path": "assets/cvpr_multitask_aloha/norm_stats.json",
+        "size_bytes": 3452,
+        "size_human": "3.37 KB"
+      }
+    ],
+    "params_data_file_count": 13
+  },
+  "git_ignore": {
+    "path": "runs/openpi_rtc_lora_materialized_policy_checkpoint/params/_METADATA",
+    "ignored": true,
+    "stdout": ".gitignore:20:runs/*checkpoint*/\truns/openpi_rtc_lora_materialized_policy_checkpoint/params/_METADATA",
+    "stderr": ""
+  },
+  "recommended_local_archive": {
+    "path": "runs/openpi_rtc_lora_materialized_policy_checkpoint.tar",
+    "git_ignored_by_pattern": "*.tar",
+    "create_command": "tar -C runs -cf runs/openpi_rtc_lora_materialized_policy_checkpoint.tar openpi_rtc_lora_materialized_policy_checkpoint",
+    "hash_command": "sha256sum runs/openpi_rtc_lora_materialized_policy_checkpoint.tar > runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.sha256",
+    "note": "默认不自动打包 12GB+ checkpoint；只有需要上传时再手动执行。"
+  },
+  "upload_blocking": [
+    "需要用户选择并授权可公开或评测端可访问的存储位置。",
+    "需要用户提供真实 ROBOCHALLENGE_USER_TOKEN。",
+    "需要用户提供真实 ROBOCHALLENGE_SUBMISSION_ID。",
+    "上传后需要把真实 checkpoint link 填回 RoboChallenge 网站；本脚本不会伪造链接。"
+  ]
+}

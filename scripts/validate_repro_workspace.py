@@ -38,6 +38,7 @@ REQUIRED = [
     "reports/openpi_rtc_lora_inference_checkpoint_layout.md",
     "reports/openpi_rtc_lora_inference_checkpoint_materialize.md",
     "reports/openpi_rtc_lora_materialized_policy_smoke.md",
+    "reports/lora_checkpoint_export_readiness.md",
     "reports/robochallenge_submission_package_checklist.md",
     "runs/pi05_base_probe_status.json",
     "runs/pi06_pi07_public_audit.json",
@@ -59,6 +60,7 @@ REQUIRED = [
     "runs/openpi_rtc_lora_inference_checkpoint_layout_audit.json",
     "runs/openpi_rtc_lora_inference_checkpoint_materialize_status.json",
     "runs/openpi_rtc_lora_materialized_policy_smoke_status.json",
+    "runs/lora_checkpoint_export_readiness.json",
     "runs/robochallenge_submission_package_audit.json",
     "submission/README.md",
     "submission/submission_manifest_template.json",
@@ -75,6 +77,7 @@ REQUIRED = [
     "scripts/audit_openpi_rtc_lora_checkpoint_restore.py",
     "scripts/audit_openpi_rtc_lora_inference_checkpoint_layout.py",
     "scripts/smoke_openpi_rtc_materialized_policy.py",
+    "scripts/audit_lora_checkpoint_export_readiness.py",
     "scripts/audit_robochallenge_submission_package.py",
 ]
 
@@ -499,6 +502,33 @@ def main() -> int:
     ):
         print("openpi_rtc LoRA 完整物化 policy 加载 smoke 未通过")
         return 1
+    lora_export = json.loads(
+        (ROOT / "runs/lora_checkpoint_export_readiness.json").read_text(encoding="utf-8")
+    )
+    lora_export_inventory = lora_export.get("inventory", {})
+    lora_export_required = {item.get("path"): item for item in lora_export.get("required_files", [])}
+    expected_export_files = [
+        "runs/openpi_rtc_lora_materialized_policy_checkpoint/params/_METADATA",
+        "runs/openpi_rtc_lora_materialized_policy_checkpoint/params/_CHECKPOINT_METADATA",
+        "runs/openpi_rtc_lora_materialized_policy_checkpoint/params/manifest.ocdbt",
+        "runs/openpi_rtc_lora_materialized_policy_checkpoint/params/ocdbt.process_0/manifest.ocdbt",
+        "runs/openpi_rtc_lora_materialized_policy_checkpoint/assets/cvpr_multitask_aloha/norm_stats.json",
+    ]
+    if not all(
+        [
+            lora_export.get("passed"),
+            lora_export.get("local_export_ready"),
+            lora_export.get("web_submission_ready") is False,
+            lora_export.get("checkpoint_dir") == "runs/openpi_rtc_lora_materialized_policy_checkpoint",
+            lora_export.get("git_ignore", {}).get("ignored"),
+            lora_export_inventory.get("total_size_bytes", 0) > 10 * 1024**3,
+            lora_export_inventory.get("params_data_file_count", 0) > 0,
+            all(lora_export_required.get(path, {}).get("exists") for path in expected_export_files),
+            "tar -C runs -cf" in lora_export.get("recommended_local_archive", {}).get("create_command", ""),
+        ]
+    ):
+        print("LoRA checkpoint 导出就绪审计未通过")
+        return 1
     if not all(
         [
             lora_grad.get("mode") == "lora_grad",
@@ -623,6 +653,7 @@ def main() -> int:
     print("openpi_rtc LoRA 推理 checkpoint 物化布局审计已通过")
     print("openpi_rtc LoRA 完整推理 checkpoint 物化已通过")
     print("openpi_rtc LoRA 完整物化 policy 加载 smoke 已通过")
+    print("LoRA checkpoint 导出就绪审计已通过")
     return 0
 
 

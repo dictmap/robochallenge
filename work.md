@@ -595,3 +595,34 @@
 
 - P0：同步到 Linux 后重跑提交包审计、workspace validator、notebook preflight 和 secret scan，并提交推送。
 - P1：用户提供凭据和 checkpoint link 后，再运行 baseline/LoRA runner 进入真实评测入口。
+
+## 2026-06-02 第二十一轮：LoRA checkpoint 导出就绪审计
+
+### 已完成
+
+- 新增 `scripts/audit_lora_checkpoint_export_readiness.py`，用于审计本地 LoRA 完整物化 checkpoint 是否具备上传/导出前置条件。
+- 审计对象为 `runs/openpi_rtc_lora_materialized_policy_checkpoint`。
+- 检查必需文件：`params/_METADATA`、`params/_CHECKPOINT_METADATA`、`params/manifest.ocdbt`、`params/ocdbt.process_0/manifest.ocdbt` 和 `assets/cvpr_multitask_aloha/norm_stats.json`。
+- 检查 checkpoint 总大小、参数数据 shard 数量、最大文件抽样和 `.gitignore` 排除状态。
+- 报告给出手动 tar 与 sha256 命令；默认不打包 12GB+ 文件，不上传外部服务，不写入任何 token。
+- 已将导出就绪审计纳入 `scripts/validate_repro_workspace.py`。
+
+### 验证结果
+
+- 导出就绪审计：`passed=true`，`local_export_ready=true`，`web_submission_ready=false`。
+- checkpoint 文件数量：`18`；目录数量：`6`；总大小：`11.06 GB`。
+- 参数数据 shard 数量：`13`。
+- 必需文件全部存在：`params/_METADATA`、`params/_CHECKPOINT_METADATA`、`params/manifest.ocdbt`、`params/ocdbt.process_0/manifest.ocdbt`、`assets/cvpr_multitask_aloha/norm_stats.json`。
+- `.gitignore` 命中 `runs/*checkpoint*/`，完整 checkpoint 不会进入 Git。
+- 远端 `python3 scripts/validate_repro_workspace.py` 已通过。
+
+### 当前边界
+
+- 本地 checkpoint 可以被 policy 加载，也具备导出前置结构，但还没有真实可访问 checkpoint link。
+- 真实上传需要用户选择并授权存储位置。
+- 真实提交仍需要 `ROBOCHALLENGE_USER_TOKEN` 和 `ROBOCHALLENGE_SUBMISSION_ID`。
+
+### 下一步
+
+- P0：运行 notebook preflight、secret scan 和 diff check 后提交推送。
+- P1：用户授权存储位置后，按报告命令打包、上传并回填 checkpoint link。

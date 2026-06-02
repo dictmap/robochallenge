@@ -2,9 +2,9 @@
   "kind": "submission_status_dashboard",
   "passed": true,
   "html_path": "reports/submission_status_dashboard.html",
-  "source_count": 12,
-  "card_count": 12,
-  "done_count": 7,
+  "source_count": 13,
+  "card_count": 13,
+  "done_count": 8,
   "blocked_count": 4,
   "watch_count": 1,
   "ready_for_real_submission": false,
@@ -18,6 +18,8 @@
   "archive_confirm_gate_passed": true,
   "archive_confirm_phrase": "CREATE_ROBOCHALLENGE_CHECKPOINT_ARCHIVE",
   "archive_no_confirm_blocks": true,
+  "authorized_execution_checklist_passed": true,
+  "authorized_execution_go_no_go": "blocked_by_user_inputs",
   "uploads_performed": false,
   "platform_contacted": false,
   "credentials_printed": false,
@@ -118,6 +120,14 @@
       "value": "顺序已固化",
       "detail": "link intake -> readiness -> dry-run -> real runner 的顺序已通过审计。",
       "report": "reports/authorized_submission_sequence_audit.md"
+    },
+    {
+      "title": "授权执行清单",
+      "state": "done",
+      "state_label": "已完成",
+      "value": "等待用户输入",
+      "detail": "模式确认、token、submission id、checkpoint link、归档授权和真实 runner 确认已整理成可复跑清单。",
+      "report": "reports/authorized_execution_checklist.md"
     },
     {
       "title": "明文凭据扫描",

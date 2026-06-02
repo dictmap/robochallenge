@@ -10,7 +10,7 @@
   "download_verified": false,
   "link_shape_ready": false,
   "secret_scan_hit_count": 0,
-  "secret_scan_scanned_files": 172,
+  "secret_scan_scanned_files": 175,
   "subcommands": {
     "checkpoint_link_intake": {
       "script": "scripts/audit_checkpoint_link_intake.py",
@@ -37,7 +37,7 @@
       "script": "scripts/audit_notebook_structure.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": "dentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"notebook_path\": \"notebooks/robochallenge_pi05_submit_cn.ipynb\",\n  \"nbformat\": 4,\n  \"nbformat_minor\": 5,\n  \"cell_count\": 87,\n  \"missing_id_indexes\": [],\n  \"duplicate_ids\": [],\n  \"code_cells_with_outputs\": [],\n  \"code_cells_with_execution_count\": [],\n  \"crlf_count\": 0,\n  \"bad_marker_hits\": [],\n  \"required_markers\": {\n    \"# RoboChallenge pi0.5 复现与提交操作手册\": true,\n    \"第 40 节：真实提交阻塞项摘要\": true,\n    \"RUN_SUBMISSION_BLOCKERS_SUMMARY\": true,\n    \"scripts/audit_submission_blockers_summary.py\": true,\n    \"第 41 节：强确认真实 runner 模板审计\": true,\n    \"RUN_READY_REAL_RUNNER_TEMPLATE_AUDIT\": true,\n    \"scripts/audit_ready_real_runner_template.py\": true,\n    \"第 42 节：授权后 checkpoint 归档模板审计\": true,\n    \"RUN_AUTHORIZED_CHECKPOINT_ARCHIVE_TEMPLATE_AUDIT\": true,\n    \"scripts/audit_authorized_checkpoint_archive_template.py\": true\n  },\n  \"blocking\": [\n    \"Notebook 结构、编码和提交阻塞项章节已通过静态审计。\"\n  ]\n}\n",
+      "stdout_tail": ": \"notebooks/robochallenge_pi05_submit_cn.ipynb\",\n  \"nbformat\": 4,\n  \"nbformat_minor\": 5,\n  \"cell_count\": 89,\n  \"missing_id_indexes\": [],\n  \"duplicate_ids\": [],\n  \"code_cells_with_outputs\": [],\n  \"code_cells_with_execution_count\": [],\n  \"crlf_count\": 0,\n  \"bad_marker_hits\": [],\n  \"required_markers\": {\n    \"# RoboChallenge pi0.5 复现与提交操作手册\": true,\n    \"第 40 节：真实提交阻塞项摘要\": true,\n    \"RUN_SUBMISSION_BLOCKERS_SUMMARY\": true,\n    \"scripts/audit_submission_blockers_summary.py\": true,\n    \"第 41 节：强确认真实 runner 模板审计\": true,\n    \"RUN_READY_REAL_RUNNER_TEMPLATE_AUDIT\": true,\n    \"scripts/audit_ready_real_runner_template.py\": true,\n    \"第 42 节：授权后 checkpoint 归档模板审计\": true,\n    \"RUN_AUTHORIZED_CHECKPOINT_ARCHIVE_TEMPLATE_AUDIT\": true,\n    \"scripts/audit_authorized_checkpoint_archive_template.py\": true,\n    \"第 43 节：授权执行清单审计\": true,\n    \"RUN_AUTHORIZED_EXECUTION_CHECKLIST\": true,\n    \"scripts/audit_authorized_execution_checklist.py\": true\n  },\n  \"blocking\": [\n    \"Notebook 结构、编码和提交阻塞项章节已通过静态审计。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "real_submission_readiness": {
@@ -79,14 +79,21 @@
       "script": "scripts/audit_plaintext_secrets.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": "{\n  \"kind\": \"plaintext_secret_scan\",\n  \"passed\": true,\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"secret_values_printed\": false,\n  \"scan_scope\": \"git tracked files plus unignored untracked files\",\n  \"scanned_files\": 172,\n  \"skipped_binary_files\": 0,\n  \"pattern_count\": 7,\n  \"hit_count\": 0,\n  \"hits\": [],\n  \"blocking\": [\n    \"如发现命中项，先移除明文凭据并轮换对应 token，再重新运行本审计。\",\n    \"本审计不替代真实平台权限检查；真实提交仍需要用户提供凭据。\"\n  ]\n}\n",
+      "stdout_tail": "{\n  \"kind\": \"plaintext_secret_scan\",\n  \"passed\": true,\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"secret_values_printed\": false,\n  \"scan_scope\": \"git tracked files plus unignored untracked files\",\n  \"scanned_files\": 175,\n  \"skipped_binary_files\": 0,\n  \"pattern_count\": 7,\n  \"hit_count\": 0,\n  \"hits\": [],\n  \"blocking\": [\n    \"如发现命中项，先移除明文凭据并轮换对应 token，再重新运行本审计。\",\n    \"本审计不替代真实平台权限检查；真实提交仍需要用户提供凭据。\"\n  ]\n}\n",
+      "stderr_tail": ""
+    },
+    "authorized_execution_checklist": {
+      "script": "scripts/audit_authorized_execution_checklist.py",
+      "returncode": 0,
+      "passed": true,
+      "stdout_tail": "secret_scan_clean\"\n  ],\n  \"required_evidence_passed\": true,\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false\n  },\n  \"blocking\": [\n    \"缺少 ROBOCHALLENGE_USER_TOKEN。\",\n    \"缺少 ROBOCHALLENGE_SUBMISSION_ID。\",\n    \"缺少真实可访问 checkpoint link；可使用 ROBOCHALLENGE_CHECKPOINT_LINK 或 ROBOCHALLENGE_LORA_CHECKPOINT_LINK 记录。\",\n    \"尚未执行 checkpoint 上传，本地 tar 文件也未生成。\",\n    \"缺少 checkpoint link；请设置 ROBOCHALLENGE_CHECKPOINT_LINK 或 ROBOCHALLENGE_LORA_CHECKPOINT_LINK。\",\n    \"缺少真实 checkpoint link；当前只能审计下载校验协议，不能联网验证。\",\n    \"未请求 --verify-download；本轮不联网、不下载、不接触 checkpoint link host。\",\n    \"需要用户提供真实 ROBOCHALLENGE_USER_TOKEN。\",\n    \"需要用户提供真实 ROBOCHALLENGE_SUBMISSION_ID。\",\n    \"需要确认本次要提交的是 Table30v2 ALOHA 还是原始 Table30；当前可运行链路是 Table30v2 ALOHA。\",\n    \"若要提交 LoRA 版本，还需要把本地 12GB+ checkpoint 放到网站可访问的 checkpoint link。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "submission_artifact_manifest": {
       "script": "scripts/audit_submission_artifact_manifest.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": " },\n    \"runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.part-aa\": {\n      \"path\": \"runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.part-aa\",\n      \"ignored\": true,\n      \"returncode\": 0\n    }\n  },\n  \"inputs\": {\n    \"preflight_status_available\": true,\n    \"preflight_go_no_go_blocked\": true,\n    \"notebook_structure_passed\": true,\n    \"authorized_preflight_template_passed\": true,\n    \"ready_real_runner_template_passed\": true,\n    \"authorized_checkpoint_archive_template_passed\": true,\n    \"readiness_currently_blocked\": true,\n    \"env_template_passed\": true,\n    \"secret_scan_passed\": true,\n    \"secret_scan_hit_count_zero\": true\n  },\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false\n  },\n  \"blocking\": [\n    \"提交准备材料 manifest 已完整；真实提交仍需要用户凭据、submission id 和 checkpoint link。\"\n  ]\n}\n",
+      "stdout_tail": "heckpoint.tar.part-aa\": {\n      \"path\": \"runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.part-aa\",\n      \"ignored\": true,\n      \"returncode\": 0\n    }\n  },\n  \"inputs\": {\n    \"preflight_status_available\": true,\n    \"preflight_go_no_go_blocked\": true,\n    \"notebook_structure_passed\": true,\n    \"authorized_preflight_template_passed\": true,\n    \"ready_real_runner_template_passed\": true,\n    \"authorized_checkpoint_archive_template_passed\": true,\n    \"authorized_execution_checklist_passed\": true,\n    \"readiness_currently_blocked\": true,\n    \"env_template_passed\": true,\n    \"secret_scan_passed\": true,\n    \"secret_scan_hit_count_zero\": true\n  },\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false\n  },\n  \"blocking\": [\n    \"提交准备材料 manifest 已完整；真实提交仍需要用户凭据、submission id 和 checkpoint link。\"\n  ]\n}\n",
       "stderr_tail": ""
     }
   },

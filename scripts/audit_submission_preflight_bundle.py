@@ -29,6 +29,7 @@ SUBCOMMANDS = [
     ("authorized_checkpoint_archive_template", "scripts/audit_authorized_checkpoint_archive_template.py"),
     ("submission_handoff_docs", "scripts/audit_submission_handoff_docs.py"),
     ("plaintext_secret_scan", "scripts/audit_plaintext_secrets.py"),
+    ("authorized_execution_checklist", "scripts/audit_authorized_execution_checklist.py"),
     ("submission_artifact_manifest", "scripts/audit_submission_artifact_manifest.py"),
 ]
 

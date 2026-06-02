@@ -1324,3 +1324,30 @@
 
 - P0：同步到 Linux 端，复跑提交材料审计链和总体验证后提交推送。
 - P1：用户补齐真实凭据和 checkpoint link 后，先运行 `bash submission/run_authorized_preflight_template.sh`；需要生成 checkpoint tar 时再显式设置 `ROBOCHALLENGE_ARCHIVE_CONFIRM=CREATE_ROBOCHALLENGE_CHECKPOINT_ARCHIVE`。
+
+## 2026-06-02 第四十七轮：授权执行清单与 Notebook 第 43 节
+
+### 已完成
+
+- 新增 `scripts/audit_authorized_execution_checklist.py`，把真实提交前需要用户确认或提供的内容整理成一份只读清单：提交对象确认、`ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、真实 checkpoint link、checkpoint 归档授权和真实 runner 强确认。
+- 新增机器可读产物 `runs/authorized_execution_checklist.json` 和中文报告 `reports/authorized_execution_checklist.md`。
+- Notebook `notebooks/robochallenge_pi05_submit_cn.ipynb` 新增第 43 节“授权执行清单审计”，可在 Jupyter 内直接复跑该清单审计。
+- `scripts/audit_submission_preflight_bundle.py`、`scripts/audit_submission_artifact_manifest.py`、`scripts/audit_submission_blockers_summary.py`、`scripts/audit_notebook_structure.py`、`scripts/render_submission_status_dashboard.py` 和 `scripts/validate_repro_workspace.py` 已纳入该清单。
+- GUI 面板新增“授权执行清单”卡片，显示当前清单已准备好，但仍等待用户输入。
+
+### 验证结果
+
+- Linux 端 `python3 scripts/audit_authorized_execution_checklist.py` 已通过：`passed=true`，`go_no_go=blocked_by_user_inputs`，`current_runnable_target=Table30v2 ALOHA`。
+- Notebook 结构审计已通过：`cell_count=89`，第 43 节标记、`RUN_AUTHORIZED_EXECUTION_CHECKLIST` 和 `scripts/audit_authorized_execution_checklist.py` 均存在，且无乱码哨兵命中。
+- Linux 端提交状态 GUI 已通过：`source_count=13`，`card_count=13`，`authorized_execution_checklist_passed=true`。
+- Linux 端最终审计链已通过：明文凭据扫描、Notebook 结构、授权执行清单、artifact manifest、preflight bundle、blockers summary、GUI 渲染、总体验证和 `git diff --check` 均通过。
+
+### 当前边界
+
+- 本轮仍不读取真实 token、不连接 RoboChallenge 平台、不上传 checkpoint、不生成 checkpoint tar、不启动真实 runner。
+- 真实提交仍处于阻塞状态：还缺用户确认提交对象、`ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、真实 checkpoint link，以及 checkpoint 归档/上传和真实 runner 的明确授权。
+
+### 下一步
+
+- P0：提交并推送本轮授权执行清单与 Notebook 第 43 节产物。
+- P1：用户补齐真实凭据和 checkpoint link 后，先在 Jupyter 第 43 节复跑授权执行清单，再运行 `bash submission/run_authorized_preflight_template.sh`。

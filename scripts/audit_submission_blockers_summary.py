@@ -75,6 +75,7 @@ def build_status() -> dict[str, Any]:
     authorized_preflight = read_json(RUNS_DIR / "authorized_preflight_template_audit.json")
     ready_real_runner = read_json(RUNS_DIR / "ready_real_runner_template_audit.json")
     authorized_archive = read_json(RUNS_DIR / "authorized_checkpoint_archive_template_audit.json")
+    authorized_execution = read_json(RUNS_DIR / "authorized_execution_checklist.json")
     artifact_manifest = read_json(RUNS_DIR / "submission_artifact_manifest.json")
     package = read_json(RUNS_DIR / "robochallenge_submission_package_audit.json")
     secret_scan = read_json(RUNS_DIR / "plaintext_secret_scan.json")
@@ -94,6 +95,7 @@ def build_status() -> dict[str, Any]:
         "authorized_preflight_template_ready": authorized_preflight.get("passed") is True,
         "ready_real_runner_template_ready": ready_real_runner.get("passed") is True,
         "authorized_checkpoint_archive_template_ready": authorized_archive.get("passed") is True,
+        "authorized_execution_checklist_ready": authorized_execution.get("passed") is True,
         "upload_channels_audited": upload_channels.get("passed") is True,
         "preflight_bundle_ready": preflight.get("passed") is True,
         "secret_scan_clean": secret_scan.get("passed") is True and secret_scan.get("hit_count") == 0,
@@ -102,26 +104,31 @@ def build_status() -> dict[str, Any]:
         "credentials_printed": bool(preflight.get("leak_flags", {}).get("credentials_printed"))
         or bool(readiness.get("credentials_printed"))
         or bool(ready_real_runner.get("credentials_printed"))
-        or bool(authorized_archive.get("credentials_printed")),
+        or bool(authorized_archive.get("credentials_printed"))
+        or bool(authorized_execution.get("credentials_printed")),
         "link_values_printed": bool(preflight.get("leak_flags", {}).get("link_values_printed"))
         or bool(link_intake.get("link_values_printed"))
         or bool(link_download.get("link_value_printed"))
         or bool(ready_real_runner.get("link_values_printed"))
-        or bool(authorized_archive.get("link_values_printed")),
+        or bool(authorized_archive.get("link_values_printed"))
+        or bool(authorized_execution.get("link_values_printed")),
         "secret_values_printed": bool(preflight.get("leak_flags", {}).get("secret_values_printed"))
         or bool(secret_scan.get("secret_values_printed"))
         or bool(ready_real_runner.get("secret_values_printed"))
-        or bool(authorized_archive.get("secret_values_printed")),
+        or bool(authorized_archive.get("secret_values_printed"))
+        or bool(authorized_execution.get("secret_values_printed")),
     }
     contact_flags = {
         "platform_contacted": bool(preflight.get("contact_flags", {}).get("platform_contacted"))
         or bool(readiness.get("platform_contacted"))
         or bool(ready_real_runner.get("platform_contacted"))
-        or bool(authorized_archive.get("platform_contacted")),
+        or bool(authorized_archive.get("platform_contacted"))
+        or bool(authorized_execution.get("platform_contacted")),
         "uploads_performed": bool(preflight.get("contact_flags", {}).get("uploads_performed"))
         or bool(upload_channels.get("uploads_performed"))
         or bool(ready_real_runner.get("uploads_performed"))
-        or bool(authorized_archive.get("uploads_performed")),
+        or bool(authorized_archive.get("uploads_performed"))
+        or bool(authorized_execution.get("uploads_performed")),
         "download_host_contacted": bool(preflight.get("contact_flags", {}).get("download_host_contacted"))
         or bool(link_download.get("verification", {}).get("download_host_contacted")),
     }

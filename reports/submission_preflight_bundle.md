@@ -33,6 +33,7 @@
 - `authorized_checkpoint_archive_template`：returncode=`0`，passed=`True`。
 - `submission_handoff_docs`：returncode=`0`，passed=`True`。
 - `plaintext_secret_scan`：returncode=`0`，passed=`True`。
+- `authorized_execution_checklist`：returncode=`0`，passed=`True`。
 - `submission_artifact_manifest`：returncode=`0`，passed=`True`。
 
 ## Blocking

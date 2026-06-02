@@ -53,11 +53,13 @@ REQUIRED_ARTIFACTS = [
     "reports/authorized_preflight_template_audit.md",
     "reports/ready_real_runner_template_audit.md",
     "reports/authorized_checkpoint_archive_template_audit.md",
+    "reports/authorized_execution_checklist.md",
     "reports/submission_handoff_docs_audit.md",
     "reports/authorized_submission_sequence_audit.md",
     "reports/submission_preflight_bundle.md",
     "reports/plaintext_secret_scan.md",
     "reports/submission_status_dashboard.html",
+    "scripts/audit_authorized_execution_checklist.py",
 ]
 
 LOCAL_SECRET_OR_LARGE_PATHS = [
@@ -154,6 +156,7 @@ def build_status() -> dict[str, Any]:
     authorized_preflight = read_json(RUNS_DIR / "authorized_preflight_template_audit.json")
     ready_real_runner = read_json(RUNS_DIR / "ready_real_runner_template_audit.json")
     authorized_archive = read_json(RUNS_DIR / "authorized_checkpoint_archive_template_audit.json")
+    authorized_execution = read_json(RUNS_DIR / "authorized_execution_checklist.json")
     readiness = read_json(RUNS_DIR / "real_submission_readiness.json")
     env_template = read_json(RUNS_DIR / "submission_env_template_audit.json")
     secret_scan = read_json(RUNS_DIR / "plaintext_secret_scan.json")
@@ -165,6 +168,7 @@ def build_status() -> dict[str, Any]:
         "authorized_preflight_template_passed": authorized_preflight.get("passed") is True,
         "ready_real_runner_template_passed": ready_real_runner.get("passed") is True,
         "authorized_checkpoint_archive_template_passed": authorized_archive.get("passed") is True,
+        "authorized_execution_checklist_passed": authorized_execution.get("passed") is True,
         "readiness_currently_blocked": readiness.get("ready_for_real_submission") is False,
         "env_template_passed": env_template.get("passed") is True,
         "secret_scan_passed": secret_scan.get("passed") is True,
@@ -179,6 +183,7 @@ def build_status() -> dict[str, Any]:
                 authorized_preflight,
                 ready_real_runner,
                 authorized_archive,
+                authorized_execution,
                 readiness,
                 env_template,
             ]
@@ -186,7 +191,8 @@ def build_status() -> dict[str, Any]:
         "link_values_printed": bool(preflight.get("leak_flags", {}).get("link_values_printed"))
         or bool(authorized_preflight.get("link_values_printed"))
         or bool(ready_real_runner.get("link_values_printed"))
-        or bool(authorized_archive.get("link_values_printed")),
+        or bool(authorized_archive.get("link_values_printed"))
+        or bool(authorized_execution.get("link_values_printed")),
         "secret_values_printed": bool(secret_scan.get("secret_values_printed")),
     }
     contact_flags = {
@@ -198,6 +204,7 @@ def build_status() -> dict[str, Any]:
                 authorized_preflight,
                 ready_real_runner,
                 authorized_archive,
+                authorized_execution,
                 readiness,
                 env_template,
                 secret_scan,
@@ -211,6 +218,7 @@ def build_status() -> dict[str, Any]:
                 authorized_preflight,
                 ready_real_runner,
                 authorized_archive,
+                authorized_execution,
                 readiness,
                 env_template,
                 secret_scan,

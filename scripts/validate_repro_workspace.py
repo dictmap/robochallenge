@@ -56,6 +56,7 @@ REQUIRED = [
     "reports/authorized_preflight_template_audit.md",
     "reports/ready_real_runner_template_audit.md",
     "reports/authorized_checkpoint_archive_template_audit.md",
+    "reports/authorized_execution_checklist.md",
     "reports/submission_artifact_manifest.md",
     "reports/submission_blockers_summary.md",
     "reports/plaintext_secret_scan.md",
@@ -98,6 +99,7 @@ REQUIRED = [
     "runs/authorized_preflight_template_audit.json",
     "runs/ready_real_runner_template_audit.json",
     "runs/authorized_checkpoint_archive_template_audit.json",
+    "runs/authorized_execution_checklist.json",
     "runs/submission_artifact_manifest.json",
     "runs/submission_blockers_summary.json",
     "runs/plaintext_secret_scan.json",
@@ -141,6 +143,7 @@ REQUIRED = [
     "scripts/audit_authorized_preflight_template.py",
     "scripts/audit_ready_real_runner_template.py",
     "scripts/audit_authorized_checkpoint_archive_template.py",
+    "scripts/audit_authorized_execution_checklist.py",
     "scripts/audit_submission_artifact_manifest.py",
     "scripts/audit_submission_blockers_summary.py",
     "scripts/audit_plaintext_secrets.py",
@@ -811,9 +814,9 @@ def main() -> int:
             "<html lang=\"zh-CN\">" in dashboard_html_text,
             "RoboChallenge pi0.5 提交状态面板" in dashboard_html_text,
             "当前阻塞" in dashboard_html_text,
-            dashboard.get("source_count") >= 10,
-            dashboard.get("card_count") >= 11,
-            dashboard.get("done_count", 0) >= 6,
+            dashboard.get("source_count") >= 13,
+            dashboard.get("card_count") >= 13,
+            dashboard.get("done_count", 0) >= 8,
             dashboard.get("blocked_count", 0) >= 4,
             dashboard.get("ready_for_real_submission") is False,
             dashboard.get("web_form_ready") is False,
@@ -826,6 +829,8 @@ def main() -> int:
             dashboard.get("archive_confirm_gate_passed") is True,
             dashboard.get("archive_confirm_phrase") == "CREATE_ROBOCHALLENGE_CHECKPOINT_ARCHIVE",
             dashboard.get("archive_no_confirm_blocks") is True,
+            dashboard.get("authorized_execution_checklist_passed") is True,
+            dashboard.get("authorized_execution_go_no_go") == "blocked_by_user_inputs",
             dashboard.get("uploads_performed") is False,
             dashboard.get("platform_contacted") is False,
             dashboard.get("credentials_printed") is False,
@@ -836,6 +841,7 @@ def main() -> int:
             "pi0.5 基模" in dashboard_titles,
             "Table30v2 ALOHA" in dashboard_titles,
             "归档强确认入口" in dashboard_titles,
+            "授权执行清单" in dashboard_titles,
             "真实提交 gate" in dashboard_titles,
             "提交前预检汇总" in dashboard_titles,
             "CREATE_ROBOCHALLENGE_CHECKPOINT_ARCHIVE" in dashboard_html_text,
@@ -1085,6 +1091,59 @@ def main() -> int:
     ):
         print("授权后 checkpoint 归档模板审计未通过")
         return 1
+    authorized_execution = json.loads((ROOT / "runs/authorized_execution_checklist.json").read_text(encoding="utf-8"))
+    authorized_execution_evidence = authorized_execution.get("evidence", {})
+    authorized_execution_leaks = authorized_execution.get("leak_flags", {})
+    authorized_execution_contacts = authorized_execution.get("contact_flags", {})
+    authorized_execution_required_ids = {
+        item.get("id") for item in authorized_execution.get("required_user_decisions", [])
+    }
+    authorized_execution_commands = {item.get("command") for item in authorized_execution.get("authorized_steps", [])}
+    if not all(
+        [
+            authorized_execution.get("kind") == "authorized_execution_checklist",
+            authorized_execution.get("passed"),
+            authorized_execution.get("go_no_go") == "blocked_by_user_inputs",
+            authorized_execution.get("ready_for_real_submission") is False,
+            authorized_execution.get("platform_contacted") is False,
+            authorized_execution.get("uploads_performed") is False,
+            authorized_execution.get("credentials_read") is False,
+            authorized_execution.get("credentials_printed") is False,
+            authorized_execution.get("link_values_printed") is False,
+            authorized_execution.get("secret_values_printed") is False,
+            authorized_execution.get("current_runnable_target") == "Table30v2 ALOHA",
+            {
+                "SUBMISSION_TARGET_CONFIRMATION",
+                "ROBOCHALLENGE_USER_TOKEN",
+                "ROBOCHALLENGE_SUBMISSION_ID",
+                "ROBOCHALLENGE_CHECKPOINT_LINK",
+                "CHECKPOINT_ARCHIVE_AUTHORIZATION",
+                "ROBOCHALLENGE_REAL_RUN_CONFIRM",
+            }.issubset(authorized_execution_required_ids),
+            "bash submission/run_authorized_preflight_template.sh" in authorized_execution_commands,
+            (
+                "ROBOCHALLENGE_ARCHIVE_CONFIRM=CREATE_ROBOCHALLENGE_CHECKPOINT_ARCHIVE "
+                "bash submission/run_authorized_checkpoint_archive_template.sh"
+            )
+            in authorized_execution_commands,
+            (
+                "ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION "
+                "bash submission/run_ready_real_submission_template.sh"
+            )
+            in authorized_execution_commands,
+            authorized_execution.get("required_evidence_passed") is True,
+            all(
+                authorized_execution_evidence.get(key) is True
+                for key in authorized_execution.get("required_evidence_keys", [])
+            ),
+            not any(authorized_execution_leaks.values()),
+            not any(authorized_execution_contacts.values()),
+            len(authorized_execution.get("must_stop_if", [])) >= 6,
+            len(authorized_execution.get("blocking", [])) >= 4,
+        ]
+    ):
+        print("授权执行清单审计未通过")
+        return 1
     artifact_manifest = json.loads((ROOT / "runs/submission_artifact_manifest.json").read_text(encoding="utf-8"))
     artifact_inputs = artifact_manifest.get("inputs", {})
     artifact_leaks = artifact_manifest.get("leak_flags", {})
@@ -1124,13 +1183,14 @@ def main() -> int:
         "checkpoint_link_download_verification",
         "submission_env_template",
         "notebook_structure",
-        "submission_artifact_manifest",
         "real_submission_readiness",
         "authorized_preflight_template",
         "ready_real_runner_template",
         "authorized_checkpoint_archive_template",
         "submission_handoff_docs",
         "plaintext_secret_scan",
+        "authorized_execution_checklist",
+        "submission_artifact_manifest",
     }
     if not all(
         [
@@ -1365,6 +1425,7 @@ def main() -> int:
     print("授权后安全预检模板审计已通过")
     print("强确认真实 runner 模板审计已通过")
     print("授权后 checkpoint 归档模板审计已通过")
+    print("授权执行清单审计已通过")
     print("提交准备材料 manifest 审计已通过")
     print("真实提交前预检汇总已通过")
     print("真实提交阻塞项摘要已通过")

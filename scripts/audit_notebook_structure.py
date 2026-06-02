@@ -41,6 +41,9 @@ REQUIRED_MARKERS = [
     "第 42 节：授权后 checkpoint 归档模板审计",
     "RUN_AUTHORIZED_CHECKPOINT_ARCHIVE_TEMPLATE_AUDIT",
     "scripts/audit_authorized_checkpoint_archive_template.py",
+    "第 43 节：授权执行清单审计",
+    "RUN_AUTHORIZED_EXECUTION_CHECKLIST",
+    "scripts/audit_authorized_execution_checklist.py",
 ]
 
 

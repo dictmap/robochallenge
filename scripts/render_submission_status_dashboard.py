@@ -26,6 +26,7 @@ SOURCE_FILES = {
     "lora_export": RUNS_DIR / "lora_checkpoint_export_readiness.json",
     "archive_dry_run": RUNS_DIR / "checkpoint_archive_dry_run.json",
     "authorized_archive": RUNS_DIR / "authorized_checkpoint_archive_template_audit.json",
+    "authorized_execution": RUNS_DIR / "authorized_execution_checklist.json",
     "link_intake": RUNS_DIR / "checkpoint_link_intake.json",
     "readiness": RUNS_DIR / "real_submission_readiness.json",
     "preflight_bundle": RUNS_DIR / "submission_preflight_bundle.json",
@@ -78,6 +79,7 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
     lora_export = data["lora_export"]
     archive_dry_run = data["archive_dry_run"]
     authorized_archive = data["authorized_archive"]
+    authorized_execution = data["authorized_execution"]
     link_intake = data["link_intake"]
     readiness = data["readiness"]
     preflight = data["preflight_bundle"]
@@ -98,6 +100,11 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
         and archive_confirm_smoke.get("passed")
         and archive_confirm_smoke.get("stops_before_creating_tar")
         and archive_confirm_smoke.get("archive_created") is False
+    )
+    authorized_execution_ready = bool(
+        authorized_execution.get("passed")
+        and authorized_execution.get("go_no_go") == "blocked_by_user_inputs"
+        and authorized_execution.get("ready_for_real_submission") is False
     )
     uploads_performed = readiness.get("inputs", {}).get("uploads_performed")
     plaintext_clean = plaintext.get("hit_count") == 0 and plaintext.get("secret_values_printed") is False
@@ -187,6 +194,13 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
             "reports/authorized_submission_sequence_audit.md",
         ),
         card(
+            "授权执行清单",
+            "done" if authorized_execution_ready else "watch",
+            "等待用户输入",
+            "模式确认、token、submission id、checkpoint link、归档授权和真实 runner 确认已整理成可复跑清单。",
+            "reports/authorized_execution_checklist.md",
+        ),
+        card(
             "明文凭据扫描",
             "done" if plaintext_clean else "watch",
             f"hit_count={plaintext.get('hit_count')}",
@@ -201,6 +215,7 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
     link_intake = data["link_intake"]
     archive = data["archive_dry_run"]
     authorized_archive = data["authorized_archive"]
+    authorized_execution = data["authorized_execution"]
     sequence = data["authorized_sequence"]
     preflight = data["preflight_bundle"]
     plaintext = data["plaintext_scan"]
@@ -229,6 +244,8 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
         "archive_confirm_gate_passed": authorized_archive.get("passed") is True,
         "archive_confirm_phrase": authorized_archive.get("confirmation_phrase"),
         "archive_no_confirm_blocks": authorized_archive.get("no_confirm_smoke", {}).get("passed") is True,
+        "authorized_execution_checklist_passed": authorized_execution.get("passed") is True,
+        "authorized_execution_go_no_go": authorized_execution.get("go_no_go"),
         "uploads_performed": readiness.get("inputs", {}).get("uploads_performed"),
         "platform_contacted": False,
         "credentials_printed": False,

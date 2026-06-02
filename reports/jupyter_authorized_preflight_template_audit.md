@@ -13,6 +13,11 @@
 - 是否打印 token/link/submission id：`False`。
 - 是否连接 RoboChallenge 平台：`False`。
 - 是否启动真实 runner：`False`。
+- 推荐路线：`baseline_official_aloha`。
+- baseline 是否要求 checkpoint link：`False`。
+- baseline 是否要求 checkpoint upload：`False`。
+- LoRA/web 是否要求 checkpoint link：`True`。
+- LoRA/web 是否要求 checkpoint upload：`True`。
 
 ## 必要变量名
 
@@ -20,6 +25,13 @@
 - `ROBOCHALLENGE_SUBMISSION_ID`：`True`。
 - `ROBOCHALLENGE_LORA_CHECKPOINT_LINK`：`True`。
 - `ROBOCHALLENGE_CHECKPOINT_LINK`：`True`。
+
+## 路线引导
+
+- `recommended_route_baseline`：`True`。
+- `baseline_no_checkpoint_link`：`True`。
+- `baseline_no_checkpoint_upload`：`True`。
+- `lora_web_checkpoint_flow_separate`：`True`。
 
 ## 关键片段
 
@@ -36,6 +48,11 @@
 - `redact_sensitive_output`：`True`。
 - `subprocess.run`：`True`。
 - `returncode`：`True`。
+- `baseline_official_aloha`：`True`。
+- `baseline 不需要 checkpoint link`：`True`。
+- `不需要 checkpoint upload`：`True`。
+- `LoRA/web checkpoint 路线`：`True`。
+- `归档、上传和 checkpoint link 回填流程`：`True`。
 - `ROBOCHALLENGE_USER_TOKEN`：`True`。
 - `ROBOCHALLENGE_SUBMISSION_ID`：`True`。
 - `ROBOCHALLENGE_LORA_CHECKPOINT_LINK`：`True`。

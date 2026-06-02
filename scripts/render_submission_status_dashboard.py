@@ -157,11 +157,17 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
         jupyter_input.get("passed")
         and jupyter_input.get("run_flag_default_false")
         and jupyter_input.get("local_env_ignored", {}).get("ignored")
+        and jupyter_input.get("recommended_route") == "baseline_official_aloha"
+        and jupyter_input.get("baseline_requires_checkpoint_link") is False
+        and jupyter_input.get("lora_web_requires_checkpoint_link") is True
     )
     jupyter_authorized_ready = bool(
         jupyter_authorized.get("passed")
         and jupyter_authorized.get("audit_default_true")
         and jupyter_authorized.get("execution_default_false")
+        and jupyter_authorized.get("recommended_route") == "baseline_official_aloha"
+        and jupyter_authorized.get("baseline_requires_checkpoint_link") is False
+        and jupyter_authorized.get("lora_web_requires_checkpoint_link") is True
     )
     uploads_performed = readiness.get("inputs", {}).get("uploads_performed")
     plaintext_clean = plaintext.get("hit_count") == 0 and plaintext.get("secret_values_printed") is False
@@ -295,15 +301,15 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
         card(
             "Jupyter 安全填空",
             "done" if jupyter_input_ready else "watch",
-            "local env 入口",
-            "Notebook 第 44 节默认关闭；开启后只写入被 Git 忽略的 local env，且不打印 token/link。",
+            "baseline 默认",
+            "Notebook 第 44 节默认关闭；baseline 只填 token/submission id，checkpoint link 留空不会进入 LoRA 上传流程。",
             "reports/jupyter_input_template_audit.md",
         ),
         card(
             "Jupyter 授权预检",
             "done" if jupyter_authorized_ready else "watch",
-            "默认只审计",
-            "Notebook 第 45 节用于填完 local env 后跑授权预检；默认不读 local env、不启动 runner。",
+            "baseline 预检",
+            "Notebook 第 45 节默认按 baseline_official_aloha 预检；LoRA/web checkpoint 的归档、上传和 link 回填另走手动授权。",
             "reports/jupyter_authorized_preflight_template_audit.md",
         ),
         card(
@@ -387,9 +393,21 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
         "jupyter_input_template_passed": jupyter_input.get("passed") is True,
         "jupyter_input_default_off": jupyter_input.get("run_flag_default_false") is True,
         "jupyter_local_env_ignored": jupyter_input.get("local_env_ignored", {}).get("ignored") is True,
+        "jupyter_input_recommended_route": jupyter_input.get("recommended_route"),
+        "jupyter_input_baseline_no_upload": jupyter_input.get("baseline_requires_checkpoint_upload") is False,
+        "jupyter_input_baseline_no_link": jupyter_input.get("baseline_requires_checkpoint_link") is False,
+        "jupyter_input_lora_web_needs_upload": jupyter_input.get("lora_web_requires_checkpoint_upload") is True,
+        "jupyter_input_lora_web_needs_link": jupyter_input.get("lora_web_requires_checkpoint_link") is True,
         "jupyter_authorized_preflight_template_passed": jupyter_authorized.get("passed") is True,
         "jupyter_authorized_preflight_default_off": jupyter_authorized.get("execution_default_false") is True,
         "jupyter_authorized_preflight_audit_on": jupyter_authorized.get("audit_default_true") is True,
+        "jupyter_authorized_recommended_route": jupyter_authorized.get("recommended_route"),
+        "jupyter_authorized_baseline_no_upload": jupyter_authorized.get("baseline_requires_checkpoint_upload") is False,
+        "jupyter_authorized_baseline_no_link": jupyter_authorized.get("baseline_requires_checkpoint_link") is False,
+        "jupyter_authorized_lora_web_needs_upload": jupyter_authorized.get("lora_web_requires_checkpoint_upload")
+        is True,
+        "jupyter_authorized_lora_web_needs_link": jupyter_authorized.get("lora_web_requires_checkpoint_link")
+        is True,
         "uploads_performed": readiness.get("inputs", {}).get("uploads_performed"),
         "platform_contacted": False,
         "credentials_printed": False,

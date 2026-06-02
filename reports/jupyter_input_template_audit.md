@@ -12,6 +12,11 @@
 - 是否打印 token/link/submission id：`False`。
 - 是否连接 RoboChallenge 平台：`False`。
 - 是否执行上传：`False`。
+- 推荐路线：`baseline_official_aloha`。
+- baseline 是否要求 checkpoint link：`False`。
+- baseline 是否要求 checkpoint upload：`False`。
+- LoRA/web 是否要求 checkpoint link：`True`。
+- LoRA/web 是否要求 checkpoint upload：`True`。
 
 ## 必要变量
 
@@ -25,7 +30,16 @@
 
 - `submission_variant_supported`：`True`。
 - `baseline_checkpoint_link_optional`：`True`。
+- `recommended_route_baseline`：`True`。
 - `lora_checkpoint_link_required`：`True`。
+
+## 路线引导
+
+- `baseline_guides_to_route_aware`：`True`。
+- `baseline_quickstart_referenced`：`True`。
+- `baseline_no_checkpoint_link`：`True`。
+- `baseline_no_lora_upload_when_link_blank`：`True`。
+- `lora_web_upload_flow_separate`：`True`。
 
 ## 关键片段
 
@@ -43,6 +57,10 @@
 - `required_for_variant`：`True`。
 - `submission_variant == "lora"`：`True`。
 - `ROBOCHALLENGE_CHECKPOINT_LINK [baseline 可留空]`：`True`。
+- `baseline 官方 ALOHA 路线只要求 token 和 submission id，不要求 checkpoint link`：`True`。
+- `scripts/render_route_aware_submission_blockers.py`：`True`。
+- `reports/baseline_submission_quickstart.md`：`True`。
+- `baseline 不因 checkpoint link 留空进入 LoRA 上传流程`：`True`。
 - `os.chmod`：`True`。
 - `submission/robochallenge_env.local.sh`：`True`。
 - `ROBOCHALLENGE_USER_TOKEN`：`True`。

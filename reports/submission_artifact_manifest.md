@@ -14,8 +14,8 @@
 ## 材料清单
 
 - `README.md`：exists=`True`，tracked=`True`，size=`19168`，sha256=`58dff8b9599520d8de819ab2dd636d7e1d46962e276499858d6f51f4151f620c`。
-- `work.md`：exists=`True`，tracked=`True`，size=`122382`，sha256=`f522627a97559605cb48e00a848c4c3e163a2df16fa0f515c1ab87e611f2d007`。
-- `notebooks/robochallenge_pi05_submit_cn.ipynb`：exists=`True`，tracked=`True`，size=`93470`，sha256=`e24bd0bab63d5b2092caf81fc39923fc991296dedff3e614ab38fc7f48a0e240`。
+- `work.md`：exists=`True`，tracked=`True`，size=`125414`，sha256=`e8c11196e88a3c757c7f1ce646cbe55cbeb9f7deaa1a94caf5011ff9b6d97692`。
+- `notebooks/robochallenge_pi05_submit_cn.ipynb`：exists=`True`，tracked=`True`，size=`93816`，sha256=`27dc56c00767d6430f05d924bfa24700b5320e2348123160c3b6a4c308e128f3`。
 - `submission/README.md`：exists=`True`，tracked=`True`，size=`1736`，sha256=`1e56978190bcd369dce7fab828d6d7125b6777e62e7a4f6a78cb914c9ea5535b`。
 - `submission/REAL_SUBMISSION_HANDOFF.md`：exists=`True`，tracked=`True`，size=`9131`，sha256=`1e77c1e65175f5ad5996d7b4b6950ffa838c6cd34d025ee13a5738a48a2b8f93`。
 - `submission/AUTHORIZED_SUBMISSION_SEQUENCE.md`：exists=`True`，tracked=`True`，size=`7672`，sha256=`d3da43198cac005786c90f9e9518116fe2ab4019fbf76a57bde7f47c01275cdb`。
@@ -44,8 +44,8 @@
 - `reports/real_submission_readiness_scenarios.md`：exists=`True`，tracked=`True`，size=`1152`，sha256=`682ba066efc018aaeee94e4064afdbed25a4bab356fedf55ba6562b9889ffb0a`。
 - `reports/submission_env_template_audit.md`：exists=`True`，tracked=`True`，size=`1100`，sha256=`a668eda776f2782e8fced7348adc8d43293126e0789fff64f1c6a745624a096c`。
 - `reports/notebook_structure_audit.md`：exists=`True`，tracked=`True`，size=`1776`，sha256=`c44ba3109eec001fd72a86a340f45f8195a82ae1eeedb0e66fb9b0aeaf3010ce`。
-- `reports/jupyter_input_template_audit.md`：exists=`True`，tracked=`True`，size=`2322`，sha256=`0233412a00de3a0160e70faa62bfcebf1c6bb09cca1d9213ba175aaf6ddfb433`。
-- `reports/jupyter_authorized_preflight_template_audit.md`：exists=`True`，tracked=`True`，size=`2322`，sha256=`1b53b3eb4b9fad478b25b3ccdc02b601ed5f0a5ed13dd188fe1093baab6704a6`。
+- `reports/jupyter_input_template_audit.md`：exists=`True`，tracked=`True`，size=`3192`，sha256=`96dcb89542438689dde35c8abd0060544478daec4dd19ac7d83946ae8826aeea`。
+- `reports/jupyter_authorized_preflight_template_audit.md`：exists=`True`，tracked=`True`，size=`3025`，sha256=`7c7745d3fc347c80a5854ac005260f3f7770efdfe97bc37f0753ebfecaf7b68b`。
 - `reports/authorized_preflight_template_audit.md`：exists=`True`，tracked=`True`，size=`1187`，sha256=`08c240c7233552cad030e491438fd1260b7652ba047de5ef0a707991b42f8912`。
 - `reports/ready_real_runner_template_audit.md`：exists=`True`，tracked=`True`，size=`1633`，sha256=`4f7358ce93690dfffee7b00d8a3858fecab511d2f31ca56ef3706a578141989f`。
 - `reports/authorized_checkpoint_archive_template_audit.md`：exists=`True`，tracked=`True`，size=`2030`，sha256=`0a02a63659e96376720e1c11c78ab6bd7a5b4118c13a93c99155fbd2dd5d6bbe`。
@@ -59,14 +59,14 @@
 - `reports/authorized_submission_sequence_audit.md`：exists=`True`，tracked=`True`，size=`5771`，sha256=`2c373b72177573448649a3c29568c6eb61c8eb1b68b6c6e4cd602836845e39cc`。
 - `reports/submission_preflight_bundle.md`：exists=`True`，tracked=`True`，size=`3271`，sha256=`b1b0afe215664585ec2731872944fad28747a0582d7c7bdecf462d6a69d7af51`。
 - `reports/plaintext_secret_scan.md`：exists=`True`，tracked=`True`，size=`610`，sha256=`d2691becec126a9ed6841552213f5bf0a8c90ab80d92e04d46a15e10821f9e83`。
-- `reports/submission_status_dashboard.html`：exists=`True`，tracked=`True`，size=`13804`，sha256=`b08b3334c10a7286b64c07e9c7f195b75be7a2b8cb10c2d8e40a34befca73432`。
+- `reports/submission_status_dashboard.html`：exists=`True`，tracked=`True`，size=`13851`，sha256=`f388311f9faa8215f2e035cbffc96bde67e892da7b7cb5faf68c7813fff51a0e`。
 - `scripts/render_next_user_action_packet.py`：exists=`True`，tracked=`True`，size=`16157`，sha256=`e11efdba75b681964fd16781589b74e001124c2177530ff2679460ab5e1f5ece`。
 - `scripts/render_web_form_field_packet.py`：exists=`True`，tracked=`True`，size=`11389`，sha256=`308afc6bd0b412bbed8c4c2f4188666050449fa3d5ed3580559422fdcff37b34`。
 - `scripts/render_submission_variant_route_packet.py`：exists=`True`，tracked=`True`，size=`14665`，sha256=`8c09f4814254926d9b3e2eb46463f70896d98bebedaf56b5a7659dd1c128f699`。
 - `scripts/render_baseline_submission_quickstart.py`：exists=`True`，tracked=`True`，size=`9973`，sha256=`a6dd12fde694bb1d688bef942533a6d08a781112c19c59afe2d851a00600c634`。
 - `scripts/render_route_aware_submission_blockers.py`：exists=`True`，tracked=`True`，size=`11346`，sha256=`9192bb769e06e1e0480a263a97ad6ae79814eba77ad6855b1613cc89edf0d14e`。
-- `scripts/audit_jupyter_input_template.py`：exists=`True`，tracked=`True`，size=`11349`，sha256=`a5ee03cc0b4712026962bfb72d68776982d795d23d3d1568ed732d365e34a923`。
-- `scripts/audit_jupyter_authorized_preflight_template.py`：exists=`True`，tracked=`True`，size=`10611`，sha256=`e10222dfd30eb156cd8f3104225d3500552de0cf74b2f79f62c40751f664063a`。
+- `scripts/audit_jupyter_input_template.py`：exists=`True`，tracked=`True`，size=`13811`，sha256=`f9db1d790f5e92c57025b69c9fc3e6b14e1596354ef7e4dfb84da3ff6aa422a6`。
+- `scripts/audit_jupyter_authorized_preflight_template.py`：exists=`True`，tracked=`True`，size=`12746`，sha256=`71a1ae721f3712bb2c0a4ec2b7ee7ec0f7f44c50425fffdd4c3f5148330a4d8c`。
 - `scripts/audit_authorized_execution_checklist.py`：exists=`True`，tracked=`True`，size=`16155`，sha256=`133a3d692fb8b156ad2e509a64245a75082708e4de04fc00730557f64f57243e`。
 
 ## 本地凭据与大文件忽略检查
@@ -85,7 +85,17 @@
 - `preflight_go_no_go_blocked`：`True`。
 - `notebook_structure_passed`：`True`。
 - `jupyter_input_template_passed`：`True`。
+- `jupyter_input_recommended_baseline`：`True`。
+- `jupyter_input_baseline_no_upload`：`True`。
+- `jupyter_input_baseline_no_link`：`True`。
+- `jupyter_input_lora_web_needs_upload`：`True`。
+- `jupyter_input_lora_web_needs_link`：`True`。
 - `jupyter_authorized_preflight_template_passed`：`True`。
+- `jupyter_authorized_recommended_baseline`：`True`。
+- `jupyter_authorized_baseline_no_upload`：`True`。
+- `jupyter_authorized_baseline_no_link`：`True`。
+- `jupyter_authorized_lora_web_needs_upload`：`True`。
+- `jupyter_authorized_lora_web_needs_link`：`True`。
 - `authorized_preflight_template_passed`：`True`。
 - `ready_real_runner_template_passed`：`True`。
 - `authorized_checkpoint_archive_template_passed`：`True`。

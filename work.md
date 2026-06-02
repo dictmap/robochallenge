@@ -1626,3 +1626,32 @@
 
 - P0：提交并推送本轮动作包 baseline 化、GUI 和验证链更新。
 - P1：继续检查 Notebook 第 44/45 节中的用户提示文字，确保它们也默认引导 baseline 而不是 LoRA/web link。
+
+## 2026-06-03 第五十八轮：Jupyter baseline 引导固化
+
+### 已完成
+
+- 更新 Notebook 第 44 节“安全填空本地 env 入口”：默认推荐 `baseline` / `baseline_official_aloha`，明确 baseline 只要求 token 和 submission id，不要求 checkpoint link；checkpoint link 留空不会进入 LoRA 上传流程。
+- 更新 Notebook 第 45 节“授权后 Jupyter 预检入口”：默认按 `baseline_official_aloha` 做授权预检；baseline 不需要 checkpoint link，也不需要 checkpoint upload；LoRA/web checkpoint 的归档、上传和 link 回填保留为手动选择分支。
+- 扩展 `scripts/audit_jupyter_input_template.py`：新增 `recommended_route`、`baseline_requires_checkpoint_link`、`baseline_requires_checkpoint_upload`、`lora_web_requires_checkpoint_link`、`lora_web_requires_checkpoint_upload` 和 `route_guidance` 字段。
+- 扩展 `scripts/audit_jupyter_authorized_preflight_template.py`：把 baseline 预检与 LoRA/web checkpoint 上传路线的分离变成硬性审计项。
+- 更新 `scripts/audit_submission_artifact_manifest.py`、`scripts/render_submission_status_dashboard.py` 和 `scripts/validate_repro_workspace.py`：manifest、GUI 和总体验证现在都会检查 Jupyter 入口的 baseline no-link / LoRA-web needs-link 语义。
+
+### 验证结果
+
+- Linux 端语法检查已通过：`python3 -m py_compile` 覆盖两个 Jupyter 审计脚本、manifest、dashboard 和总验证脚本。
+- Linux 端 `python3 scripts/audit_jupyter_input_template.py` 已通过：`passed=true`，`recommended_route=baseline_official_aloha`，`baseline_requires_checkpoint_link=false`，`baseline_requires_checkpoint_upload=false`。
+- Linux 端 `python3 scripts/audit_jupyter_authorized_preflight_template.py` 已通过：`passed=true`，baseline 预检和 LoRA/web checkpoint 上传路线已分离。
+- 完整 no-contact 链已通过：明文凭据扫描、preflight、blockers summary、manifest、GUI、总体验证和 `git diff --check` 均通过。
+- GUI 状态仍为 `source_count=20`、`card_count=20`、`done_count=15`；“Jupyter 安全填空”卡片显示 `baseline 默认`，“Jupyter 授权预检”卡片显示 `baseline 预检`。
+
+### 当前边界
+
+- 本轮没有读取真实 token、submission id 或 checkpoint link，没有连接 RoboChallenge 平台，没有上传 checkpoint，没有生成 checkpoint tar，没有启动真实 runner。
+- baseline 官方路线当前只等待：提交对象确认、`ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline`、真实 runner 强确认。
+- LoRA/web checkpoint 路线仍单独等待归档/上传授权和真实 checkpoint link。
+
+### 下一步
+
+- P0：重新同步 `work.md` 到 Linux，刷新 manifest/dashboard/总验证后提交并推送本轮 Jupyter baseline 引导固化。
+- P1：下一轮继续从 GUI 和 `reports/baseline_submission_quickstart.md` 检查真实授权入口的人机操作顺序，确保用户拿到 token 后先复现 baseline 基模。

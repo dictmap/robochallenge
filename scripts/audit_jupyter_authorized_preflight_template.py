@@ -43,6 +43,11 @@ REQUIRED_FRAGMENTS = [
     "redact_sensitive_output",
     "subprocess.run",
     "returncode",
+    "baseline_official_aloha",
+    "baseline 不需要 checkpoint link",
+    "不需要 checkpoint upload",
+    "LoRA/web checkpoint 路线",
+    "归档、上传和 checkpoint link 回填流程",
     *REQUIRED_KEYS,
 ]
 FORBIDDEN_FRAGMENTS = [
@@ -126,6 +131,13 @@ def build_status(notebook_path: Path) -> dict[str, Any]:
     )
     execution_default_false = f"{EXECUTION_FLAG} = False" in section_source
     audit_default_true = f"{AUDIT_FLAG} = True" in section_source
+    route_guidance = {
+        "recommended_route_baseline": "baseline_official_aloha" in section_source,
+        "baseline_no_checkpoint_link": "baseline 不需要 checkpoint link" in section_source,
+        "baseline_no_checkpoint_upload": "不需要 checkpoint upload" in section_source,
+        "lora_web_checkpoint_flow_separate": "LoRA/web checkpoint 路线" in section_source
+        and "归档、上传和 checkpoint link 回填流程" in section_source,
+    }
     secret_hits = secret_pattern_hits(section_source)
     whole_notebook_secret_hits = secret_pattern_hits(text)
 
@@ -150,6 +162,8 @@ def build_status(notebook_path: Path) -> dict[str, Any]:
             blocking.append(f"授权后 Jupyter 预检入口包含禁止片段：`{fragment}`。")
     if not all(required_keys.values()):
         blocking.append("授权后 Jupyter 预检入口没有覆盖全部必要环境变量名。")
+    if not all(route_guidance.values()):
+        blocking.append("授权后 Jupyter 预检入口没有把 baseline 预检和 LoRA/web checkpoint 上传路线清晰分离。")
     if secret_hits or whole_notebook_secret_hits:
         blocking.append("Notebook 授权后预检入口或 Notebook 本体疑似包含明文 token/submission id。")
     if not blocking:
@@ -164,6 +178,7 @@ def build_status(notebook_path: Path) -> dict[str, Any]:
         and all(required_fragments.values())
         and not any(forbidden_fragments.values())
         and all(required_keys.values())
+        and all(route_guidance.values())
         and not secret_hits
         and not whole_notebook_secret_hits
     )
@@ -187,6 +202,12 @@ def build_status(notebook_path: Path) -> dict[str, Any]:
         "local_env_path": LOCAL_ENV_PATH,
         "authorized_preflight_command": AUTHORIZED_PREFLIGHT,
         "required_keys": required_keys,
+        "recommended_route": "baseline_official_aloha" if route_guidance["recommended_route_baseline"] else "",
+        "baseline_requires_checkpoint_link": False if route_guidance["baseline_no_checkpoint_link"] else None,
+        "baseline_requires_checkpoint_upload": False if route_guidance["baseline_no_checkpoint_upload"] else None,
+        "lora_web_requires_checkpoint_link": True if route_guidance["lora_web_checkpoint_flow_separate"] else None,
+        "lora_web_requires_checkpoint_upload": True if route_guidance["lora_web_checkpoint_flow_separate"] else None,
+        "route_guidance": route_guidance,
         "required_fragments": required_fragments,
         "forbidden_fragments": forbidden_fragments,
         "code_cell_clean": code_cell_clean,
@@ -214,11 +235,19 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         f"- 是否打印 token/link/submission id：`{status['credentials_printed'] or status['link_values_printed'] or status['secret_values_printed']}`。",
         f"- 是否连接 RoboChallenge 平台：`{status['platform_contacted']}`。",
         f"- 是否启动真实 runner：`{status['runner_started']}`。",
+        f"- 推荐路线：`{status['recommended_route']}`。",
+        f"- baseline 是否要求 checkpoint link：`{status['baseline_requires_checkpoint_link']}`。",
+        f"- baseline 是否要求 checkpoint upload：`{status['baseline_requires_checkpoint_upload']}`。",
+        f"- LoRA/web 是否要求 checkpoint link：`{status['lora_web_requires_checkpoint_link']}`。",
+        f"- LoRA/web 是否要求 checkpoint upload：`{status['lora_web_requires_checkpoint_upload']}`。",
         "",
         "## 必要变量名",
         "",
     ]
     for key, ok in status["required_keys"].items():
+        lines.append(f"- `{key}`：`{ok}`。")
+    lines.extend(["", "## 路线引导", ""])
+    for key, ok in status["route_guidance"].items():
         lines.append(f"- `{key}`：`{ok}`。")
     lines.extend(["", "## 关键片段", ""])
     for fragment, ok in status["required_fragments"].items():

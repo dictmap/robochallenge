@@ -23,6 +23,17 @@
     "ROBOCHALLENGE_LORA_CHECKPOINT_LINK": true,
     "ROBOCHALLENGE_CHECKPOINT_LINK": true
   },
+  "recommended_route": "baseline_official_aloha",
+  "baseline_requires_checkpoint_link": false,
+  "baseline_requires_checkpoint_upload": false,
+  "lora_web_requires_checkpoint_link": true,
+  "lora_web_requires_checkpoint_upload": true,
+  "route_guidance": {
+    "recommended_route_baseline": true,
+    "baseline_no_checkpoint_link": true,
+    "baseline_no_checkpoint_upload": true,
+    "lora_web_checkpoint_flow_separate": true
+  },
   "required_fragments": {
     "第 45 节：授权后 Jupyter 预检入口": true,
     "RUN_JUPYTER_AUTHORIZED_PREFLIGHT_TEMPLATE_AUDIT": true,
@@ -37,6 +48,11 @@
     "redact_sensitive_output": true,
     "subprocess.run": true,
     "returncode": true,
+    "baseline_official_aloha": true,
+    "baseline 不需要 checkpoint link": true,
+    "不需要 checkpoint upload": true,
+    "LoRA/web checkpoint 路线": true,
+    "归档、上传和 checkpoint link 回填流程": true,
     "ROBOCHALLENGE_USER_TOKEN": true,
     "ROBOCHALLENGE_SUBMISSION_ID": true,
     "ROBOCHALLENGE_LORA_CHECKPOINT_LINK": true,

@@ -25,10 +25,23 @@
     "ROBOCHALLENGE_LORA_CHECKPOINT_LINK": true,
     "ROBOCHALLENGE_CHECKPOINT_LINK": true
   },
+  "recommended_route": "baseline_official_aloha",
+  "baseline_requires_checkpoint_link": false,
+  "baseline_requires_checkpoint_upload": false,
+  "lora_web_requires_checkpoint_link": true,
+  "lora_web_requires_checkpoint_upload": true,
   "variant_logic": {
     "submission_variant_supported": true,
     "baseline_checkpoint_link_optional": true,
+    "recommended_route_baseline": true,
     "lora_checkpoint_link_required": true
+  },
+  "route_guidance": {
+    "baseline_guides_to_route_aware": true,
+    "baseline_quickstart_referenced": true,
+    "baseline_no_checkpoint_link": true,
+    "baseline_no_lora_upload_when_link_blank": true,
+    "lora_web_upload_flow_separate": true
   },
   "required_fragments": {
     "第 44 节：安全填空本地 env 入口": true,
@@ -45,6 +58,10 @@
     "required_for_variant": true,
     "submission_variant == \"lora\"": true,
     "ROBOCHALLENGE_CHECKPOINT_LINK [baseline 可留空]": true,
+    "baseline 官方 ALOHA 路线只要求 token 和 submission id，不要求 checkpoint link": true,
+    "scripts/render_route_aware_submission_blockers.py": true,
+    "reports/baseline_submission_quickstart.md": true,
+    "baseline 不因 checkpoint link 留空进入 LoRA 上传流程": true,
     "os.chmod": true,
     "submission/robochallenge_env.local.sh": true,
     "ROBOCHALLENGE_USER_TOKEN": true,

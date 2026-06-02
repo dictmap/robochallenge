@@ -44,6 +44,10 @@ REQUIRED_FRAGMENTS = [
     "required_for_variant",
     'submission_variant == "lora"',
     "ROBOCHALLENGE_CHECKPOINT_LINK [baseline 可留空]",
+    "baseline 官方 ALOHA 路线只要求 token 和 submission id，不要求 checkpoint link",
+    "scripts/render_route_aware_submission_blockers.py",
+    "reports/baseline_submission_quickstart.md",
+    "baseline 不因 checkpoint link 留空进入 LoRA 上传流程",
     "os.chmod",
     LOCAL_ENV_PATH,
     *REQUIRED_KEYS,
@@ -135,9 +139,19 @@ def build_status(notebook_path: Path) -> dict[str, Any]:
         "submission_variant_supported": "ROBOCHALLENGE_SUBMISSION_VARIANT" in section_source
         and "normalize_submission_variant" in section_source,
         "baseline_checkpoint_link_optional": "ROBOCHALLENGE_CHECKPOINT_LINK [baseline 可留空]" in section_source,
+        "recommended_route_baseline": "默认 variant 是 `baseline`" in section_source
+        and "baseline 官方 ALOHA 路线" in section_source,
         "lora_checkpoint_link_required": 'submission_variant == "lora"' in section_source
         and "ROBOCHALLENGE_LORA_CHECKPOINT_LINK" in section_source
         and "required_for_variant.extend" in section_source,
+    }
+    route_guidance = {
+        "baseline_guides_to_route_aware": "scripts/render_route_aware_submission_blockers.py" in section_source,
+        "baseline_quickstart_referenced": "reports/baseline_submission_quickstart.md" in section_source,
+        "baseline_no_checkpoint_link": "不要求 checkpoint link" in section_source,
+        "baseline_no_lora_upload_when_link_blank": "baseline 不因 checkpoint link 留空进入 LoRA 上传流程"
+        in section_source,
+        "lora_web_upload_flow_separate": "LoRA 上传流程" in section_source,
     }
     code_cell_ok = bool(code_cell and code_cell.get("cell_type") == "code")
     code_cell_clean = bool(
@@ -173,6 +187,8 @@ def build_status(notebook_path: Path) -> dict[str, Any]:
         blocking.append("安全填空入口没有覆盖全部必要环境变量。")
     if not all(variant_logic.values()):
         blocking.append("安全填空入口没有正确区分 baseline 与 LoRA 的 checkpoint link 要求。")
+    if not all(route_guidance.values()):
+        blocking.append("安全填空入口没有把 baseline 默认路线和 LoRA/web checkpoint 上传路线清晰分离。")
     if not local_env_ignore["ignored"]:
         blocking.append(f"`{LOCAL_ENV_PATH}` 没有被 Git 忽略。")
     if secret_hits or whole_notebook_secret_hits:
@@ -189,6 +205,7 @@ def build_status(notebook_path: Path) -> dict[str, Any]:
         and not any(forbidden_fragments.values())
         and all(required_keys.values())
         and all(variant_logic.values())
+        and all(route_guidance.values())
         and local_env_ignore["ignored"]
         and not secret_hits
         and not whole_notebook_secret_hits
@@ -210,7 +227,15 @@ def build_status(notebook_path: Path) -> dict[str, Any]:
         "local_env_path": LOCAL_ENV_PATH,
         "local_env_ignored": local_env_ignore,
         "required_keys": required_keys,
+        "recommended_route": "baseline_official_aloha" if route_guidance["baseline_guides_to_route_aware"] else "",
+        "baseline_requires_checkpoint_link": False if route_guidance["baseline_no_checkpoint_link"] else None,
+        "baseline_requires_checkpoint_upload": False
+        if route_guidance["baseline_no_lora_upload_when_link_blank"]
+        else None,
+        "lora_web_requires_checkpoint_link": True if variant_logic["lora_checkpoint_link_required"] else None,
+        "lora_web_requires_checkpoint_upload": True if route_guidance["lora_web_upload_flow_separate"] else None,
         "variant_logic": variant_logic,
+        "route_guidance": route_guidance,
         "required_fragments": required_fragments,
         "forbidden_fragments": forbidden_fragments,
         "code_cell_clean": code_cell_clean,
@@ -237,6 +262,11 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         f"- 是否打印 token/link/submission id：`{status['credentials_printed'] or status['link_values_printed'] or status['secret_values_printed']}`。",
         f"- 是否连接 RoboChallenge 平台：`{status['platform_contacted']}`。",
         f"- 是否执行上传：`{status['uploads_performed']}`。",
+        f"- 推荐路线：`{status['recommended_route']}`。",
+        f"- baseline 是否要求 checkpoint link：`{status['baseline_requires_checkpoint_link']}`。",
+        f"- baseline 是否要求 checkpoint upload：`{status['baseline_requires_checkpoint_upload']}`。",
+        f"- LoRA/web 是否要求 checkpoint link：`{status['lora_web_requires_checkpoint_link']}`。",
+        f"- LoRA/web 是否要求 checkpoint upload：`{status['lora_web_requires_checkpoint_upload']}`。",
         "",
         "## 必要变量",
         "",
@@ -245,6 +275,9 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         lines.append(f"- `{key}`：`{ok}`。")
     lines.extend(["", "## Variant 逻辑", ""])
     for key, ok in status["variant_logic"].items():
+        lines.append(f"- `{key}`：`{ok}`。")
+    lines.extend(["", "## 路线引导", ""])
+    for key, ok in status["route_guidance"].items():
         lines.append(f"- `{key}`：`{ok}`。")
     lines.extend(["", "## 关键片段", ""])
     for fragment, ok in status["required_fragments"].items():

@@ -889,9 +889,19 @@ def main() -> int:
             dashboard.get("jupyter_input_template_passed") is True,
             dashboard.get("jupyter_input_default_off") is True,
             dashboard.get("jupyter_local_env_ignored") is True,
+            dashboard.get("jupyter_input_recommended_route") == "baseline_official_aloha",
+            dashboard.get("jupyter_input_baseline_no_upload") is True,
+            dashboard.get("jupyter_input_baseline_no_link") is True,
+            dashboard.get("jupyter_input_lora_web_needs_upload") is True,
+            dashboard.get("jupyter_input_lora_web_needs_link") is True,
             dashboard.get("jupyter_authorized_preflight_template_passed") is True,
             dashboard.get("jupyter_authorized_preflight_default_off") is True,
             dashboard.get("jupyter_authorized_preflight_audit_on") is True,
+            dashboard.get("jupyter_authorized_recommended_route") == "baseline_official_aloha",
+            dashboard.get("jupyter_authorized_baseline_no_upload") is True,
+            dashboard.get("jupyter_authorized_baseline_no_link") is True,
+            dashboard.get("jupyter_authorized_lora_web_needs_upload") is True,
+            dashboard.get("jupyter_authorized_lora_web_needs_link") is True,
             dashboard.get("uploads_performed") is False,
             dashboard.get("platform_contacted") is False,
             dashboard.get("credentials_printed") is False,
@@ -1076,6 +1086,7 @@ def main() -> int:
     jupyter_forbidden = jupyter_input.get("forbidden_fragments", {})
     jupyter_keys = jupyter_input.get("required_keys", {})
     jupyter_variant_logic = jupyter_input.get("variant_logic", {})
+    jupyter_route_guidance = jupyter_input.get("route_guidance", {})
     if not all(
         [
             jupyter_input.get("kind") == "jupyter_input_template_audit",
@@ -1096,6 +1107,12 @@ def main() -> int:
             not any(jupyter_forbidden.values()),
             all(jupyter_keys.values()),
             all(jupyter_variant_logic.values()),
+            all(jupyter_route_guidance.values()),
+            jupyter_input.get("recommended_route") == "baseline_official_aloha",
+            jupyter_input.get("baseline_requires_checkpoint_link") is False,
+            jupyter_input.get("baseline_requires_checkpoint_upload") is False,
+            jupyter_input.get("lora_web_requires_checkpoint_link") is True,
+            jupyter_input.get("lora_web_requires_checkpoint_upload") is True,
             jupyter_input.get("code_cell_clean") is True,
             jupyter_input.get("code_cell_id") == "safe-local-env-input-code",
             jupyter_input.get("secret_pattern_hits") == [],
@@ -1110,6 +1127,7 @@ def main() -> int:
     jupyter_authorized_required = jupyter_authorized.get("required_fragments", {})
     jupyter_authorized_forbidden = jupyter_authorized.get("forbidden_fragments", {})
     jupyter_authorized_keys = jupyter_authorized.get("required_keys", {})
+    jupyter_authorized_route_guidance = jupyter_authorized.get("route_guidance", {})
     if not all(
         [
             jupyter_authorized.get("kind") == "jupyter_authorized_preflight_template_audit",
@@ -1132,6 +1150,12 @@ def main() -> int:
             all(jupyter_authorized_required.values()),
             not any(jupyter_authorized_forbidden.values()),
             all(jupyter_authorized_keys.values()),
+            all(jupyter_authorized_route_guidance.values()),
+            jupyter_authorized.get("recommended_route") == "baseline_official_aloha",
+            jupyter_authorized.get("baseline_requires_checkpoint_link") is False,
+            jupyter_authorized.get("baseline_requires_checkpoint_upload") is False,
+            jupyter_authorized.get("lora_web_requires_checkpoint_link") is True,
+            jupyter_authorized.get("lora_web_requires_checkpoint_upload") is True,
             jupyter_authorized.get("code_cell_clean") is True,
             jupyter_authorized.get("code_cell_id") == "jupyter-authorized-preflight-code",
             jupyter_authorized.get("secret_pattern_hits") == [],

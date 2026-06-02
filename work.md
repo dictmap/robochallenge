@@ -822,6 +822,36 @@
 
 - P0：同步到 Linux 后完成最终验证并提交推送。
 
+## 2026-06-02 第三十二轮：用户授权后提交顺序审计
+
+### 已完成
+
+- 新增 `submission/AUTHORIZED_SUBMISSION_SEQUENCE.md`，固化用户授权后从离线自检、归档生成、上传、环境变量设置、link intake、readiness gate、runner dry-run 到真实 runner 的执行顺序。
+- 新增 `scripts/audit_authorized_submission_sequence.py`，审计清单是否包含关键命令、环境变量、停止条件、安全护栏和当前输入证据。
+- `submission/REAL_SUBMISSION_HANDOFF.md` 新增清单入口和审计命令。
+- `scripts/audit_submission_handoff_docs.py` 和 `scripts/validate_repro_workspace.py` 已纳入授权后提交顺序审计。
+- Notebook 新增第 33 节“用户授权后提交顺序审计”，可在 Jupyter 中复跑该检查。
+
+### 验证结果
+
+- 用户授权后提交顺序审计：`passed=true`，关键顺序 `link intake -> readiness -> dry-run -> real runner` 已通过。
+- 清单覆盖命令：离线自检、归档 dry-run、显式归档生成、link intake、readiness gate、LoRA runner dry-run、LoRA 真实 runner 和 baseline runner。
+- 安全边界：`platform_contacted=false`，`uploads_performed=false`，`archive_created=false`，`credentials_printed=false`，`link_values_printed=false`。
+- 交接文档审计：`passed=true`，已要求包含 `submission/AUTHORIZED_SUBMISSION_SEQUENCE.md` 和 `python3 scripts/audit_authorized_submission_sequence.py`。
+- `python3 scripts/validate_repro_workspace.py` 已通过，并新增输出“用户授权后提交顺序审计已通过”。
+- Notebook preflight 已通过，第 33 节可执行；新增 Notebook 文本未出现问号替换乱码。
+- 明文凭据扫描已通过：`hit_count=0`，`secret_values_printed=false`。
+- `git diff --check` 已通过。
+
+### 当前边界
+
+- 本轮不执行真实 runner，不生成 tar，不上传 checkpoint，不读取或伪造真实 token，不连接 RoboChallenge 平台。
+- 真实提交仍缺 `ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID` 和真实可访问 checkpoint link。
+
+### 下一步
+
+- P0：同步到 Linux 后完成最终验证并提交推送。
+
 ## 2026-06-02 第二十七轮：readiness gate 场景 smoke 与 Notebook 乱码修复
 
 ### 已完成

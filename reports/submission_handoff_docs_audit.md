@@ -19,6 +19,7 @@
 
 - `submission/run_table30v2_aloha_demo_template.sh`：`True`。
 - `submission/run_table30v2_aloha_lora_demo_template.sh`：`True`。
+- `submission/AUTHORIZED_SUBMISSION_SEQUENCE.md`：`True`。
 - `runs/openpi_rtc_lora_materialized_policy_checkpoint`：`True`。
 - `runs/openpi_rtc_lora_materialized_policy_checkpoint.tar`：`True`。
 - `runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.sha256`：`True`。
@@ -28,6 +29,7 @@
 ## 必需命令提及
 
 - `checkpoint_link_intake`：`True`。
+- `authorized_submission_sequence`：`True`。
 - `readiness_gate`：`True`。
 - `tar_create`：`True`。
 - `sha256_create`：`True`。

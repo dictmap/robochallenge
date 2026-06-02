@@ -42,6 +42,7 @@ REQUIRED = [
     "reports/checkpoint_archive_plan.md",
     "reports/checkpoint_archive_dry_run.md",
     "reports/checkpoint_link_intake.md",
+    "reports/authorized_submission_sequence_audit.md",
     "reports/checkpoint_upload_channels_audit.md",
     "reports/real_submission_readiness.md",
     "reports/real_submission_readiness_scenarios.md",
@@ -72,6 +73,7 @@ REQUIRED = [
     "runs/checkpoint_archive_plan.json",
     "runs/checkpoint_archive_dry_run.json",
     "runs/checkpoint_link_intake.json",
+    "runs/authorized_submission_sequence_audit.json",
     "runs/checkpoint_upload_channels_audit.json",
     "runs/real_submission_readiness.json",
     "runs/real_submission_readiness_scenarios.json",
@@ -80,6 +82,7 @@ REQUIRED = [
     "runs/robochallenge_submission_package_audit.json",
     "submission/README.md",
     "submission/REAL_SUBMISSION_HANDOFF.md",
+    "submission/AUTHORIZED_SUBMISSION_SEQUENCE.md",
     "submission/submission_manifest_template.json",
     "submission/run_table30v2_aloha_demo_template.sh",
     "submission/run_table30v2_aloha_lora_demo_template.sh",
@@ -98,6 +101,7 @@ REQUIRED = [
     "scripts/audit_checkpoint_archive_plan.py",
     "scripts/create_checkpoint_archive.py",
     "scripts/audit_checkpoint_link_intake.py",
+    "scripts/audit_authorized_submission_sequence.py",
     "scripts/audit_checkpoint_upload_channels.py",
     "scripts/audit_real_submission_readiness.py",
     "scripts/audit_real_submission_readiness_scenarios.py",
@@ -657,6 +661,33 @@ def main() -> int:
     ):
         print("Checkpoint link 回填审计未通过")
         return 1
+    authorized_sequence = json.loads((ROOT / "runs/authorized_submission_sequence_audit.json").read_text(encoding="utf-8"))
+    sequence_commands = authorized_sequence.get("commands", {})
+    sequence_command_present = sequence_commands.get("present", {})
+    sequence_inputs = authorized_sequence.get("input_evidence", {})
+    if not all(
+        [
+            authorized_sequence.get("kind") == "authorized_submission_sequence_audit",
+            authorized_sequence.get("passed"),
+            authorized_sequence.get("doc_path") == "submission/AUTHORIZED_SUBMISSION_SEQUENCE.md",
+            authorized_sequence.get("platform_contacted") is False,
+            authorized_sequence.get("uploads_performed") is False,
+            authorized_sequence.get("archive_created") is False,
+            authorized_sequence.get("credentials_printed") is False,
+            authorized_sequence.get("link_values_printed") is False,
+            sequence_commands.get("critical_order_passed"),
+            all(sequence_command_present.values()),
+            all(authorized_sequence.get("env_mentions", {}).values()),
+            all(authorized_sequence.get("guardrails", {}).values()),
+            all(sequence_inputs.values()),
+            authorized_sequence.get("secret_patterns_found") == [],
+            authorized_sequence.get("no_contact_evidence"),
+            sequence_inputs.get("readiness_currently_blocked"),
+            sequence_inputs.get("current_link_missing_as_expected"),
+        ]
+    ):
+        print("用户授权后提交顺序审计未通过")
+        return 1
     upload_audit = json.loads((ROOT / "runs/checkpoint_upload_channels_audit.json").read_text(encoding="utf-8"))
     upload_channels = upload_audit.get("channels", {})
     if not all(
@@ -910,6 +941,7 @@ def main() -> int:
     print("Checkpoint 归档计划审计已通过")
     print("Checkpoint 归档生成 dry-run 已通过")
     print("Checkpoint link 回填审计已通过")
+    print("用户授权后提交顺序审计已通过")
     print("Checkpoint 上传通道审计已通过")
     print("真实提交 readiness gate 已通过")
     print("真实提交 readiness 场景 smoke 已通过")

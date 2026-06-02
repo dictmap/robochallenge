@@ -1,0 +1,65 @@
+{
+  "kind": "authorized_submission_sequence_audit",
+  "passed": true,
+  "doc_path": "submission/AUTHORIZED_SUBMISSION_SEQUENCE.md",
+  "platform_contacted": false,
+  "uploads_performed": false,
+  "archive_created": false,
+  "credentials_printed": false,
+  "link_values_printed": false,
+  "commands": {
+    "present": {
+      "python3 scripts/validate_repro_workspace.py": true,
+      "python3 scripts/audit_plaintext_secrets.py": true,
+      "python3 scripts/create_checkpoint_archive.py": true,
+      "python3 scripts/audit_checkpoint_link_intake.py": true,
+      "python3 scripts/audit_real_submission_readiness.py": true,
+      "python3 scripts/create_checkpoint_archive.py --execute --confirm-create-large-archive": true,
+      "ROBOCHALLENGE_DRY_RUN=1 bash submission/run_table30v2_aloha_lora_demo_template.sh": true,
+      "bash submission/run_table30v2_aloha_lora_demo_template.sh": true,
+      "bash submission/run_table30v2_aloha_demo_template.sh": true
+    },
+    "positions": {
+      "python3 scripts/validate_repro_workspace.py": 7,
+      "python3 scripts/audit_plaintext_secrets.py": 8,
+      "python3 scripts/create_checkpoint_archive.py": 9,
+      "python3 scripts/audit_checkpoint_link_intake.py": 10,
+      "python3 scripts/audit_real_submission_readiness.py": 11,
+      "python3 scripts/create_checkpoint_archive.py --execute --confirm-create-large-archive": 21,
+      "ROBOCHALLENGE_DRY_RUN=1 bash submission/run_table30v2_aloha_lora_demo_template.sh": 62,
+      "bash submission/run_table30v2_aloha_lora_demo_template.sh": 70,
+      "bash submission/run_table30v2_aloha_demo_template.sh": 76
+    },
+    "critical_order_passed": true
+  },
+  "env_mentions": {
+    "ROBOCHALLENGE_USER_TOKEN": true,
+    "ROBOCHALLENGE_SUBMISSION_ID": true,
+    "ROBOCHALLENGE_LORA_CHECKPOINT_LINK": true
+  },
+  "guardrails": {
+    "no_credentials_saved": true,
+    "no_auto_without_authorization": true,
+    "no_git_checkpoint": true,
+    "link_gate_before_readiness": true,
+    "dry_run_before_real_runner": true,
+    "stop_on_not_ready": true,
+    "stop_on_bad_link": true
+  },
+  "input_evidence": {
+    "archive_dry_run_passed": true,
+    "archive_not_created": true,
+    "link_intake_passed": true,
+    "current_link_missing_as_expected": true,
+    "readiness_gate_passed": true,
+    "readiness_currently_blocked": true,
+    "plaintext_scan_passed": true,
+    "plaintext_hit_count_zero": true,
+    "handoff_docs_passed": true
+  },
+  "secret_patterns_found": [],
+  "no_contact_evidence": true,
+  "blocking": [
+    "清单侧无阻塞；真实执行仍需要用户授权、真实凭据和真实 checkpoint link。"
+  ]
+}

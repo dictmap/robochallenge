@@ -14,6 +14,7 @@
   "path_mentions": {
     "submission/run_table30v2_aloha_demo_template.sh": true,
     "submission/run_table30v2_aloha_lora_demo_template.sh": true,
+    "submission/AUTHORIZED_SUBMISSION_SEQUENCE.md": true,
     "runs/openpi_rtc_lora_materialized_policy_checkpoint": true,
     "runs/openpi_rtc_lora_materialized_policy_checkpoint.tar": true,
     "runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.sha256": true,
@@ -22,6 +23,7 @@
   },
   "command_mentions": {
     "checkpoint_link_intake": true,
+    "authorized_submission_sequence": true,
     "readiness_gate": true,
     "tar_create": true,
     "sha256_create": true,

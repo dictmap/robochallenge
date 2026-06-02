@@ -13,6 +13,12 @@
 
 ## 用户拿到凭据后的最短流程
 
+完整顺序清单见 `submission/AUTHORIZED_SUBMISSION_SEQUENCE.md`。修改清单后先运行：
+
+```bash
+python3 scripts/audit_authorized_submission_sequence.py
+```
+
 先在 Linux 仓库根目录执行：
 
 ```bash

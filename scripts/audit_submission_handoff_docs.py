@@ -28,6 +28,7 @@ REQUIRED_ENV_KEYS = [
 REQUIRED_PATHS = [
     "submission/run_table30v2_aloha_demo_template.sh",
     "submission/run_table30v2_aloha_lora_demo_template.sh",
+    "submission/AUTHORIZED_SUBMISSION_SEQUENCE.md",
     "runs/openpi_rtc_lora_materialized_policy_checkpoint",
     "runs/openpi_rtc_lora_materialized_policy_checkpoint.tar",
     "runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.sha256",
@@ -37,6 +38,7 @@ REQUIRED_PATHS = [
 
 REQUIRED_COMMAND_FRAGMENTS = {
     "checkpoint_link_intake": "python3 scripts/audit_checkpoint_link_intake.py",
+    "authorized_submission_sequence": "python3 scripts/audit_authorized_submission_sequence.py",
     "readiness_gate": "python3 scripts/audit_real_submission_readiness.py",
     "tar_create": (
         "tar -C runs -cf runs/openpi_rtc_lora_materialized_policy_checkpoint.tar "

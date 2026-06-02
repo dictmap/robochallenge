@@ -14,7 +14,7 @@
 ## 材料清单
 
 - `README.md`：exists=`True`，tracked=`True`，size=`18481`，sha256=`b75c47a50df3af20c4ba3eb4e2c3a3aede49504420432120c940d8ae7950659b`。
-- `work.md`：exists=`True`，tracked=`True`，size=`76154`，sha256=`8b2ecda8b8fcb6384ddf16a18e20ae04a4e111174fe130db5ad95b195eee092d`。
+- `work.md`：exists=`True`，tracked=`True`，size=`76566`，sha256=`255c0cdf3aa261b99592a57032d0f8e881943dec2205b983288db94bed72900a`。
 - `notebooks/robochallenge_pi05_submit_cn.ipynb`：exists=`True`，tracked=`True`，size=`75042`，sha256=`87476a8ecad9ce66f61263a2b9124dabc4532b261a75c7f39c7978f14c137ecd`。
 - `submission/README.md`：exists=`True`，tracked=`True`，size=`1515`，sha256=`2cde21317add90ad127853e652fc1c54ed023b638a250453d8584df1a44e9bb1`。
 - `submission/REAL_SUBMISSION_HANDOFF.md`：exists=`True`，tracked=`True`，size=`5622`，sha256=`4cc672cba61b986c716a0a1ea9f1d994a10086bc114032ced8443c0b53296afb`。

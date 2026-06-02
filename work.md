@@ -1130,31 +1130,29 @@
 ### 下一步
 
 - P0：最终 secret scan、diff check 后提交推送。
+## 2026-06-02 第四十轮：runner dry-run checkpoint/link 明文脱敏
 
+### 已完成
 
-## 2026-06-02 ?????runner dry-run checkpoint/link ????
+- 修复 `submission/run_table30v2_aloha_demo_template.sh` 和 `submission/run_table30v2_aloha_lora_demo_template.sh` 的 dry-run 输出：不再打印 `checkpoint=$CHECKPOINT`，改为只打印 `checkpoint_length`。
+- 更新 `scripts/audit_robochallenge_submission_package.py`，使用 synthetic checkpoint URL 执行 baseline/LoRA dry-run，并验证 token、submission id、checkpoint/link 明文均未出现在输出中。
+- `scripts/validate_repro_workspace.py` 新增 `printed_checkpoint=false` 和 `has_checkpoint_length=true` 检查。
+- `submission/REAL_SUBMISSION_HANDOFF.md` 和 `submission/AUTHORIZED_SUBMISSION_SEQUENCE.md` 已明确 dry-run 只打印 checkpoint 长度，不打印 checkpoint/link 明文。
+- `scripts/audit_submission_handoff_docs.py` 和 `scripts/audit_authorized_submission_sequence.py` 已纳入对应安全边界。
 
-### ???
+### 验证结果
 
-- ?? `submission/run_table30v2_aloha_demo_template.sh` ? `submission/run_table30v2_aloha_lora_demo_template.sh` ? dry-run ??????? `checkpoint=$CHECKPOINT`?????? `checkpoint_length`?
-- ?? `scripts/audit_robochallenge_submission_package.py`??? synthetic checkpoint URL ?? baseline/LoRA dry-run???? token?submission id?checkpoint/link ???????????
-- `scripts/validate_repro_workspace.py` ?? `printed_checkpoint=false` ? `has_checkpoint_length=true` ???
-- `submission/REAL_SUBMISSION_HANDOFF.md` ? `submission/AUTHORIZED_SUBMISSION_SEQUENCE.md` ??? dry-run ??? checkpoint ?????? checkpoint/link ???
-- `scripts/audit_submission_handoff_docs.py` ? `scripts/audit_authorized_submission_sequence.py` ??????????
+- Linux 端 submission package 审计已通过：baseline/LoRA `dry_run_no_contact.passed=true`，`printed_secret=false`，`printed_checkpoint=false`，`has_checkpoint_length=true`。
+- baseline/LoRA dry-run 输出只包含 `dry_run=true`、`checkpoint_length=64`、`prompt_length=122`、token 长度、submission id 长度和 `robot_type=aloha`。
+- Linux 端 Notebook preflight 已通过；现有提交包审计 cell 可复跑该检查。
+- Linux 端 `python3 scripts/validate_repro_workspace.py` 已通过。
+- Linux 端 `git diff --check` 已通过。
 
-### ????
+### 当前边界
 
-- Linux ? submission package ??????baseline/LoRA `dry_run_no_contact.passed=true`?`printed_secret=false`?`printed_checkpoint=false`?`has_checkpoint_length=true`?
-- baseline/LoRA dry-run ????? `dry_run=true`?`checkpoint_length=64`?`prompt_length=122`?token ???submission id ??? `robot_type=aloha`?
-- Linux ? Notebook preflight ??????????? cell ???????
-- Linux ? `python3 scripts/validate_repro_workspace.py` ????
-- Linux ? `git diff --check` ????
+- 本轮只修复 dry-run 脱敏，不生成 tar，不上传 checkpoint，不读取或伪造真实 token、submission id、checkpoint link。
+- 真实提交仍缺 `ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID` 和真实可访问 checkpoint link。
 
-### ????
+### 下一步
 
-- ????? dry-run ?????? tar???? checkpoint????????? token?submission id?checkpoint link?
-- ?????? `ROBOCHALLENGE_USER_TOKEN`?`ROBOCHALLENGE_SUBMISSION_ID` ?????? checkpoint link?
-
-### ???
-
-- P0???????? runner dry-run ?????
+- P0：提交并推送本轮 runner dry-run 脱敏产物。

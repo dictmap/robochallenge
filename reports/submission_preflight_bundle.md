@@ -12,6 +12,10 @@
 - 推荐提交路线：`baseline_official_aloha`。
 - baseline 是否需要 checkpoint link：`False`。
 - baseline 是否需要 checkpoint upload：`False`。
+- 中文 UTF-8 产物审计：`True`。
+- 中文 UTF-8 扫描文件数：`134`。
+- 中文 UTF-8 解码错误数：`0`。
+- 中文乱码哨兵命中数：`0`。
 - baseline dry-run gate：`True`。
 - baseline dry-run 命令：`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_ready_real_submission_template.sh`。
 - dry-run 是否停在真实 runner 前：`True`。
@@ -59,6 +63,7 @@
 - `jupyter_input_template`：returncode=`0`，passed=`True`。
 - `jupyter_authorized_preflight_template`：returncode=`0`，passed=`True`。
 - `jupyter_final_handoff_template`：returncode=`0`，passed=`True`。
+- `chinese_utf8_artifacts`：returncode=`0`，passed=`True`。
 - `real_submission_readiness`：returncode=`0`，passed=`True`。
 - `authorized_preflight_template`：returncode=`0`，passed=`True`。
 - `ready_real_runner_template`：returncode=`0`，passed=`True`。

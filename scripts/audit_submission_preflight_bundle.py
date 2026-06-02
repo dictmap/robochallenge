@@ -26,6 +26,7 @@ SUBCOMMANDS = [
     ("jupyter_input_template", "scripts/audit_jupyter_input_template.py"),
     ("jupyter_authorized_preflight_template", "scripts/audit_jupyter_authorized_preflight_template.py"),
     ("jupyter_final_handoff_template", "scripts/audit_jupyter_final_handoff_template.py"),
+    ("chinese_utf8_artifacts", "scripts/audit_chinese_utf8_artifacts.py"),
     ("real_submission_readiness", "scripts/audit_real_submission_readiness.py"),
     ("authorized_preflight_template", "scripts/audit_authorized_preflight_template.py"),
     ("ready_real_runner_template", "scripts/audit_ready_real_runner_template.py"),
@@ -95,6 +96,7 @@ def build_status() -> dict[str, Any]:
     jupyter_input = read_json(RUNS_DIR / "jupyter_input_template_audit.json")
     jupyter_authorized = read_json(RUNS_DIR / "jupyter_authorized_preflight_template_audit.json")
     jupyter_final_handoff = read_json(RUNS_DIR / "jupyter_final_handoff_template_audit.json")
+    chinese_utf8 = read_json(RUNS_DIR / "chinese_utf8_artifact_audit.json")
     readiness = read_json(RUNS_DIR / "real_submission_readiness.json")
     authorized_preflight = read_json(RUNS_DIR / "authorized_preflight_template_audit.json")
     ready_real_runner = read_json(RUNS_DIR / "ready_real_runner_template_audit.json")
@@ -123,6 +125,7 @@ def build_status() -> dict[str, Any]:
                 jupyter_input,
                 jupyter_authorized,
                 jupyter_final_handoff,
+                chinese_utf8,
                 readiness,
                 authorized_preflight,
                 ready_real_runner,
@@ -148,6 +151,7 @@ def build_status() -> dict[str, Any]:
         or bool(jupyter_input.get("link_values_printed"))
         or bool(jupyter_authorized.get("link_values_printed"))
         or bool(jupyter_final_handoff.get("link_values_printed"))
+        or bool(chinese_utf8.get("link_values_printed"))
         or bool(authorized_preflight.get("link_values_printed"))
         or bool(ready_real_runner.get("link_values_printed"))
         or bool(authorized_archive.get("link_values_printed"))
@@ -167,6 +171,7 @@ def build_status() -> dict[str, Any]:
         or bool(jupyter_input.get("secret_values_printed"))
         or bool(jupyter_authorized.get("secret_values_printed"))
         or bool(jupyter_final_handoff.get("secret_values_printed"))
+        or bool(chinese_utf8.get("secret_values_printed"))
         or bool(authorized_preflight.get("secret_values_printed"))
         or bool(ready_real_runner.get("secret_values_printed"))
         or bool(authorized_archive.get("secret_values_printed"))
@@ -192,6 +197,7 @@ def build_status() -> dict[str, Any]:
                 jupyter_input,
                 jupyter_authorized,
                 jupyter_final_handoff,
+                chinese_utf8,
                 readiness,
                 authorized_preflight,
                 ready_real_runner,
@@ -220,6 +226,7 @@ def build_status() -> dict[str, Any]:
                 jupyter_input,
                 jupyter_authorized,
                 jupyter_final_handoff,
+                chinese_utf8,
                 readiness,
                 authorized_preflight,
                 ready_real_runner,
@@ -272,6 +279,10 @@ def build_status() -> dict[str, Any]:
         "recommended_route": route_aware_blockers.get("recommended_route"),
         "baseline_requires_checkpoint_link": route_aware_blockers.get("baseline_requires_checkpoint_link"),
         "baseline_requires_checkpoint_upload": route_aware_blockers.get("baseline_requires_checkpoint_upload"),
+        "chinese_utf8_artifact_audit_passed": chinese_utf8.get("passed") is True,
+        "chinese_utf8_artifact_scanned_file_count": chinese_utf8.get("scanned_file_count"),
+        "chinese_utf8_artifact_decode_error_count": chinese_utf8.get("decode_error_count"),
+        "chinese_utf8_artifact_bad_marker_hit_count": chinese_utf8.get("bad_marker_hit_count"),
         "baseline_dry_run_gate_passed": baseline_dry_run_gate.get("passed") is True,
         "baseline_dry_run_gate_command": baseline_dry_run_gate.get("dry_run_gate_command"),
         "baseline_dry_run_gate_stops_before_real_runner": baseline_dry_run_gate.get(
@@ -375,6 +386,10 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         f"- 推荐提交路线：`{status['recommended_route']}`。",
         f"- baseline 是否需要 checkpoint link：`{status['baseline_requires_checkpoint_link']}`。",
         f"- baseline 是否需要 checkpoint upload：`{status['baseline_requires_checkpoint_upload']}`。",
+        f"- 中文 UTF-8 产物审计：`{status['chinese_utf8_artifact_audit_passed']}`。",
+        f"- 中文 UTF-8 扫描文件数：`{status['chinese_utf8_artifact_scanned_file_count']}`。",
+        f"- 中文 UTF-8 解码错误数：`{status['chinese_utf8_artifact_decode_error_count']}`。",
+        f"- 中文乱码哨兵命中数：`{status['chinese_utf8_artifact_bad_marker_hit_count']}`。",
         f"- baseline dry-run gate：`{status['baseline_dry_run_gate_passed']}`。",
         f"- baseline dry-run 命令：`{status['baseline_dry_run_gate_command']}`。",
         f"- dry-run 是否停在真实 runner 前：`{status['baseline_dry_run_gate_stops_before_real_runner']}`。",

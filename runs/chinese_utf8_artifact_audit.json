@@ -1,0 +1,693 @@
+{
+  "kind": "chinese_utf8_artifact_audit",
+  "passed": true,
+  "scanned_file_count": 134,
+  "decode_error_count": 0,
+  "bad_marker_hit_file_count": 0,
+  "bad_marker_hit_count": 0,
+  "required_phrase_checks": {
+    "dashboard_html_title": {
+      "path": "reports/submission_status_dashboard.html",
+      "present": true,
+      "phrase_length": 26
+    },
+    "dashboard_html_utf8_meta": {
+      "path": "reports/submission_status_dashboard.html",
+      "present": true,
+      "phrase_length": 21
+    },
+    "preflight_report_title": {
+      "path": "reports/submission_preflight_bundle.md",
+      "present": true,
+      "phrase_length": 9
+    },
+    "local_env_smoke_parent_confirm": {
+      "path": "reports/baseline_local_env_smoke.md",
+      "present": true,
+      "phrase_length": 7
+    },
+    "handoff_rehearsal_parent_confirm": {
+      "path": "reports/baseline_final_handoff_rehearsal.md",
+      "present": true,
+      "phrase_length": 7
+    },
+    "notebook_json_cn": {
+      "path": "notebooks/robochallenge_pi05_submit_cn.ipynb",
+      "present": true,
+      "phrase_length": 22
+    }
+  },
+  "sampled_files": [
+    {
+      "path": "README.md",
+      "size_bytes": 19168,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "notebooks/robochallenge_pi05_submit_cn.ipynb",
+      "size_bytes": 97941,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/aloha_mock_smoke_result.md",
+      "size_bytes": 1345,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/authorized_checkpoint_archive_template_audit.md",
+      "size_bytes": 2030,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/authorized_execution_checklist.md",
+      "size_bytes": 5960,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/authorized_preflight_template_audit.md",
+      "size_bytes": 1337,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/authorized_submission_sequence_audit.md",
+      "size_bytes": 5771,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/baseline_credential_hygiene.md",
+      "size_bytes": 2313,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/baseline_dry_run_gate.md",
+      "size_bytes": 3423,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/baseline_final_handoff_packet.md",
+      "size_bytes": 4232,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/baseline_final_handoff_rehearsal.md",
+      "size_bytes": 2839,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/baseline_local_env_smoke.md",
+      "size_bytes": 2061,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/baseline_submission_quickstart.md",
+      "size_bytes": 2755,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/checkpoint_archive_dry_run.md",
+      "size_bytes": 1581,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/checkpoint_archive_plan.md",
+      "size_bytes": 1412,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/checkpoint_link_download_verification.md",
+      "size_bytes": 1300,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/checkpoint_link_intake.md",
+      "size_bytes": 1644,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/checkpoint_split_plan.md",
+      "size_bytes": 1611,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/checkpoint_upload_channels_audit.md",
+      "size_bytes": 3298,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/initial_repro_assessment.md",
+      "size_bytes": 2858,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/jupyter_authorized_preflight_template_audit.md",
+      "size_bytes": 3025,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/jupyter_final_handoff_template_audit.md",
+      "size_bytes": 3099,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/jupyter_input_template_audit.md",
+      "size_bytes": 3192,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/linux_pi05_baseline_audit.md",
+      "size_bytes": 2229,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/lora_checkpoint_export_readiness.md",
+      "size_bytes": 3002,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/next_user_action_packet.md",
+      "size_bytes": 6629,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/notebook_structure_audit.md",
+      "size_bytes": 2139,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/openpi_rtc_lora_checkpoint_restore_audit.md",
+      "size_bytes": 1262,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/openpi_rtc_lora_inference_checkpoint_layout.md",
+      "size_bytes": 1973,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/openpi_rtc_lora_inference_checkpoint_materialize.md",
+      "size_bytes": 1911,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/openpi_rtc_lora_materialized_policy_smoke.md",
+      "size_bytes": 767,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/openpi_rtc_lora_numeric_forward_reduced.md",
+      "size_bytes": 1328,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/openpi_rtc_lora_numeric_grad_reduced.md",
+      "size_bytes": 2706,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/openpi_rtc_lora_numeric_weight_preflight.md",
+      "size_bytes": 1383,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/openpi_rtc_lora_path_audit.md",
+      "size_bytes": 1202,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/openpi_rtc_numeric_forward_bf16_1copy.md",
+      "size_bytes": 1194,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/openpi_rtc_numeric_grad_attempt.md",
+      "size_bytes": 1200,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/openpi_rtc_numeric_head_grad.md",
+      "size_bytes": 1327,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/openpi_rtc_numeric_head_grad_reduced.md",
+      "size_bytes": 1274,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/openpi_rtc_numeric_weight_preflight.md",
+      "size_bytes": 1366,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/openpi_rtc_train_entry_audit.md",
+      "size_bytes": 1553,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/pi05_base_repro.md",
+      "size_bytes": 4145,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/pi06_pi07_public_release_audit.md",
+      "size_bytes": 2523,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/plaintext_secret_scan.md",
+      "size_bytes": 610,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/ready_real_runner_template_audit.md",
+      "size_bytes": 1828,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/real_submission_readiness.md",
+      "size_bytes": 1306,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/real_submission_readiness_scenarios.md",
+      "size_bytes": 1152,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/robochallenge_submission_package_checklist.md",
+      "size_bytes": 2838,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/route_aware_submission_blockers.md",
+      "size_bytes": 3779,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/submission_artifact_manifest.md",
+      "size_bytes": 18131,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/submission_blockers_summary.md",
+      "size_bytes": 3803,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/submission_env_template_audit.md",
+      "size_bytes": 1100,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/submission_handoff_docs_audit.md",
+      "size_bytes": 5768,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/submission_preflight_bundle.md",
+      "size_bytes": 5369,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/submission_status_dashboard.html",
+      "size_bytes": 17492,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/submission_variant_route_packet.md",
+      "size_bytes": 3186,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/table30_vs_table30v2.md",
+      "size_bytes": 2680,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/table30v2_aloha_dry_run_converter.md",
+      "size_bytes": 1189,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/table30v2_aloha_mapping.md",
+      "size_bytes": 3037,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/table30v2_aloha_short_lerobot.md",
+      "size_bytes": 897,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/table30v2_aloha_short_lerobot_cli.md",
+      "size_bytes": 916,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/web_form_field_packet.md",
+      "size_bytes": 3609,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "runs/authorized_checkpoint_archive_template_audit.json",
+      "size_bytes": 5565,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "runs/authorized_execution_checklist.json",
+      "size_bytes": 11090,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "runs/authorized_preflight_template_audit.json",
+      "size_bytes": 4039,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "runs/authorized_submission_sequence_audit.json",
+      "size_bytes": 9482,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "runs/baseline_credential_hygiene.json",
+      "size_bytes": 2361,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "runs/baseline_dry_run_gate.json",
+      "size_bytes": 3420,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "runs/baseline_final_handoff_packet.json",
+      "size_bytes": 4599,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "runs/baseline_final_handoff_rehearsal.json",
+      "size_bytes": 5113,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "runs/baseline_local_env_smoke.json",
+      "size_bytes": 10682,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "runs/baseline_submission_quickstart.json",
+      "size_bytes": 3353,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "runs/checkpoint_archive_dry_run.json",
+      "size_bytes": 1887,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "runs/checkpoint_archive_plan.json",
+      "size_bytes": 1728,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "runs/checkpoint_link_download_verification.json",
+      "size_bytes": 2050,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "runs/checkpoint_link_intake.json",
+      "size_bytes": 2388,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "runs/checkpoint_split_plan.json",
+      "size_bytes": 2299,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "runs/checkpoint_upload_channels_audit.json",
+      "size_bytes": 5919,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "runs/data_audit_aloha.json",
+      "size_bytes": 336,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "runs/jupyter_authorized_preflight_template_audit.json",
+      "size_bytes": 3253,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    }
+  ],
+  "decode_error_paths": [],
+  "bad_marker_hit_paths": [],
+  "platform_contacted": false,
+  "uploads_performed": false,
+  "credentials_read": false,
+  "credentials_printed": false,
+  "link_values_printed": false,
+  "secret_values_printed": false,
+  "blocking": [
+    "中文交接产物 UTF-8 解码与乱码哨兵扫描通过。"
+  ]
+}

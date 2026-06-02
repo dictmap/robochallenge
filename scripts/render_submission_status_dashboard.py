@@ -40,6 +40,7 @@ SOURCE_FILES = {
     "jupyter_input": RUNS_DIR / "jupyter_input_template_audit.json",
     "jupyter_authorized": RUNS_DIR / "jupyter_authorized_preflight_template_audit.json",
     "jupyter_final_handoff": RUNS_DIR / "jupyter_final_handoff_template_audit.json",
+    "chinese_utf8_artifacts": RUNS_DIR / "chinese_utf8_artifact_audit.json",
     "link_intake": RUNS_DIR / "checkpoint_link_intake.json",
     "readiness": RUNS_DIR / "real_submission_readiness.json",
     "preflight_bundle": RUNS_DIR / "submission_preflight_bundle.json",
@@ -106,6 +107,7 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
     jupyter_input = data["jupyter_input"]
     jupyter_authorized = data["jupyter_authorized"]
     jupyter_final_handoff = data["jupyter_final_handoff"]
+    chinese_utf8 = data["chinese_utf8_artifacts"]
     link_intake = data["link_intake"]
     readiness = data["readiness"]
     preflight = data["preflight_bundle"]
@@ -243,6 +245,13 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
         and jupyter_final_handoff.get("command_count") == 4
         and jupyter_final_handoff.get("no_contact_command_count") == 3
         and jupyter_final_handoff.get("real_runner_requires_confirmation") is True
+    )
+    chinese_utf8_ready = bool(
+        chinese_utf8.get("passed")
+        and chinese_utf8.get("scanned_file_count", 0) >= 20
+        and chinese_utf8.get("decode_error_count") == 0
+        and chinese_utf8.get("bad_marker_hit_count") == 0
+        and all(item.get("present") is True for item in chinese_utf8.get("required_phrase_checks", {}).values())
     )
     uploads_performed = readiness.get("inputs", {}).get("uploads_performed")
     plaintext_clean = plaintext.get("hit_count") == 0 and plaintext.get("secret_values_printed") is False
@@ -430,6 +439,13 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
             "reports/jupyter_final_handoff_template_audit.md",
         ),
         card(
+            "中文 UTF-8",
+            "done" if chinese_utf8_ready else "watch",
+            f"{chinese_utf8.get('scanned_file_count', 0)} 个文件",
+            "关键报告、GUI、Notebook 和交接文档已做 UTF-8 解码与常见乱码哨兵扫描。",
+            "reports/chinese_utf8_artifact_audit.md",
+        ),
+        card(
             "明文凭据扫描",
             "done" if plaintext_clean else "watch",
             f"hit_count={plaintext.get('hit_count')}",
@@ -458,6 +474,7 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
     jupyter_input = data["jupyter_input"]
     jupyter_authorized = data["jupyter_authorized"]
     jupyter_final_handoff = data["jupyter_final_handoff"]
+    chinese_utf8 = data["chinese_utf8_artifacts"]
     sequence = data["authorized_sequence"]
     preflight = data["preflight_bundle"]
     plaintext = data["plaintext_scan"]
@@ -634,6 +651,13 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
             "real_runner_requires_confirmation"
         )
         is True,
+        "chinese_utf8_artifact_audit_passed": chinese_utf8.get("passed") is True,
+        "chinese_utf8_artifact_scanned_file_count": chinese_utf8.get("scanned_file_count"),
+        "chinese_utf8_artifact_decode_error_count": chinese_utf8.get("decode_error_count"),
+        "chinese_utf8_artifact_bad_marker_hit_count": chinese_utf8.get("bad_marker_hit_count"),
+        "chinese_utf8_artifact_required_phrases_present": all(
+            item.get("present") is True for item in chinese_utf8.get("required_phrase_checks", {}).values()
+        ),
         "authorized_execution_recommended_route": authorized_execution.get("recommended_route"),
         "authorized_execution_baseline_no_upload": authorized_execution.get("baseline_requires_checkpoint_upload") is False,
         "authorized_execution_baseline_no_link": authorized_execution.get("baseline_requires_checkpoint_link") is False,

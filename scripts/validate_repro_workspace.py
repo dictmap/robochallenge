@@ -56,6 +56,7 @@ REQUIRED = [
     "reports/jupyter_input_template_audit.md",
     "reports/jupyter_authorized_preflight_template_audit.md",
     "reports/jupyter_final_handoff_template_audit.md",
+    "reports/chinese_utf8_artifact_audit.md",
     "reports/authorized_preflight_template_audit.md",
     "reports/ready_real_runner_template_audit.md",
     "reports/authorized_checkpoint_archive_template_audit.md",
@@ -112,6 +113,7 @@ REQUIRED = [
     "runs/jupyter_input_template_audit.json",
     "runs/jupyter_authorized_preflight_template_audit.json",
     "runs/jupyter_final_handoff_template_audit.json",
+    "runs/chinese_utf8_artifact_audit.json",
     "runs/authorized_preflight_template_audit.json",
     "runs/ready_real_runner_template_audit.json",
     "runs/authorized_checkpoint_archive_template_audit.json",
@@ -169,6 +171,7 @@ REQUIRED = [
     "scripts/audit_jupyter_input_template.py",
     "scripts/audit_jupyter_authorized_preflight_template.py",
     "scripts/audit_jupyter_final_handoff_template.py",
+    "scripts/audit_chinese_utf8_artifacts.py",
     "scripts/audit_authorized_preflight_template.py",
     "scripts/audit_ready_real_runner_template.py",
     "scripts/audit_authorized_checkpoint_archive_template.py",
@@ -989,6 +992,11 @@ def main() -> int:
             dashboard.get("jupyter_final_handoff_command_count") == 4,
             dashboard.get("jupyter_final_handoff_no_contact_command_count") == 3,
             dashboard.get("jupyter_final_handoff_real_runner_requires_confirmation") is True,
+            dashboard.get("chinese_utf8_artifact_audit_passed") is True,
+            dashboard.get("chinese_utf8_artifact_scanned_file_count", 0) >= 20,
+            dashboard.get("chinese_utf8_artifact_decode_error_count") == 0,
+            dashboard.get("chinese_utf8_artifact_bad_marker_hit_count") == 0,
+            dashboard.get("chinese_utf8_artifact_required_phrases_present") is True,
             dashboard.get("authorized_execution_recommended_route") == "baseline_official_aloha",
             dashboard.get("authorized_execution_baseline_no_upload") is True,
             dashboard.get("authorized_execution_baseline_no_link") is True,
@@ -1018,6 +1026,7 @@ def main() -> int:
             "路线感知阻塞" in dashboard_titles,
             "Jupyter 安全填空" in dashboard_titles,
             "Jupyter 授权预检" in dashboard_titles,
+            "中文 UTF-8" in dashboard_titles,
             "真实提交 gate" in dashboard_titles,
             "提交前预检汇总" in dashboard_titles,
             "CREATE_ROBOCHALLENGE_CHECKPOINT_ARCHIVE" in dashboard_html_text,
@@ -1305,6 +1314,28 @@ def main() -> int:
         ]
     ):
         print("Jupyter final handoff 交接包入口审计未通过")
+        return 1
+    chinese_utf8 = json.loads((ROOT / "runs/chinese_utf8_artifact_audit.json").read_text(encoding="utf-8"))
+    phrase_checks = chinese_utf8.get("required_phrase_checks", {})
+    if not all(
+        [
+            chinese_utf8.get("kind") == "chinese_utf8_artifact_audit",
+            chinese_utf8.get("passed"),
+            chinese_utf8.get("scanned_file_count", 0) >= 20,
+            chinese_utf8.get("decode_error_count") == 0,
+            chinese_utf8.get("bad_marker_hit_file_count") == 0,
+            chinese_utf8.get("bad_marker_hit_count") == 0,
+            phrase_checks,
+            all(item.get("present") is True for item in phrase_checks.values()),
+            chinese_utf8.get("platform_contacted") is False,
+            chinese_utf8.get("uploads_performed") is False,
+            chinese_utf8.get("credentials_read") is False,
+            chinese_utf8.get("credentials_printed") is False,
+            chinese_utf8.get("link_values_printed") is False,
+            chinese_utf8.get("secret_values_printed") is False,
+        ]
+    ):
+        print("中文 UTF-8 与乱码哨兵审计未通过")
         return 1
     authorized_preflight = json.loads((ROOT / "runs/authorized_preflight_template_audit.json").read_text(encoding="utf-8"))
     authorized_preflight_smoke = authorized_preflight.get("no_credentials_smoke", {})
@@ -2053,6 +2084,7 @@ def main() -> int:
         "jupyter_input_template",
         "jupyter_authorized_preflight_template",
         "jupyter_final_handoff_template",
+        "chinese_utf8_artifacts",
         "real_submission_readiness",
         "authorized_preflight_template",
         "ready_real_runner_template",
@@ -2103,6 +2135,10 @@ def main() -> int:
             preflight.get("jupyter_final_handoff_command_count") == 4,
             preflight.get("jupyter_final_handoff_no_contact_command_count") == 3,
             preflight.get("jupyter_final_handoff_real_runner_requires_confirmation") is True,
+            preflight.get("chinese_utf8_artifact_audit_passed") is True,
+            preflight.get("chinese_utf8_artifact_scanned_file_count", 0) >= 20,
+            preflight.get("chinese_utf8_artifact_decode_error_count") == 0,
+            preflight.get("chinese_utf8_artifact_bad_marker_hit_count") == 0,
             preflight.get("baseline_final_handoff_passed") is True,
             preflight.get("baseline_final_handoff_command_count") == 4,
             preflight.get("baseline_final_handoff_no_contact_command_count") == 3,
@@ -2361,6 +2397,7 @@ def main() -> int:
     print("Notebook 结构与编码审计已通过")
     print("Jupyter 安全填空本地 env 入口审计已通过")
     print("授权后 Jupyter 预检入口审计已通过")
+    print("中文 UTF-8 与乱码哨兵审计已通过")
     print("授权后安全预检模板审计已通过")
     print("强确认真实 runner 模板审计已通过")
     print("授权后 checkpoint 归档模板审计已通过")

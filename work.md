@@ -1953,3 +1953,30 @@
 
 - P0：提交并推送本轮父环境确认短语清理证据。
 - P1：继续补凭据到位后的只读/脱敏检查证据；真实 runner 仍不得在没有用户明确授权时执行。
+
+## 2026-06-03 第六十九轮：中文 UTF-8 与乱码哨兵审计
+
+### 已完成
+
+- 新增 `scripts/audit_chinese_utf8_artifacts.py`，对 Git 跟踪的中文交接产物做 UTF-8 严格解码和常见 mojibake/替换字符哨兵扫描。
+- 新增机器可读产物 `runs/chinese_utf8_artifact_audit.json` 和中文报告 `reports/chinese_utf8_artifact_audit.md`。
+- 审计范围覆盖 `README.md`、`work.md`、`reports/`、`runs/`、`notebooks/` 和 `submission/` 下的文本交接产物；排除大样本 jsonl。
+- 更新 `scripts/audit_submission_preflight_bundle.py`、`scripts/audit_submission_artifact_manifest.py`、`scripts/render_submission_status_dashboard.py` 和 `scripts/validate_repro_workspace.py`，把中文 UTF-8 审计纳入 preflight、manifest、GUI 和总验证。
+- GUI dashboard 新增 `中文 UTF-8` 卡片，展示扫描文件数和 UTF-8/乱码状态。
+
+### 验证结果
+
+- Linux 端 `python3 scripts/audit_chinese_utf8_artifacts.py` 已通过：`scanned_file_count=134`、`decode_error_count=0`、`bad_marker_hit_file_count=0`、`bad_marker_hit_count=0`。
+- 必需片段检查均通过：dashboard HTML 标题和 `<meta charset="utf-8">`、preflight 中文标题、local env smoke/hand-off rehearsal 的“父环境确认短语”说明、Notebook final handoff 片段均存在。
+- Linux 端 `python3 scripts/audit_plaintext_secrets.py`、`python3 scripts/audit_submission_preflight_bundle.py`、`python3 scripts/audit_submission_artifact_manifest.py`、`python3 scripts/render_submission_status_dashboard.py`、`python3 scripts/validate_repro_workspace.py` 和 `git diff --check` 均已通过。
+- 本轮没有读取真实 token、submission id 或 checkpoint link，没有连接 RoboChallenge 平台，没有上传 checkpoint，没有生成 checkpoint tar，也没有启动真实 runner。
+
+### 当前边界
+
+- 本审计证明仓库内关键中文交接产物是 UTF-8 且未命中常见乱码哨兵；PowerShell 控制台显示乱码属于终端解码问题，不代表文件本体损坏。
+- baseline 官方路线仍等待用户凭据、提交对象确认、`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline` 和真实 runner 明确授权。
+
+### 下一步
+
+- P0：提交并推送本轮中文 UTF-8 与乱码哨兵审计。
+- P1：继续补凭据到位后的只读/脱敏检查证据；真实 runner 仍不得在没有用户明确授权时执行。

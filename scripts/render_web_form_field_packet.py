@@ -31,11 +31,23 @@ def read_json(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def field(name: str, value: str, ready: bool, source: str, note: str, *, secret: bool = False) -> dict[str, Any]:
+def field(
+    name: str,
+    value: str,
+    ready: bool,
+    source: str,
+    note: str,
+    *,
+    secret: bool = False,
+    required_for_recommended_route: bool = True,
+    ready_for_recommended_route: bool | None = None,
+) -> dict[str, Any]:
     return {
         "name": name,
         "value": "[REDACTED]" if secret and value else value,
         "ready": bool(ready),
+        "required_for_recommended_route": bool(required_for_recommended_route),
+        "ready_for_recommended_route": bool(ready if ready_for_recommended_route is None else ready_for_recommended_route),
         "source": source,
         "note": note,
         "secret": secret,
@@ -50,6 +62,8 @@ def build_status() -> dict[str, Any]:
     upload_channels = read_json(RUNS_DIR / "checkpoint_upload_channels_audit.json")
     action_packet = read_json(RUNS_DIR / "next_user_action_packet.json")
     secret_scan = read_json(RUNS_DIR / "plaintext_secret_scan.json")
+    route_packet = read_json(RUNS_DIR / "submission_variant_route_packet.json")
+    route_aware_blockers = read_json(RUNS_DIR / "route_aware_submission_blockers.json")
 
     selected = package.get("selected_target", {})
     env = readiness.get("env", {})
@@ -60,6 +74,14 @@ def build_status() -> dict[str, Any]:
     token_present = env.get("ROBOCHALLENGE_USER_TOKEN", {}).get("present") is True
     submission_id_present = env.get("ROBOCHALLENGE_SUBMISSION_ID", {}).get("present") is True
     web_form_ready = readiness.get("web_form_ready") is True
+    recommended_route = (
+        route_aware_blockers.get("recommended_route")
+        or route_packet.get("recommended_default")
+        or action_packet.get("recommended_route")
+        or "baseline_official_aloha"
+    )
+    baseline_route_active = recommended_route == "baseline_official_aloha"
+    upload_ready = upload_channels.get("uploads_performed") is True or inputs.get("uploads_performed") is True
 
     fields = [
         field(
@@ -111,6 +133,8 @@ def build_status() -> dict[str, Any]:
             "runs/checkpoint_link_intake.json",
             "需要用户授权上传后填入真实可访问 HTTPS 链接；当前不打印链接明文。",
             secret=True,
+            required_for_recommended_route=not baseline_route_active,
+            ready_for_recommended_route=True if baseline_route_active else link_ready,
         ),
         field(
             "RoboChallenge User Token",
@@ -138,9 +162,11 @@ def build_status() -> dict[str, Any]:
         field(
             "Checkpoint Upload / Archive",
             "pending_user_authorization",
-            upload_channels.get("uploads_performed") is True or inputs.get("uploads_performed") is True,
+            upload_ready,
             "runs/checkpoint_upload_channels_audit.json",
             "LoRA 版本需要用户授权生成 tar、选择上传通道并得到 checkpoint link。",
+            required_for_recommended_route=not baseline_route_active,
+            ready_for_recommended_route=True if baseline_route_active else upload_ready,
         ),
         field(
             "Authorized Notebook Entry",
@@ -152,6 +178,18 @@ def build_status() -> dict[str, Any]:
     ]
     ready_fields = [item for item in fields if item["ready"]]
     missing_fields = [item for item in fields if not item["ready"]]
+    recommended_required_fields = [item for item in fields if item["required_for_recommended_route"]]
+    recommended_ready_fields = [
+        item for item in recommended_required_fields if item["ready_for_recommended_route"]
+    ]
+    recommended_missing_fields = [
+        item for item in recommended_required_fields if not item["ready_for_recommended_route"]
+    ]
+    recommended_route_blocking = [
+        f"推荐路线字段 `{item['name']}` 仍未就绪：{item['note']}" for item in recommended_missing_fields
+    ]
+    checkpoint_link_field = next((item for item in fields if item["name"] == "Checkpoint Link"), {})
+    checkpoint_archive_field = next((item for item in fields if item["name"] == "Checkpoint Upload / Archive"), {})
     evidence = {
         "package_audit_passed": package.get("passed") is True,
         "readiness_gate_passed": readiness.get("passed") is True,
@@ -160,6 +198,13 @@ def build_status() -> dict[str, Any]:
         "link_download_default_no_contact": link_download.get("verification", {}).get("download_host_contacted") is False,
         "upload_channels_audited": upload_channels.get("passed") is True,
         "action_packet_passed": action_packet.get("passed") is True,
+        "recommended_route_is_baseline": recommended_route == "baseline_official_aloha",
+        "baseline_route_excludes_checkpoint_link": bool(
+            baseline_route_active and checkpoint_link_field.get("required_for_recommended_route") is False
+        ),
+        "baseline_route_excludes_checkpoint_archive": bool(
+            baseline_route_active and checkpoint_archive_field.get("required_for_recommended_route") is False
+        ),
         "secret_scan_clean": secret_scan.get("passed") is True and secret_scan.get("hit_count") == 0,
     }
     leak_flags = {
@@ -212,6 +257,19 @@ def build_status() -> dict[str, Any]:
         "ready_field_count": len(ready_fields),
         "missing_field_count": len(missing_fields),
         "field_count": len(fields),
+        "recommended_route": recommended_route,
+        "recommended_route_ready": len(recommended_missing_fields) == 0,
+        "recommended_route_required_field_count": len(recommended_required_fields),
+        "recommended_route_ready_field_count": len(recommended_ready_fields),
+        "recommended_route_missing_field_count": len(recommended_missing_fields),
+        "recommended_route_blocking": recommended_route_blocking,
+        "recommended_route_blocking_names": [item["name"] for item in recommended_missing_fields],
+        "baseline_route_excludes_checkpoint_link": bool(
+            baseline_route_active and checkpoint_link_field.get("required_for_recommended_route") is False
+        ),
+        "baseline_route_excludes_checkpoint_archive": bool(
+            baseline_route_active and checkpoint_archive_field.get("required_for_recommended_route") is False
+        ),
         "fields": fields,
         "evidence": evidence,
         "leak_flags": leak_flags,
@@ -235,12 +293,21 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         f"- 审计状态：`passed={status['passed']}`。",
         f"- Web 表单当前是否就绪：`{status['web_form_ready']}`。",
         f"- 字段数：`{status['field_count']}`，已就绪 `{status['ready_field_count']}`，待用户补齐 `{status['missing_field_count']}`。",
+        f"- 推荐提交路线：`{status['recommended_route']}`。",
+        f"- 推荐路线必填字段：`{status['recommended_route_required_field_count']}`，已就绪 `{status['recommended_route_ready_field_count']}`，待补 `{status['recommended_route_missing_field_count']}`。",
+        f"- 推荐路线是否就绪：`{status['recommended_route_ready']}`。",
+        f"- baseline 路线是否排除 checkpoint link：`{status['baseline_route_excludes_checkpoint_link']}`。",
+        f"- baseline 路线是否排除 checkpoint archive/upload：`{status['baseline_route_excludes_checkpoint_archive']}`。",
         "",
         "## 字段清单",
         "",
     ]
     for item in status["fields"]:
-        lines.append(f"- `{item['name']}`：ready=`{item['ready']}`，value=`{item['value']}`。")
+        lines.append(
+            f"- `{item['name']}`：ready=`{item['ready']}`，"
+            f"recommended_required=`{item['required_for_recommended_route']}`，"
+            f"recommended_ready=`{item['ready_for_recommended_route']}`，value=`{item['value']}`。"
+        )
         lines.append(f"  来源：`{item['source']}`。{item['note']}")
     lines.extend(["", "## 只读边界", ""])
     for key, value in status["contact_flags"].items():
@@ -252,6 +319,9 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         lines.append(f"- `{key}`：`{value}`。")
     lines.extend(["", "## Blocking", ""])
     for item in status["blocking"]:
+        lines.append(f"- {item}")
+    lines.extend(["", "## 推荐路线 Blocking", ""])
+    for item in status["recommended_route_blocking"]:
         lines.append(f"- {item}")
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")

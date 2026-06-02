@@ -327,6 +327,22 @@ def build_status() -> dict[str, Any]:
         "go_no_go": go_no_go,
         "ready_for_real_submission": readiness.get("ready_for_real_submission"),
         "web_form_ready": readiness.get("web_form_ready"),
+        "web_form_recommended_route": web_form_packet.get("recommended_route"),
+        "web_form_recommended_route_ready": web_form_packet.get("recommended_route_ready"),
+        "web_form_recommended_route_required_field_count": web_form_packet.get(
+            "recommended_route_required_field_count"
+        ),
+        "web_form_recommended_route_ready_field_count": web_form_packet.get("recommended_route_ready_field_count"),
+        "web_form_recommended_route_missing_field_count": web_form_packet.get(
+            "recommended_route_missing_field_count"
+        ),
+        "web_form_baseline_excludes_checkpoint_link": web_form_packet.get("baseline_route_excludes_checkpoint_link")
+        is True,
+        "web_form_baseline_excludes_checkpoint_archive": web_form_packet.get(
+            "baseline_route_excludes_checkpoint_archive"
+        )
+        is True,
+        "web_form_recommended_route_blocking_names": web_form_packet.get("recommended_route_blocking_names", []),
         "local_baseline_runner_ready": readiness.get("local_baseline_runner_ready"),
         "local_lora_runner_ready": readiness.get("local_lora_runner_ready"),
         "verify_download_requested": link_download.get("verify_download_requested"),
@@ -557,6 +573,10 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         f"- go/no-go：`{status['go_no_go']}`。",
         f"- 真实提交就绪：`{status['ready_for_real_submission']}`。",
         f"- Web 表单就绪：`{status['web_form_ready']}`。",
+        f"- Web 表单推荐路线：`{status['web_form_recommended_route']}`。",
+        f"- Web 表单推荐路线必填字段：`{status['web_form_recommended_route_required_field_count']}`，已就绪 `{status['web_form_recommended_route_ready_field_count']}`，待补 `{status['web_form_recommended_route_missing_field_count']}`。",
+        f"- baseline Web 表单是否排除 checkpoint link：`{status['web_form_baseline_excludes_checkpoint_link']}`。",
+        f"- baseline Web 表单是否排除 checkpoint archive/upload：`{status['web_form_baseline_excludes_checkpoint_archive']}`。",
         f"- baseline runner 就绪：`{status['local_baseline_runner_ready']}`。",
         f"- LoRA runner 就绪：`{status['local_lora_runner_ready']}`。",
         f"- checkpoint link 形态就绪：`{status['link_shape_ready']}`。",

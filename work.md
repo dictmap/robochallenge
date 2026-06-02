@@ -2236,3 +2236,30 @@
 - 不读取真实 token、submission id、checkpoint link 或真实 local env 内容。
 - 不连接 RoboChallenge 平台，不上传 checkpoint，不生成 checkpoint tar，不启动真实 runner。
 - baseline 官方路线剩余 blocking 不变：提交对象确认、`ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline`、`ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION`。
+## 2026-06-03 第七十九轮：Web 表单字段包路线感知审计
+
+### 已完成
+
+- 扩展 `scripts/render_web_form_field_packet.py`，保留原始 Web 表单字段状态，同时新增 `recommended_route`、推荐路线必填字段计数、推荐路线 blocking 名称，以及 baseline 路线是否排除 checkpoint link/archive 的机器可读字段。
+- 对 `Checkpoint Link` 与 `Checkpoint Upload / Archive` 增加 `required_for_recommended_route=false` 与 `ready_for_recommended_route=true` 语义，限定在当前推荐路线 `baseline_official_aloha` 下生效；LoRA/web checkpoint 路线仍单独保留上传与真实 link 要求。
+- 更新 `scripts/render_submission_status_dashboard.py`，GUI 的“网页表单字段”卡片改为显示推荐路线必填计数：`推荐 7/10 必填`。
+- 更新 `scripts/audit_submission_preflight_bundle.py`、`scripts/audit_submission_artifact_manifest.py` 和 `scripts/validate_repro_workspace.py`，新增断言：baseline 推荐路线的当前字段阻塞中不能包含 `Checkpoint Link` 或 `Checkpoint Upload / Archive`。
+
+### 验证结果
+
+- Linux 端完整 no-contact 链路已通过：`py_compile`、`render_web_form_field_packet.py`、`audit_chinese_utf8_artifacts.py`、`audit_plaintext_secrets.py`、`audit_submission_preflight_bundle.py`、`audit_submission_artifact_manifest.py`、`render_submission_status_dashboard.py`、`validate_repro_workspace.py` 和 `git diff --check` 均通过。
+- `runs/web_form_field_packet.json` 实测：`recommended_route=baseline_official_aloha`，`recommended_route_required_field_count=10`，`recommended_route_ready_field_count=7`，`recommended_route_missing_field_count=3`，`baseline_route_excludes_checkpoint_link=true`，`baseline_route_excludes_checkpoint_archive=true`。
+- 推荐路线字段 blocking 只剩：`RoboChallenge User Token`、`RoboChallenge Submission ID`、`Submission Variant`。
+- GUI dashboard 实测仍为 `source_count=35`、`card_count=35`、`done_count=30`、`blocked_count=4`、`watch_count=1`、`ready_for_real_submission=false`。
+- 明文凭据扫描仍为 `hit_count=0`；中文 UTF-8 审计仍为 `scanned_file_count=152`、`decode_error_count=0`、`bad_marker_hit_count=0`。
+
+### 当前边界
+
+- 本轮没有读取真实 token、submission id、checkpoint link 或真实 local env 内容。
+- 没有连接 RoboChallenge 平台，没有上传 checkpoint，没有生成 checkpoint tar，也没有启动真实 runner。
+- baseline 官方 ALOHA 最短路线不再把 checkpoint link/archive 当作当前阻塞；LoRA/web checkpoint 路线仍然需要用户授权归档、上传和真实可访问 checkpoint link。
+
+### 下一步
+
+- P0：提交并推送本轮 Web 表单路线感知字段包审计。
+- P1：凭据到位后先运行 baseline 授权前只读预检与 dry-run gate；真实 runner 仍必须等待用户明确授权。

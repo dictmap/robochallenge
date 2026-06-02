@@ -488,7 +488,7 @@
     },
     {
       "path": "reports/submission_artifact_manifest.md",
-      "size_bytes": 23844,
+      "size_bytes": 24197,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -520,7 +520,7 @@
     },
     {
       "path": "reports/submission_preflight_bundle.md",
-      "size_bytes": 8266,
+      "size_bytes": 8532,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -528,7 +528,7 @@
     },
     {
       "path": "reports/submission_status_dashboard.html",
-      "size_bytes": 21467,
+      "size_bytes": 21471,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -600,7 +600,7 @@
     },
     {
       "path": "reports/web_form_field_packet.md",
-      "size_bytes": 3609,
+      "size_bytes": 5153,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,

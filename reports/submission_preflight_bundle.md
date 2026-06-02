@@ -6,6 +6,10 @@
 - go/no-go：`blocked`。
 - 真实提交就绪：`False`。
 - Web 表单就绪：`False`。
+- Web 表单推荐路线：`baseline_official_aloha`。
+- Web 表单推荐路线必填字段：`10`，已就绪 `7`，待补 `3`。
+- baseline Web 表单是否排除 checkpoint link：`True`。
+- baseline Web 表单是否排除 checkpoint archive/upload：`True`。
 - baseline runner 就绪：`False`。
 - LoRA runner 就绪：`False`。
 - checkpoint link 形态就绪：`False`。

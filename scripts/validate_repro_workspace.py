@@ -945,6 +945,16 @@ def main() -> int:
             dashboard.get("web_form_field_count", 0) >= 10,
             dashboard.get("web_form_ready_field_count", 0) >= 6,
             dashboard.get("web_form_packet_currently_not_ready") is True,
+            dashboard.get("web_form_recommended_route") == "baseline_official_aloha",
+            dashboard.get("web_form_recommended_route_ready") is False,
+            dashboard.get("web_form_recommended_required_field_count", 0) >= 10,
+            dashboard.get("web_form_recommended_ready_field_count", 0) >= 7,
+            dashboard.get("web_form_recommended_missing_field_count", 0) == 3,
+            dashboard.get("web_form_baseline_excludes_checkpoint_link") is True,
+            dashboard.get("web_form_baseline_excludes_checkpoint_archive") is True,
+            "Checkpoint Link" not in set(dashboard.get("web_form_recommended_route_blocking_names", [])),
+            "Checkpoint Upload / Archive"
+            not in set(dashboard.get("web_form_recommended_route_blocking_names", [])),
             dashboard.get("submission_variant_route_packet_passed") is True,
             dashboard.get("submission_variant_recommended_default") == "baseline_official_aloha",
             dashboard.get("submission_variant_route_count") == 2,
@@ -1704,6 +1714,7 @@ def main() -> int:
     web_form_contacts = web_form_packet.get("contact_flags", {})
     web_form_fields = web_form_packet.get("fields", [])
     web_form_field_names = {item.get("name") for item in web_form_fields}
+    web_form_route_blocking_names = set(web_form_packet.get("recommended_route_blocking_names", []))
     if not all(
         [
             web_form_packet.get("kind") == "web_form_field_packet",
@@ -1712,6 +1723,15 @@ def main() -> int:
             web_form_packet.get("field_count", 0) >= 10,
             web_form_packet.get("ready_field_count", 0) >= 6,
             web_form_packet.get("missing_field_count", 0) >= 3,
+            web_form_packet.get("recommended_route") == "baseline_official_aloha",
+            web_form_packet.get("recommended_route_ready") is False,
+            web_form_packet.get("recommended_route_required_field_count") == 10,
+            web_form_packet.get("recommended_route_ready_field_count") == 7,
+            web_form_packet.get("recommended_route_missing_field_count") == 3,
+            web_form_packet.get("baseline_route_excludes_checkpoint_link") is True,
+            web_form_packet.get("baseline_route_excludes_checkpoint_archive") is True,
+            "Checkpoint Link" not in web_form_route_blocking_names,
+            "Checkpoint Upload / Archive" not in web_form_route_blocking_names,
             len(web_form_fields) == web_form_packet.get("field_count"),
             {
                 "Benchmark",
@@ -2616,6 +2636,16 @@ def main() -> int:
             preflight.get("go_no_go") == "blocked",
             preflight.get("ready_for_real_submission") is False,
             preflight.get("web_form_ready") is False,
+            preflight.get("web_form_recommended_route") == "baseline_official_aloha",
+            preflight.get("web_form_recommended_route_ready") is False,
+            preflight.get("web_form_recommended_route_required_field_count") == 10,
+            preflight.get("web_form_recommended_route_ready_field_count") == 7,
+            preflight.get("web_form_recommended_route_missing_field_count") == 3,
+            preflight.get("web_form_baseline_excludes_checkpoint_link") is True,
+            preflight.get("web_form_baseline_excludes_checkpoint_archive") is True,
+            "Checkpoint Link" not in set(preflight.get("web_form_recommended_route_blocking_names", [])),
+            "Checkpoint Upload / Archive"
+            not in set(preflight.get("web_form_recommended_route_blocking_names", [])),
             preflight.get("local_baseline_runner_ready") is False,
             preflight.get("local_lora_runner_ready") is False,
             preflight.get("verify_download_requested") is False,

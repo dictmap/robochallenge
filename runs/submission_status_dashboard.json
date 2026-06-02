@@ -32,6 +32,18 @@
   "web_form_field_count": 12,
   "web_form_ready_field_count": 7,
   "web_form_packet_currently_not_ready": true,
+  "web_form_recommended_route": "baseline_official_aloha",
+  "web_form_recommended_route_ready": false,
+  "web_form_recommended_required_field_count": 10,
+  "web_form_recommended_ready_field_count": 7,
+  "web_form_recommended_missing_field_count": 3,
+  "web_form_baseline_excludes_checkpoint_link": true,
+  "web_form_baseline_excludes_checkpoint_archive": true,
+  "web_form_recommended_route_blocking_names": [
+    "RoboChallenge User Token",
+    "RoboChallenge Submission ID",
+    "Submission Variant"
+  ],
   "submission_variant_route_packet_passed": true,
   "submission_variant_recommended_default": "baseline_official_aloha",
   "submission_variant_route_count": 2,
@@ -309,7 +321,7 @@
       "title": "网页表单字段",
       "state": "done",
       "state_label": "已完成",
-      "value": "7/12 已就绪",
+      "value": "推荐 7/10 必填",
       "detail": "baseline 表单先补 token、submission id 和 variant；checkpoint link 只在选择 LoRA/web checkpoint 路线时补齐。",
       "report": "reports/web_form_field_packet.md"
     },

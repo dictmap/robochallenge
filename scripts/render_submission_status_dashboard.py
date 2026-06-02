@@ -166,6 +166,11 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
         web_form_packet.get("passed")
         and web_form_packet.get("field_count", 0) >= 10
         and web_form_packet.get("web_form_ready") is False
+        and web_form_packet.get("recommended_route") == "baseline_official_aloha"
+        and web_form_packet.get("baseline_route_excludes_checkpoint_link") is True
+        and web_form_packet.get("baseline_route_excludes_checkpoint_archive") is True
+        and "Checkpoint Link" not in set(web_form_packet.get("recommended_route_blocking_names", []))
+        and "Checkpoint Upload / Archive" not in set(web_form_packet.get("recommended_route_blocking_names", []))
     )
     route_packet_ready = bool(
         route_packet.get("passed")
@@ -468,7 +473,10 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
         card(
             "网页表单字段",
             "done" if web_form_packet_ready else "watch",
-            f"{web_form_packet.get('ready_field_count', 0)}/{web_form_packet.get('field_count', 0)} 已就绪",
+            (
+                f"推荐 {web_form_packet.get('recommended_route_ready_field_count', 0)}/"
+                f"{web_form_packet.get('recommended_route_required_field_count', 0)} 必填"
+            ),
             "baseline 表单先补 token、submission id 和 variant；checkpoint link 只在选择 LoRA/web checkpoint 路线时补齐。",
             "reports/web_form_field_packet.md",
         ),
@@ -694,6 +702,18 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
         "web_form_field_count": web_form_packet.get("field_count"),
         "web_form_ready_field_count": web_form_packet.get("ready_field_count"),
         "web_form_packet_currently_not_ready": web_form_packet.get("web_form_ready") is False,
+        "web_form_recommended_route": web_form_packet.get("recommended_route"),
+        "web_form_recommended_route_ready": web_form_packet.get("recommended_route_ready"),
+        "web_form_recommended_required_field_count": web_form_packet.get("recommended_route_required_field_count"),
+        "web_form_recommended_ready_field_count": web_form_packet.get("recommended_route_ready_field_count"),
+        "web_form_recommended_missing_field_count": web_form_packet.get("recommended_route_missing_field_count"),
+        "web_form_baseline_excludes_checkpoint_link": web_form_packet.get("baseline_route_excludes_checkpoint_link")
+        is True,
+        "web_form_baseline_excludes_checkpoint_archive": web_form_packet.get(
+            "baseline_route_excludes_checkpoint_archive"
+        )
+        is True,
+        "web_form_recommended_route_blocking_names": web_form_packet.get("recommended_route_blocking_names", []),
         "submission_variant_route_packet_passed": route_packet.get("passed") is True,
         "submission_variant_recommended_default": route_packet.get("recommended_default"),
         "submission_variant_route_count": route_packet.get("route_count"),

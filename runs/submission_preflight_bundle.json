@@ -4,6 +4,18 @@
   "go_no_go": "blocked",
   "ready_for_real_submission": false,
   "web_form_ready": false,
+  "web_form_recommended_route": "baseline_official_aloha",
+  "web_form_recommended_route_ready": false,
+  "web_form_recommended_route_required_field_count": 10,
+  "web_form_recommended_route_ready_field_count": 7,
+  "web_form_recommended_route_missing_field_count": 3,
+  "web_form_baseline_excludes_checkpoint_link": true,
+  "web_form_baseline_excludes_checkpoint_archive": true,
+  "web_form_recommended_route_blocking_names": [
+    "RoboChallenge User Token",
+    "RoboChallenge Submission ID",
+    "Submission Variant"
+  ],
   "local_baseline_runner_ready": false,
   "local_lora_runner_ready": false,
   "verify_download_requested": false,
@@ -244,7 +256,7 @@
       "script": "scripts/render_web_form_field_packet.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": "}\n  ],\n  \"evidence\": {\n    \"package_audit_passed\": true,\n    \"readiness_gate_passed\": true,\n    \"current_web_form_not_ready\": true,\n    \"link_intake_passed\": true,\n    \"link_download_default_no_contact\": true,\n    \"upload_channels_audited\": true,\n    \"action_packet_passed\": true,\n    \"secret_scan_clean\": true\n  },\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false\n  },\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"字段 `Checkpoint Link` 仍未就绪：需要用户授权上传后填入真实可访问 HTTPS 链接；当前不打印链接明文。\",\n    \"字段 `RoboChallenge User Token` 仍未就绪：只能写入本地 env 或 shell，不能写入 tracked 文件。\",\n    \"字段 `RoboChallenge Submission ID` 仍未就绪：必须来自 RoboChallenge 页面，不能伪造。\"\n  ]\n}\n",
+      "stdout_tail": "sed\": true,\n    \"link_download_default_no_contact\": true,\n    \"upload_channels_audited\": true,\n    \"action_packet_passed\": true,\n    \"recommended_route_is_baseline\": true,\n    \"baseline_route_excludes_checkpoint_link\": true,\n    \"baseline_route_excludes_checkpoint_archive\": true,\n    \"secret_scan_clean\": true\n  },\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false\n  },\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"字段 `Checkpoint Link` 仍未就绪：需要用户授权上传后填入真实可访问 HTTPS 链接；当前不打印链接明文。\",\n    \"字段 `RoboChallenge User Token` 仍未就绪：只能写入本地 env 或 shell，不能写入 tracked 文件。\",\n    \"字段 `RoboChallenge Submission ID` 仍未就绪：必须来自 RoboChallenge 页面，不能伪造。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "route_aware_submission_blockers": {

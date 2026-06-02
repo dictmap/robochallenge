@@ -226,6 +226,7 @@ def build_status() -> dict[str, Any]:
     readiness = read_json(RUNS_DIR / "real_submission_readiness.json")
     env_template = read_json(RUNS_DIR / "submission_env_template_audit.json")
     secret_scan = read_json(RUNS_DIR / "plaintext_secret_scan.json")
+    web_form_route_blocking_names = set(web_form_packet.get("recommended_route_blocking_names", []))
 
     inputs = {
         "preflight_status_available": bool(preflight),
@@ -284,6 +285,20 @@ def build_status() -> dict[str, Any]:
         "next_user_action_packet_lora_web_needs_link": action_packet.get("lora_web_requires_checkpoint_link") is True,
         "web_form_field_packet_passed": web_form_packet.get("passed") is True,
         "web_form_field_packet_currently_not_ready": web_form_packet.get("web_form_ready") is False,
+        "web_form_field_packet_recommended_baseline": web_form_packet.get("recommended_route")
+        == "baseline_official_aloha",
+        "web_form_field_packet_baseline_excludes_checkpoint_link": web_form_packet.get(
+            "baseline_route_excludes_checkpoint_link"
+        )
+        is True,
+        "web_form_field_packet_baseline_excludes_checkpoint_archive": web_form_packet.get(
+            "baseline_route_excludes_checkpoint_archive"
+        )
+        is True,
+        "web_form_field_packet_route_blocking_no_checkpoint_link": "Checkpoint Link"
+        not in web_form_route_blocking_names,
+        "web_form_field_packet_route_blocking_no_checkpoint_archive": "Checkpoint Upload / Archive"
+        not in web_form_route_blocking_names,
         "submission_variant_route_packet_passed": route_packet.get("passed") is True,
         "submission_variant_route_packet_baseline_default": route_packet.get("recommended_default")
         == "baseline_official_aloha",

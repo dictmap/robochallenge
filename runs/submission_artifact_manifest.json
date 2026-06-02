@@ -20,8 +20,8 @@
       "path": "work.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 183430,
-      "sha256": "703642e67ba9ad000b25556eb633eea2cba7571c063b099aeaa818d14e7d19bf"
+      "size_bytes": 186304,
+      "sha256": "f3e4daf24f45e23b141a03576272da8a0a7adea4bd1ce7650f2a383bda0f911b"
     },
     {
       "path": "notebooks/robochallenge_pi05_submit_cn.ipynb",
@@ -293,8 +293,8 @@
       "path": "reports/web_form_field_packet.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 3609,
-      "sha256": "ef7a9f53388bf14839fc62d300dba96e957f3c0d7352979123403616be51ecbe"
+      "size_bytes": 5153,
+      "sha256": "125b9b431bd4125b01bdd706ee40d6eefe0a4eafa593870a9f9977f4ed001b7c"
     },
     {
       "path": "reports/submission_variant_route_packet.md",
@@ -426,8 +426,8 @@
       "path": "reports/submission_preflight_bundle.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 8266,
-      "sha256": "f8c67a6db66a617a9f7846b4e082869c34f4245ed23a1b282ceb1e56c75ef415"
+      "size_bytes": 8532,
+      "sha256": "8385b6a585bed7728deb5d49e5fb1b1566b61aa35ed5c1285b07bfe2936b71e0"
     },
     {
       "path": "reports/plaintext_secret_scan.md",
@@ -440,8 +440,8 @@
       "path": "reports/submission_status_dashboard.html",
       "exists": true,
       "tracked": true,
-      "size_bytes": 21467,
-      "sha256": "503b390311ac7f068d00e91c919d0f8c71e9707c9bd39851e4832a52aa2e90c7"
+      "size_bytes": 21471,
+      "sha256": "2a89e1dc979a692bc5b80a9eda145ac301935481b87f863189e3bcf4934d5d48"
     },
     {
       "path": "scripts/render_next_user_action_packet.py",
@@ -454,8 +454,8 @@
       "path": "scripts/render_web_form_field_packet.py",
       "exists": true,
       "tracked": true,
-      "size_bytes": 11389,
-      "sha256": "308afc6bd0b412bbed8c4c2f4188666050449fa3d5ed3580559422fdcff37b34"
+      "size_bytes": 15558,
+      "sha256": "bb93e4e858a1221289aa72263ba1384af17117ad30100c02d8e91f9aca204ebc"
     },
     {
       "path": "scripts/render_submission_variant_route_packet.py",
@@ -688,6 +688,11 @@
     "next_user_action_packet_lora_web_needs_link": true,
     "web_form_field_packet_passed": true,
     "web_form_field_packet_currently_not_ready": true,
+    "web_form_field_packet_recommended_baseline": true,
+    "web_form_field_packet_baseline_excludes_checkpoint_link": true,
+    "web_form_field_packet_baseline_excludes_checkpoint_archive": true,
+    "web_form_field_packet_route_blocking_no_checkpoint_link": true,
+    "web_form_field_packet_route_blocking_no_checkpoint_archive": true,
     "submission_variant_route_packet_passed": true,
     "submission_variant_route_packet_baseline_default": true,
     "submission_variant_route_packet_has_two_routes": true,

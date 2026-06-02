@@ -1,0 +1,89 @@
+{
+  "kind": "synthetic_dry_run_redaction",
+  "passed": true,
+  "recommended_route": "baseline_official_aloha",
+  "case_count": 2,
+  "baseline_dry_run_passed": true,
+  "lora_dry_run_passed": true,
+  "baseline_outputs_lengths_only": true,
+  "lora_outputs_lengths_only": true,
+  "baseline_real_runner_not_started": true,
+  "lora_real_runner_not_started": true,
+  "synthetic_token_length": 37,
+  "synthetic_submission_id_length": 40,
+  "synthetic_values_recorded": false,
+  "cases": [
+    {
+      "route": "baseline",
+      "script": "submission/run_table30v2_aloha_demo_template.sh",
+      "returncode": 0,
+      "stdout_tail": "dry_run=true\ncheckpoint_length=74\nprompt_length=122\nuser_token_length=37\nsubmission_id_length=40\nrobot_type=aloha\n",
+      "stderr_tail": "",
+      "expected_keys": {
+        "dry_run=true": true,
+        "checkpoint_length=": true,
+        "prompt_length=": true,
+        "user_token_length=": true,
+        "submission_id_length=": true,
+        "robot_type=aloha": true
+      },
+      "dry_run_passed": true,
+      "reported_user_token_length": true,
+      "reported_submission_id_length": true,
+      "outputs_lengths_only": true,
+      "real_runner_started": false,
+      "printed_protected_values": false,
+      "leaked_value_count": 0
+    },
+    {
+      "route": "lora",
+      "script": "submission/run_table30v2_aloha_lora_demo_template.sh",
+      "returncode": 0,
+      "stdout_tail": "dry_run=true\ncheckpoint_length=51\nprompt_length=122\nuser_token_length=37\nsubmission_id_length=40\nrobot_type=aloha\n",
+      "stderr_tail": "",
+      "expected_keys": {
+        "dry_run=true": true,
+        "checkpoint_length=": true,
+        "prompt_length=": true,
+        "user_token_length=": true,
+        "submission_id_length=": true,
+        "robot_type=aloha": true
+      },
+      "dry_run_passed": true,
+      "reported_user_token_length": true,
+      "reported_submission_id_length": true,
+      "outputs_lengths_only": true,
+      "real_runner_started": false,
+      "printed_protected_values": false,
+      "leaked_value_count": 0
+    }
+  ],
+  "evidence": {
+    "baseline_dry_run_passed": true,
+    "lora_dry_run_passed": true,
+    "baseline_outputs_lengths_only": true,
+    "lora_outputs_lengths_only": true,
+    "baseline_real_runner_not_started": true,
+    "lora_real_runner_not_started": true,
+    "no_protected_values_printed": true
+  },
+  "leak_flags": {
+    "credentials_printed": false,
+    "link_values_printed": false,
+    "secret_values_printed": false
+  },
+  "contact_flags": {
+    "platform_contacted": false,
+    "uploads_performed": false,
+    "download_host_contacted": false
+  },
+  "platform_contacted": false,
+  "uploads_performed": false,
+  "credentials_read": false,
+  "credentials_printed": false,
+  "link_values_printed": false,
+  "secret_values_printed": false,
+  "blocking": [
+    "synthetic dry-run 已验证只输出长度字段，不打印 token/submission id 明文。"
+  ]
+}

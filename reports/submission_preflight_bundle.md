@@ -13,7 +13,7 @@
 - baseline 是否需要 checkpoint link：`False`。
 - baseline 是否需要 checkpoint upload：`False`。
 - 中文 UTF-8 产物审计：`True`。
-- 中文 UTF-8 扫描文件数：`136`。
+- 中文 UTF-8 扫描文件数：`138`。
 - 中文 UTF-8 解码错误数：`0`。
 - 中文乱码哨兵命中数：`0`。
 - baseline dry-run gate：`True`。
@@ -28,6 +28,12 @@
 - baseline 占位符是否未启动真实 runner：`True`。
 - LoRA 占位符是否未启动真实 runner：`True`。
 - 是否未记录占位符明文：`True`。
+- synthetic dry-run 脱敏：`True`。
+- baseline synthetic dry-run 是否通过：`True`。
+- LoRA synthetic dry-run 是否通过：`True`。
+- baseline synthetic dry-run 是否只输出长度：`True`。
+- LoRA synthetic dry-run 是否只输出长度：`True`。
+- 是否未记录 synthetic 明文：`True`。
 - synthetic local env smoke：`True`。
 - synthetic 授权预检是否走 baseline：`True`。
 - synthetic ready runner 是否停在真实 runner 前：`True`。
@@ -84,6 +90,7 @@
 - `baseline_dry_run_gate`：returncode=`0`，passed=`True`。
 - `baseline_credential_hygiene`：returncode=`0`，passed=`True`。
 - `placeholder_credential_rejection`：returncode=`0`，passed=`True`。
+- `synthetic_dry_run_redaction`：returncode=`0`，passed=`True`。
 - `baseline_local_env_smoke`：returncode=`0`，passed=`True`。
 - `baseline_final_handoff_packet`：returncode=`0`，passed=`True`。
 - `baseline_final_handoff_rehearsal`：returncode=`0`，passed=`True`。

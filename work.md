@@ -2007,3 +2007,31 @@
 
 - P0：提交并推送本轮占位符凭据拒绝审计。
 - P1：继续补凭据到位后的只读预检与脱敏演练；真实 runner 仍不得在没有用户明确授权时执行。
+
+## 2026-06-03 第七十一轮：synthetic dry-run 脱敏审计
+
+### 已完成
+
+- 新增 `scripts/audit_synthetic_dry_run_redaction.py`，用非占位 synthetic token/submission id 分别运行 baseline 与 LoRA wrapper 的 `ROBOCHALLENGE_DRY_RUN=1`。
+- 新增机器可读产物 `runs/synthetic_dry_run_redaction.json` 和中文报告 `reports/synthetic_dry_run_redaction.md`。
+- 更新 `scripts/audit_submission_preflight_bundle.py`、`scripts/audit_submission_artifact_manifest.py`、`scripts/render_submission_status_dashboard.py` 和 `scripts/validate_repro_workspace.py`，把 synthetic dry-run 脱敏证据接入 preflight、manifest、GUI 和总验证。
+- GUI dashboard 新增 `Synthetic dry-run 脱敏` 卡片，当前总计 `source_count=29`、`card_count=29`、`done_count=24`、`blocked_count=4`、`watch_count=1`。
+
+### 验证结果
+
+- Linux 端 `python3 scripts/audit_synthetic_dry_run_redaction.py` 已通过：baseline 与 LoRA 两个场景均 `returncode=0`。
+- 两个场景均输出 `dry_run=true`、`checkpoint_length=`、`prompt_length=`、`user_token_length=`、`submission_id_length=`、`robot_type=aloha`。
+- 两个场景均 `outputs_lengths_only=true`、`printed_protected_values=false`、`real_runner_started=false`、`platform_contacted=false`、`uploads_performed=false`。
+- Linux 端 `python3 scripts/audit_chinese_utf8_artifacts.py`、`python3 scripts/audit_plaintext_secrets.py`、`python3 scripts/audit_submission_preflight_bundle.py`、`python3 scripts/audit_submission_artifact_manifest.py`、`python3 scripts/render_submission_status_dashboard.py` 和 `python3 scripts/validate_repro_workspace.py` 均已通过。
+- 本轮没有读取真实 token、submission id 或 checkpoint link，没有连接 RoboChallenge 平台，没有上传 checkpoint，没有生成 checkpoint tar，也没有启动真实 runner。
+
+### 当前边界
+
+- 本审计只证明非占位假值在 dry-run 模式下会通过 wrapper 且只输出长度；真实 token/submission id 的平台有效性仍必须等用户提供凭据并明确授权后才能验证。
+- baseline 官方路线仍等待用户确认提交对象、提供 `ROBOCHALLENGE_USER_TOKEN`、提供 `ROBOCHALLENGE_SUBMISSION_ID`、设置 `ROBOCHALLENGE_SUBMISSION_VARIANT=baseline`，以及真实 runner 明确授权。
+- LoRA/web checkpoint 路线仍额外等待 checkpoint 归档/上传授权和真实 checkpoint link；这条路线不影响 baseline 官方最短路线。
+
+### 下一步
+
+- P0：提交并推送本轮 synthetic dry-run 脱敏审计。
+- P1：继续补凭据到位后的 no-contact 授权预检链；真实 runner 仍不得在没有用户明确授权时执行。

@@ -41,6 +41,7 @@ SUBCOMMANDS = [
     ("baseline_dry_run_gate", "scripts/render_baseline_dry_run_gate.py"),
     ("baseline_credential_hygiene", "scripts/render_baseline_credential_hygiene.py"),
     ("placeholder_credential_rejection", "scripts/audit_placeholder_credential_rejection.py"),
+    ("synthetic_dry_run_redaction", "scripts/audit_synthetic_dry_run_redaction.py"),
     ("baseline_local_env_smoke", "scripts/render_baseline_local_env_smoke.py"),
     ("baseline_final_handoff_packet", "scripts/render_baseline_final_handoff_packet.py"),
     ("baseline_final_handoff_rehearsal", "scripts/render_baseline_final_handoff_rehearsal.py"),
@@ -111,6 +112,7 @@ def build_status() -> dict[str, Any]:
     baseline_dry_run_gate = read_json(RUNS_DIR / "baseline_dry_run_gate.json")
     baseline_credential_hygiene = read_json(RUNS_DIR / "baseline_credential_hygiene.json")
     placeholder_credential_rejection = read_json(RUNS_DIR / "placeholder_credential_rejection.json")
+    synthetic_dry_run_redaction = read_json(RUNS_DIR / "synthetic_dry_run_redaction.json")
     baseline_local_env_smoke = read_json(RUNS_DIR / "baseline_local_env_smoke.json")
     baseline_final_handoff = read_json(RUNS_DIR / "baseline_final_handoff_packet.json")
     baseline_final_handoff_rehearsal = read_json(RUNS_DIR / "baseline_final_handoff_rehearsal.json")
@@ -141,6 +143,7 @@ def build_status() -> dict[str, Any]:
                 baseline_dry_run_gate,
                 baseline_credential_hygiene,
                 placeholder_credential_rejection,
+                synthetic_dry_run_redaction,
                 baseline_local_env_smoke,
                 baseline_final_handoff,
                 baseline_final_handoff_rehearsal,
@@ -165,6 +168,7 @@ def build_status() -> dict[str, Any]:
         or bool(baseline_dry_run_gate.get("link_values_printed"))
         or bool(baseline_credential_hygiene.get("link_values_printed"))
         or bool(placeholder_credential_rejection.get("link_values_printed"))
+        or bool(synthetic_dry_run_redaction.get("link_values_printed"))
         or bool(baseline_local_env_smoke.get("link_values_printed"))
         or bool(baseline_final_handoff.get("link_values_printed"))
         or bool(baseline_final_handoff_rehearsal.get("link_values_printed"))
@@ -186,6 +190,7 @@ def build_status() -> dict[str, Any]:
         or bool(baseline_dry_run_gate.get("secret_values_printed"))
         or bool(baseline_credential_hygiene.get("secret_values_printed"))
         or bool(placeholder_credential_rejection.get("secret_values_printed"))
+        or bool(synthetic_dry_run_redaction.get("secret_values_printed"))
         or bool(baseline_local_env_smoke.get("secret_values_printed"))
         or bool(baseline_final_handoff.get("secret_values_printed"))
         or bool(baseline_final_handoff_rehearsal.get("secret_values_printed"))
@@ -216,6 +221,7 @@ def build_status() -> dict[str, Any]:
                 baseline_dry_run_gate,
                 baseline_credential_hygiene,
                 placeholder_credential_rejection,
+                synthetic_dry_run_redaction,
                 baseline_local_env_smoke,
                 baseline_final_handoff,
                 baseline_final_handoff_rehearsal,
@@ -246,6 +252,7 @@ def build_status() -> dict[str, Any]:
                 baseline_dry_run_gate,
                 baseline_credential_hygiene,
                 placeholder_credential_rejection,
+                synthetic_dry_run_redaction,
                 baseline_local_env_smoke,
                 baseline_final_handoff,
                 baseline_final_handoff_rehearsal,
@@ -326,6 +333,17 @@ def build_status() -> dict[str, Any]:
         )
         is True,
         "placeholder_values_not_recorded": placeholder_credential_rejection.get("placeholder_values_recorded")
+        is False,
+        "synthetic_dry_run_redaction_passed": synthetic_dry_run_redaction.get("passed") is True,
+        "synthetic_dry_run_baseline_passed": synthetic_dry_run_redaction.get("baseline_dry_run_passed") is True,
+        "synthetic_dry_run_lora_passed": synthetic_dry_run_redaction.get("lora_dry_run_passed") is True,
+        "synthetic_dry_run_baseline_lengths_only": synthetic_dry_run_redaction.get(
+            "baseline_outputs_lengths_only"
+        )
+        is True,
+        "synthetic_dry_run_lora_lengths_only": synthetic_dry_run_redaction.get("lora_outputs_lengths_only")
+        is True,
+        "synthetic_dry_run_values_not_recorded": synthetic_dry_run_redaction.get("synthetic_values_recorded")
         is False,
         "baseline_local_env_smoke_passed": baseline_local_env_smoke.get("passed") is True,
         "baseline_local_env_smoke_authorized_preflight_variant_baseline": baseline_local_env_smoke.get(
@@ -430,6 +448,12 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         f"- baseline 占位符是否未启动真实 runner：`{status['placeholder_baseline_real_runner_not_started']}`。",
         f"- LoRA 占位符是否未启动真实 runner：`{status['placeholder_lora_real_runner_not_started']}`。",
         f"- 是否未记录占位符明文：`{status['placeholder_values_not_recorded']}`。",
+        f"- synthetic dry-run 脱敏：`{status['synthetic_dry_run_redaction_passed']}`。",
+        f"- baseline synthetic dry-run 是否通过：`{status['synthetic_dry_run_baseline_passed']}`。",
+        f"- LoRA synthetic dry-run 是否通过：`{status['synthetic_dry_run_lora_passed']}`。",
+        f"- baseline synthetic dry-run 是否只输出长度：`{status['synthetic_dry_run_baseline_lengths_only']}`。",
+        f"- LoRA synthetic dry-run 是否只输出长度：`{status['synthetic_dry_run_lora_lengths_only']}`。",
+        f"- 是否未记录 synthetic 明文：`{status['synthetic_dry_run_values_not_recorded']}`。",
         f"- synthetic local env smoke：`{status['baseline_local_env_smoke_passed']}`。",
         f"- synthetic 授权预检是否走 baseline：`{status['baseline_local_env_smoke_authorized_preflight_variant_baseline']}`。",
         f"- synthetic ready runner 是否停在真实 runner 前：`{status['baseline_local_env_smoke_ready_runner_stops_before_real_runner']}`。",

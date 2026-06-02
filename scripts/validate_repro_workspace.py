@@ -68,6 +68,7 @@ REQUIRED = [
     "reports/baseline_dry_run_gate.md",
     "reports/baseline_credential_hygiene.md",
     "reports/placeholder_credential_rejection.md",
+    "reports/synthetic_dry_run_redaction.md",
     "reports/baseline_local_env_smoke.md",
     "reports/baseline_final_handoff_packet.md",
     "reports/baseline_final_handoff_rehearsal.md",
@@ -126,6 +127,7 @@ REQUIRED = [
     "runs/baseline_dry_run_gate.json",
     "runs/baseline_credential_hygiene.json",
     "runs/placeholder_credential_rejection.json",
+    "runs/synthetic_dry_run_redaction.json",
     "runs/baseline_local_env_smoke.json",
     "runs/baseline_final_handoff_packet.json",
     "runs/baseline_final_handoff_rehearsal.json",
@@ -185,6 +187,7 @@ REQUIRED = [
     "scripts/render_baseline_dry_run_gate.py",
     "scripts/render_baseline_credential_hygiene.py",
     "scripts/audit_placeholder_credential_rejection.py",
+    "scripts/audit_synthetic_dry_run_redaction.py",
     "scripts/render_baseline_local_env_smoke.py",
     "scripts/render_baseline_final_handoff_packet.py",
     "scripts/render_baseline_final_handoff_rehearsal.py",
@@ -950,6 +953,17 @@ def main() -> int:
             dashboard.get("placeholder_values_not_recorded") is True,
             dashboard.get("placeholder_credentials_no_contact") is True,
             dashboard.get("placeholder_credentials_no_leak") is True,
+            dashboard.get("synthetic_dry_run_redaction_passed") is True,
+            dashboard.get("synthetic_dry_run_redaction_case_count") == 2,
+            dashboard.get("synthetic_dry_run_baseline_passed") is True,
+            dashboard.get("synthetic_dry_run_lora_passed") is True,
+            dashboard.get("synthetic_dry_run_baseline_lengths_only") is True,
+            dashboard.get("synthetic_dry_run_lora_lengths_only") is True,
+            dashboard.get("synthetic_dry_run_baseline_runner_not_started") is True,
+            dashboard.get("synthetic_dry_run_lora_runner_not_started") is True,
+            dashboard.get("synthetic_dry_run_values_not_recorded") is True,
+            dashboard.get("synthetic_dry_run_no_contact") is True,
+            dashboard.get("synthetic_dry_run_no_leak") is True,
             dashboard.get("baseline_local_env_smoke_passed") is True,
             dashboard.get("baseline_local_env_smoke_synthetic_values_not_recorded") is True,
             dashboard.get("baseline_local_env_smoke_temp_env_removed") is True,
@@ -1033,6 +1047,7 @@ def main() -> int:
             "Baseline dry-run gate" in dashboard_titles,
             "Baseline 凭据卫生" in dashboard_titles,
             "占位符凭据拒绝" in dashboard_titles,
+            "Synthetic dry-run 脱敏" in dashboard_titles,
             "Baseline local env smoke" in dashboard_titles,
             "Baseline final handoff" in dashboard_titles,
             "Baseline handoff rehearsal" in dashboard_titles,
@@ -1872,6 +1887,46 @@ def main() -> int:
     ):
         print("占位符凭据拒绝审计未通过")
         return 1
+    synthetic_dry_run = json.loads((ROOT / "runs/synthetic_dry_run_redaction.json").read_text(encoding="utf-8"))
+    synthetic_dry_run_evidence = synthetic_dry_run.get("evidence", {})
+    synthetic_dry_run_leaks = synthetic_dry_run.get("leak_flags", {})
+    synthetic_dry_run_contacts = synthetic_dry_run.get("contact_flags", {})
+    synthetic_dry_run_cases = synthetic_dry_run.get("cases", [])
+    if not all(
+        [
+            synthetic_dry_run.get("kind") == "synthetic_dry_run_redaction",
+            synthetic_dry_run.get("passed"),
+            synthetic_dry_run.get("recommended_route") == "baseline_official_aloha",
+            synthetic_dry_run.get("case_count") == 2,
+            len(synthetic_dry_run_cases) == 2,
+            all(item.get("returncode") == 0 for item in synthetic_dry_run_cases),
+            all(item.get("dry_run_passed") is True for item in synthetic_dry_run_cases),
+            all(item.get("reported_user_token_length") is True for item in synthetic_dry_run_cases),
+            all(item.get("reported_submission_id_length") is True for item in synthetic_dry_run_cases),
+            all(item.get("outputs_lengths_only") is True for item in synthetic_dry_run_cases),
+            all(item.get("real_runner_started") is False for item in synthetic_dry_run_cases),
+            all(item.get("printed_protected_values") is False for item in synthetic_dry_run_cases),
+            all(all(value is True for value in item.get("expected_keys", {}).values()) for item in synthetic_dry_run_cases),
+            synthetic_dry_run.get("baseline_dry_run_passed") is True,
+            synthetic_dry_run.get("lora_dry_run_passed") is True,
+            synthetic_dry_run.get("baseline_outputs_lengths_only") is True,
+            synthetic_dry_run.get("lora_outputs_lengths_only") is True,
+            synthetic_dry_run.get("baseline_real_runner_not_started") is True,
+            synthetic_dry_run.get("lora_real_runner_not_started") is True,
+            synthetic_dry_run.get("synthetic_values_recorded") is False,
+            all(synthetic_dry_run_evidence.values()),
+            not any(synthetic_dry_run_leaks.values()),
+            not any(synthetic_dry_run_contacts.values()),
+            synthetic_dry_run.get("platform_contacted") is False,
+            synthetic_dry_run.get("uploads_performed") is False,
+            synthetic_dry_run.get("credentials_read") is False,
+            synthetic_dry_run.get("credentials_printed") is False,
+            synthetic_dry_run.get("link_values_printed") is False,
+            synthetic_dry_run.get("secret_values_printed") is False,
+        ]
+    ):
+        print("synthetic dry-run 脱敏审计未通过")
+        return 1
     baseline_local_env_smoke = json.loads((ROOT / "runs/baseline_local_env_smoke.json").read_text(encoding="utf-8"))
     local_env_smoke_evidence = baseline_local_env_smoke.get("evidence", {})
     local_env_smoke_leaks = baseline_local_env_smoke.get("leak_flags", {})
@@ -2155,6 +2210,7 @@ def main() -> int:
         "baseline_dry_run_gate",
         "baseline_credential_hygiene",
         "placeholder_credential_rejection",
+        "synthetic_dry_run_redaction",
         "baseline_local_env_smoke",
         "baseline_final_handoff_packet",
         "baseline_final_handoff_rehearsal",
@@ -2187,6 +2243,12 @@ def main() -> int:
             preflight.get("placeholder_baseline_real_runner_not_started") is True,
             preflight.get("placeholder_lora_real_runner_not_started") is True,
             preflight.get("placeholder_values_not_recorded") is True,
+            preflight.get("synthetic_dry_run_redaction_passed") is True,
+            preflight.get("synthetic_dry_run_baseline_passed") is True,
+            preflight.get("synthetic_dry_run_lora_passed") is True,
+            preflight.get("synthetic_dry_run_baseline_lengths_only") is True,
+            preflight.get("synthetic_dry_run_lora_lengths_only") is True,
+            preflight.get("synthetic_dry_run_values_not_recorded") is True,
             preflight.get("baseline_local_env_smoke_passed") is True,
             preflight.get("baseline_local_env_smoke_authorized_preflight_variant_baseline") is True,
             preflight.get("baseline_local_env_smoke_ready_runner_stops_before_real_runner") is True,
@@ -2470,6 +2532,7 @@ def main() -> int:
     print("提交路线拆分包审计已通过")
     print("baseline 最短提交路径包审计已通过")
     print("占位符凭据拒绝审计已通过")
+    print("synthetic dry-run 脱敏审计已通过")
     print("路线感知阻塞摘要审计已通过")
     print("提交准备材料 manifest 审计已通过")
     print("真实提交前预检汇总已通过")

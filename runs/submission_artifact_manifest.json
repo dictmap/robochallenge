@@ -7,7 +7,7 @@
   "credentials_printed": false,
   "link_values_printed": false,
   "secret_values_printed": false,
-  "artifact_count": 71,
+  "artifact_count": 73,
   "artifacts": [
     {
       "path": "README.md",
@@ -20,8 +20,8 @@
       "path": "work.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 159932,
-      "sha256": "2a58fe8800e9953e1ccbb723bf55ccb6d89372656203b78c6850e7352788c9d2"
+      "size_bytes": 162588,
+      "sha256": "bab7b2981a395df5851fc302aed1b6f3b298f5c9017bbf5e438169a4bbee0fed"
     },
     {
       "path": "notebooks/robochallenge_pi05_submit_cn.ipynb",
@@ -252,7 +252,7 @@
       "exists": true,
       "tracked": true,
       "size_bytes": 1045,
-      "sha256": "f64f821c1c446a74dbc40ce53a70758f096b3740c791e2fd9c0e71165ab42eb2"
+      "sha256": "62989a0b490ca2246585eca719944284ba0ead59b4e0be82287862875e76a863"
     },
     {
       "path": "reports/authorized_preflight_template_audit.md",
@@ -327,9 +327,16 @@
     {
       "path": "reports/placeholder_credential_rejection.md",
       "exists": true,
-      "tracked": false,
+      "tracked": true,
       "size_bytes": 2010,
       "sha256": "3733566538647d603e1c44f62e4aca95fe00d80398f82a3065a902dfe3819ebd"
+    },
+    {
+      "path": "reports/synthetic_dry_run_redaction.md",
+      "exists": true,
+      "tracked": false,
+      "size_bytes": 1388,
+      "sha256": "d56d5ebc13935738b6ae11f35d195e187efb077b8e3a11b60a0b4272fc5762cb"
     },
     {
       "path": "reports/baseline_local_env_smoke.md",
@@ -377,22 +384,22 @@
       "path": "reports/submission_preflight_bundle.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 5763,
-      "sha256": "579de37289acdff69bf448b4856349e3d477f2780bc87328415d15f93fa46b71"
+      "size_bytes": 6143,
+      "sha256": "3a67aed65ab083a7595ec09e269bcf2c051a3cb01b1162948f935e9f3bb90c66"
     },
     {
       "path": "reports/plaintext_secret_scan.md",
       "exists": true,
       "tracked": true,
       "size_bytes": 610,
-      "sha256": "d0eb19544c9ed57227276aaef3d07754d4bd8750e43ed7d8ed8fc32e3ce07a72"
+      "sha256": "75bcb8d374c01f9bb1b772ac32d787a970bccaed0e7873c8082e1b243e921951"
     },
     {
       "path": "reports/submission_status_dashboard.html",
       "exists": true,
       "tracked": true,
-      "size_bytes": 17974,
-      "sha256": "b7f89a1a43e6dca5408693f0b7ec7a6266bb4fa0123de1a8c481d02f21523ed8"
+      "size_bytes": 18474,
+      "sha256": "a73a800c24821f89551f5adc0b93051994408aa186cace54e847a0892f62132a"
     },
     {
       "path": "scripts/render_next_user_action_packet.py",
@@ -439,9 +446,16 @@
     {
       "path": "scripts/audit_placeholder_credential_rejection.py",
       "exists": true,
-      "tracked": false,
+      "tracked": true,
       "size_bytes": 10472,
       "sha256": "d0364e21d3ff09c7a92540ded8bc740d5d8eee5685f05d7bec5f13e89c29773c"
+    },
+    {
+      "path": "scripts/audit_synthetic_dry_run_redaction.py",
+      "exists": true,
+      "tracked": false,
+      "size_bytes": 8876,
+      "sha256": "9c99d957d941185e8d55d63422e123d0c2ff6dc4847b7b25cfbc1e6fa3095994"
     },
     {
       "path": "scripts/render_baseline_local_env_smoke.py",
@@ -615,6 +629,15 @@
     "placeholder_baseline_real_runner_not_started": true,
     "placeholder_lora_real_runner_not_started": true,
     "placeholder_values_not_recorded": true,
+    "synthetic_dry_run_redaction_passed": true,
+    "synthetic_dry_run_case_count": true,
+    "synthetic_dry_run_baseline_passed": true,
+    "synthetic_dry_run_lora_passed": true,
+    "synthetic_dry_run_baseline_lengths_only": true,
+    "synthetic_dry_run_lora_lengths_only": true,
+    "synthetic_dry_run_baseline_runner_not_started": true,
+    "synthetic_dry_run_lora_runner_not_started": true,
+    "synthetic_dry_run_values_not_recorded": true,
     "baseline_local_env_smoke_passed": true,
     "baseline_local_env_smoke_synthetic_values_not_recorded": true,
     "baseline_local_env_smoke_temp_env_removed": true,

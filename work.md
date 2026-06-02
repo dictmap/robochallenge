@@ -712,3 +712,29 @@
 
 - P0：用户提供真实 token、submission id 和 checkpoint link 后，重新运行 readiness gate。
 - P1：用户授权上传通道后，再生成 tar、sha256 并上传物化 LoRA checkpoint。
+
+## 2026-06-02 第二十五轮：runner 占位符凭据防误跑
+
+### 已完成
+
+- baseline/LoRA runner 新增 `reject_placeholder`，在调用 `demo.py` 前拒绝 `<真实 ...>`、`example`、`replace_me` 这类占位符凭据。
+- `scripts/audit_robochallenge_submission_package.py` 新增 `placeholder_credentials_failfast` 审计，用占位符环境变量运行 runner 并要求 fail-fast。
+- `scripts/validate_repro_workspace.py` 已将 `mentions_placeholder_guard` 和 `placeholder_credentials_failfast` 纳入最低交接验证。
+- Notebook 第 23 节输出新增 `placeholder` 字段，方便在 Jupyter 中直接查看 runner 占位符拦截状态。
+
+### 验证结果
+
+- 提交包审计：`passed=true`，baseline/LoRA runner 的 `placeholder_credentials_failfast.passed=true`。
+- 占位符凭据运行返回码为 `64`，stderr 为“`ROBOCHALLENGE_USER_TOKEN 看起来仍是占位符，请设置真实值。`”。
+- `python3 scripts/validate_repro_workspace.py` 已通过。
+- Notebook preflight 已通过；无关耗时和磁盘字段漂移已恢复。
+- 待运行：最终 secret scan、diff check 和提交推送。
+
+### 当前边界
+
+- 本轮只增强本地 runner 防误跑逻辑，不连接 RoboChallenge 平台，不上传 checkpoint，不伪造凭据。
+
+### 下一步
+
+- P0：最终 secret scan、diff check 后提交推送。
+- P1：用户提供真实凭据和 checkpoint link 后，重新运行 readiness gate。

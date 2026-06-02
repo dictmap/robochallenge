@@ -69,6 +69,7 @@
       "mentions_user_token": true,
       "mentions_submission_id": true,
       "mentions_expected_checkpoint": true,
+      "mentions_placeholder_guard": true,
       "contains_plaintext_secret_pattern": false,
       "bash_n": {
         "returncode": 0,
@@ -81,6 +82,12 @@
         "passed": true,
         "stdout": "",
         "stderr": "/home/yjl/robochallenge/repo/submission/run_table30v2_aloha_demo_template.sh: line 6: ROBOCHALLENGE_USER_TOKEN: 请先 export ROBOCHALLENGE_USER_TOKEN"
+      },
+      "placeholder_credentials_failfast": {
+        "returncode": 64,
+        "passed": true,
+        "stdout": "",
+        "stderr": "ROBOCHALLENGE_USER_TOKEN 看起来仍是占位符，请设置真实值。"
       }
     },
     "lora": {
@@ -89,6 +96,7 @@
       "mentions_user_token": true,
       "mentions_submission_id": true,
       "mentions_expected_checkpoint": true,
+      "mentions_placeholder_guard": true,
       "contains_plaintext_secret_pattern": false,
       "bash_n": {
         "returncode": 0,
@@ -101,6 +109,12 @@
         "passed": true,
         "stdout": "",
         "stderr": "/home/yjl/robochallenge/repo/submission/run_table30v2_aloha_lora_demo_template.sh: line 6: ROBOCHALLENGE_USER_TOKEN: 请先 export ROBOCHALLENGE_USER_TOKEN"
+      },
+      "placeholder_credentials_failfast": {
+        "returncode": 64,
+        "passed": true,
+        "stdout": "",
+        "stderr": "ROBOCHALLENGE_USER_TOKEN 看起来仍是占位符，请设置真实值。"
       }
     }
   },

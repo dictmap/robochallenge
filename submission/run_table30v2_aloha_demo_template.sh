@@ -6,6 +6,20 @@ set -euo pipefail
 : "${ROBOCHALLENGE_USER_TOKEN:?请先 export ROBOCHALLENGE_USER_TOKEN}"
 : "${ROBOCHALLENGE_SUBMISSION_ID:?请先 export ROBOCHALLENGE_SUBMISSION_ID}"
 
+reject_placeholder() {
+  local name="$1"
+  local value="$2"
+  case "$value" in
+    *"<"*|*">"*|*"真实"*|*"占位"*|*"placeholder"*|*"PLACEHOLDER"*|*"replace_me"*|*"REPLACE_ME"*|*"example"*|*"EXAMPLE"*)
+      echo "$name 看起来仍是占位符，请设置真实值。" >&2
+      exit 64
+      ;;
+  esac
+}
+
+reject_placeholder ROBOCHALLENGE_USER_TOKEN "$ROBOCHALLENGE_USER_TOKEN"
+reject_placeholder ROBOCHALLENGE_SUBMISSION_ID "$ROBOCHALLENGE_SUBMISSION_ID"
+
 cd "$(dirname "$0")/.."
 
 DEFAULT_CHECKPOINT='/home/yjl/yjl/RoboChallenge/checkpoints/table30v2_multitask_baseline_aloha'

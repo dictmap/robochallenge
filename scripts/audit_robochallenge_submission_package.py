@@ -130,22 +130,50 @@ def no_credentials_failfast_check(path: Path) -> dict[str, Any]:
     }
 
 
+def placeholder_credentials_failfast_check(path: Path) -> dict[str, Any]:
+    env = os.environ.copy()
+    env["ROBOCHALLENGE_USER_TOKEN"] = "<真实 user token>"
+    env["ROBOCHALLENGE_SUBMISSION_ID"] = "<真实 submission id>"
+    result = subprocess.run(
+        ["bash", str(path)],
+        cwd=ROOT,
+        env=env,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+        timeout=10,
+    )
+    output = "\n".join([result.stdout.strip(), result.stderr.strip()]).strip()
+    return {
+        "returncode": result.returncode,
+        "passed": result.returncode != 0 and "占位符" in output and "Traceback" not in output,
+        "stdout": result.stdout.strip(),
+        "stderr": result.stderr.strip(),
+    }
+
+
 def audit_runner_file(path: Path, expected_checkpoint_fragment: str) -> dict[str, Any]:
     exists = path.exists()
     text = path.read_text(encoding="utf-8") if exists else ""
     syntax = bash_syntax_check(path) if exists else {"passed": False, "stderr": "runner missing"}
     failfast = no_credentials_failfast_check(path) if exists else {"passed": False, "stderr": "runner missing"}
+    placeholder_failfast = (
+        placeholder_credentials_failfast_check(path) if exists else {"passed": False, "stderr": "runner missing"}
+    )
     return {
         "path": str(path.relative_to(ROOT)),
         "exists": exists,
         "mentions_user_token": "ROBOCHALLENGE_USER_TOKEN" in text,
         "mentions_submission_id": "ROBOCHALLENGE_SUBMISSION_ID" in text,
         "mentions_expected_checkpoint": expected_checkpoint_fragment in text,
+        "mentions_placeholder_guard": "reject_placeholder" in text,
         "contains_plaintext_secret_pattern": bool(
             re.search(r"sk-[A-Za-z0-9_-]{20,}|hf_[A-Za-z0-9]{20,}|ROBOCHALLENGE_\w*TOKEN\s*=\s*[A-Za-z0-9_-]{20,}", text)
         ),
         "bash_n": syntax,
         "no_credentials_failfast": failfast,
+        "placeholder_credentials_failfast": placeholder_failfast,
     }
 
 
@@ -203,6 +231,20 @@ set -euo pipefail
 : "${{ROBOCHALLENGE_USER_TOKEN:?请先 export ROBOCHALLENGE_USER_TOKEN}}"
 : "${{ROBOCHALLENGE_SUBMISSION_ID:?请先 export ROBOCHALLENGE_SUBMISSION_ID}}"
 
+reject_placeholder() {{
+  local name="$1"
+  local value="$2"
+  case "$value" in
+    *"<"*|*">"*|*"真实"*|*"占位"*|*"placeholder"*|*"PLACEHOLDER"*|*"replace_me"*|*"REPLACE_ME"*|*"example"*|*"EXAMPLE"*)
+      echo "$name 看起来仍是占位符，请设置真实值。" >&2
+      exit 64
+      ;;
+  esac
+}}
+
+reject_placeholder ROBOCHALLENGE_USER_TOKEN "$ROBOCHALLENGE_USER_TOKEN"
+reject_placeholder ROBOCHALLENGE_SUBMISSION_ID "$ROBOCHALLENGE_SUBMISSION_ID"
+
 cd "$(dirname "$0")/.."
 
 DEFAULT_CHECKPOINT={quoted_checkpoint}
@@ -234,10 +276,11 @@ def write_readme(path: Path, manifest_rel: str, runner_rel: str, lora_runner_rel
 - `{manifest_rel}`：机器可读提交 manifest 模板。
 - `{runner_rel}`：Table30v2 ALOHA baseline 的 `demo.py` 启动模板。
 - `{lora_runner_rel}`：Table30v2 ALOHA LoRA 完整物化 checkpoint 的 `demo.py` 启动模板。
+- `submission/REAL_SUBMISSION_HANDOFF.md`：用户拿到 token、submission id 和 checkpoint link 后的真实提交交接清单。
 
 当前默认稳妥提交路线仍是官方 pi0.5 Table30v2 ALOHA baseline。LoRA scoped checkpoint 已被物化为本地完整 checkpoint，并通过 `create_trained_policy` 加载 smoke；但真实网站提交仍需要用户提供凭据，并把本地 checkpoint 上传成网站可访问链接。
 
-运行前需要用户在 shell 中提供 `ROBOCHALLENGE_USER_TOKEN` 和 `ROBOCHALLENGE_SUBMISSION_ID` 两个环境变量；不要把具体值写入仓库、Notebook 或报告。设置好之后运行：
+运行前需要用户在 shell 中提供 `ROBOCHALLENGE_USER_TOKEN` 和 `ROBOCHALLENGE_SUBMISSION_ID` 两个环境变量；不要把具体值写入仓库、Notebook 或报告。runner 会拒绝 `<真实 ...>`、`example`、`replace_me` 这类占位符。设置好之后运行：
 
 ```bash
 bash {runner_rel}
@@ -272,7 +315,9 @@ def write_report(status: dict[str, Any], report_path: Path) -> None:
         f"- submission 目录说明：`{status['outputs']['readme']}`。",
         f"- `demo.py` 必需参数覆盖：`{entry['required_args_present']}`。",
         f"- baseline runner 语法检查：`{status['runner_audit']['baseline']['bash_n']['passed']}`，无凭据 fail-fast：`{status['runner_audit']['baseline']['no_credentials_failfast']['passed']}`。",
+        f"- baseline runner 占位符凭据 fail-fast：`{status['runner_audit']['baseline']['placeholder_credentials_failfast']['passed']}`。",
         f"- LoRA runner 语法检查：`{status['runner_audit']['lora']['bash_n']['passed']}`，无凭据 fail-fast：`{status['runner_audit']['lora']['no_credentials_failfast']['passed']}`。",
+        f"- LoRA runner 占位符凭据 fail-fast：`{status['runner_audit']['lora']['placeholder_credentials_failfast']['passed']}`。",
         f"- mock 验证：`passed={status['evidence']['mock_smoke_passed']}`。",
         f"- Table30v2 ALOHA 映射：`ready={status['evidence']['table30v2_mapping_ready']}`。",
         f"- LoRA restore 审计：`passed={restore['restore_audit_passed']}`，合并后占位 leaf `{restore['placeholder_after_count']}`。",
@@ -450,16 +495,20 @@ def main() -> int:
             status["runner_audit"]["baseline"]["mentions_user_token"],
             status["runner_audit"]["baseline"]["mentions_submission_id"],
             status["runner_audit"]["baseline"]["mentions_expected_checkpoint"],
+            status["runner_audit"]["baseline"]["mentions_placeholder_guard"],
             not status["runner_audit"]["baseline"]["contains_plaintext_secret_pattern"],
             status["runner_audit"]["baseline"]["bash_n"]["passed"],
             status["runner_audit"]["baseline"]["no_credentials_failfast"]["passed"],
+            status["runner_audit"]["baseline"]["placeholder_credentials_failfast"]["passed"],
             status["runner_audit"]["lora"]["exists"],
             status["runner_audit"]["lora"]["mentions_user_token"],
             status["runner_audit"]["lora"]["mentions_submission_id"],
             status["runner_audit"]["lora"]["mentions_expected_checkpoint"],
+            status["runner_audit"]["lora"]["mentions_placeholder_guard"],
             not status["runner_audit"]["lora"]["contains_plaintext_secret_pattern"],
             status["runner_audit"]["lora"]["bash_n"]["passed"],
             status["runner_audit"]["lora"]["no_credentials_failfast"]["passed"],
+            status["runner_audit"]["lora"]["placeholder_credentials_failfast"]["passed"],
         ]
     )
 

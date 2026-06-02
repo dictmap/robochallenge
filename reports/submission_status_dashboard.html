@@ -105,10 +105,10 @@
         <h1>RoboChallenge pi0.5 提交状态面板</h1>
         <p class="sub">静态 GUI 汇总当前复现、LoRA checkpoint、上传/link/readiness 阻塞和授权后执行顺序。面板由 JSON 审计结果生成，不读取或显示真实凭据。</p>
       </div>
-      <div class="stamp">生成时间<br>2026-06-02 20:00:50 UTC</div>
+      <div class="stamp">生成时间<br>2026-06-02 20:16:50 UTC</div>
     </header>
     <section class="summary">
-      <div class="metric"><b>19</b><span>已完成项</span></div>
+      <div class="metric"><b>20</b><span>已完成项</span></div>
       <div class="metric"><b>4</b><span>待授权项</span></div>
       <div class="metric"><b>否</b><span>真实提交就绪</span></div>
       <div class="metric"><b>否</b><span>checkpoint link 就绪</span></div>
@@ -344,6 +344,16 @@
               <h2>Jupyter 授权预检</h2>
               <p class="value">baseline 预检</p>
               <p>Notebook 第 45 节默认按 baseline_official_aloha 预检；LoRA/web checkpoint 的归档、上传和 link 回填另走手动授权。</p>
+            </article>
+
+            <article class="card done">
+              <div class="card-top">
+                <span class="state">已完成</span>
+                <a href="../reports/jupyter_final_handoff_template_audit.md">报告</a>
+              </div>
+              <h2>Jupyter final handoff</h2>
+              <p class="value">第 46 节已接入</p>
+              <p>Notebook 默认生成 final handoff 包并展示命令顺序；真实 runner 标志默认关闭，只能手动强确认。</p>
             </article>
 
             <article class="card done">

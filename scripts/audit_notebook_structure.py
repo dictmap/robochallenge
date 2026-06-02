@@ -51,6 +51,12 @@ REQUIRED_MARKERS = [
     "RUN_JUPYTER_AUTHORIZED_PREFLIGHT_TEMPLATE_AUDIT",
     "RUN_JUPYTER_AUTHORIZED_PREFLIGHT",
     "scripts/audit_jupyter_authorized_preflight_template.py",
+    "第 46 节：baseline final handoff 交接包",
+    "RUN_JUPYTER_BASELINE_FINAL_HANDOFF_TEMPLATE_AUDIT",
+    "RUN_JUPYTER_BASELINE_FINAL_HANDOFF_PACKET",
+    "RUN_JUPYTER_BASELINE_REAL_RUNNER",
+    "scripts/audit_jupyter_final_handoff_template.py",
+    "scripts/render_baseline_final_handoff_packet.py",
 ]
 
 

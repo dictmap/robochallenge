@@ -55,6 +55,7 @@ REQUIRED = [
     "reports/notebook_structure_audit.md",
     "reports/jupyter_input_template_audit.md",
     "reports/jupyter_authorized_preflight_template_audit.md",
+    "reports/jupyter_final_handoff_template_audit.md",
     "reports/authorized_preflight_template_audit.md",
     "reports/ready_real_runner_template_audit.md",
     "reports/authorized_checkpoint_archive_template_audit.md",
@@ -109,6 +110,7 @@ REQUIRED = [
     "runs/notebook_structure_audit.json",
     "runs/jupyter_input_template_audit.json",
     "runs/jupyter_authorized_preflight_template_audit.json",
+    "runs/jupyter_final_handoff_template_audit.json",
     "runs/authorized_preflight_template_audit.json",
     "runs/ready_real_runner_template_audit.json",
     "runs/authorized_checkpoint_archive_template_audit.json",
@@ -164,6 +166,7 @@ REQUIRED = [
     "scripts/audit_notebook_structure.py",
     "scripts/audit_jupyter_input_template.py",
     "scripts/audit_jupyter_authorized_preflight_template.py",
+    "scripts/audit_jupyter_final_handoff_template.py",
     "scripts/audit_authorized_preflight_template.py",
     "scripts/audit_ready_real_runner_template.py",
     "scripts/audit_authorized_checkpoint_archive_template.py",
@@ -937,6 +940,13 @@ def main() -> int:
             dashboard.get("jupyter_authorized_baseline_no_link") is True,
             dashboard.get("jupyter_authorized_lora_web_needs_upload") is True,
             dashboard.get("jupyter_authorized_lora_web_needs_link") is True,
+            dashboard.get("jupyter_final_handoff_template_passed") is True,
+            dashboard.get("jupyter_final_handoff_audit_on") is True,
+            dashboard.get("jupyter_final_handoff_packet_default_on") is True,
+            dashboard.get("jupyter_final_handoff_real_runner_default_off") is True,
+            dashboard.get("jupyter_final_handoff_command_count") == 4,
+            dashboard.get("jupyter_final_handoff_no_contact_command_count") == 3,
+            dashboard.get("jupyter_final_handoff_real_runner_requires_confirmation") is True,
             dashboard.get("authorized_execution_recommended_route") == "baseline_official_aloha",
             dashboard.get("authorized_execution_baseline_no_upload") is True,
             dashboard.get("authorized_execution_baseline_no_link") is True,
@@ -1206,6 +1216,51 @@ def main() -> int:
         ]
     ):
         print("授权后 Jupyter 预检入口审计未通过")
+        return 1
+    jupyter_final_handoff = json.loads(
+        (ROOT / "runs/jupyter_final_handoff_template_audit.json").read_text(encoding="utf-8")
+    )
+    jupyter_final_required = jupyter_final_handoff.get("required_fragments", {})
+    jupyter_final_forbidden = jupyter_final_handoff.get("forbidden_fragments", {})
+    jupyter_final_route = jupyter_final_handoff.get("route_guidance", {})
+    jupyter_final_commands = jupyter_final_handoff.get("command_evidence", {})
+    if not all(
+        [
+            jupyter_final_handoff.get("kind") == "jupyter_final_handoff_template_audit",
+            jupyter_final_handoff.get("passed"),
+            jupyter_final_handoff.get("platform_contacted") is False,
+            jupyter_final_handoff.get("uploads_performed") is False,
+            jupyter_final_handoff.get("credentials_read") is False,
+            jupyter_final_handoff.get("credentials_printed") is False,
+            jupyter_final_handoff.get("link_values_printed") is False,
+            jupyter_final_handoff.get("secret_values_printed") is False,
+            jupyter_final_handoff.get("runner_started") is False,
+            jupyter_final_handoff.get("notebook_path") == "notebooks/robochallenge_pi05_submit_cn.ipynb",
+            jupyter_final_handoff.get("audit_flag") == "RUN_JUPYTER_BASELINE_FINAL_HANDOFF_TEMPLATE_AUDIT",
+            jupyter_final_handoff.get("audit_default_true") is True,
+            jupyter_final_handoff.get("packet_flag") == "RUN_JUPYTER_BASELINE_FINAL_HANDOFF_PACKET",
+            jupyter_final_handoff.get("packet_default_true") is True,
+            jupyter_final_handoff.get("real_runner_flag") == "RUN_JUPYTER_BASELINE_REAL_RUNNER",
+            jupyter_final_handoff.get("real_runner_default_false") is True,
+            jupyter_final_handoff.get("final_handoff_script") == "scripts/render_baseline_final_handoff_packet.py",
+            jupyter_final_handoff.get("final_handoff_report") == "reports/baseline_final_handoff_packet.md",
+            jupyter_final_handoff.get("recommended_route") == "baseline_official_aloha",
+            jupyter_final_handoff.get("baseline_requires_checkpoint_link") is False,
+            jupyter_final_handoff.get("baseline_requires_checkpoint_upload") is False,
+            jupyter_final_handoff.get("command_count") == 4,
+            jupyter_final_handoff.get("no_contact_command_count") == 3,
+            jupyter_final_handoff.get("real_runner_requires_confirmation") is True,
+            all(jupyter_final_required.values()),
+            not any(jupyter_final_forbidden.values()),
+            all(jupyter_final_route.values()),
+            all(jupyter_final_commands.values()),
+            jupyter_final_handoff.get("code_cell_clean") is True,
+            jupyter_final_handoff.get("code_cell_id") == "jupyter-final-handoff-code",
+            jupyter_final_handoff.get("secret_pattern_hits") == [],
+            jupyter_final_handoff.get("whole_notebook_secret_pattern_hits") == [],
+        ]
+    ):
+        print("Jupyter final handoff 交接包入口审计未通过")
         return 1
     authorized_preflight = json.loads((ROOT / "runs/authorized_preflight_template_audit.json").read_text(encoding="utf-8"))
     authorized_preflight_smoke = authorized_preflight.get("no_credentials_smoke", {})
@@ -1874,6 +1929,7 @@ def main() -> int:
         "notebook_structure",
         "jupyter_input_template",
         "jupyter_authorized_preflight_template",
+        "jupyter_final_handoff_template",
         "real_submission_readiness",
         "authorized_preflight_template",
         "ready_real_runner_template",
@@ -1914,6 +1970,12 @@ def main() -> int:
             preflight.get("baseline_local_env_smoke_passed") is True,
             preflight.get("baseline_local_env_smoke_authorized_preflight_variant_baseline") is True,
             preflight.get("baseline_local_env_smoke_ready_runner_stops_before_real_runner") is True,
+            preflight.get("jupyter_final_handoff_passed") is True,
+            preflight.get("jupyter_final_handoff_packet_default_true") is True,
+            preflight.get("jupyter_final_handoff_real_runner_default_false") is True,
+            preflight.get("jupyter_final_handoff_command_count") == 4,
+            preflight.get("jupyter_final_handoff_no_contact_command_count") == 3,
+            preflight.get("jupyter_final_handoff_real_runner_requires_confirmation") is True,
             preflight.get("baseline_final_handoff_passed") is True,
             preflight.get("baseline_final_handoff_command_count") == 4,
             preflight.get("baseline_final_handoff_no_contact_command_count") == 3,

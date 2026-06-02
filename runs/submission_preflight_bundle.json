@@ -21,6 +21,12 @@
   "baseline_local_env_smoke_passed": true,
   "baseline_local_env_smoke_authorized_preflight_variant_baseline": true,
   "baseline_local_env_smoke_ready_runner_stops_before_real_runner": true,
+  "jupyter_final_handoff_passed": true,
+  "jupyter_final_handoff_packet_default_true": true,
+  "jupyter_final_handoff_real_runner_default_false": true,
+  "jupyter_final_handoff_command_count": 4,
+  "jupyter_final_handoff_no_contact_command_count": 3,
+  "jupyter_final_handoff_real_runner_requires_confirmation": true,
   "baseline_final_handoff_passed": true,
   "baseline_final_handoff_command_count": 4,
   "baseline_final_handoff_no_contact_command_count": 3,
@@ -47,7 +53,7 @@
     "ROBOCHALLENGE_REAL_RUN_CONFIRM"
   ],
   "secret_scan_hit_count": 0,
-  "secret_scan_scanned_files": 208,
+  "secret_scan_scanned_files": 211,
   "subcommands": {
     "checkpoint_link_intake": {
       "script": "scripts/audit_checkpoint_link_intake.py",
@@ -74,7 +80,7 @@
       "script": "scripts/audit_notebook_structure.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": ",\n    \"第 40 节：真实提交阻塞项摘要\": true,\n    \"RUN_SUBMISSION_BLOCKERS_SUMMARY\": true,\n    \"scripts/audit_submission_blockers_summary.py\": true,\n    \"第 41 节：强确认真实 runner 模板审计\": true,\n    \"RUN_READY_REAL_RUNNER_TEMPLATE_AUDIT\": true,\n    \"scripts/audit_ready_real_runner_template.py\": true,\n    \"第 42 节：授权后 checkpoint 归档模板审计\": true,\n    \"RUN_AUTHORIZED_CHECKPOINT_ARCHIVE_TEMPLATE_AUDIT\": true,\n    \"scripts/audit_authorized_checkpoint_archive_template.py\": true,\n    \"第 43 节：授权执行清单审计\": true,\n    \"RUN_AUTHORIZED_EXECUTION_CHECKLIST\": true,\n    \"scripts/audit_authorized_execution_checklist.py\": true,\n    \"第 44 节：安全填空本地 env 入口\": true,\n    \"RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE\": true,\n    \"scripts/audit_jupyter_input_template.py\": true,\n    \"第 45 节：授权后 Jupyter 预检入口\": true,\n    \"RUN_JUPYTER_AUTHORIZED_PREFLIGHT_TEMPLATE_AUDIT\": true,\n    \"RUN_JUPYTER_AUTHORIZED_PREFLIGHT\": true,\n    \"scripts/audit_jupyter_authorized_preflight_template.py\": true\n  },\n  \"blocking\": [\n    \"Notebook 结构、编码和提交阻塞项章节已通过静态审计。\"\n  ]\n}\n",
+      "stdout_tail": "THORIZED_CHECKPOINT_ARCHIVE_TEMPLATE_AUDIT\": true,\n    \"scripts/audit_authorized_checkpoint_archive_template.py\": true,\n    \"第 43 节：授权执行清单审计\": true,\n    \"RUN_AUTHORIZED_EXECUTION_CHECKLIST\": true,\n    \"scripts/audit_authorized_execution_checklist.py\": true,\n    \"第 44 节：安全填空本地 env 入口\": true,\n    \"RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE\": true,\n    \"scripts/audit_jupyter_input_template.py\": true,\n    \"第 45 节：授权后 Jupyter 预检入口\": true,\n    \"RUN_JUPYTER_AUTHORIZED_PREFLIGHT_TEMPLATE_AUDIT\": true,\n    \"RUN_JUPYTER_AUTHORIZED_PREFLIGHT\": true,\n    \"scripts/audit_jupyter_authorized_preflight_template.py\": true,\n    \"第 46 节：baseline final handoff 交接包\": true,\n    \"RUN_JUPYTER_BASELINE_FINAL_HANDOFF_TEMPLATE_AUDIT\": true,\n    \"RUN_JUPYTER_BASELINE_FINAL_HANDOFF_PACKET\": true,\n    \"RUN_JUPYTER_BASELINE_REAL_RUNNER\": true,\n    \"scripts/audit_jupyter_final_handoff_template.py\": true,\n    \"scripts/render_baseline_final_handoff_packet.py\": true\n  },\n  \"blocking\": [\n    \"Notebook 结构、编码和提交阻塞项章节已通过静态审计。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "jupyter_input_template": {
@@ -89,6 +95,13 @@
       "returncode": 0,
       "passed": true,
       "stdout_tail": "t link\": true,\n    \"不需要 checkpoint upload\": true,\n    \"LoRA/web checkpoint 路线\": true,\n    \"归档、上传和 checkpoint link 回填流程\": true,\n    \"ROBOCHALLENGE_USER_TOKEN\": true,\n    \"ROBOCHALLENGE_SUBMISSION_ID\": true,\n    \"ROBOCHALLENGE_LORA_CHECKPOINT_LINK\": true,\n    \"ROBOCHALLENGE_CHECKPOINT_LINK\": true\n  },\n  \"forbidden_fragments\": {\n    \"set -x\": false,\n    \"cat submission/robochallenge_env.local.sh\": false,\n    \"print(env_values\": false,\n    \"print(open(\": false,\n    \"--verify-download\": false,\n    \"RUN_REAL_ROBOCHALLENGE_SUBMISSION\": false,\n    \"CREATE_ROBOCHALLENGE_CHECKPOINT_ARCHIVE\": false,\n    \"run_ready_real_submission_template.sh\": false,\n    \"run_table30v2_aloha_demo_template.sh\": false,\n    \"run_table30v2_aloha_lora_demo_template.sh\": false\n  },\n  \"code_cell_clean\": true,\n  \"code_cell_id\": \"jupyter-authorized-preflight-code\",\n  \"secret_pattern_hits\": [],\n  \"whole_notebook_secret_pattern_hits\": [],\n  \"blocking\": [\n    \"授权后 Jupyter 预检入口已就绪；默认只审计，不读取 local env，不连接平台，不启动 runner。\"\n  ]\n}\n",
+      "stderr_tail": ""
+    },
+    "jupyter_final_handoff_template": {
+      "script": "scripts/audit_jupyter_final_handoff_template.py",
+      "returncode": 0,
+      "passed": true,
+      "stdout_tail": "y\": true,\n    \"ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_authorized_preflight_template.sh\": true,\n    \"ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_ready_real_submission_template.sh\": true,\n    \"ROBOCHALLENGE_SUBMISSION_VARIANT=baseline ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION bash submission/run_ready_real_submission_template.sh\": true\n  },\n  \"forbidden_fragments\": {\n    \"set -x\": false,\n    \"cat submission/robochallenge_env.local.sh\": false,\n    \"print(open(\": false,\n    \"RUN_JUPYTER_BASELINE_REAL_RUNNER = True\": false,\n    \"os.system(\": false,\n    \"subprocess.run(\": false,\n    \"run_cmd([\\\"bash\\\"\": false,\n    \"run_cmd(['bash'\": false,\n    \"run_cmd([\\\"sh\\\"\": false,\n    \"run_cmd(['sh'\": false\n  },\n  \"code_cell_clean\": true,\n  \"code_cell_id\": \"jupyter-final-handoff-code\",\n  \"secret_pattern_hits\": [],\n  \"whole_notebook_secret_pattern_hits\": [],\n  \"blocking\": [\n    \"Jupyter final handoff 交接包入口已就绪；默认只审计和生成 no-contact 交接包。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "real_submission_readiness": {
@@ -123,7 +136,7 @@
       "script": "scripts/audit_plaintext_secrets.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": "{\n  \"kind\": \"plaintext_secret_scan\",\n  \"passed\": true,\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"secret_values_printed\": false,\n  \"scan_scope\": \"git tracked files plus unignored untracked files\",\n  \"scanned_files\": 208,\n  \"skipped_binary_files\": 0,\n  \"pattern_count\": 7,\n  \"hit_count\": 0,\n  \"hits\": [],\n  \"blocking\": [\n    \"如发现命中项，先移除明文凭据并轮换对应 token，再重新运行本审计。\",\n    \"本审计不替代真实平台权限检查；真实提交仍需要用户提供凭据。\"\n  ]\n}\n",
+      "stdout_tail": "{\n  \"kind\": \"plaintext_secret_scan\",\n  \"passed\": true,\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"secret_values_printed\": false,\n  \"scan_scope\": \"git tracked files plus unignored untracked files\",\n  \"scanned_files\": 211,\n  \"skipped_binary_files\": 0,\n  \"pattern_count\": 7,\n  \"hit_count\": 0,\n  \"hits\": [],\n  \"blocking\": [\n    \"如发现命中项，先移除明文凭据并轮换对应 token，再重新运行本审计。\",\n    \"本审计不替代真实平台权限检查；真实提交仍需要用户提供凭据。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "submission_variant_route_packet": {

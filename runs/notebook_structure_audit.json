@@ -10,7 +10,7 @@
   "notebook_path": "notebooks/robochallenge_pi05_submit_cn.ipynb",
   "nbformat": 4,
   "nbformat_minor": 5,
-  "cell_count": 93,
+  "cell_count": 95,
   "missing_id_indexes": [],
   "duplicate_ids": [],
   "code_cells_with_outputs": [],
@@ -37,7 +37,13 @@
     "第 45 节：授权后 Jupyter 预检入口": true,
     "RUN_JUPYTER_AUTHORIZED_PREFLIGHT_TEMPLATE_AUDIT": true,
     "RUN_JUPYTER_AUTHORIZED_PREFLIGHT": true,
-    "scripts/audit_jupyter_authorized_preflight_template.py": true
+    "scripts/audit_jupyter_authorized_preflight_template.py": true,
+    "第 46 节：baseline final handoff 交接包": true,
+    "RUN_JUPYTER_BASELINE_FINAL_HANDOFF_TEMPLATE_AUDIT": true,
+    "RUN_JUPYTER_BASELINE_FINAL_HANDOFF_PACKET": true,
+    "RUN_JUPYTER_BASELINE_REAL_RUNNER": true,
+    "scripts/audit_jupyter_final_handoff_template.py": true,
+    "scripts/render_baseline_final_handoff_packet.py": true
   },
   "blocking": [
     "Notebook 结构、编码和提交阻塞项章节已通过静态审计。"

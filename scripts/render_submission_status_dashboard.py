@@ -38,6 +38,7 @@ SOURCE_FILES = {
     "route_aware_submission_blockers": RUNS_DIR / "route_aware_submission_blockers.json",
     "jupyter_input": RUNS_DIR / "jupyter_input_template_audit.json",
     "jupyter_authorized": RUNS_DIR / "jupyter_authorized_preflight_template_audit.json",
+    "jupyter_final_handoff": RUNS_DIR / "jupyter_final_handoff_template_audit.json",
     "link_intake": RUNS_DIR / "checkpoint_link_intake.json",
     "readiness": RUNS_DIR / "real_submission_readiness.json",
     "preflight_bundle": RUNS_DIR / "submission_preflight_bundle.json",
@@ -102,6 +103,7 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
     route_aware_blockers = data["route_aware_submission_blockers"]
     jupyter_input = data["jupyter_input"]
     jupyter_authorized = data["jupyter_authorized"]
+    jupyter_final_handoff = data["jupyter_final_handoff"]
     link_intake = data["link_intake"]
     readiness = data["readiness"]
     preflight = data["preflight_bundle"]
@@ -211,6 +213,15 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
         and jupyter_authorized.get("recommended_route") == "baseline_official_aloha"
         and jupyter_authorized.get("baseline_requires_checkpoint_link") is False
         and jupyter_authorized.get("lora_web_requires_checkpoint_link") is True
+    )
+    jupyter_final_handoff_ready = bool(
+        jupyter_final_handoff.get("passed")
+        and jupyter_final_handoff.get("audit_default_true")
+        and jupyter_final_handoff.get("packet_default_true")
+        and jupyter_final_handoff.get("real_runner_default_false")
+        and jupyter_final_handoff.get("command_count") == 4
+        and jupyter_final_handoff.get("no_contact_command_count") == 3
+        and jupyter_final_handoff.get("real_runner_requires_confirmation") is True
     )
     uploads_performed = readiness.get("inputs", {}).get("uploads_performed")
     plaintext_clean = plaintext.get("hit_count") == 0 and plaintext.get("secret_values_printed") is False
@@ -384,6 +395,13 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
             "reports/jupyter_authorized_preflight_template_audit.md",
         ),
         card(
+            "Jupyter final handoff",
+            "done" if jupyter_final_handoff_ready else "watch",
+            "第 46 节已接入",
+            "Notebook 默认生成 final handoff 包并展示命令顺序；真实 runner 标志默认关闭，只能手动强确认。",
+            "reports/jupyter_final_handoff_template_audit.md",
+        ),
+        card(
             "明文凭据扫描",
             "done" if plaintext_clean else "watch",
             f"hit_count={plaintext.get('hit_count')}",
@@ -410,6 +428,7 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
     route_aware_blockers = data["route_aware_submission_blockers"]
     jupyter_input = data["jupyter_input"]
     jupyter_authorized = data["jupyter_authorized"]
+    jupyter_final_handoff = data["jupyter_final_handoff"]
     sequence = data["authorized_sequence"]
     preflight = data["preflight_bundle"]
     plaintext = data["plaintext_scan"]
@@ -532,6 +551,17 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
         "jupyter_authorized_lora_web_needs_upload": jupyter_authorized.get("lora_web_requires_checkpoint_upload")
         is True,
         "jupyter_authorized_lora_web_needs_link": jupyter_authorized.get("lora_web_requires_checkpoint_link")
+        is True,
+        "jupyter_final_handoff_template_passed": jupyter_final_handoff.get("passed") is True,
+        "jupyter_final_handoff_audit_on": jupyter_final_handoff.get("audit_default_true") is True,
+        "jupyter_final_handoff_packet_default_on": jupyter_final_handoff.get("packet_default_true") is True,
+        "jupyter_final_handoff_real_runner_default_off": jupyter_final_handoff.get("real_runner_default_false")
+        is True,
+        "jupyter_final_handoff_command_count": jupyter_final_handoff.get("command_count"),
+        "jupyter_final_handoff_no_contact_command_count": jupyter_final_handoff.get("no_contact_command_count"),
+        "jupyter_final_handoff_real_runner_requires_confirmation": jupyter_final_handoff.get(
+            "real_runner_requires_confirmation"
+        )
         is True,
         "authorized_execution_recommended_route": authorized_execution.get("recommended_route"),
         "authorized_execution_baseline_no_upload": authorized_execution.get("baseline_requires_checkpoint_upload") is False,

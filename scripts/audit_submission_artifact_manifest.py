@@ -52,6 +52,7 @@ REQUIRED_ARTIFACTS = [
     "reports/notebook_structure_audit.md",
     "reports/jupyter_input_template_audit.md",
     "reports/jupyter_authorized_preflight_template_audit.md",
+    "reports/jupyter_final_handoff_template_audit.md",
     "reports/authorized_preflight_template_audit.md",
     "reports/ready_real_runner_template_audit.md",
     "reports/authorized_checkpoint_archive_template_audit.md",
@@ -81,6 +82,7 @@ REQUIRED_ARTIFACTS = [
     "scripts/render_route_aware_submission_blockers.py",
     "scripts/audit_jupyter_input_template.py",
     "scripts/audit_jupyter_authorized_preflight_template.py",
+    "scripts/audit_jupyter_final_handoff_template.py",
     "scripts/audit_authorized_execution_checklist.py",
 ]
 
@@ -177,6 +179,7 @@ def build_status() -> dict[str, Any]:
     notebook_structure = read_json(RUNS_DIR / "notebook_structure_audit.json")
     jupyter_input = read_json(RUNS_DIR / "jupyter_input_template_audit.json")
     jupyter_authorized = read_json(RUNS_DIR / "jupyter_authorized_preflight_template_audit.json")
+    jupyter_final_handoff = read_json(RUNS_DIR / "jupyter_final_handoff_template_audit.json")
     authorized_preflight = read_json(RUNS_DIR / "authorized_preflight_template_audit.json")
     ready_real_runner = read_json(RUNS_DIR / "ready_real_runner_template_audit.json")
     authorized_archive = read_json(RUNS_DIR / "authorized_checkpoint_archive_template_audit.json")
@@ -212,6 +215,19 @@ def build_status() -> dict[str, Any]:
         "jupyter_authorized_lora_web_needs_upload": jupyter_authorized.get("lora_web_requires_checkpoint_upload")
         is True,
         "jupyter_authorized_lora_web_needs_link": jupyter_authorized.get("lora_web_requires_checkpoint_link") is True,
+        "jupyter_final_handoff_template_passed": jupyter_final_handoff.get("passed") is True,
+        "jupyter_final_handoff_packet_default_true": jupyter_final_handoff.get("packet_default_true") is True,
+        "jupyter_final_handoff_real_runner_default_false": jupyter_final_handoff.get(
+            "real_runner_default_false"
+        )
+        is True,
+        "jupyter_final_handoff_command_count": jupyter_final_handoff.get("command_count") == 4,
+        "jupyter_final_handoff_no_contact_command_count": jupyter_final_handoff.get("no_contact_command_count")
+        == 3,
+        "jupyter_final_handoff_real_runner_requires_confirmation": jupyter_final_handoff.get(
+            "real_runner_requires_confirmation"
+        )
+        is True,
         "authorized_preflight_template_passed": authorized_preflight.get("passed") is True,
         "ready_real_runner_template_passed": ready_real_runner.get("passed") is True,
         "authorized_checkpoint_archive_template_passed": authorized_archive.get("passed") is True,
@@ -319,6 +335,7 @@ def build_status() -> dict[str, Any]:
                 notebook_structure,
                 jupyter_input,
                 jupyter_authorized,
+                jupyter_final_handoff,
                 authorized_preflight,
                 ready_real_runner,
                 authorized_archive,
@@ -339,6 +356,7 @@ def build_status() -> dict[str, Any]:
         "link_values_printed": bool(preflight.get("leak_flags", {}).get("link_values_printed"))
         or bool(jupyter_input.get("link_values_printed"))
         or bool(jupyter_authorized.get("link_values_printed"))
+        or bool(jupyter_final_handoff.get("link_values_printed"))
         or bool(authorized_preflight.get("link_values_printed"))
         or bool(ready_real_runner.get("link_values_printed"))
         or bool(authorized_archive.get("link_values_printed"))
@@ -355,6 +373,7 @@ def build_status() -> dict[str, Any]:
         "secret_values_printed": bool(secret_scan.get("secret_values_printed"))
         or bool(jupyter_input.get("secret_values_printed"))
         or bool(jupyter_authorized.get("secret_values_printed"))
+        or bool(jupyter_final_handoff.get("secret_values_printed"))
         or bool(action_packet.get("secret_values_printed"))
         or bool(web_form_packet.get("secret_values_printed"))
         or bool(route_packet.get("secret_values_printed"))
@@ -373,6 +392,7 @@ def build_status() -> dict[str, Any]:
                 notebook_structure,
                 jupyter_input,
                 jupyter_authorized,
+                jupyter_final_handoff,
                 authorized_preflight,
                 ready_real_runner,
                 authorized_archive,
@@ -398,6 +418,7 @@ def build_status() -> dict[str, Any]:
                 notebook_structure,
                 jupyter_input,
                 jupyter_authorized,
+                jupyter_final_handoff,
                 authorized_preflight,
                 ready_real_runner,
                 authorized_archive,

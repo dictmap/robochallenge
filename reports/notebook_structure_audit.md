@@ -4,7 +4,7 @@
 
 - 审计状态：`passed=True`。
 - Notebook：`notebooks/robochallenge_pi05_submit_cn.ipynb`。
-- cell 数量：`93`。
+- cell 数量：`95`。
 - 缺失 cell id 数量：`0`。
 - 重复 cell id 数量：`0`。
 - 带输出的代码 cell 数量：`0`。
@@ -36,6 +36,12 @@
 - `RUN_JUPYTER_AUTHORIZED_PREFLIGHT_TEMPLATE_AUDIT`：`True`。
 - `RUN_JUPYTER_AUTHORIZED_PREFLIGHT`：`True`。
 - `scripts/audit_jupyter_authorized_preflight_template.py`：`True`。
+- `第 46 节：baseline final handoff 交接包`：`True`。
+- `RUN_JUPYTER_BASELINE_FINAL_HANDOFF_TEMPLATE_AUDIT`：`True`。
+- `RUN_JUPYTER_BASELINE_FINAL_HANDOFF_PACKET`：`True`。
+- `RUN_JUPYTER_BASELINE_REAL_RUNNER`：`True`。
+- `scripts/audit_jupyter_final_handoff_template.py`：`True`。
+- `scripts/render_baseline_final_handoff_packet.py`：`True`。
 
 ## Blocking
 

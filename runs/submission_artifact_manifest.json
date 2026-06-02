@@ -7,7 +7,7 @@
   "credentials_printed": false,
   "link_values_printed": false,
   "secret_values_printed": false,
-  "artifact_count": 63,
+  "artifact_count": 65,
   "artifacts": [
     {
       "path": "README.md",
@@ -20,15 +20,15 @@
       "path": "work.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 138043,
-      "sha256": "13580a1e0d730f2913462c4b03732756279f80660363a8f2d93b5a412251883d"
+      "size_bytes": 141465,
+      "sha256": "1143455ef0512f7969c8e6263272afff79ebb53cd933546381e1ed4cecf24acc"
     },
     {
       "path": "notebooks/robochallenge_pi05_submit_cn.ipynb",
       "exists": true,
       "tracked": true,
-      "size_bytes": 93816,
-      "sha256": "27dc56c00767d6430f05d924bfa24700b5320e2348123160c3b6a4c308e128f3"
+      "size_bytes": 97941,
+      "sha256": "3063649288beb3fb268eeaa30964120cbd090119580c74134dcfba6739b26609"
     },
     {
       "path": "submission/README.md",
@@ -223,8 +223,8 @@
       "path": "reports/notebook_structure_audit.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 1776,
-      "sha256": "c44ba3109eec001fd72a86a340f45f8195a82ae1eeedb0e66fb9b0aeaf3010ce"
+      "size_bytes": 2139,
+      "sha256": "f51df6841f34f9a62d947f0db47425e3d01904d951e25dad25a607e7e722a80e"
     },
     {
       "path": "reports/jupyter_input_template_audit.md",
@@ -239,6 +239,13 @@
       "tracked": true,
       "size_bytes": 3025,
       "sha256": "7c7745d3fc347c80a5854ac005260f3f7770efdfe97bc37f0753ebfecaf7b68b"
+    },
+    {
+      "path": "reports/jupyter_final_handoff_template_audit.md",
+      "exists": true,
+      "tracked": false,
+      "size_bytes": 3099,
+      "sha256": "7c9a4011772d6e2a7bd83cf223f0577b03d4742deb637dd968330ad6fd9685e4"
     },
     {
       "path": "reports/authorized_preflight_template_audit.md",
@@ -320,7 +327,7 @@
     {
       "path": "reports/baseline_final_handoff_packet.md",
       "exists": true,
-      "tracked": false,
+      "tracked": true,
       "size_bytes": 4232,
       "sha256": "ad27bae6de1e649403f0e8207ca6b7f404d1dac5f7100a1f0cbc5940610639e8"
     },
@@ -349,22 +356,22 @@
       "path": "reports/submission_preflight_bundle.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 4442,
-      "sha256": "0fddab2bd76084c686935162abf5665f75468b51fb34a2c41c90dd01c0c1149e"
+      "size_bytes": 4664,
+      "sha256": "abb9763abb4c6c705da6420d0fc736d6053803a0be8c02c2a7489df1fed6bf10"
     },
     {
       "path": "reports/plaintext_secret_scan.md",
       "exists": true,
       "tracked": true,
       "size_bytes": 610,
-      "sha256": "56707ad6f383a154e021b9323260813031394fee9865284b2faff6d52ab31a86"
+      "sha256": "c8d4eeadc0ceb14de3c4a873278a0346776398181625c08d9b4b3b5eecbadb04"
     },
     {
       "path": "reports/submission_status_dashboard.html",
       "exists": true,
       "tracked": true,
-      "size_bytes": 15483,
-      "sha256": "52bfeb60e071ce65d7cc36bdefad9e057bcaa0cd5fda67a26430cd0bbc5be0c5"
+      "size_bytes": 15978,
+      "sha256": "81b52edb4ecc46ae52004beb4016ae49bea4bd4640214431b17ee304dce19be0"
     },
     {
       "path": "scripts/render_next_user_action_packet.py",
@@ -418,7 +425,7 @@
     {
       "path": "scripts/render_baseline_final_handoff_packet.py",
       "exists": true,
-      "tracked": false,
+      "tracked": true,
       "size_bytes": 15256,
       "sha256": "8310edbdbe66e0bf12e18c6ab75cb75bf26addc9eb6e0d8ca50f9f490030428e"
     },
@@ -442,6 +449,13 @@
       "tracked": true,
       "size_bytes": 12746,
       "sha256": "71a1ae721f3712bb2c0a4ec2b7ee7ec0f7f44c50425fffdd4c3f5148330a4d8c"
+    },
+    {
+      "path": "scripts/audit_jupyter_final_handoff_template.py",
+      "exists": true,
+      "tracked": false,
+      "size_bytes": 14047,
+      "sha256": "db2056c05bec5a59ede9c37e52fc43efe5a878202cff3716bab40bd303f2f72d"
     },
     {
       "path": "scripts/audit_authorized_execution_checklist.py",
@@ -507,6 +521,12 @@
     "jupyter_authorized_baseline_no_link": true,
     "jupyter_authorized_lora_web_needs_upload": true,
     "jupyter_authorized_lora_web_needs_link": true,
+    "jupyter_final_handoff_template_passed": true,
+    "jupyter_final_handoff_packet_default_true": true,
+    "jupyter_final_handoff_real_runner_default_false": true,
+    "jupyter_final_handoff_command_count": true,
+    "jupyter_final_handoff_no_contact_command_count": true,
+    "jupyter_final_handoff_real_runner_requires_confirmation": true,
     "authorized_preflight_template_passed": true,
     "ready_real_runner_template_passed": true,
     "authorized_checkpoint_archive_template_passed": true,

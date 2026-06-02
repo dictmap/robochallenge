@@ -1811,3 +1811,35 @@
 
 - P0：提交并推送本轮 baseline final handoff 证据包、GUI 卡片、manifest 和验证链更新。
 - P1：用户提供 token/submission id 并明确授权后，先跑 final handoff 的前三条 no-contact 命令；第四条真实 runner 强确认命令只能在用户明确允许真实提交时执行。
+
+## 2026-06-03 第六十四轮：Jupyter 第 46 节 final handoff 接入
+
+### 已完成
+
+- 在 `notebooks/robochallenge_pi05_submit_cn.ipynb` 追加第 46 节：`baseline final handoff 交接包`。
+- 第 46 节默认 `RUN_JUPYTER_BASELINE_FINAL_HANDOFF_TEMPLATE_AUDIT=True`，会静态审计本节结构。
+- 第 46 节默认 `RUN_JUPYTER_BASELINE_FINAL_HANDOFF_PACKET=True`，会生成/刷新 `runs/baseline_final_handoff_packet.json` 和 `reports/baseline_final_handoff_packet.md`。
+- 第 46 节默认 `RUN_JUPYTER_BASELINE_REAL_RUNNER=False`，不会从 Notebook 自动启动真实 runner。
+- 新增 `scripts/audit_jupyter_final_handoff_template.py`，硬性检查第 46 节包含 4 条 final handoff 命令、前三步 no-contact、第四条真实 runner 强确认短语，以及 baseline 不需要 checkpoint link/upload。
+- 更新 `scripts/audit_notebook_structure.py`，把第 46 节纳入 Notebook 结构和编码审计。
+- 更新 `scripts/audit_submission_preflight_bundle.py`、`scripts/audit_submission_artifact_manifest.py`、`scripts/render_submission_status_dashboard.py` 和 `scripts/validate_repro_workspace.py`，把 Jupyter final handoff 纳入 preflight、manifest、GUI 和总验证。
+
+### 验证结果
+
+- Linux 端 `python3 -m py_compile` 已通过，覆盖新增脚本和所有改动脚本。
+- Linux 端 `python3 scripts/audit_jupyter_final_handoff_template.py` 已通过：`passed=true`，`section_index=93`，`packet_default_true=true`，`real_runner_default_false=true`，`command_count=4`，`no_contact_command_count=3`，`real_runner_requires_confirmation=true`。
+- Linux 端 `python3 scripts/audit_notebook_structure.py` 已通过：`cell_count=95`，第 46 节关键标记全部存在，未发现乱码哨兵、输出单元或 execution_count。
+- Linux 端完整 no-contact 链已通过：明文凭据扫描、preflight bundle、blockers summary、artifact manifest、GUI dashboard、总体验证和 `git diff --check` 均通过。
+- `runs/submission_preflight_bundle.json` 现在包含 `jupyter_final_handoff_passed=true`、`jupyter_final_handoff_packet_default_true=true`、`jupyter_final_handoff_real_runner_default_false=true`、`jupyter_final_handoff_no_contact_command_count=3`。
+- GUI dashboard 升级为 `source_count=25`、`card_count=25`、`done_count=20`、`blocked_count=4`，新增 “Jupyter final handoff” 卡片。
+- 本轮没有读取真实 token、submission id 或 checkpoint link，没有读取 local env 内容，没有连接 RoboChallenge 平台，没有上传 checkpoint，没有生成 checkpoint tar，也没有启动真实 runner。
+
+### 当前边界
+
+- baseline 官方路线仍只等待：提交对象确认、`ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline`、真实 runner 强确认。
+- LoRA/web checkpoint 路线仍单独等待归档/上传授权和真实 checkpoint link。
+
+### 下一步
+
+- P0：提交并推送本轮 Notebook 第 46 节、Jupyter final handoff 审计、GUI 卡片、manifest 和验证链更新。
+- P1：下一轮可继续做凭据到位后的只读执行演练说明，但真实 runner 仍必须等用户明确提供凭据和授权。

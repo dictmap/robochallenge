@@ -25,6 +25,7 @@ SUBCOMMANDS = [
     ("notebook_structure", "scripts/audit_notebook_structure.py"),
     ("jupyter_input_template", "scripts/audit_jupyter_input_template.py"),
     ("jupyter_authorized_preflight_template", "scripts/audit_jupyter_authorized_preflight_template.py"),
+    ("jupyter_final_handoff_template", "scripts/audit_jupyter_final_handoff_template.py"),
     ("real_submission_readiness", "scripts/audit_real_submission_readiness.py"),
     ("authorized_preflight_template", "scripts/audit_authorized_preflight_template.py"),
     ("ready_real_runner_template", "scripts/audit_ready_real_runner_template.py"),
@@ -92,6 +93,7 @@ def build_status() -> dict[str, Any]:
     notebook_structure = read_json(RUNS_DIR / "notebook_structure_audit.json")
     jupyter_input = read_json(RUNS_DIR / "jupyter_input_template_audit.json")
     jupyter_authorized = read_json(RUNS_DIR / "jupyter_authorized_preflight_template_audit.json")
+    jupyter_final_handoff = read_json(RUNS_DIR / "jupyter_final_handoff_template_audit.json")
     readiness = read_json(RUNS_DIR / "real_submission_readiness.json")
     authorized_preflight = read_json(RUNS_DIR / "authorized_preflight_template_audit.json")
     ready_real_runner = read_json(RUNS_DIR / "ready_real_runner_template_audit.json")
@@ -118,6 +120,7 @@ def build_status() -> dict[str, Any]:
                 notebook_structure,
                 jupyter_input,
                 jupyter_authorized,
+                jupyter_final_handoff,
                 readiness,
                 authorized_preflight,
                 ready_real_runner,
@@ -141,6 +144,7 @@ def build_status() -> dict[str, Any]:
         or bool(notebook_structure.get("link_values_printed"))
         or bool(jupyter_input.get("link_values_printed"))
         or bool(jupyter_authorized.get("link_values_printed"))
+        or bool(jupyter_final_handoff.get("link_values_printed"))
         or bool(authorized_preflight.get("link_values_printed"))
         or bool(ready_real_runner.get("link_values_printed"))
         or bool(authorized_archive.get("link_values_printed"))
@@ -158,6 +162,7 @@ def build_status() -> dict[str, Any]:
         or bool(notebook_structure.get("secret_values_printed"))
         or bool(jupyter_input.get("secret_values_printed"))
         or bool(jupyter_authorized.get("secret_values_printed"))
+        or bool(jupyter_final_handoff.get("secret_values_printed"))
         or bool(authorized_preflight.get("secret_values_printed"))
         or bool(ready_real_runner.get("secret_values_printed"))
         or bool(authorized_archive.get("secret_values_printed"))
@@ -181,6 +186,7 @@ def build_status() -> dict[str, Any]:
                 notebook_structure,
                 jupyter_input,
                 jupyter_authorized,
+                jupyter_final_handoff,
                 readiness,
                 authorized_preflight,
                 ready_real_runner,
@@ -207,6 +213,7 @@ def build_status() -> dict[str, Any]:
                 notebook_structure,
                 jupyter_input,
                 jupyter_authorized,
+                jupyter_final_handoff,
                 readiness,
                 authorized_preflight,
                 ready_real_runner,
@@ -278,6 +285,18 @@ def build_status() -> dict[str, Any]:
             "ready_runner", {}
         ).get("stops_before_real_runner")
         is True,
+        "jupyter_final_handoff_passed": jupyter_final_handoff.get("passed") is True,
+        "jupyter_final_handoff_packet_default_true": jupyter_final_handoff.get("packet_default_true") is True,
+        "jupyter_final_handoff_real_runner_default_false": jupyter_final_handoff.get(
+            "real_runner_default_false"
+        )
+        is True,
+        "jupyter_final_handoff_command_count": jupyter_final_handoff.get("command_count"),
+        "jupyter_final_handoff_no_contact_command_count": jupyter_final_handoff.get("no_contact_command_count"),
+        "jupyter_final_handoff_real_runner_requires_confirmation": jupyter_final_handoff.get(
+            "real_runner_requires_confirmation"
+        )
+        is True,
         "baseline_final_handoff_passed": baseline_final_handoff.get("passed") is True,
         "baseline_final_handoff_command_count": baseline_final_handoff.get("command_count"),
         "baseline_final_handoff_no_contact_command_count": baseline_final_handoff.get("no_contact_command_count"),
@@ -327,6 +346,9 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         f"- synthetic local env smoke：`{status['baseline_local_env_smoke_passed']}`。",
         f"- synthetic 授权预检是否走 baseline：`{status['baseline_local_env_smoke_authorized_preflight_variant_baseline']}`。",
         f"- synthetic ready runner 是否停在真实 runner 前：`{status['baseline_local_env_smoke_ready_runner_stops_before_real_runner']}`。",
+        f"- Jupyter final handoff：`{status['jupyter_final_handoff_passed']}`。",
+        f"- Jupyter final handoff 默认生成包：`{status['jupyter_final_handoff_packet_default_true']}`。",
+        f"- Jupyter final handoff 真实 runner 默认关闭：`{status['jupyter_final_handoff_real_runner_default_false']}`。",
         f"- baseline final handoff：`{status['baseline_final_handoff_passed']}`。",
         f"- final handoff 命令数：`{status['baseline_final_handoff_command_count']}`。",
         f"- final handoff no-contact 命令数：`{status['baseline_final_handoff_no_contact_command_count']}`。",

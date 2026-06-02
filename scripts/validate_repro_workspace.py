@@ -44,6 +44,7 @@ REQUIRED = [
     "reports/real_submission_readiness.md",
     "reports/real_submission_readiness_scenarios.md",
     "reports/submission_handoff_docs_audit.md",
+    "reports/plaintext_secret_scan.md",
     "reports/robochallenge_submission_package_checklist.md",
     "runs/pi05_base_probe_status.json",
     "runs/pi06_pi07_public_audit.json",
@@ -71,6 +72,7 @@ REQUIRED = [
     "runs/real_submission_readiness.json",
     "runs/real_submission_readiness_scenarios.json",
     "runs/submission_handoff_docs_audit.json",
+    "runs/plaintext_secret_scan.json",
     "runs/robochallenge_submission_package_audit.json",
     "submission/README.md",
     "submission/REAL_SUBMISSION_HANDOFF.md",
@@ -94,6 +96,7 @@ REQUIRED = [
     "scripts/audit_real_submission_readiness.py",
     "scripts/audit_real_submission_readiness_scenarios.py",
     "scripts/audit_submission_handoff_docs.py",
+    "scripts/audit_plaintext_secrets.py",
     "scripts/audit_robochallenge_submission_package.py",
 ]
 
@@ -674,6 +677,21 @@ def main() -> int:
     ):
         print("真实提交交接文档审计未通过")
         return 1
+    secret_scan = json.loads((ROOT / "runs/plaintext_secret_scan.json").read_text(encoding="utf-8"))
+    if not all(
+        [
+            secret_scan.get("passed"),
+            secret_scan.get("platform_contacted") is False,
+            secret_scan.get("uploads_performed") is False,
+            secret_scan.get("secret_values_printed") is False,
+            secret_scan.get("hit_count") == 0,
+            secret_scan.get("scanned_files", 0) > 0,
+            secret_scan.get("pattern_count", 0) >= 6,
+            secret_scan.get("hits") == [],
+        ]
+    ):
+        print("明文凭据扫描未通过")
+        return 1
     if not all(
         [
             lora_grad.get("mode") == "lora_grad",
@@ -818,6 +836,7 @@ def main() -> int:
     print("真实提交 readiness gate 已通过")
     print("真实提交 readiness 场景 smoke 已通过")
     print("真实提交交接文档审计已通过")
+    print("明文凭据扫描已通过")
     return 0
 
 

@@ -738,6 +738,31 @@
 
 - P0：最终 secret scan、diff check 后提交推送。
 
+## 2026-06-02 第二十九轮：明文凭据扫描审计
+
+### 已完成
+
+- 新增 `scripts/audit_plaintext_secrets.py`，扫描 Git 跟踪文件和未忽略的未跟踪文件，检查 OpenAI、Hugging Face、GitHub、AWS、private key 和 RoboChallenge 凭据赋值形态。
+- 审计只输出命中文件、行号和规则名，不输出任何疑似凭据值。
+- 生成 `reports/plaintext_secret_scan.md` 和 `runs/plaintext_secret_scan.json`，并纳入 `scripts/validate_repro_workspace.py` 总体验证。
+- Notebook 新增第 30 节“明文凭据扫描”，可在 Jupyter 中直接复跑该审计。
+
+### 验证结果
+
+- `python3 -m py_compile scripts/audit_plaintext_secrets.py scripts/validate_repro_workspace.py` 已通过。
+- 明文凭据扫描：`passed=true`，`hit_count=0`，`secret_values_printed=false`，`platform_contacted=false`，`uploads_performed=false`。
+- `python3 scripts/validate_repro_workspace.py` 已通过，并新增输出“明文凭据扫描已通过”。
+- Notebook preflight 已通过，第 30 节可执行；本轮新增 Notebook 文本未出现问号替换乱码。
+
+### 当前边界
+
+- 本轮不生成 checkpoint tar，不上传 checkpoint，不连接 RoboChallenge 平台，也不读取或伪造真实 token。
+- 真实提交仍需要用户提供 `ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID` 和可访问的 checkpoint link。
+
+### 下一步
+
+- P0：提交前运行最终 `git diff --check`、总体验证和明文凭据扫描；通过后提交推送。
+
 ## 2026-06-02 第二十七轮：readiness gate 场景 smoke 与 Notebook 乱码修复
 
 ### 已完成

@@ -21,7 +21,10 @@ DEFAULT_REPORT = REPORTS_DIR / "authorized_submission_sequence_audit.md"
 REQUIRED_COMMANDS = [
     "python3 scripts/validate_repro_workspace.py",
     "python3 scripts/audit_plaintext_secrets.py",
+    "python3 scripts/audit_submission_env_template.py",
     "python3 scripts/create_checkpoint_archive.py",
+    "cp submission/robochallenge_env_template.sh submission/robochallenge_env.local.sh",
+    "source submission/robochallenge_env.local.sh",
     "python3 scripts/audit_checkpoint_link_intake.py",
     "python3 scripts/audit_real_submission_readiness.py",
     "python3 scripts/create_checkpoint_archive.py --execute --confirm-create-large-archive",
@@ -38,6 +41,7 @@ REQUIRED_ENV_KEYS = [
 
 REQUIRED_GUARDRAILS = {
     "no_credentials_saved": ["不保存", "user_token", "submission_id"],
+    "local_env_copy_only": ["submission/robochallenge_env.local.sh", "tracked 模板"],
     "no_auto_without_authorization": ["没有用户明确授权", "不生成 tar", "不上传 checkpoint"],
     "no_git_checkpoint": ["不要把 `runs/openpi_rtc_lora_materialized_policy_checkpoint.tar`", "提交进 Git"],
     "link_gate_before_readiness": ["audit_checkpoint_link_intake.py", "audit_real_submission_readiness.py"],
@@ -76,13 +80,18 @@ def normalize(text: str) -> str:
 def command_order(text: str) -> dict[str, Any]:
     lines = [line.strip() for line in text.splitlines()]
     positions: dict[str, int] = {}
+    last_positions: dict[str, int] = {}
     for command in REQUIRED_COMMANDS:
-        try:
-            positions[command] = lines.index(command)
-        except ValueError:
+        indexes = [index for index, line in enumerate(lines) if line == command]
+        if indexes:
+            positions[command] = indexes[0]
+            last_positions[command] = indexes[-1]
+        else:
             positions[command] = -1
+            last_positions[command] = -1
     present = {command: index >= 0 for command, index in positions.items()}
     ordered_subset = [
+        "source submission/robochallenge_env.local.sh",
         "python3 scripts/audit_checkpoint_link_intake.py",
         "python3 scripts/audit_real_submission_readiness.py",
         "ROBOCHALLENGE_DRY_RUN=1 bash submission/run_table30v2_aloha_lora_demo_template.sh",
@@ -91,10 +100,15 @@ def command_order(text: str) -> dict[str, Any]:
     ordered = all(
         present[ordered_subset[i]]
         and present[ordered_subset[i + 1]]
-        and positions[ordered_subset[i]] < positions[ordered_subset[i + 1]]
+        and last_positions[ordered_subset[i]] < last_positions[ordered_subset[i + 1]]
         for i in range(len(ordered_subset) - 1)
     )
-    return {"present": present, "positions": positions, "critical_order_passed": ordered}
+    return {
+        "present": present,
+        "positions": positions,
+        "last_positions": last_positions,
+        "critical_order_passed": ordered,
+    }
 
 
 def scan_secret_patterns(text: str) -> list[str]:
@@ -113,6 +127,7 @@ def build_status(doc_path: Path) -> dict[str, Any]:
 
     archive_dry_run = read_json(RUNS_DIR / "checkpoint_archive_dry_run.json")
     link_intake = read_json(RUNS_DIR / "checkpoint_link_intake.json")
+    env_template = read_json(RUNS_DIR / "submission_env_template_audit.json")
     readiness = read_json(RUNS_DIR / "real_submission_readiness.json")
     plaintext_scan = read_json(RUNS_DIR / "plaintext_secret_scan.json")
     handoff = read_json(RUNS_DIR / "submission_handoff_docs_audit.json")
@@ -122,6 +137,11 @@ def build_status(doc_path: Path) -> dict[str, Any]:
         "archive_not_created": archive_dry_run.get("archive_created") is False,
         "link_intake_passed": link_intake.get("passed") is True,
         "current_link_missing_as_expected": link_intake.get("current_env", {}).get("link_shape_ready") is False,
+        "env_template_audit_passed": env_template.get("passed") is True,
+        "env_template_local_copy_ignored": env_template.get("local_secret_paths", {})
+        .get("submission/robochallenge_env.local.sh", {})
+        .get("ignored")
+        is True,
         "readiness_gate_passed": readiness.get("passed") is True,
         "readiness_currently_blocked": readiness.get("ready_for_real_submission") is False,
         "plaintext_scan_passed": plaintext_scan.get("passed") is True,
@@ -134,6 +154,11 @@ def build_status(doc_path: Path) -> dict[str, Any]:
             archive_dry_run.get("upload_performed") is False,
             link_intake.get("platform_contacted") is False,
             link_intake.get("uploads_performed") is False,
+            env_template.get("platform_contacted") is False,
+            env_template.get("uploads_performed") is False,
+            env_template.get("credentials_read") is False,
+            env_template.get("credentials_printed") is False,
+            env_template.get("secret_values_printed") is False,
             readiness.get("platform_contacted") is False,
             handoff.get("platform_contacted") is False,
         ]
@@ -176,7 +201,7 @@ def build_status(doc_path: Path) -> dict[str, Any]:
     return {
         "kind": "authorized_submission_sequence_audit",
         "passed": passed,
-        "doc_path": str(doc_path.relative_to(ROOT)) if exists else str(doc_path),
+        "doc_path": doc_path.relative_to(ROOT).as_posix() if exists else str(doc_path),
         "platform_contacted": False,
         "uploads_performed": False,
         "archive_created": False,

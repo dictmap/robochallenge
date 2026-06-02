@@ -32,12 +32,15 @@ tar -C runs -cf runs/openpi_rtc_lora_materialized_policy_checkpoint.tar openpi_r
 sha256sum runs/openpi_rtc_lora_materialized_policy_checkpoint.tar > runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.sha256
 ```
 
-上传完成后，在当前 shell 中设置真实环境变量。下面的尖括号是占位说明，不能原样提交，也不要写入仓库：
+上传完成后，先复制 tracked 模板到被 Git 忽略的本地副本，再只编辑本地副本。下面命令不会保存真实值到仓库：
+
+tracked 模板只允许保留 `<真实 user token>`、`<真实 submission id>` 和 `<真实 checkpoint 下载 URL>` 占位符；真实值只能进入 `submission/robochallenge_env.local.sh`。
 
 ```bash
-export ROBOCHALLENGE_USER_TOKEN="<真实 user token>"
-export ROBOCHALLENGE_SUBMISSION_ID="<真实 submission id>"
-export ROBOCHALLENGE_LORA_CHECKPOINT_LINK="<真实 checkpoint 下载 URL>"
+python3 scripts/audit_submission_env_template.py
+cp submission/robochallenge_env_template.sh submission/robochallenge_env.local.sh
+$EDITOR submission/robochallenge_env.local.sh
+source submission/robochallenge_env.local.sh
 ```
 
 再次运行 readiness gate：

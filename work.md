@@ -737,6 +737,36 @@
 ### 下一步
 
 - P0：最终 secret scan、diff check 后提交推送。
+
+## 2026-06-02 第三十八轮：真实提交环境变量模板审计
+
+### 已完成
+
+- 新增 `submission/robochallenge_env_template.sh`，只保存 `ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、`ROBOCHALLENGE_LORA_CHECKPOINT_LINK` 和 `ROBOCHALLENGE_CHECKPOINT_LINK` 的占位符。
+- `.gitignore` 新增 `.env.local`、`*.env.local`、`submission/robochallenge_env.local.sh` 和 `submission/*.local.sh`，避免真实提交凭据副本进入 Git。
+- 新增 `scripts/audit_submission_env_template.py`，只审计 tracked 模板和 Git 忽略规则，不读取、不打印真实凭据。
+- `scripts/audit_submission_preflight_bundle.py`、`scripts/audit_submission_handoff_docs.py`、`scripts/audit_authorized_submission_sequence.py` 和 `scripts/validate_repro_workspace.py` 已纳入环境模板审计。
+- `submission/REAL_SUBMISSION_HANDOFF.md` 和 `submission/AUTHORIZED_SUBMISSION_SEQUENCE.md` 已改为先复制模板到本地忽略副本，再编辑并 `source` 本地副本。
+- Notebook 新增第 38 节“真实提交环境变量模板审计”，可在 Jupyter 中复跑该检查。
+
+### 验证结果
+
+- 本地 `python scripts/audit_submission_env_template.py` 已通过：`passed=true`，四个必需变量均存在且保持占位符。
+- 本地真实副本路径 `submission/robochallenge_env.local.sh`、`.env` 和 `.env.local` 均已被 Git 忽略。
+- `secret_pattern_hits=[]`，`credentials_read=false`，`credentials_printed=false`，`secret_values_printed=false`。
+- 本地交接文档审计和授权后提交顺序审计已通过；总预检包已通过并保持 `go_no_go=blocked`。
+- Linux 端 `bash scripts/run_notebook_preflight.sh` 已通过，第 38 节可在 Notebook 流程中复跑。
+- Linux 端 `python3 scripts/validate_repro_workspace.py` 已通过，新增输出“真实提交环境变量模板审计已通过”。
+- Linux 端 `git diff --check` 已通过；Notebook 行尾已规范为 LF。
+
+### 当前边界
+
+- 本轮不写入真实 token、submission id 或 checkpoint link，不生成 tar，不上传 checkpoint，不连接 RoboChallenge 平台。
+- 真实提交仍缺 `ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID` 和真实可访问 checkpoint link。
+
+### 下一步
+
+- P0：提交并推送本轮环境变量模板审计产物。
 ## 2026-06-02 第三十七轮：GUI 面板纳入提交前预检汇总
 
 ### 已完成

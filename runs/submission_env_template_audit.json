@@ -1,0 +1,44 @@
+{
+  "kind": "submission_env_template_audit",
+  "passed": true,
+  "template_path": "submission/robochallenge_env_template.sh",
+  "platform_contacted": false,
+  "uploads_performed": false,
+  "credentials_read": false,
+  "credentials_printed": false,
+  "secret_values_printed": false,
+  "required_present": {
+    "ROBOCHALLENGE_USER_TOKEN": true,
+    "ROBOCHALLENGE_SUBMISSION_ID": true,
+    "ROBOCHALLENGE_LORA_CHECKPOINT_LINK": true,
+    "ROBOCHALLENGE_CHECKPOINT_LINK": true
+  },
+  "placeholder_values": {
+    "ROBOCHALLENGE_USER_TOKEN": true,
+    "ROBOCHALLENGE_SUBMISSION_ID": true,
+    "ROBOCHALLENGE_LORA_CHECKPOINT_LINK": true,
+    "ROBOCHALLENGE_CHECKPOINT_LINK": true
+  },
+  "local_secret_paths": {
+    "submission/robochallenge_env.local.sh": {
+      "path": "submission/robochallenge_env.local.sh",
+      "ignored": true,
+      "returncode": 0
+    },
+    ".env": {
+      "path": ".env",
+      "ignored": true,
+      "returncode": 0
+    },
+    ".env.local": {
+      "path": ".env.local",
+      "ignored": true,
+      "returncode": 0
+    }
+  },
+  "secret_pattern_hits": [],
+  "recommended_local_copy": "submission/robochallenge_env.local.sh",
+  "blocking": [
+    "无模板侧阻塞；真实提交仍取决于用户提供凭据、submission id 和 checkpoint link。"
+  ]
+}

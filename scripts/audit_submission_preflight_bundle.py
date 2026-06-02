@@ -21,6 +21,7 @@ DEFAULT_REPORT = REPORTS_DIR / "submission_preflight_bundle.md"
 SUBCOMMANDS = [
     ("checkpoint_link_intake", "scripts/audit_checkpoint_link_intake.py"),
     ("checkpoint_link_download_verification", "scripts/audit_checkpoint_link_download_verification.py"),
+    ("submission_env_template", "scripts/audit_submission_env_template.py"),
     ("real_submission_readiness", "scripts/audit_real_submission_readiness.py"),
     ("submission_handoff_docs", "scripts/audit_submission_handoff_docs.py"),
     ("plaintext_secret_scan", "scripts/audit_plaintext_secrets.py"),

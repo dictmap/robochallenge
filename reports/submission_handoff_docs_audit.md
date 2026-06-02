@@ -20,11 +20,13 @@
 - `submission/run_table30v2_aloha_demo_template.sh`：`True`。
 - `submission/run_table30v2_aloha_lora_demo_template.sh`：`True`。
 - `submission/AUTHORIZED_SUBMISSION_SEQUENCE.md`：`True`。
+- `submission/robochallenge_env_template.sh`：`True`。
 - `runs/openpi_rtc_lora_materialized_policy_checkpoint`：`True`。
 - `runs/openpi_rtc_lora_materialized_policy_checkpoint.tar`：`True`。
 - `runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.sha256`：`True`。
 - `scripts/audit_checkpoint_link_intake.py`：`True`。
 - `scripts/audit_checkpoint_link_download_verification.py`：`True`。
+- `scripts/audit_submission_env_template.py`：`True`。
 - `scripts/audit_real_submission_readiness.py`：`True`。
 - `scripts/audit_submission_preflight_bundle.py`：`True`。
 
@@ -33,6 +35,7 @@
 - `checkpoint_link_intake`：`True`。
 - `checkpoint_link_download_default`：`True`。
 - `checkpoint_link_download_verify`：`True`。
+- `submission_env_template`：`True`。
 - `submission_preflight_bundle`：`True`。
 - `authorized_submission_sequence`：`True`。
 - `readiness_gate`：`True`。

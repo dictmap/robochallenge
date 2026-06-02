@@ -51,6 +51,7 @@ REQUIRED = [
     "reports/real_submission_readiness_scenarios.md",
     "reports/submission_handoff_docs_audit.md",
     "reports/submission_preflight_bundle.md",
+    "reports/submission_env_template_audit.md",
     "reports/plaintext_secret_scan.md",
     "reports/robochallenge_submission_package_checklist.md",
     "runs/pi05_base_probe_status.json",
@@ -86,11 +87,13 @@ REQUIRED = [
     "runs/real_submission_readiness_scenarios.json",
     "runs/submission_handoff_docs_audit.json",
     "runs/submission_preflight_bundle.json",
+    "runs/submission_env_template_audit.json",
     "runs/plaintext_secret_scan.json",
     "runs/robochallenge_submission_package_audit.json",
     "submission/README.md",
     "submission/REAL_SUBMISSION_HANDOFF.md",
     "submission/AUTHORIZED_SUBMISSION_SEQUENCE.md",
+    "submission/robochallenge_env_template.sh",
     "submission/submission_manifest_template.json",
     "submission/run_table30v2_aloha_demo_template.sh",
     "submission/run_table30v2_aloha_lora_demo_template.sh",
@@ -118,6 +121,7 @@ REQUIRED = [
     "scripts/audit_real_submission_readiness_scenarios.py",
     "scripts/audit_submission_handoff_docs.py",
     "scripts/audit_submission_preflight_bundle.py",
+    "scripts/audit_submission_env_template.py",
     "scripts/audit_plaintext_secrets.py",
     "scripts/audit_robochallenge_submission_package.py",
 ]
@@ -913,6 +917,27 @@ def main() -> int:
     ):
         print("真实提交交接文档审计未通过")
         return 1
+    env_template = json.loads((ROOT / "runs/submission_env_template_audit.json").read_text(encoding="utf-8"))
+    env_template_paths = env_template.get("local_secret_paths", {})
+    if not all(
+        [
+            env_template.get("kind") == "submission_env_template_audit",
+            env_template.get("passed"),
+            env_template.get("template_path") == "submission/robochallenge_env_template.sh",
+            env_template.get("platform_contacted") is False,
+            env_template.get("uploads_performed") is False,
+            env_template.get("credentials_read") is False,
+            env_template.get("credentials_printed") is False,
+            env_template.get("secret_values_printed") is False,
+            all(env_template.get("required_present", {}).values()),
+            all(env_template.get("placeholder_values", {}).values()),
+            all(item.get("ignored") for item in env_template_paths.values()),
+            env_template.get("secret_pattern_hits") == [],
+            env_template.get("recommended_local_copy") == "submission/robochallenge_env.local.sh",
+        ]
+    ):
+        print("真实提交环境变量模板审计未通过")
+        return 1
     preflight = json.loads((ROOT / "runs/submission_preflight_bundle.json").read_text(encoding="utf-8"))
     preflight_subcommands = preflight.get("subcommands", {})
     preflight_leaks = preflight.get("leak_flags", {})
@@ -920,6 +945,7 @@ def main() -> int:
     expected_preflight_subcommands = {
         "checkpoint_link_intake",
         "checkpoint_link_download_verification",
+        "submission_env_template",
         "real_submission_readiness",
         "submission_handoff_docs",
         "plaintext_secret_scan",
@@ -1115,6 +1141,7 @@ def main() -> int:
     print("真实提交 readiness gate 已通过")
     print("真实提交 readiness 场景 smoke 已通过")
     print("真实提交交接文档审计已通过")
+    print("真实提交环境变量模板审计已通过")
     print("真实提交前预检汇总已通过")
     print("明文凭据扫描已通过")
     return 0

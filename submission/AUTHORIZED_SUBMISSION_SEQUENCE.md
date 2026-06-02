@@ -7,6 +7,7 @@
 ```bash
 python3 scripts/validate_repro_workspace.py
 python3 scripts/audit_plaintext_secrets.py
+python3 scripts/audit_submission_env_template.py
 python3 scripts/create_checkpoint_archive.py
 python3 scripts/audit_checkpoint_link_intake.py
 python3 scripts/audit_real_submission_readiness.py
@@ -36,16 +37,20 @@ cat runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.sha256
 上传通道必须由用户选择并授权。上传完成后，只把可访问 HTTPS 下载链接设置为环境变量，不写入 Git、Notebook、报告或命令历史截图。
 
 ```bash
-export ROBOCHALLENGE_LORA_CHECKPOINT_LINK="<真实 checkpoint 下载 URL>"
+python3 scripts/audit_submission_env_template.py
+cp submission/robochallenge_env_template.sh submission/robochallenge_env.local.sh
+$EDITOR submission/robochallenge_env.local.sh
+source submission/robochallenge_env.local.sh
 ```
 
 ## 3. 用户填入比赛凭据
 
-在当前 shell 中设置真实值，不写入仓库文件：
+真实 token、submission id 和 checkpoint link 只写入 `submission/robochallenge_env.local.sh` 本地副本，不写入 tracked 模板、Git、Notebook、报告或命令历史截图：
+
+本地副本需要填入 `ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID` 和 `ROBOCHALLENGE_LORA_CHECKPOINT_LINK`；tracked 模板中这些字段必须保持 `<真实 user token>`、`<真实 submission id>` 和 `<真实 checkpoint 下载 URL>` 这类占位符。
 
 ```bash
-export ROBOCHALLENGE_USER_TOKEN="<真实 user token>"
-export ROBOCHALLENGE_SUBMISSION_ID="<真实 submission id>"
+source submission/robochallenge_env.local.sh
 ```
 
 ## 4. 链接与 readiness gate

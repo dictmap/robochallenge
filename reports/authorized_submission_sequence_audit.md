@@ -14,7 +14,10 @@
 
 - `python3 scripts/validate_repro_workspace.py`：`True`。
 - `python3 scripts/audit_plaintext_secrets.py`：`True`。
+- `python3 scripts/audit_submission_env_template.py`：`True`。
 - `python3 scripts/create_checkpoint_archive.py`：`True`。
+- `cp submission/robochallenge_env_template.sh submission/robochallenge_env.local.sh`：`True`。
+- `source submission/robochallenge_env.local.sh`：`True`。
 - `python3 scripts/audit_checkpoint_link_intake.py`：`True`。
 - `python3 scripts/audit_real_submission_readiness.py`：`True`。
 - `python3 scripts/create_checkpoint_archive.py --execute --confirm-create-large-archive`：`True`。
@@ -31,6 +34,7 @@
 ## 安全护栏
 
 - `no_credentials_saved`：`True`。
+- `local_env_copy_only`：`True`。
 - `no_auto_without_authorization`：`True`。
 - `no_git_checkpoint`：`True`。
 - `link_gate_before_readiness`：`True`。
@@ -44,6 +48,8 @@
 - `archive_not_created`：`True`。
 - `link_intake_passed`：`True`。
 - `current_link_missing_as_expected`：`True`。
+- `env_template_audit_passed`：`True`。
+- `env_template_local_copy_ignored`：`True`。
 - `readiness_gate_passed`：`True`。
 - `readiness_currently_blocked`：`True`。
 - `plaintext_scan_passed`：`True`。

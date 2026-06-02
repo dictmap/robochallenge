@@ -2,9 +2,9 @@
   "kind": "submission_status_dashboard",
   "passed": true,
   "html_path": "reports/submission_status_dashboard.html",
-  "source_count": 21,
-  "card_count": 21,
-  "done_count": 16,
+  "source_count": 22,
+  "card_count": 22,
+  "done_count": 17,
   "blocked_count": 4,
   "watch_count": 1,
   "ready_for_real_submission": false,
@@ -43,6 +43,10 @@
   "baseline_dry_run_gate_no_link": true,
   "baseline_dry_run_gate_stops_before_real_runner": true,
   "baseline_dry_run_gate_command": "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_ready_real_submission_template.sh",
+  "baseline_credential_hygiene_passed": true,
+  "baseline_credential_hygiene_local_env_gitignored": true,
+  "baseline_credential_hygiene_local_env_not_tracked": true,
+  "baseline_credential_hygiene_does_not_read_local_env": true,
   "route_aware_submission_blockers_passed": true,
   "route_aware_recommended_route": "baseline_official_aloha",
   "route_aware_baseline_no_upload": true,
@@ -220,6 +224,14 @@
       "value": "先 dry-run",
       "detail": "拿到 token/submission id 后先跑授权前只读预检，再跑 baseline wrapper dry-run gate；无强确认时停在真实 runner 前。",
       "report": "reports/baseline_dry_run_gate.md"
+    },
+    {
+      "title": "Baseline 凭据卫生",
+      "state": "done",
+      "state_label": "已完成",
+      "value": "local env 安全",
+      "detail": "真实值只写 Git 忽略的 local env 或当前 shell；本检查只验证路径和上游审计，不读取 local env 内容。",
+      "report": "reports/baseline_credential_hygiene.md"
     },
     {
       "title": "路线感知阻塞",

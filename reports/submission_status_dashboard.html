@@ -105,10 +105,10 @@
         <h1>RoboChallenge pi0.5 提交状态面板</h1>
         <p class="sub">静态 GUI 汇总当前复现、LoRA checkpoint、上传/link/readiness 阻塞和授权后执行顺序。面板由 JSON 审计结果生成，不读取或显示真实凭据。</p>
       </div>
-      <div class="stamp">生成时间<br>2026-06-02 19:19:18 UTC</div>
+      <div class="stamp">生成时间<br>2026-06-02 19:32:29 UTC</div>
     </header>
     <section class="summary">
-      <div class="metric"><b>16</b><span>已完成项</span></div>
+      <div class="metric"><b>17</b><span>已完成项</span></div>
       <div class="metric"><b>4</b><span>待授权项</span></div>
       <div class="metric"><b>否</b><span>真实提交就绪</span></div>
       <div class="metric"><b>否</b><span>checkpoint link 就绪</span></div>
@@ -284,6 +284,16 @@
               <h2>Baseline dry-run gate</h2>
               <p class="value">先 dry-run</p>
               <p>拿到 token/submission id 后先跑授权前只读预检，再跑 baseline wrapper dry-run gate；无强确认时停在真实 runner 前。</p>
+            </article>
+
+            <article class="card done">
+              <div class="card-top">
+                <span class="state">已完成</span>
+                <a href="../reports/baseline_credential_hygiene.md">报告</a>
+              </div>
+              <h2>Baseline 凭据卫生</h2>
+              <p class="value">local env 安全</p>
+              <p>真实值只写 Git 忽略的 local env 或当前 shell；本检查只验证路径和上游审计，不读取 local env 内容。</p>
             </article>
 
             <article class="card done">

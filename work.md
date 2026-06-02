@@ -1714,3 +1714,33 @@
 
 - P0：提交并推送本轮 baseline dry-run gate 证据包、GUI 卡片、manifest 和验证链更新。
 - P1：用户拿到 token/submission id 后，先按 `reports/baseline_dry_run_gate.md` 跑 baseline 授权前只读预检和 dry-run gate，再决定是否进入真实 runner 强确认。
+
+## 2026-06-03 第六十一轮：baseline 凭据卫生证据包
+
+### 已完成
+
+- 新增 `scripts/render_baseline_credential_hygiene.py`，把凭据到位后的本地卫生边界单独固化为机器可读证据包。
+- 新增 `runs/baseline_credential_hygiene.json` 和中文报告 `reports/baseline_credential_hygiene.md`。
+- 明确真实 `ROBOCHALLENGE_USER_TOKEN` 和 `ROBOCHALLENGE_SUBMISSION_ID` 只能写入 Git 忽略的 `submission/robochallenge_env.local.sh` 或当前 shell。
+- 凭据卫生脚本只检查路径、Git 忽略状态、是否未跟踪，以及上游审计结果；不会读取 `submission/robochallenge_env.local.sh` 内容。
+- 凭据卫生包串联了 `submission_env_template_audit`、`plaintext_secret_scan`、`authorized_preflight_template_audit`、`baseline_dry_run_gate`、`next_user_action_packet` 和 `route_aware_submission_blockers`。
+- 更新 `scripts/audit_submission_preflight_bundle.py`、`scripts/audit_submission_artifact_manifest.py`、`scripts/render_submission_status_dashboard.py` 和 `scripts/validate_repro_workspace.py`，把凭据卫生包纳入 preflight、manifest、GUI 和总验证。
+
+### 验证结果
+
+- Linux 端 `python3 -m py_compile` 已通过，覆盖新增脚本和所有改动脚本。
+- Linux 端 `python3 scripts/render_baseline_credential_hygiene.py` 已通过：`passed=true`，`recommended_route=baseline_official_aloha`，`local_env_gitignored=true`，`local_env_tracked=false`，`local_env_content_read=false`。
+- Linux 端完整 no-contact 链已通过：明文凭据扫描、preflight bundle、blockers summary、artifact manifest、GUI dashboard、总体验证和 `git diff --check` 均通过。
+- `runs/submission_preflight_bundle.json` 现在包含 `baseline_credential_hygiene_passed=true`、`baseline_credential_hygiene_local_env_gitignored=true`、`baseline_credential_hygiene_local_env_content_read=false`。
+- GUI dashboard 升级为 `source_count=22`、`card_count=22`、`done_count=17`、`blocked_count=4`，新增 “Baseline 凭据卫生” 卡片。
+- 本轮没有读取真实 token、submission id 或 checkpoint link，没有读取 local env 内容，没有连接 RoboChallenge 平台，没有上传 checkpoint，没有生成 checkpoint tar，也没有启动真实 runner。
+
+### 当前边界
+
+- baseline 官方路线仍只等待：提交对象确认、`ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline`、真实 runner 强确认。
+- LoRA/web checkpoint 路线仍单独等待归档/上传授权和真实 checkpoint link。
+
+### 下一步
+
+- P0：提交并推送本轮 baseline 凭据卫生证据包、GUI 卡片、manifest 和验证链更新。
+- P1：用户拿到 token/submission id 后，先写入被 Git 忽略的 local env，再跑 `reports/baseline_credential_hygiene.md` 对应的卫生检查和 baseline dry-run gate。

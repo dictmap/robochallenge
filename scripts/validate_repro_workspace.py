@@ -64,6 +64,7 @@ REQUIRED = [
     "reports/submission_variant_route_packet.md",
     "reports/baseline_submission_quickstart.md",
     "reports/baseline_dry_run_gate.md",
+    "reports/baseline_credential_hygiene.md",
     "reports/route_aware_submission_blockers.md",
     "reports/submission_artifact_manifest.md",
     "reports/submission_blockers_summary.md",
@@ -115,6 +116,7 @@ REQUIRED = [
     "runs/submission_variant_route_packet.json",
     "runs/baseline_submission_quickstart.json",
     "runs/baseline_dry_run_gate.json",
+    "runs/baseline_credential_hygiene.json",
     "runs/route_aware_submission_blockers.json",
     "runs/submission_artifact_manifest.json",
     "runs/submission_blockers_summary.json",
@@ -167,6 +169,7 @@ REQUIRED = [
     "scripts/render_submission_variant_route_packet.py",
     "scripts/render_baseline_submission_quickstart.py",
     "scripts/render_baseline_dry_run_gate.py",
+    "scripts/render_baseline_credential_hygiene.py",
     "scripts/render_route_aware_submission_blockers.py",
     "scripts/audit_submission_artifact_manifest.py",
     "scripts/audit_submission_blockers_summary.py",
@@ -888,6 +891,10 @@ def main() -> int:
             dashboard.get("baseline_dry_run_gate_stops_before_real_runner") is True,
             dashboard.get("baseline_dry_run_gate_command")
             == "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_ready_real_submission_template.sh",
+            dashboard.get("baseline_credential_hygiene_passed") is True,
+            dashboard.get("baseline_credential_hygiene_local_env_gitignored") is True,
+            dashboard.get("baseline_credential_hygiene_local_env_not_tracked") is True,
+            dashboard.get("baseline_credential_hygiene_does_not_read_local_env") is True,
             dashboard.get("route_aware_submission_blockers_passed") is True,
             dashboard.get("route_aware_recommended_route") == "baseline_official_aloha",
             dashboard.get("route_aware_baseline_no_upload") is True,
@@ -933,6 +940,7 @@ def main() -> int:
             "提交路线拆分" in dashboard_titles,
             "Baseline 最短路径" in dashboard_titles,
             "Baseline dry-run gate" in dashboard_titles,
+            "Baseline 凭据卫生" in dashboard_titles,
             "路线感知阻塞" in dashboard_titles,
             "Jupyter 安全填空" in dashboard_titles,
             "Jupyter 授权预检" in dashboard_titles,
@@ -1599,6 +1607,54 @@ def main() -> int:
     ):
         print("baseline dry-run gate 证据包审计未通过")
         return 1
+    baseline_credential_hygiene = json.loads(
+        (ROOT / "runs/baseline_credential_hygiene.json").read_text(encoding="utf-8")
+    )
+    credential_hygiene_evidence = baseline_credential_hygiene.get("evidence", {})
+    credential_hygiene_leaks = baseline_credential_hygiene.get("leak_flags", {})
+    credential_hygiene_contacts = baseline_credential_hygiene.get("contact_flags", {})
+    credential_hygiene_required_ids = set(baseline_credential_hygiene.get("baseline_required_ids", []))
+    credential_hygiene_lora_only_ids = set(baseline_credential_hygiene.get("lora_only_ids", []))
+    if not all(
+        [
+            baseline_credential_hygiene.get("kind") == "baseline_credential_hygiene",
+            baseline_credential_hygiene.get("passed"),
+            baseline_credential_hygiene.get("recommended_route") == "baseline_official_aloha",
+            baseline_credential_hygiene.get("recommended_local_env") == "submission/robochallenge_env.local.sh",
+            baseline_credential_hygiene.get("local_env_content_read") is False,
+            baseline_credential_hygiene.get("local_env_gitignored") is True,
+            baseline_credential_hygiene.get("local_env_tracked") is False,
+            baseline_credential_hygiene.get("authorized_preflight_command")
+            == "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_authorized_preflight_template.sh",
+            baseline_credential_hygiene.get("dry_run_gate_command")
+            == "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_ready_real_submission_template.sh",
+            baseline_credential_hygiene.get("requires_checkpoint_upload") is False,
+            baseline_credential_hygiene.get("requires_checkpoint_link") is False,
+            {
+                "SUBMISSION_TARGET_CONFIRMATION",
+                "ROBOCHALLENGE_USER_TOKEN",
+                "ROBOCHALLENGE_SUBMISSION_ID",
+                "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline",
+                "ROBOCHALLENGE_REAL_RUN_CONFIRM",
+            }.issubset(credential_hygiene_required_ids),
+            {"CHECKPOINT_ARCHIVE_AUTHORIZATION", "ROBOCHALLENGE_CHECKPOINT_LINK"}.issubset(
+                credential_hygiene_lora_only_ids
+            ),
+            "CHECKPOINT_ARCHIVE_AUTHORIZATION" not in credential_hygiene_required_ids,
+            "ROBOCHALLENGE_CHECKPOINT_LINK" not in credential_hygiene_required_ids,
+            all(credential_hygiene_evidence.values()),
+            not any(credential_hygiene_leaks.values()),
+            not any(credential_hygiene_contacts.values()),
+            baseline_credential_hygiene.get("platform_contacted") is False,
+            baseline_credential_hygiene.get("uploads_performed") is False,
+            baseline_credential_hygiene.get("credentials_read") is False,
+            baseline_credential_hygiene.get("credentials_printed") is False,
+            baseline_credential_hygiene.get("link_values_printed") is False,
+            baseline_credential_hygiene.get("secret_values_printed") is False,
+        ]
+    ):
+        print("baseline 凭据卫生证据包审计未通过")
+        return 1
     route_aware_blockers = json.loads((ROOT / "runs/route_aware_submission_blockers.json").read_text(encoding="utf-8"))
     route_aware_evidence = route_aware_blockers.get("evidence", {})
     route_aware_leaks = route_aware_blockers.get("leak_flags", {})
@@ -1700,6 +1756,7 @@ def main() -> int:
         "submission_variant_route_packet",
         "baseline_submission_quickstart",
         "baseline_dry_run_gate",
+        "baseline_credential_hygiene",
         "route_aware_submission_blockers",
         "submission_artifact_manifest",
     }
@@ -1719,6 +1776,9 @@ def main() -> int:
             preflight.get("baseline_dry_run_gate_command")
             == "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_ready_real_submission_template.sh",
             preflight.get("baseline_dry_run_gate_stops_before_real_runner") is True,
+            preflight.get("baseline_credential_hygiene_passed") is True,
+            preflight.get("baseline_credential_hygiene_local_env_gitignored") is True,
+            preflight.get("baseline_credential_hygiene_local_env_content_read") is False,
             preflight.get("secret_scan_hit_count") == 0,
             set(preflight_subcommands) == expected_preflight_subcommands,
             all(item.get("returncode") == 0 and item.get("passed") for item in preflight_subcommands.values()),

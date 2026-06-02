@@ -32,6 +32,7 @@ SOURCE_FILES = {
     "submission_variant_route_packet": RUNS_DIR / "submission_variant_route_packet.json",
     "baseline_submission_quickstart": RUNS_DIR / "baseline_submission_quickstart.json",
     "baseline_dry_run_gate": RUNS_DIR / "baseline_dry_run_gate.json",
+    "baseline_credential_hygiene": RUNS_DIR / "baseline_credential_hygiene.json",
     "route_aware_submission_blockers": RUNS_DIR / "route_aware_submission_blockers.json",
     "jupyter_input": RUNS_DIR / "jupyter_input_template_audit.json",
     "jupyter_authorized": RUNS_DIR / "jupyter_authorized_preflight_template_audit.json",
@@ -93,6 +94,7 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
     route_packet = data["submission_variant_route_packet"]
     baseline_quickstart = data["baseline_submission_quickstart"]
     baseline_dry_run_gate = data["baseline_dry_run_gate"]
+    baseline_credential_hygiene = data["baseline_credential_hygiene"]
     route_aware_blockers = data["route_aware_submission_blockers"]
     jupyter_input = data["jupyter_input"]
     jupyter_authorized = data["jupyter_authorized"]
@@ -156,6 +158,13 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
         and baseline_dry_run_gate.get("requires_checkpoint_upload") is False
         and baseline_dry_run_gate.get("requires_checkpoint_link") is False
         and baseline_dry_run_gate.get("stops_before_real_runner_without_confirmation") is True
+    )
+    baseline_credential_hygiene_ready = bool(
+        baseline_credential_hygiene.get("passed")
+        and baseline_credential_hygiene.get("recommended_route") == "baseline_official_aloha"
+        and baseline_credential_hygiene.get("local_env_gitignored") is True
+        and baseline_credential_hygiene.get("local_env_tracked") is False
+        and baseline_credential_hygiene.get("local_env_content_read") is False
     )
     route_aware_blockers_ready = bool(
         route_aware_blockers.get("passed")
@@ -311,6 +320,13 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
             "reports/baseline_dry_run_gate.md",
         ),
         card(
+            "Baseline 凭据卫生",
+            "done" if baseline_credential_hygiene_ready else "watch",
+            "local env 安全",
+            "真实值只写 Git 忽略的 local env 或当前 shell；本检查只验证路径和上游审计，不读取 local env 内容。",
+            "reports/baseline_credential_hygiene.md",
+        ),
+        card(
             "路线感知阻塞",
             "done" if route_aware_blockers_ready else "watch",
             "baseline 不等 link",
@@ -352,6 +368,7 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
     route_packet = data["submission_variant_route_packet"]
     baseline_quickstart = data["baseline_submission_quickstart"]
     baseline_dry_run_gate = data["baseline_dry_run_gate"]
+    baseline_credential_hygiene = data["baseline_credential_hygiene"]
     route_aware_blockers = data["route_aware_submission_blockers"]
     jupyter_input = data["jupyter_input"]
     jupyter_authorized = data["jupyter_authorized"]
@@ -411,6 +428,17 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
         )
         is True,
         "baseline_dry_run_gate_command": baseline_dry_run_gate.get("dry_run_gate_command"),
+        "baseline_credential_hygiene_passed": baseline_credential_hygiene.get("passed") is True,
+        "baseline_credential_hygiene_local_env_gitignored": baseline_credential_hygiene.get(
+            "local_env_gitignored"
+        )
+        is True,
+        "baseline_credential_hygiene_local_env_not_tracked": baseline_credential_hygiene.get("local_env_tracked")
+        is False,
+        "baseline_credential_hygiene_does_not_read_local_env": baseline_credential_hygiene.get(
+            "local_env_content_read"
+        )
+        is False,
         "route_aware_submission_blockers_passed": route_aware_blockers.get("passed") is True,
         "route_aware_recommended_route": route_aware_blockers.get("recommended_route"),
         "route_aware_baseline_no_upload": route_aware_blockers.get("baseline_requires_checkpoint_upload") is False,

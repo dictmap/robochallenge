@@ -15,6 +15,9 @@
 - baseline dry-run gate：`True`。
 - baseline dry-run 命令：`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_ready_real_submission_template.sh`。
 - dry-run 是否停在真实 runner 前：`True`。
+- baseline 凭据卫生：`True`。
+- local env 是否被 Git 忽略：`True`。
+- 是否读取 local env 内容：`False`。
 - LoRA/web 是否需要 checkpoint link：`True`。
 - LoRA/web 是否需要 checkpoint upload：`True`。
 - 下载已验证：`False`。
@@ -49,6 +52,7 @@
 - `web_form_field_packet`：returncode=`0`，passed=`True`。
 - `route_aware_submission_blockers`：returncode=`0`，passed=`True`。
 - `baseline_dry_run_gate`：returncode=`0`，passed=`True`。
+- `baseline_credential_hygiene`：returncode=`0`，passed=`True`。
 - `submission_handoff_docs`：returncode=`0`，passed=`True`。
 - `submission_artifact_manifest`：returncode=`0`，passed=`True`。
 

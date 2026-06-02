@@ -60,6 +60,7 @@ REQUIRED = [
     "reports/authorized_checkpoint_archive_template_audit.md",
     "reports/authorized_execution_checklist.md",
     "reports/next_user_action_packet.md",
+    "reports/web_form_field_packet.md",
     "reports/submission_artifact_manifest.md",
     "reports/submission_blockers_summary.md",
     "reports/plaintext_secret_scan.md",
@@ -106,6 +107,7 @@ REQUIRED = [
     "runs/authorized_checkpoint_archive_template_audit.json",
     "runs/authorized_execution_checklist.json",
     "runs/next_user_action_packet.json",
+    "runs/web_form_field_packet.json",
     "runs/submission_artifact_manifest.json",
     "runs/submission_blockers_summary.json",
     "runs/plaintext_secret_scan.json",
@@ -153,6 +155,7 @@ REQUIRED = [
     "scripts/audit_authorized_checkpoint_archive_template.py",
     "scripts/audit_authorized_execution_checklist.py",
     "scripts/render_next_user_action_packet.py",
+    "scripts/render_web_form_field_packet.py",
     "scripts/audit_submission_artifact_manifest.py",
     "scripts/audit_submission_blockers_summary.py",
     "scripts/audit_plaintext_secrets.py",
@@ -832,9 +835,9 @@ def main() -> int:
             "<html lang=\"zh-CN\">" in dashboard_html_text,
             "RoboChallenge pi0.5 提交状态面板" in dashboard_html_text,
             "当前阻塞" in dashboard_html_text,
-            dashboard.get("source_count") >= 16,
-            dashboard.get("card_count") >= 16,
-            dashboard.get("done_count", 0) >= 11,
+            dashboard.get("source_count") >= 17,
+            dashboard.get("card_count") >= 17,
+            dashboard.get("done_count", 0) >= 12,
             dashboard.get("blocked_count", 0) >= 4,
             dashboard.get("ready_for_real_submission") is False,
             dashboard.get("web_form_ready") is False,
@@ -852,6 +855,10 @@ def main() -> int:
             dashboard.get("next_user_action_packet_passed") is True,
             dashboard.get("next_user_action_packet_decision_count", 0) >= 6,
             dashboard.get("next_user_action_packet_local_env_ignored") is True,
+            dashboard.get("web_form_field_packet_passed") is True,
+            dashboard.get("web_form_field_count", 0) >= 10,
+            dashboard.get("web_form_ready_field_count", 0) >= 6,
+            dashboard.get("web_form_packet_currently_not_ready") is True,
             dashboard.get("jupyter_input_template_passed") is True,
             dashboard.get("jupyter_input_default_off") is True,
             dashboard.get("jupyter_local_env_ignored") is True,
@@ -870,6 +877,7 @@ def main() -> int:
             "归档强确认入口" in dashboard_titles,
             "授权执行清单" in dashboard_titles,
             "下一步动作包" in dashboard_titles,
+            "网页表单字段" in dashboard_titles,
             "Jupyter 安全填空" in dashboard_titles,
             "Jupyter 授权预检" in dashboard_titles,
             "真实提交 gate" in dashboard_titles,
@@ -1287,6 +1295,48 @@ def main() -> int:
     ):
         print("下一步用户动作包审计未通过")
         return 1
+    web_form_packet = json.loads((ROOT / "runs/web_form_field_packet.json").read_text(encoding="utf-8"))
+    web_form_evidence = web_form_packet.get("evidence", {})
+    web_form_leaks = web_form_packet.get("leak_flags", {})
+    web_form_contacts = web_form_packet.get("contact_flags", {})
+    web_form_fields = web_form_packet.get("fields", [])
+    web_form_field_names = {item.get("name") for item in web_form_fields}
+    if not all(
+        [
+            web_form_packet.get("kind") == "web_form_field_packet",
+            web_form_packet.get("passed"),
+            web_form_packet.get("web_form_ready") is False,
+            web_form_packet.get("field_count", 0) >= 10,
+            web_form_packet.get("ready_field_count", 0) >= 6,
+            web_form_packet.get("missing_field_count", 0) >= 3,
+            len(web_form_fields) == web_form_packet.get("field_count"),
+            {
+                "Benchmark",
+                "Robot Type",
+                "Task Name",
+                "Prompt",
+                "Inference Code Link",
+                "Fine-tuning / Restore Evidence",
+                "Checkpoint Link",
+                "RoboChallenge User Token",
+                "RoboChallenge Submission ID",
+                "Submission Variant",
+                "Checkpoint Upload / Archive",
+                "Authorized Notebook Entry",
+            }.issubset(web_form_field_names),
+            all(web_form_evidence.values()),
+            not any(web_form_leaks.values()),
+            not any(web_form_contacts.values()),
+            web_form_packet.get("platform_contacted") is False,
+            web_form_packet.get("uploads_performed") is False,
+            web_form_packet.get("credentials_read") is False,
+            web_form_packet.get("credentials_printed") is False,
+            web_form_packet.get("link_values_printed") is False,
+            web_form_packet.get("secret_values_printed") is False,
+        ]
+    ):
+        print("网页表单字段包审计未通过")
+        return 1
     artifact_manifest = json.loads((ROOT / "runs/submission_artifact_manifest.json").read_text(encoding="utf-8"))
     artifact_inputs = artifact_manifest.get("inputs", {})
     artifact_leaks = artifact_manifest.get("leak_flags", {})
@@ -1336,6 +1386,7 @@ def main() -> int:
         "plaintext_secret_scan",
         "authorized_execution_checklist",
         "next_user_action_packet",
+        "web_form_field_packet",
         "submission_artifact_manifest",
     }
     if not all(
@@ -1575,6 +1626,7 @@ def main() -> int:
     print("授权后 checkpoint 归档模板审计已通过")
     print("授权执行清单审计已通过")
     print("下一步用户动作包审计已通过")
+    print("网页表单字段包审计已通过")
     print("提交准备材料 manifest 审计已通过")
     print("真实提交前预检汇总已通过")
     print("真实提交阻塞项摘要已通过")

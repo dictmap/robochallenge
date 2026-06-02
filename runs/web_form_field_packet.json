@@ -1,0 +1,137 @@
+{
+  "kind": "web_form_field_packet",
+  "passed": true,
+  "web_form_ready": false,
+  "ready_field_count": 7,
+  "missing_field_count": 5,
+  "field_count": 12,
+  "fields": [
+    {
+      "name": "Benchmark",
+      "value": "Table30v2",
+      "ready": true,
+      "source": "runs/robochallenge_submission_package_audit.json",
+      "note": "当前可复现链路是 Table30v2；原始 Table30 仍需单独补齐。",
+      "secret": false
+    },
+    {
+      "name": "Robot Type",
+      "value": "aloha",
+      "ready": true,
+      "source": "runs/table30v2_aloha_mapping_audit.json",
+      "note": "当前 runner 和数据映射均为 ALOHA。",
+      "secret": false
+    },
+    {
+      "name": "Task Name",
+      "value": "pack_the_toothbrush_holder",
+      "ready": true,
+      "source": "runs/table30v2_aloha_mapping_audit.json",
+      "note": "已验证任务链为 pack_the_toothbrush_holder。",
+      "secret": false
+    },
+    {
+      "name": "Prompt",
+      "value": "Put the toothbrush and toothpaste into the toiletries case in sequence, close the case, and then place it into the basket.",
+      "ready": true,
+      "source": "submission/submission_manifest_template.json",
+      "note": "runner 默认 prompt 与任务说明一致。",
+      "secret": false
+    },
+    {
+      "name": "Inference Code Link",
+      "value": "https://github.com/dictmap/robochallenge/tree/main",
+      "ready": true,
+      "source": "submission/submission_manifest_template.json",
+      "note": "建议填写当前 GitHub 主分支；不要在链接里携带凭据。",
+      "secret": false
+    },
+    {
+      "name": "Fine-tuning / Restore Evidence",
+      "value": "https://github.com/dictmap/robochallenge/tree/main",
+      "ready": true,
+      "source": "reports/robochallenge_submission_package_checklist.md",
+      "note": "同仓库包含 scripts、notebooks、reports 和 LoRA 恢复/物化证据。",
+      "secret": false
+    },
+    {
+      "name": "Checkpoint Link",
+      "value": "",
+      "ready": false,
+      "source": "runs/checkpoint_link_intake.json",
+      "note": "需要用户授权上传后填入真实可访问 HTTPS 链接；当前不打印链接明文。",
+      "secret": true
+    },
+    {
+      "name": "RoboChallenge User Token",
+      "value": "",
+      "ready": false,
+      "source": "runs/real_submission_readiness.json",
+      "note": "只能写入本地 env 或 shell，不能写入 tracked 文件。",
+      "secret": true
+    },
+    {
+      "name": "RoboChallenge Submission ID",
+      "value": "",
+      "ready": false,
+      "source": "runs/real_submission_readiness.json",
+      "note": "必须来自 RoboChallenge 页面，不能伪造。",
+      "secret": true
+    },
+    {
+      "name": "Submission Variant",
+      "value": "baseline 或 lora_materialized",
+      "ready": false,
+      "source": "runs/next_user_action_packet.json",
+      "note": "需要用户确认提交官方 ALOHA baseline 还是 LoRA 物化 checkpoint。",
+      "secret": false
+    },
+    {
+      "name": "Checkpoint Upload / Archive",
+      "value": "pending_user_authorization",
+      "ready": false,
+      "source": "runs/checkpoint_upload_channels_audit.json",
+      "note": "LoRA 版本需要用户授权生成 tar、选择上传通道并得到 checkpoint link。",
+      "secret": false
+    },
+    {
+      "name": "Authorized Notebook Entry",
+      "value": "Notebook 第 44/45 节",
+      "ready": true,
+      "source": "reports/next_user_action_packet.md",
+      "note": "推荐先通过 Jupyter 写入 local env，再跑授权预检。",
+      "secret": false
+    }
+  ],
+  "evidence": {
+    "package_audit_passed": true,
+    "readiness_gate_passed": true,
+    "current_web_form_not_ready": true,
+    "link_intake_passed": true,
+    "link_download_default_no_contact": true,
+    "upload_channels_audited": true,
+    "action_packet_passed": true,
+    "secret_scan_clean": true
+  },
+  "leak_flags": {
+    "credentials_printed": false,
+    "link_values_printed": false,
+    "secret_values_printed": false
+  },
+  "contact_flags": {
+    "platform_contacted": false,
+    "uploads_performed": false,
+    "download_host_contacted": false
+  },
+  "platform_contacted": false,
+  "uploads_performed": false,
+  "credentials_read": false,
+  "credentials_printed": false,
+  "link_values_printed": false,
+  "secret_values_printed": false,
+  "blocking": [
+    "字段 `Checkpoint Link` 仍未就绪：需要用户授权上传后填入真实可访问 HTTPS 链接；当前不打印链接明文。",
+    "字段 `RoboChallenge User Token` 仍未就绪：只能写入本地 env 或 shell，不能写入 tracked 文件。",
+    "字段 `RoboChallenge Submission ID` 仍未就绪：必须来自 RoboChallenge 页面，不能伪造。"
+  ]
+}

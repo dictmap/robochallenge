@@ -37,6 +37,7 @@
 - `plaintext_secret_scan`：returncode=`0`，passed=`True`。
 - `authorized_execution_checklist`：returncode=`0`，passed=`True`。
 - `next_user_action_packet`：returncode=`0`，passed=`True`。
+- `web_form_field_packet`：returncode=`0`，passed=`True`。
 - `submission_artifact_manifest`：returncode=`0`，passed=`True`。
 
 ## Blocking

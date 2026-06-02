@@ -1458,3 +1458,31 @@
 ### 下一步
 - P0：提交并推送本轮下一步动作包、GUI 卡片和审计链更新。
 - P1：用户拿到凭据后，直接打开 `reports/next_user_action_packet.md` 或 GUI“下一步动作包”卡片，按 Notebook 第 44/45 节路线写入 local env 并跑授权预检。
+
+## 2026-06-03 第五十二轮：网页表单字段包与 GUI 卡片
+
+### 已完成
+- 新增 `scripts/render_web_form_field_packet.py`，把 RoboChallenge 网页提交/运行会用到的字段整理成只读字段包。
+- 新增机器可读产物 `runs/web_form_field_packet.json` 和中文报告 `reports/web_form_field_packet.md`。
+- 字段包覆盖 12 个字段：Benchmark、Robot Type、Task Name、Prompt、Inference Code Link、Fine-tuning/Restore Evidence、Checkpoint Link、RoboChallenge User Token、RoboChallenge Submission ID、Submission Variant、Checkpoint Upload/Archive、Authorized Notebook Entry。
+- 更新 `scripts/audit_submission_preflight_bundle.py`，把 `web_form_field_packet` 加入只读预检子审计。
+- 更新 `scripts/audit_submission_artifact_manifest.py`，把网页字段包报告、脚本和 no-contact/no-leak 证据纳入提交准备材料 manifest。
+- 更新 `scripts/render_submission_status_dashboard.py`，GUI 新增“网页表单字段”卡片，链接到 `reports/web_form_field_packet.md`。
+- 更新 `scripts/validate_repro_workspace.py`，总体验证会检查字段数、字段名、当前 `web_form_ready=false`、no-contact/no-leak 边界和 preflight 子命令覆盖。
+
+### 验证结果
+
+- 本地和 Linux 端语法检查已通过：`python3 -m py_compile scripts/render_web_form_field_packet.py scripts/audit_submission_preflight_bundle.py scripts/audit_submission_artifact_manifest.py scripts/render_submission_status_dashboard.py scripts/validate_repro_workspace.py`。
+- Linux 端 `python3 scripts/render_web_form_field_packet.py` 已通过：`passed=true`，`field_count=12`，`ready_field_count=7`，`missing_field_count=5`，`web_form_ready=false`。
+- Linux 端完整 no-contact 链已通过：网页字段包、preflight bundle、artifact manifest、blockers summary、GUI 渲染、总体验证和 `git diff --check` 均通过。
+- 字段包明确显示已准备好的字段包括 Table30v2、aloha、pack_the_toothbrush_holder、prompt、GitHub 代码链接和 Notebook 授权入口；仍缺 checkpoint link、user token、submission id、提交 variant 确认和 checkpoint 归档/上传授权。
+- 明文凭据扫描仍为无命中；本轮没有读取、打印或保存真实 token、submission id、checkpoint link。
+
+### 当前边界
+
+- 本轮没有接触 RoboChallenge 平台，没有上传 checkpoint，没有生成 checkpoint tar，没有启动真实 runner，也没有联网验证 checkpoint link。
+- 真实提交仍处于 `go_no_go=blocked`：还缺 `ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、真实可访问 checkpoint link，以及用户对 checkpoint 归档/上传和真实 runner 的明确授权。
+
+### 下一步
+- P0：提交并推送本轮网页表单字段包、GUI 卡片和审计链更新。
+- P1：用户拿到凭据后，先看 `reports/web_form_field_packet.md` 确认表单字段，再按 Notebook 第 44/45 节写入 local env 并跑授权预检。

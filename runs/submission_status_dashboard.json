@@ -2,9 +2,9 @@
   "kind": "submission_status_dashboard",
   "passed": true,
   "html_path": "reports/submission_status_dashboard.html",
-  "source_count": 16,
-  "card_count": 16,
-  "done_count": 11,
+  "source_count": 17,
+  "card_count": 17,
+  "done_count": 12,
   "blocked_count": 4,
   "watch_count": 1,
   "ready_for_real_submission": false,
@@ -23,6 +23,10 @@
   "next_user_action_packet_passed": true,
   "next_user_action_packet_decision_count": 6,
   "next_user_action_packet_local_env_ignored": true,
+  "web_form_field_packet_passed": true,
+  "web_form_field_count": 12,
+  "web_form_ready_field_count": 7,
+  "web_form_packet_currently_not_ready": true,
   "jupyter_input_template_passed": true,
   "jupyter_input_default_off": true,
   "jupyter_local_env_ignored": true,
@@ -145,6 +149,14 @@
       "value": "Notebook 优先",
       "detail": "把用户要补齐的 6 项和第 44/45 节入口合并成一页；不读取、不保存、不打印真实值。",
       "report": "reports/next_user_action_packet.md"
+    },
+    {
+      "title": "网页表单字段",
+      "state": "done",
+      "state_label": "已完成",
+      "value": "7/12 已就绪",
+      "detail": "benchmark、robot、task、prompt、代码链接已整理；token、submission id 和 checkpoint link 仍待用户补齐。",
+      "report": "reports/web_form_field_packet.md"
     },
     {
       "title": "Jupyter 安全填空",

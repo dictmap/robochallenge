@@ -28,6 +28,7 @@ SOURCE_FILES = {
     "authorized_archive": RUNS_DIR / "authorized_checkpoint_archive_template_audit.json",
     "authorized_execution": RUNS_DIR / "authorized_execution_checklist.json",
     "next_user_action_packet": RUNS_DIR / "next_user_action_packet.json",
+    "web_form_field_packet": RUNS_DIR / "web_form_field_packet.json",
     "jupyter_input": RUNS_DIR / "jupyter_input_template_audit.json",
     "jupyter_authorized": RUNS_DIR / "jupyter_authorized_preflight_template_audit.json",
     "link_intake": RUNS_DIR / "checkpoint_link_intake.json",
@@ -84,6 +85,7 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
     authorized_archive = data["authorized_archive"]
     authorized_execution = data["authorized_execution"]
     action_packet = data["next_user_action_packet"]
+    web_form_packet = data["web_form_field_packet"]
     jupyter_input = data["jupyter_input"]
     jupyter_authorized = data["jupyter_authorized"]
     link_intake = data["link_intake"]
@@ -117,6 +119,11 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
         and action_packet.get("go_no_go") == "blocked_by_user_inputs"
         and action_packet.get("local_env_ignored") is True
         and len(action_packet.get("required_user_decisions", [])) >= 6
+    )
+    web_form_packet_ready = bool(
+        web_form_packet.get("passed")
+        and web_form_packet.get("field_count", 0) >= 10
+        and web_form_packet.get("web_form_ready") is False
     )
     jupyter_input_ready = bool(
         jupyter_input.get("passed")
@@ -230,6 +237,13 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
             "reports/next_user_action_packet.md",
         ),
         card(
+            "网页表单字段",
+            "done" if web_form_packet_ready else "watch",
+            f"{web_form_packet.get('ready_field_count', 0)}/{web_form_packet.get('field_count', 0)} 已就绪",
+            "benchmark、robot、task、prompt、代码链接已整理；token、submission id 和 checkpoint link 仍待用户补齐。",
+            "reports/web_form_field_packet.md",
+        ),
+        card(
             "Jupyter 安全填空",
             "done" if jupyter_input_ready else "watch",
             "local env 入口",
@@ -260,6 +274,7 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
     authorized_archive = data["authorized_archive"]
     authorized_execution = data["authorized_execution"]
     action_packet = data["next_user_action_packet"]
+    web_form_packet = data["web_form_field_packet"]
     jupyter_input = data["jupyter_input"]
     jupyter_authorized = data["jupyter_authorized"]
     sequence = data["authorized_sequence"]
@@ -295,6 +310,10 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
         "next_user_action_packet_passed": action_packet.get("passed") is True,
         "next_user_action_packet_decision_count": len(action_packet.get("required_user_decisions", [])),
         "next_user_action_packet_local_env_ignored": action_packet.get("local_env_ignored") is True,
+        "web_form_field_packet_passed": web_form_packet.get("passed") is True,
+        "web_form_field_count": web_form_packet.get("field_count"),
+        "web_form_ready_field_count": web_form_packet.get("ready_field_count"),
+        "web_form_packet_currently_not_ready": web_form_packet.get("web_form_ready") is False,
         "jupyter_input_template_passed": jupyter_input.get("passed") is True,
         "jupyter_input_default_off": jupyter_input.get("run_flag_default_false") is True,
         "jupyter_local_env_ignored": jupyter_input.get("local_env_ignored", {}).get("ignored") is True,

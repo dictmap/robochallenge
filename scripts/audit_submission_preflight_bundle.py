@@ -297,6 +297,14 @@ def build_status() -> dict[str, Any]:
             "ready_runner", {}
         ).get("stops_before_real_runner")
         is True,
+        "baseline_local_env_smoke_parent_real_confirm_scrubbed": baseline_local_env_smoke.get(
+            "ready_runner", {}
+        ).get("parent_real_confirm_present_in_subprocess_env")
+        is False,
+        "baseline_local_env_smoke_confirmation_absent_after_scrub": baseline_local_env_smoke.get(
+            "ready_runner", {}
+        ).get("confirmation_absent")
+        is True,
         "jupyter_final_handoff_passed": jupyter_final_handoff.get("passed") is True,
         "jupyter_final_handoff_packet_default_true": jupyter_final_handoff.get("packet_default_true") is True,
         "jupyter_final_handoff_real_runner_default_false": jupyter_final_handoff.get(
@@ -322,6 +330,14 @@ def build_status() -> dict[str, Any]:
         "baseline_final_handoff_rehearsal_passed": baseline_final_handoff_rehearsal.get("passed") is True,
         "baseline_final_handoff_rehearsal_command_count": baseline_final_handoff_rehearsal.get("command_count"),
         "baseline_final_handoff_rehearsal_ready_runner_stops": rehearsal_step3.get("stops_before_real_runner")
+        is True,
+        "baseline_final_handoff_rehearsal_parent_real_confirm_scrubbed": rehearsal_step3.get(
+            "parent_real_confirm_present_in_subprocess_env"
+        )
+        is False,
+        "baseline_final_handoff_rehearsal_confirmation_absent_after_scrub": rehearsal_step3.get(
+            "confirmation_absent"
+        )
         is True,
         "baseline_final_handoff_rehearsal_no_contact": not any(
             baseline_final_handoff_rehearsal.get("contact_flags", {}).values()
@@ -368,6 +384,8 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         f"- synthetic local env smoke：`{status['baseline_local_env_smoke_passed']}`。",
         f"- synthetic 授权预检是否走 baseline：`{status['baseline_local_env_smoke_authorized_preflight_variant_baseline']}`。",
         f"- synthetic ready runner 是否停在真实 runner 前：`{status['baseline_local_env_smoke_ready_runner_stops_before_real_runner']}`。",
+        f"- synthetic 父环境确认短语是否已清理：`{status['baseline_local_env_smoke_parent_real_confirm_scrubbed']}`。",
+        f"- synthetic ready runner 是否未看到确认短语：`{status['baseline_local_env_smoke_confirmation_absent_after_scrub']}`。",
         f"- Jupyter final handoff：`{status['jupyter_final_handoff_passed']}`。",
         f"- Jupyter final handoff 默认生成包：`{status['jupyter_final_handoff_packet_default_true']}`。",
         f"- Jupyter final handoff 真实 runner 默认关闭：`{status['jupyter_final_handoff_real_runner_default_false']}`。",
@@ -379,6 +397,8 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         f"- rehearsal 命令数：`{status['baseline_final_handoff_rehearsal_command_count']}`。",
         f"- rehearsal 是否 no-contact：`{status['baseline_final_handoff_rehearsal_no_contact']}`。",
         f"- rehearsal 是否 no-leak：`{status['baseline_final_handoff_rehearsal_no_leak']}`。",
+        f"- rehearsal 父环境确认短语是否已清理：`{status['baseline_final_handoff_rehearsal_parent_real_confirm_scrubbed']}`。",
+        f"- rehearsal ready runner 是否未看到确认短语：`{status['baseline_final_handoff_rehearsal_confirmation_absent_after_scrub']}`。",
         f"- LoRA/web 是否需要 checkpoint link：`{status['lora_web_requires_checkpoint_link']}`。",
         f"- LoRA/web 是否需要 checkpoint upload：`{status['lora_web_requires_checkpoint_upload']}`。",
         f"- 下载已验证：`{status['download_verified']}`。",

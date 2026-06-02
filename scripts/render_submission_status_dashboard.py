@@ -182,6 +182,9 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
         and baseline_local_env_smoke.get("synthetic_env_file_removed_after_run") is True
         and baseline_local_env_smoke.get("authorized_preflight", {}).get("variant_baseline") is True
         and baseline_local_env_smoke.get("ready_runner", {}).get("stops_before_real_runner") is True
+        and baseline_local_env_smoke.get("ready_runner", {}).get("parent_real_confirm_present_in_subprocess_env")
+        is False
+        and baseline_local_env_smoke.get("ready_runner", {}).get("confirmation_absent") is True
     )
     baseline_final_handoff_ready = bool(
         baseline_final_handoff.get("passed")
@@ -203,6 +206,8 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
         and baseline_final_handoff_rehearsal.get("synthetic_env_file_removed_after_run") is True
         and baseline_final_handoff_rehearsal.get("workspace_state_restored_after_rehearsal") is True
         and rehearsal_step3.get("stops_before_real_runner") is True
+        and rehearsal_step3.get("parent_real_confirm_present_in_subprocess_env") is False
+        and rehearsal_step3.get("confirmation_absent") is True
         and not any(baseline_final_handoff_rehearsal.get("contact_flags", {}).values())
         and not any(baseline_final_handoff_rehearsal.get("leak_flags", {}).values())
     )
@@ -379,7 +384,7 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
             "Baseline local env smoke",
             "done" if baseline_local_env_smoke_ready else "watch",
             "synthetic 已跑通",
-            "临时 fake local env 已验证授权预检会按 baseline 读取，ready runner 缺强确认时仍停在真实 runner 前。",
+            "临时 fake local env 已验证授权预检会按 baseline 读取；父环境确认短语会被清理，ready runner 仍停在真实 runner 前。",
             "reports/baseline_local_env_smoke.md",
         ),
         card(
@@ -393,7 +398,7 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
             "Baseline handoff rehearsal",
             "done" if baseline_final_handoff_rehearsal_ready else "watch",
             "前三步已演练",
-            "临时 synthetic local env 已按 final handoff 前三条命令顺序跑通；第三步缺少真实确认时仍停在 runner 前。",
+            "临时 synthetic local env 已按 final handoff 前三条命令顺序跑通；父环境确认短语会被清理，第三步仍停在 runner 前。",
             "reports/baseline_final_handoff_rehearsal.md",
         ),
         card(
@@ -461,6 +466,8 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
     blocked_cards = [item for item in cards if item["state"] == "blocked"]
     watch_cards = [item for item in cards if item["state"] == "watch"]
     done_cards = [item for item in cards if item["state"] == "done"]
+    rehearsal_commands = baseline_final_handoff_rehearsal.get("commands", [])
+    rehearsal_step3 = rehearsal_commands[2] if len(rehearsal_commands) >= 3 else {}
     return {
         "kind": "submission_status_dashboard",
         "passed": True,
@@ -541,6 +548,14 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
             "stops_before_real_runner"
         )
         is True,
+        "baseline_local_env_smoke_parent_real_confirm_scrubbed": baseline_local_env_smoke.get(
+            "ready_runner", {}
+        ).get("parent_real_confirm_present_in_subprocess_env")
+        is False,
+        "baseline_local_env_smoke_confirmation_absent_after_scrub": baseline_local_env_smoke.get(
+            "ready_runner", {}
+        ).get("confirmation_absent")
+        is True,
         "baseline_final_handoff_passed": baseline_final_handoff.get("passed") is True,
         "baseline_final_handoff_no_upload": baseline_final_handoff.get("requires_checkpoint_upload") is False,
         "baseline_final_handoff_no_link": baseline_final_handoff.get("requires_checkpoint_link") is False,
@@ -567,6 +582,14 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
         is True,
         "baseline_final_handoff_rehearsal_workspace_restored": baseline_final_handoff_rehearsal.get(
             "workspace_state_restored_after_rehearsal"
+        )
+        is True,
+        "baseline_final_handoff_rehearsal_parent_real_confirm_scrubbed": rehearsal_step3.get(
+            "parent_real_confirm_present_in_subprocess_env"
+        )
+        is False,
+        "baseline_final_handoff_rehearsal_confirmation_absent_after_scrub": rehearsal_step3.get(
+            "confirmation_absent"
         )
         is True,
         "baseline_final_handoff_rehearsal_no_contact": not any(

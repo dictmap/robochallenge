@@ -21,6 +21,7 @@ DEFAULT_REPORT = REPORTS_DIR / "baseline_final_handoff_rehearsal.md"
 
 SYNTHETIC_TOKEN = "synthetic_user_token_for_final_handoff_rehearsal_0001"
 SYNTHETIC_SUBMISSION_ID = "synthetic_submission_id_for_final_handoff_rehearsal_0001"
+PARENT_CONFIRM_PHRASE = "RUN_REAL_ROBOCHALLENGE_SUBMISSION"
 
 EXPECTED_FIRST_THREE_COMMANDS = [
     "python3 scripts/render_baseline_credential_hygiene.py",
@@ -110,6 +111,7 @@ def scrub_env(env_file: Path) -> dict[str, str]:
     env = os.environ.copy()
     env["PYTHONIOENCODING"] = "utf-8"
     env["ROBOCHALLENGE_ENV_FILE"] = str(env_file)
+    env["ROBOCHALLENGE_REAL_RUN_CONFIRM"] = PARENT_CONFIRM_PHRASE
     for key in [
         "ROBOCHALLENGE_USER_TOKEN",
         "ROBOCHALLENGE_SUBMISSION_ID",
@@ -124,10 +126,11 @@ def scrub_env(env_file: Path) -> dict[str, str]:
 
 
 def run_handoff_command(command: str, env_file: Path) -> dict[str, Any]:
+    env = scrub_env(env_file)
     result = subprocess.run(
         ["bash", "-lc", command],
         cwd=ROOT,
-        env=scrub_env(env_file),
+        env=env,
         text=True,
         encoding="utf-8",
         errors="replace",
@@ -150,6 +153,10 @@ def run_handoff_command(command: str, env_file: Path) -> dict[str, Any]:
         "dry_run_called": "dry_run=true" in combined,
         "robot_type_aloha": "robot_type=aloha" in combined,
         "ready_false": "ready_for_real_submission=false" in combined,
+        "parent_real_confirm_injected_before_scrub": True,
+        "parent_real_confirm_present_in_subprocess_env": "ROBOCHALLENGE_REAL_RUN_CONFIRM" in env,
+        "confirmation_present": "confirmation_present=true" in combined,
+        "confirmation_absent": "confirmation_present=false" in combined,
         "missing_confirmation": "missing explicit real-run confirmation" in combined,
         "stops_before_real_runner": "stop before real runner" in combined,
         "real_runner_started": "confirmation accepted; starting real runner" in combined,
@@ -241,6 +248,12 @@ def build_status() -> dict[str, Any]:
         "step3_loaded_env_file": step3.get("env_file_present_true") is True,
         "step3_variant_baseline": step3.get("variant_baseline") is True,
         "step3_dry_run_called": step3.get("dry_run_called") is True,
+        "step3_parent_real_confirm_injected_before_scrub": step3.get(
+            "parent_real_confirm_injected_before_scrub"
+        )
+        is True,
+        "step3_parent_real_confirm_scrubbed": step3.get("parent_real_confirm_present_in_subprocess_env") is False,
+        "step3_confirmation_absent_after_scrub": step3.get("confirmation_absent") is True,
         "step3_missing_confirmation": step3.get("missing_confirmation") is True,
         "step3_stops_before_real_runner": step3.get("stops_before_real_runner") is True,
         "step3_real_runner_not_started": step3.get("real_runner_started") is False,
@@ -285,6 +298,8 @@ def build_status() -> dict[str, Any]:
         "synthetic_token_length": len(SYNTHETIC_TOKEN),
         "synthetic_submission_id_length": len(SYNTHETIC_SUBMISSION_ID),
         "synthetic_values_recorded": False,
+        "parent_real_confirm_phrase_injected": True,
+        "parent_real_confirm_phrase_value_recorded": False,
         "synthetic_env_file_removed_after_run": env_file_removed_after_run,
         "workspace_state_restored_after_rehearsal": restored,
         "evidence": evidence,
@@ -312,6 +327,8 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         f"- synthetic token 长度：`{status['synthetic_token_length']}`。",
         f"- synthetic submission id 长度：`{status['synthetic_submission_id_length']}`。",
         f"- 是否记录 synthetic 明文值：`{status['synthetic_values_recorded']}`。",
+        f"- 是否注入父环境确认短语污染：`{status['parent_real_confirm_phrase_injected']}`。",
+        f"- 是否记录确认短语明文值：`{status['parent_real_confirm_phrase_value_recorded']}`。",
         f"- 临时 env 文件是否已删除：`{status['synthetic_env_file_removed_after_run']}`。",
         f"- 工作区状态是否已恢复：`{status['workspace_state_restored_after_rehearsal']}`。",
         "",

@@ -7,6 +7,8 @@
 - synthetic token 长度：`45`。
 - synthetic submission id 长度：`48`。
 - 是否记录 synthetic 明文值：`False`。
+- 是否注入父环境确认短语污染：`True`。
+- 是否记录确认短语明文值：`False`。
 - 临时 env 文件是否已删除：`True`。
 
 ## 覆盖的命令
@@ -38,6 +40,9 @@
 - `ready_runner_loaded_env_file`：`True`。
 - `ready_runner_variant_baseline`：`True`。
 - `ready_runner_dry_run_called`：`True`。
+- `ready_runner_parent_real_confirm_injected_before_scrub`：`True`。
+- `ready_runner_parent_real_confirm_scrubbed`：`True`。
+- `ready_runner_confirmation_absent_after_scrub`：`True`。
 - `ready_runner_missing_confirmation`：`True`。
 - `ready_runner_stops_before_real_runner`：`True`。
 - `ready_runner_real_runner_not_started`：`True`。

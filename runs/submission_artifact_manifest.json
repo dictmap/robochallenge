@@ -20,8 +20,8 @@
       "path": "work.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 150278,
-      "sha256": "0d279d031bda69d5eb4015a2154b9293903eee4c6c899ed23aac3b2de406ce9a"
+      "size_bytes": 152366,
+      "sha256": "a62b89cdcb95ca85f06cdc8bb8c7056928aa0f88c1ee06c061828988eea1be59"
     },
     {
       "path": "notebooks/robochallenge_pi05_submit_cn.ipynb",
@@ -321,8 +321,8 @@
       "path": "reports/baseline_local_env_smoke.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 1768,
-      "sha256": "37c6404e6600e154be1129ca7ec367496360dbceb31edcdb7a83611cf2c3b18e"
+      "size_bytes": 2061,
+      "sha256": "c58fc42901c86e4ed7cd5581d01ab81ee82a381c023c96c819a10d5f899b6b71"
     },
     {
       "path": "reports/baseline_final_handoff_packet.md",
@@ -335,8 +335,8 @@
       "path": "reports/baseline_final_handoff_rehearsal.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 2567,
-      "sha256": "9ca5a953d8b788fe685950b7b2bea6bb960765b93efc99c45115243ba7875c59"
+      "size_bytes": 2839,
+      "sha256": "8157049c294b8ea1f57e24c0975e475ed6eec6ce9cbbb10846fa494fefbdaaca"
     },
     {
       "path": "reports/route_aware_submission_blockers.md",
@@ -363,8 +363,8 @@
       "path": "reports/submission_preflight_bundle.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 4893,
-      "sha256": "11f3c9a6c88aa60427aca609fd3e9e66d2dcd77c94dbea13d48e3619eb296f6f"
+      "size_bytes": 5145,
+      "sha256": "0bf1705df140768a7cb9ab1f50fe434a64f609d72b08d0b35462bd58ed510b57"
     },
     {
       "path": "reports/plaintext_secret_scan.md",
@@ -377,8 +377,8 @@
       "path": "reports/submission_status_dashboard.html",
       "exists": true,
       "tracked": true,
-      "size_bytes": 17001,
-      "sha256": "1ed28a18f35f0902231d703b06ed8335d2a7c10edb2241c93ac2f85372f36f94"
+      "size_bytes": 17037,
+      "sha256": "5e4ae164a52559bdc8f2b61c07eba2907c7a5a1473e31a7f0aba6b73d92d24f5"
     },
     {
       "path": "scripts/render_next_user_action_packet.py",
@@ -426,8 +426,8 @@
       "path": "scripts/render_baseline_local_env_smoke.py",
       "exists": true,
       "tracked": true,
-      "size_bytes": 11051,
-      "sha256": "3b1cc69874d0658e6f5f214230ba7d796b607b47f0720904f08e0def5013642c"
+      "size_bytes": 12242,
+      "sha256": "e641443aca15fd6f490dd5b95bdc5085ffb17e8cfdc3a06265db9f006eadf95a"
     },
     {
       "path": "scripts/render_baseline_final_handoff_packet.py",
@@ -440,8 +440,8 @@
       "path": "scripts/render_baseline_final_handoff_rehearsal.py",
       "exists": true,
       "tracked": true,
-      "size_bytes": 15928,
-      "sha256": "c9ee87d171900e53986d17a7368acd95a2f345e0466717c10e4f88e60e5d8f81"
+      "size_bytes": 17061,
+      "sha256": "1d5014e30d08513fe1a4510064ea68d82f27656f4022a01c3063d591f1ec7675"
     },
     {
       "path": "scripts/render_route_aware_submission_blockers.py",
@@ -581,6 +581,8 @@
     "baseline_local_env_smoke_temp_env_removed": true,
     "baseline_local_env_smoke_authorized_preflight_baseline": true,
     "baseline_local_env_smoke_ready_runner_stops": true,
+    "baseline_local_env_smoke_parent_real_confirm_scrubbed": true,
+    "baseline_local_env_smoke_confirmation_absent_after_scrub": true,
     "baseline_final_handoff_passed": true,
     "baseline_final_handoff_no_upload": true,
     "baseline_final_handoff_no_link": true,
@@ -594,6 +596,8 @@
     "baseline_final_handoff_rehearsal_synthetic_values_not_recorded": true,
     "baseline_final_handoff_rehearsal_temp_env_removed": true,
     "baseline_final_handoff_rehearsal_workspace_restored": true,
+    "baseline_final_handoff_rehearsal_parent_real_confirm_scrubbed": true,
+    "baseline_final_handoff_rehearsal_confirmation_absent_after_scrub": true,
     "route_aware_submission_blockers_passed": true,
     "route_aware_recommended_baseline": true,
     "route_aware_baseline_no_upload": true,

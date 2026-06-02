@@ -21,6 +21,8 @@
 - synthetic local env smoke：`True`。
 - synthetic 授权预检是否走 baseline：`True`。
 - synthetic ready runner 是否停在真实 runner 前：`True`。
+- synthetic 父环境确认短语是否已清理：`True`。
+- synthetic ready runner 是否未看到确认短语：`True`。
 - Jupyter final handoff：`True`。
 - Jupyter final handoff 默认生成包：`True`。
 - Jupyter final handoff 真实 runner 默认关闭：`True`。
@@ -32,6 +34,8 @@
 - rehearsal 命令数：`3`。
 - rehearsal 是否 no-contact：`True`。
 - rehearsal 是否 no-leak：`True`。
+- rehearsal 父环境确认短语是否已清理：`True`。
+- rehearsal ready runner 是否未看到确认短语：`True`。
 - LoRA/web 是否需要 checkpoint link：`True`。
 - LoRA/web 是否需要 checkpoint upload：`True`。
 - 下载已验证：`False`。

@@ -307,6 +307,14 @@ def build_status() -> dict[str, Any]:
             "stops_before_real_runner"
         )
         is True,
+        "baseline_local_env_smoke_parent_real_confirm_scrubbed": baseline_local_env_smoke.get(
+            "ready_runner", {}
+        ).get("parent_real_confirm_present_in_subprocess_env")
+        is False,
+        "baseline_local_env_smoke_confirmation_absent_after_scrub": baseline_local_env_smoke.get(
+            "ready_runner", {}
+        ).get("confirmation_absent")
+        is True,
         "baseline_final_handoff_passed": baseline_final_handoff.get("passed") is True,
         "baseline_final_handoff_no_upload": baseline_final_handoff.get("requires_checkpoint_upload") is False,
         "baseline_final_handoff_no_link": baseline_final_handoff.get("requires_checkpoint_link") is False,
@@ -338,6 +346,16 @@ def build_status() -> dict[str, Any]:
             "workspace_state_restored_after_rehearsal"
         )
         is True,
+        "baseline_final_handoff_rehearsal_parent_real_confirm_scrubbed": (
+            (baseline_final_handoff_rehearsal.get("commands", []) + [{}, {}, {}])[2].get(
+                "parent_real_confirm_present_in_subprocess_env"
+            )
+            is False
+        ),
+        "baseline_final_handoff_rehearsal_confirmation_absent_after_scrub": (
+            (baseline_final_handoff_rehearsal.get("commands", []) + [{}, {}, {}])[2].get("confirmation_absent")
+            is True
+        ),
         "route_aware_submission_blockers_passed": route_aware_blockers.get("passed") is True,
         "route_aware_recommended_baseline": route_aware_blockers.get("recommended_route") == "baseline_official_aloha",
         "route_aware_baseline_no_upload": route_aware_blockers.get("baseline_requires_checkpoint_upload") is False,

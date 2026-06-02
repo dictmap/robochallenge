@@ -8,6 +8,8 @@
 - synthetic token 长度：`53`。
 - synthetic submission id 长度：`56`。
 - 是否记录 synthetic 明文值：`False`。
+- 是否注入父环境确认短语污染：`True`。
+- 是否记录确认短语明文值：`False`。
 - 临时 env 文件是否已删除：`True`。
 - 工作区状态是否已恢复：`True`。
 
@@ -54,6 +56,9 @@
 - `step3_loaded_env_file`：`True`。
 - `step3_variant_baseline`：`True`。
 - `step3_dry_run_called`：`True`。
+- `step3_parent_real_confirm_injected_before_scrub`：`True`。
+- `step3_parent_real_confirm_scrubbed`：`True`。
+- `step3_confirmation_absent_after_scrub`：`True`。
 - `step3_missing_confirmation`：`True`。
 - `step3_stops_before_real_runner`：`True`。
 - `step3_real_runner_not_started`：`True`。

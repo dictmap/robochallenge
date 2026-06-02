@@ -1927,3 +1927,29 @@
 
 - P0：提交并推送本轮错误确认短语防护证据。
 - P1：继续围绕 baseline 凭据到位后的授权预检链做防误操作证据；真实 runner 仍不得在没有用户明确授权时执行。
+
+## 2026-06-03 第六十八轮：baseline 演练父环境确认短语清理证据
+
+### 已完成
+
+- 更新 `scripts/render_baseline_local_env_smoke.py`，在 smoke 运行前故意注入父环境 `ROBOCHALLENGE_REAL_RUN_CONFIRM` 污染，再由执行环境 scrub 掉，验证子进程仍看不到确认短语。
+- 更新 `scripts/render_baseline_final_handoff_rehearsal.py`，把同样的父环境确认短语 scrub 证据接入 final handoff 前三步演练。
+- 更新 `scripts/audit_submission_preflight_bundle.py`、`scripts/audit_submission_artifact_manifest.py`、`scripts/render_submission_status_dashboard.py` 和 `scripts/validate_repro_workspace.py`，把 `parent_real_confirm_scrubbed` 与 `confirmation_absent_after_scrub` 纳入 preflight、manifest、GUI 和总验证。
+- GUI dashboard 的 `Baseline local env smoke` 与 `Baseline handoff rehearsal` 卡片现在明确显示父环境确认短语会被清理，ready runner 仍停在真实 runner 前。
+
+### 验证结果
+
+- Linux 端 `python3 scripts/render_baseline_local_env_smoke.py` 已通过：`parent_real_confirm_phrase_injected=true`、`ready_runner.parent_real_confirm_present_in_subprocess_env=false`、`ready_runner.confirmation_absent=true`、`ready_runner.stops_before_real_runner=true`、`ready_runner.real_runner_started=false`。
+- Linux 端 `python3 scripts/render_baseline_final_handoff_rehearsal.py` 已通过：第 3 步 `parent_real_confirm_present_in_subprocess_env=false`、`confirmation_absent=true`、`missing_confirmation=true`、`stops_before_real_runner=true`、`real_runner_started=false`。
+- Linux 端 `python3 scripts/audit_submission_preflight_bundle.py`、`python3 scripts/audit_submission_artifact_manifest.py`、`python3 scripts/render_submission_status_dashboard.py`、`python3 scripts/validate_repro_workspace.py` 和 `git diff --check` 均已通过。
+- 本轮没有读取真实 token、submission id 或 checkpoint link，没有连接 RoboChallenge 平台，没有上传 checkpoint，没有生成 checkpoint tar，也没有启动真实 runner。
+
+### 当前边界
+
+- 本轮只证明父 shell 里误留确认短语时，baseline no-contact smoke/rehearsal 会清理该变量；如果用户把确认短语写进真实 local env 文件并显式授权，仍属于真实 runner 强确认路径，必须等待用户明确许可。
+- baseline 官方路线仍等待用户凭据、提交对象确认、`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline` 和真实 runner 明确授权。
+
+### 下一步
+
+- P0：提交并推送本轮父环境确认短语清理证据。
+- P1：继续补凭据到位后的只读/脱敏检查证据；真实 runner 仍不得在没有用户明确授权时执行。

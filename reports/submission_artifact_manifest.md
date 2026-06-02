@@ -14,7 +14,7 @@
 ## 材料清单
 
 - `README.md`：exists=`True`，tracked=`True`，size=`19168`，sha256=`58dff8b9599520d8de819ab2dd636d7e1d46962e276499858d6f51f4151f620c`。
-- `work.md`：exists=`True`，tracked=`True`，size=`150278`，sha256=`0d279d031bda69d5eb4015a2154b9293903eee4c6c899ed23aac3b2de406ce9a`。
+- `work.md`：exists=`True`，tracked=`True`，size=`152366`，sha256=`a62b89cdcb95ca85f06cdc8bb8c7056928aa0f88c1ee06c061828988eea1be59`。
 - `notebooks/robochallenge_pi05_submit_cn.ipynb`：exists=`True`，tracked=`True`，size=`97941`，sha256=`3063649288beb3fb268eeaa30964120cbd090119580c74134dcfba6739b26609`。
 - `submission/README.md`：exists=`True`，tracked=`True`，size=`1736`，sha256=`1e56978190bcd369dce7fab828d6d7125b6777e62e7a4f6a78cb914c9ea5535b`。
 - `submission/REAL_SUBMISSION_HANDOFF.md`：exists=`True`，tracked=`True`，size=`9131`，sha256=`1e77c1e65175f5ad5996d7b4b6950ffa838c6cd34d025ee13a5738a48a2b8f93`。
@@ -57,24 +57,24 @@
 - `reports/baseline_submission_quickstart.md`：exists=`True`，tracked=`True`，size=`2755`，sha256=`370c7ccde88a66311e864349ed648756db11cb52c87336aa5b4b313c53af3671`。
 - `reports/baseline_dry_run_gate.md`：exists=`True`，tracked=`True`，size=`3423`，sha256=`da820fa172f87fc8623ff893be6bbf42de669ba7c8ec43aff81f248d41a34456`。
 - `reports/baseline_credential_hygiene.md`：exists=`True`，tracked=`True`，size=`2313`，sha256=`76ee43531cb291c5c3f0e319aaa439f7ea4651388af0223e9ce6a8e938a0d673`。
-- `reports/baseline_local_env_smoke.md`：exists=`True`，tracked=`True`，size=`1768`，sha256=`37c6404e6600e154be1129ca7ec367496360dbceb31edcdb7a83611cf2c3b18e`。
+- `reports/baseline_local_env_smoke.md`：exists=`True`，tracked=`True`，size=`2061`，sha256=`c58fc42901c86e4ed7cd5581d01ab81ee82a381c023c96c819a10d5f899b6b71`。
 - `reports/baseline_final_handoff_packet.md`：exists=`True`，tracked=`True`，size=`4232`，sha256=`ad27bae6de1e649403f0e8207ca6b7f404d1dac5f7100a1f0cbc5940610639e8`。
-- `reports/baseline_final_handoff_rehearsal.md`：exists=`True`，tracked=`True`，size=`2567`，sha256=`9ca5a953d8b788fe685950b7b2bea6bb960765b93efc99c45115243ba7875c59`。
+- `reports/baseline_final_handoff_rehearsal.md`：exists=`True`，tracked=`True`，size=`2839`，sha256=`8157049c294b8ea1f57e24c0975e475ed6eec6ce9cbbb10846fa494fefbdaaca`。
 - `reports/route_aware_submission_blockers.md`：exists=`True`，tracked=`True`，size=`3779`，sha256=`1d31c9f61397183ff8f4dd8e092b27f9fccf3f4951fd40266d732d974a4f1e4a`。
 - `reports/submission_handoff_docs_audit.md`：exists=`True`，tracked=`True`，size=`5768`，sha256=`65fad9790e12b656f34652f15f4016740f9953f9bdd44b2419390358f32dc04c`。
 - `reports/authorized_submission_sequence_audit.md`：exists=`True`，tracked=`True`，size=`5771`，sha256=`2c373b72177573448649a3c29568c6eb61c8eb1b68b6c6e4cd602836845e39cc`。
-- `reports/submission_preflight_bundle.md`：exists=`True`，tracked=`True`，size=`4893`，sha256=`11f3c9a6c88aa60427aca609fd3e9e66d2dcd77c94dbea13d48e3619eb296f6f`。
+- `reports/submission_preflight_bundle.md`：exists=`True`，tracked=`True`，size=`5145`，sha256=`0bf1705df140768a7cb9ab1f50fe434a64f609d72b08d0b35462bd58ed510b57`。
 - `reports/plaintext_secret_scan.md`：exists=`True`，tracked=`True`，size=`610`，sha256=`34ef383fd052aab7fa379fad4830576b3ee1e877f35cdaf7c6b392ba2b784177`。
-- `reports/submission_status_dashboard.html`：exists=`True`，tracked=`True`，size=`17001`，sha256=`1ed28a18f35f0902231d703b06ed8335d2a7c10edb2241c93ac2f85372f36f94`。
+- `reports/submission_status_dashboard.html`：exists=`True`，tracked=`True`，size=`17037`，sha256=`5e4ae164a52559bdc8f2b61c07eba2907c7a5a1473e31a7f0aba6b73d92d24f5`。
 - `scripts/render_next_user_action_packet.py`：exists=`True`，tracked=`True`，size=`17070`，sha256=`bb27664b00e92d96955e6ae878a4c5faf7493c1e8fa0229f1cf5e186feca7490`。
 - `scripts/render_web_form_field_packet.py`：exists=`True`，tracked=`True`，size=`11389`，sha256=`308afc6bd0b412bbed8c4c2f4188666050449fa3d5ed3580559422fdcff37b34`。
 - `scripts/render_submission_variant_route_packet.py`：exists=`True`，tracked=`True`，size=`14345`，sha256=`208f35442ab2425bc937267ff6ea8909aab0330460c38547038fd41345773b2b`。
 - `scripts/render_baseline_submission_quickstart.py`：exists=`True`，tracked=`True`，size=`9973`，sha256=`a6dd12fde694bb1d688bef942533a6d08a781112c19c59afe2d851a00600c634`。
 - `scripts/render_baseline_dry_run_gate.py`：exists=`True`，tracked=`True`，size=`13078`，sha256=`258ce14655ffe3dced8fbcd376210eba8325b29b12fcb6f1cf8674beb2d38f55`。
 - `scripts/render_baseline_credential_hygiene.py`：exists=`True`，tracked=`True`，size=`11177`，sha256=`91a8ccbf133f4854092b47a8290a9213a2eb79fa31f43cc0c377d70771e95528`。
-- `scripts/render_baseline_local_env_smoke.py`：exists=`True`，tracked=`True`，size=`11051`，sha256=`3b1cc69874d0658e6f5f214230ba7d796b607b47f0720904f08e0def5013642c`。
+- `scripts/render_baseline_local_env_smoke.py`：exists=`True`，tracked=`True`，size=`12242`，sha256=`e641443aca15fd6f490dd5b95bdc5085ffb17e8cfdc3a06265db9f006eadf95a`。
 - `scripts/render_baseline_final_handoff_packet.py`：exists=`True`，tracked=`True`，size=`15256`，sha256=`8310edbdbe66e0bf12e18c6ab75cb75bf26addc9eb6e0d8ca50f9f490030428e`。
-- `scripts/render_baseline_final_handoff_rehearsal.py`：exists=`True`，tracked=`True`，size=`15928`，sha256=`c9ee87d171900e53986d17a7368acd95a2f345e0466717c10e4f88e60e5d8f81`。
+- `scripts/render_baseline_final_handoff_rehearsal.py`：exists=`True`，tracked=`True`，size=`17061`，sha256=`1d5014e30d08513fe1a4510064ea68d82f27656f4022a01c3063d591f1ec7675`。
 - `scripts/render_route_aware_submission_blockers.py`：exists=`True`，tracked=`True`，size=`11346`，sha256=`9192bb769e06e1e0480a263a97ad6ae79814eba77ad6855b1613cc89edf0d14e`。
 - `scripts/audit_jupyter_input_template.py`：exists=`True`，tracked=`True`，size=`13811`，sha256=`f9db1d790f5e92c57025b69c9fc3e6b14e1596354ef7e4dfb84da3ff6aa422a6`。
 - `scripts/audit_jupyter_authorized_preflight_template.py`：exists=`True`，tracked=`True`，size=`12746`，sha256=`71a1ae721f3712bb2c0a4ec2b7ee7ec0f7f44c50425fffdd4c3f5148330a4d8c`。
@@ -154,6 +154,8 @@
 - `baseline_local_env_smoke_temp_env_removed`：`True`。
 - `baseline_local_env_smoke_authorized_preflight_baseline`：`True`。
 - `baseline_local_env_smoke_ready_runner_stops`：`True`。
+- `baseline_local_env_smoke_parent_real_confirm_scrubbed`：`True`。
+- `baseline_local_env_smoke_confirmation_absent_after_scrub`：`True`。
 - `baseline_final_handoff_passed`：`True`。
 - `baseline_final_handoff_no_upload`：`True`。
 - `baseline_final_handoff_no_link`：`True`。
@@ -167,6 +169,8 @@
 - `baseline_final_handoff_rehearsal_synthetic_values_not_recorded`：`True`。
 - `baseline_final_handoff_rehearsal_temp_env_removed`：`True`。
 - `baseline_final_handoff_rehearsal_workspace_restored`：`True`。
+- `baseline_final_handoff_rehearsal_parent_real_confirm_scrubbed`：`True`。
+- `baseline_final_handoff_rehearsal_confirmation_absent_after_scrub`：`True`。
 - `route_aware_submission_blockers_passed`：`True`。
 - `route_aware_recommended_baseline`：`True`。
 - `route_aware_baseline_no_upload`：`True`。

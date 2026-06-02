@@ -53,6 +53,8 @@
   "baseline_local_env_smoke_temp_env_removed": true,
   "baseline_local_env_smoke_authorized_preflight_baseline": true,
   "baseline_local_env_smoke_ready_runner_stops": true,
+  "baseline_local_env_smoke_parent_real_confirm_scrubbed": true,
+  "baseline_local_env_smoke_confirmation_absent_after_scrub": true,
   "baseline_final_handoff_passed": true,
   "baseline_final_handoff_no_upload": true,
   "baseline_final_handoff_no_link": true,
@@ -66,6 +68,8 @@
   "baseline_final_handoff_rehearsal_synthetic_values_not_recorded": true,
   "baseline_final_handoff_rehearsal_temp_env_removed": true,
   "baseline_final_handoff_rehearsal_workspace_restored": true,
+  "baseline_final_handoff_rehearsal_parent_real_confirm_scrubbed": true,
+  "baseline_final_handoff_rehearsal_confirmation_absent_after_scrub": true,
   "baseline_final_handoff_rehearsal_no_contact": true,
   "baseline_final_handoff_rehearsal_no_leak": true,
   "route_aware_submission_blockers_passed": true,
@@ -266,7 +270,7 @@
       "state": "done",
       "state_label": "已完成",
       "value": "synthetic 已跑通",
-      "detail": "临时 fake local env 已验证授权预检会按 baseline 读取，ready runner 缺强确认时仍停在真实 runner 前。",
+      "detail": "临时 fake local env 已验证授权预检会按 baseline 读取；父环境确认短语会被清理，ready runner 仍停在真实 runner 前。",
       "report": "reports/baseline_local_env_smoke.md"
     },
     {
@@ -282,7 +286,7 @@
       "state": "done",
       "state_label": "已完成",
       "value": "前三步已演练",
-      "detail": "临时 synthetic local env 已按 final handoff 前三条命令顺序跑通；第三步缺少真实确认时仍停在 runner 前。",
+      "detail": "临时 synthetic local env 已按 final handoff 前三条命令顺序跑通；父环境确认短语会被清理，第三步仍停在 runner 前。",
       "report": "reports/baseline_final_handoff_rehearsal.md"
     },
     {

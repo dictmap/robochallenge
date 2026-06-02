@@ -22,6 +22,8 @@
   "baseline_local_env_smoke_passed": true,
   "baseline_local_env_smoke_authorized_preflight_variant_baseline": true,
   "baseline_local_env_smoke_ready_runner_stops_before_real_runner": true,
+  "baseline_local_env_smoke_parent_real_confirm_scrubbed": true,
+  "baseline_local_env_smoke_confirmation_absent_after_scrub": true,
   "jupyter_final_handoff_passed": true,
   "jupyter_final_handoff_packet_default_true": true,
   "jupyter_final_handoff_real_runner_default_false": true,
@@ -38,6 +40,8 @@
   "baseline_final_handoff_rehearsal_passed": true,
   "baseline_final_handoff_rehearsal_command_count": 3,
   "baseline_final_handoff_rehearsal_ready_runner_stops": true,
+  "baseline_final_handoff_rehearsal_parent_real_confirm_scrubbed": true,
+  "baseline_final_handoff_rehearsal_confirmation_absent_after_scrub": true,
   "baseline_final_handoff_rehearsal_no_contact": true,
   "baseline_final_handoff_rehearsal_no_leak": true,
   "lora_web_requires_checkpoint_link": true,
@@ -205,7 +209,7 @@
       "script": "scripts/render_baseline_local_env_smoke.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": "rue,\n    \"authorized_preflight_no_protected_values_printed\": true,\n    \"ready_runner_returncode_missing_confirmation\": true,\n    \"ready_runner_loaded_env_file\": true,\n    \"ready_runner_variant_baseline\": true,\n    \"ready_runner_dry_run_called\": true,\n    \"ready_runner_missing_confirmation\": true,\n    \"ready_runner_stops_before_real_runner\": true,\n    \"ready_runner_real_runner_not_started\": true,\n    \"ready_runner_no_protected_values_printed\": true\n  },\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false\n  },\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"synthetic local env 已验证：baseline 预检和 dry-run gate 均会读取 local env，且不会打印值。\"\n  ]\n}\n",
+      "stdout_tail": "ner_variant_baseline\": true,\n    \"ready_runner_dry_run_called\": true,\n    \"ready_runner_parent_real_confirm_injected_before_scrub\": true,\n    \"ready_runner_parent_real_confirm_scrubbed\": true,\n    \"ready_runner_confirmation_absent_after_scrub\": true,\n    \"ready_runner_missing_confirmation\": true,\n    \"ready_runner_stops_before_real_runner\": true,\n    \"ready_runner_real_runner_not_started\": true,\n    \"ready_runner_no_protected_values_printed\": true\n  },\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false\n  },\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"synthetic local env 已验证：baseline 预检和 dry-run gate 均会读取 local env，且不会打印值。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "baseline_final_handoff_packet": {
@@ -219,7 +223,7 @@
       "script": "scripts/render_baseline_final_handoff_rehearsal.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": "dry_run_called\": true,\n    \"step2_robot_type_aloha\": true,\n    \"step2_no_protected_values_printed\": true,\n    \"step3_returncode_missing_confirmation\": true,\n    \"step3_loaded_env_file\": true,\n    \"step3_variant_baseline\": true,\n    \"step3_dry_run_called\": true,\n    \"step3_missing_confirmation\": true,\n    \"step3_stops_before_real_runner\": true,\n    \"step3_real_runner_not_started\": true,\n    \"step3_no_protected_values_printed\": true\n  },\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false\n  },\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"baseline final handoff 前三条命令已用 synthetic local env 按顺序演练；前三步不会启动真实 runner，第四步仍必须等待用户明确授权。\"\n  ]\n}\n",
+      "stdout_tail": " \"step3_loaded_env_file\": true,\n    \"step3_variant_baseline\": true,\n    \"step3_dry_run_called\": true,\n    \"step3_parent_real_confirm_injected_before_scrub\": true,\n    \"step3_parent_real_confirm_scrubbed\": true,\n    \"step3_confirmation_absent_after_scrub\": true,\n    \"step3_missing_confirmation\": true,\n    \"step3_stops_before_real_runner\": true,\n    \"step3_real_runner_not_started\": true,\n    \"step3_no_protected_values_printed\": true\n  },\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false\n  },\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"baseline final handoff 前三条命令已用 synthetic local env 按顺序演练；前三步不会启动真实 runner，第四步仍必须等待用户明确授权。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "submission_handoff_docs": {
@@ -233,7 +237,7 @@
       "script": "scripts/audit_submission_artifact_manifest.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": "_handoff_rehearsal_synthetic_values_not_recorded\": true,\n    \"baseline_final_handoff_rehearsal_temp_env_removed\": true,\n    \"baseline_final_handoff_rehearsal_workspace_restored\": true,\n    \"route_aware_submission_blockers_passed\": true,\n    \"route_aware_recommended_baseline\": true,\n    \"route_aware_baseline_no_upload\": true,\n    \"route_aware_baseline_no_link\": true,\n    \"route_aware_lora_web_needs_upload\": true,\n    \"route_aware_lora_web_needs_link\": true,\n    \"readiness_currently_blocked\": true,\n    \"env_template_passed\": true,\n    \"secret_scan_passed\": true,\n    \"secret_scan_hit_count_zero\": true\n  },\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false\n  },\n  \"blocking\": [\n    \"提交准备材料 manifest 已完整；baseline runner 仍需要用户凭据和 submission id，LoRA 或网页 checkpoint 路线仍需要上传授权和 checkpoint link。\"\n  ]\n}\n",
+      "stdout_tail": "rsal_workspace_restored\": true,\n    \"baseline_final_handoff_rehearsal_parent_real_confirm_scrubbed\": true,\n    \"baseline_final_handoff_rehearsal_confirmation_absent_after_scrub\": true,\n    \"route_aware_submission_blockers_passed\": true,\n    \"route_aware_recommended_baseline\": true,\n    \"route_aware_baseline_no_upload\": true,\n    \"route_aware_baseline_no_link\": true,\n    \"route_aware_lora_web_needs_upload\": true,\n    \"route_aware_lora_web_needs_link\": true,\n    \"readiness_currently_blocked\": true,\n    \"env_template_passed\": true,\n    \"secret_scan_passed\": true,\n    \"secret_scan_hit_count_zero\": true\n  },\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false\n  },\n  \"blocking\": [\n    \"提交准备材料 manifest 已完整；baseline runner 仍需要用户凭据和 submission id，LoRA 或网页 checkpoint 路线仍需要上传授权和 checkpoint link。\"\n  ]\n}\n",
       "stderr_tail": ""
     }
   },

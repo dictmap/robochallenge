@@ -20,6 +20,7 @@ DEFAULT_STATUS = RUNS_DIR / "baseline_local_env_smoke.json"
 DEFAULT_REPORT = REPORTS_DIR / "baseline_local_env_smoke.md"
 SYNTHETIC_TOKEN = "synthetic_user_token_for_local_env_smoke_0001"
 SYNTHETIC_SUBMISSION_ID = "synthetic_submission_id_for_local_env_smoke_0001"
+PARENT_CONFIRM_PHRASE = "RUN_REAL_ROBOCHALLENGE_SUBMISSION"
 AUTHORIZED_PREFLIGHT_COMMAND = "bash submission/run_authorized_preflight_template.sh"
 READY_RUNNER_COMMAND = "bash submission/run_ready_real_submission_template.sh"
 SNAPSHOT_RELS = [
@@ -45,6 +46,7 @@ def run_script(script: str, env_file: Path) -> dict[str, Any]:
     env = os.environ.copy()
     env["PYTHONIOENCODING"] = "utf-8"
     env["ROBOCHALLENGE_ENV_FILE"] = str(env_file)
+    env["ROBOCHALLENGE_REAL_RUN_CONFIRM"] = PARENT_CONFIRM_PHRASE
     for key in [
         "ROBOCHALLENGE_USER_TOKEN",
         "ROBOCHALLENGE_SUBMISSION_ID",
@@ -80,6 +82,10 @@ def run_script(script: str, env_file: Path) -> dict[str, Any]:
         "dry_run_called": "dry_run=true" in combined,
         "robot_type_aloha": "robot_type=aloha" in combined,
         "ready_false": "ready_for_real_submission=false" in combined,
+        "parent_real_confirm_injected_before_scrub": True,
+        "parent_real_confirm_present_in_subprocess_env": "ROBOCHALLENGE_REAL_RUN_CONFIRM" in env,
+        "confirmation_present": "confirmation_present=true" in combined,
+        "confirmation_absent": "confirmation_present=false" in combined,
         "missing_confirmation": "missing explicit real-run confirmation" in combined,
         "stops_before_real_runner": "stop before real runner" in combined,
         "real_runner_started": "confirmation accepted; starting real runner" in combined,
@@ -152,6 +158,15 @@ def build_status() -> dict[str, Any]:
         "ready_runner_loaded_env_file": ready_runner.get("env_file_present_true") is True,
         "ready_runner_variant_baseline": ready_runner.get("variant_baseline") is True,
         "ready_runner_dry_run_called": ready_runner.get("dry_run_called") is True,
+        "ready_runner_parent_real_confirm_injected_before_scrub": ready_runner.get(
+            "parent_real_confirm_injected_before_scrub"
+        )
+        is True,
+        "ready_runner_parent_real_confirm_scrubbed": ready_runner.get(
+            "parent_real_confirm_present_in_subprocess_env"
+        )
+        is False,
+        "ready_runner_confirmation_absent_after_scrub": ready_runner.get("confirmation_absent") is True,
         "ready_runner_missing_confirmation": ready_runner.get("missing_confirmation") is True,
         "ready_runner_stops_before_real_runner": ready_runner.get("stops_before_real_runner") is True,
         "ready_runner_real_runner_not_started": ready_runner.get("real_runner_started") is False,
@@ -187,6 +202,8 @@ def build_status() -> dict[str, Any]:
         "synthetic_token_length": len(SYNTHETIC_TOKEN),
         "synthetic_submission_id_length": len(SYNTHETIC_SUBMISSION_ID),
         "synthetic_values_recorded": False,
+        "parent_real_confirm_phrase_injected": True,
+        "parent_real_confirm_phrase_value_recorded": False,
         "synthetic_env_file_removed_after_run": env_file_removed_after_run,
         "authorized_preflight_command": AUTHORIZED_PREFLIGHT_COMMAND,
         "ready_runner_command": READY_RUNNER_COMMAND,
@@ -216,6 +233,8 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         f"- synthetic token 长度：`{status['synthetic_token_length']}`。",
         f"- synthetic submission id 长度：`{status['synthetic_submission_id_length']}`。",
         f"- 是否记录 synthetic 明文值：`{status['synthetic_values_recorded']}`。",
+        f"- 是否注入父环境确认短语污染：`{status['parent_real_confirm_phrase_injected']}`。",
+        f"- 是否记录确认短语明文值：`{status['parent_real_confirm_phrase_value_recorded']}`。",
         f"- 临时 env 文件是否已删除：`{status['synthetic_env_file_removed_after_run']}`。",
         "",
         "## 覆盖的命令",

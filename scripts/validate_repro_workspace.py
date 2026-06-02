@@ -40,6 +40,7 @@ REQUIRED = [
     "reports/openpi_rtc_lora_materialized_policy_smoke.md",
     "reports/lora_checkpoint_export_readiness.md",
     "reports/checkpoint_archive_plan.md",
+    "reports/checkpoint_archive_dry_run.md",
     "reports/checkpoint_upload_channels_audit.md",
     "reports/real_submission_readiness.md",
     "reports/real_submission_readiness_scenarios.md",
@@ -68,6 +69,7 @@ REQUIRED = [
     "runs/openpi_rtc_lora_materialized_policy_smoke_status.json",
     "runs/lora_checkpoint_export_readiness.json",
     "runs/checkpoint_archive_plan.json",
+    "runs/checkpoint_archive_dry_run.json",
     "runs/checkpoint_upload_channels_audit.json",
     "runs/real_submission_readiness.json",
     "runs/real_submission_readiness_scenarios.json",
@@ -92,6 +94,7 @@ REQUIRED = [
     "scripts/smoke_openpi_rtc_materialized_policy.py",
     "scripts/audit_lora_checkpoint_export_readiness.py",
     "scripts/audit_checkpoint_archive_plan.py",
+    "scripts/create_checkpoint_archive.py",
     "scripts/audit_checkpoint_upload_channels.py",
     "scripts/audit_real_submission_readiness.py",
     "scripts/audit_real_submission_readiness_scenarios.py",
@@ -581,6 +584,43 @@ def main() -> int:
     ):
         print("Checkpoint 归档计划审计未通过")
         return 1
+    archive_dry_run = json.loads((ROOT / "runs/checkpoint_archive_dry_run.json").read_text(encoding="utf-8"))
+    archive_dry_run_disk = archive_dry_run.get("disk", {})
+    archive_dry_run_commands = archive_dry_run.get("commands", {})
+    if not all(
+        [
+            archive_dry_run.get("kind") == "checkpoint_archive_dry_run",
+            archive_dry_run.get("passed"),
+            archive_dry_run.get("dry_run") is True,
+            archive_dry_run.get("execute_requested") is False,
+            archive_dry_run.get("explicit_execute_gate") is False,
+            archive_dry_run.get("missing_execute_confirmation") is False,
+            archive_dry_run.get("archive_created") is False,
+            archive_dry_run.get("sha256_created") is False,
+            archive_dry_run.get("upload_performed") is False,
+            archive_dry_run.get("credentials_read") is False,
+            archive_dry_run.get("platform_contacted") is False,
+            archive_dry_run.get("checkpoint_dir") == "runs/openpi_rtc_lora_materialized_policy_checkpoint",
+            archive_dry_run.get("archive_path") == "runs/openpi_rtc_lora_materialized_policy_checkpoint.tar",
+            archive_dry_run.get("sha256_path") == "runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.sha256",
+            archive_dry_run.get("checkpoint_dir_exists"),
+            archive_dry_run.get("archive_absent_before"),
+            archive_dry_run.get("sha256_absent_before"),
+            archive_dry_run.get("archive_absent_after"),
+            archive_dry_run.get("sha256_absent_after"),
+            archive_dry_run.get("archive_git_ignored"),
+            archive_dry_run.get("sha256_git_ignored"),
+            archive_dry_run.get("tar_available"),
+            archive_dry_run_disk.get("expected_archive_bytes", 0) > 10 * 1024**3,
+            archive_dry_run_disk.get("free_space_margin_passed"),
+            archive_dry_run_commands.get("uses_shell") is False,
+            archive_dry_run_commands.get("destructive_commands") is False,
+            "python3 scripts/create_checkpoint_archive.py" in archive_dry_run_commands.get("dry_run", ""),
+            "--execute --confirm-create-large-archive" in archive_dry_run_commands.get("execute", ""),
+        ]
+    ):
+        print("Checkpoint 归档生成 dry-run 未通过")
+        return 1
     upload_audit = json.loads((ROOT / "runs/checkpoint_upload_channels_audit.json").read_text(encoding="utf-8"))
     upload_channels = upload_audit.get("channels", {})
     if not all(
@@ -832,6 +872,7 @@ def main() -> int:
     print("openpi_rtc LoRA 完整物化 policy 加载 smoke 已通过")
     print("LoRA checkpoint 导出就绪审计已通过")
     print("Checkpoint 归档计划审计已通过")
+    print("Checkpoint 归档生成 dry-run 已通过")
     print("Checkpoint 上传通道审计已通过")
     print("真实提交 readiness gate 已通过")
     print("真实提交 readiness 场景 smoke 已通过")

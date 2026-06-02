@@ -1,0 +1,45 @@
+{
+  "kind": "checkpoint_archive_dry_run",
+  "passed": true,
+  "dry_run": true,
+  "execute_requested": false,
+  "confirm_create_large_archive": false,
+  "explicit_execute_gate": false,
+  "missing_execute_confirmation": false,
+  "archive_created": false,
+  "sha256_created": false,
+  "upload_performed": false,
+  "credentials_read": false,
+  "platform_contacted": false,
+  "checkpoint_dir": "runs/openpi_rtc_lora_materialized_policy_checkpoint",
+  "archive_path": "runs/openpi_rtc_lora_materialized_policy_checkpoint.tar",
+  "sha256_path": "runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.sha256",
+  "checkpoint_dir_exists": true,
+  "archive_absent_before": true,
+  "sha256_absent_before": true,
+  "archive_absent_after": true,
+  "sha256_absent_after": true,
+  "archive_git_ignored": true,
+  "sha256_git_ignored": true,
+  "tar_available": true,
+  "disk": {
+    "free_space_bucket_gb": 480,
+    "expected_archive_bytes": 11879987200,
+    "expected_archive_gb": 11.064,
+    "margin_factor_required": 2,
+    "free_space_margin_passed": true
+  },
+  "commands": {
+    "dry_run": "python3 scripts/create_checkpoint_archive.py",
+    "execute": "python3 scripts/create_checkpoint_archive.py --execute --confirm-create-large-archive",
+    "tar_invocation": "tar -C runs -cf runs/openpi_rtc_lora_materialized_policy_checkpoint.tar openpi_rtc_lora_materialized_policy_checkpoint",
+    "sha256_method": "python hashlib.sha256 -> runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.sha256",
+    "uses_shell": false,
+    "destructive_commands": false
+  },
+  "blocking": [
+    "默认 dry-run 不生成 tar；真正生成约 12GB 归档必须显式使用 --execute --confirm-create-large-archive。",
+    "本脚本不上传 checkpoint、不读取凭据、不连接 RoboChallenge 平台。",
+    "真实提交仍需要用户提供 token、submission id 和可访问 checkpoint link。"
+  ]
+}

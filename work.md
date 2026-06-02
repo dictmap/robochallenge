@@ -763,6 +763,35 @@
 
 - P0：提交前运行最终 `git diff --check`、总体验证和明文凭据扫描；通过后提交推送。
 
+## 2026-06-02 第三十轮：checkpoint 归档生成 dry-run
+
+### 已完成
+
+- 新增 `scripts/create_checkpoint_archive.py`，把 LoRA 物化 checkpoint 的 tar/sha256 生成流程从手工命令变成受控脚本。
+- 脚本默认只执行 dry-run，检查 checkpoint 目录、Git 忽略规则、tar 工具、磁盘空间和执行命令形态。
+- 真正生成约 12GB tar 必须显式传入 `--execute --confirm-create-large-archive`；本轮没有使用该执行门槛。
+- 如果只传 `--execute` 但缺少二次确认，脚本会返回失败并保持 dry-run，不会让用户误以为已经生成归档。
+- 生成 `reports/checkpoint_archive_dry_run.md` 和 `runs/checkpoint_archive_dry_run.json`，并纳入 `scripts/validate_repro_workspace.py`。
+- Notebook 新增第 31 节“checkpoint 归档生成 dry-run”，可在 Jupyter 中复跑该检查。
+
+### 验证结果
+
+- dry-run：`passed=true`，`dry_run=true`，`archive_created=false`，`sha256_created=false`。
+- 安全边界：`upload_performed=false`，`credentials_read=false`，`platform_contacted=false`。
+- 执行门槛：`execute_requested=false`，`explicit_execute_gate=false`；脚本报告中保留真实执行命令供用户授权后使用。
+- `python3 -m py_compile scripts/create_checkpoint_archive.py scripts/validate_repro_workspace.py` 已在 Linux 上通过。
+- Notebook preflight 已通过，第 31 节可执行；新增 Notebook 文本未出现问号替换乱码。
+- `python3 scripts/validate_repro_workspace.py`、`python3 scripts/audit_plaintext_secrets.py` 和 `git diff --check` 已通过。
+
+### 当前边界
+
+- 本轮不生成 tar、不计算真实 sha256、不上传 checkpoint、不连接 RoboChallenge 平台。
+- 真实提交仍需要用户提供 `ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID` 和可访问 checkpoint link。
+
+### 下一步
+
+- P0：同步到 Linux 后运行 dry-run、总体验证、Notebook preflight、明文凭据扫描和 `git diff --check`；通过后提交推送。
+
 ## 2026-06-02 第二十七轮：readiness gate 场景 smoke 与 Notebook 乱码修复
 
 ### 已完成

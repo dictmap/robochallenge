@@ -52,6 +52,7 @@ REQUIRED = [
     "reports/submission_handoff_docs_audit.md",
     "reports/submission_preflight_bundle.md",
     "reports/submission_env_template_audit.md",
+    "reports/notebook_structure_audit.md",
     "reports/submission_artifact_manifest.md",
     "reports/submission_blockers_summary.md",
     "reports/plaintext_secret_scan.md",
@@ -90,6 +91,7 @@ REQUIRED = [
     "runs/submission_handoff_docs_audit.json",
     "runs/submission_preflight_bundle.json",
     "runs/submission_env_template_audit.json",
+    "runs/notebook_structure_audit.json",
     "runs/submission_artifact_manifest.json",
     "runs/submission_blockers_summary.json",
     "runs/plaintext_secret_scan.json",
@@ -126,6 +128,7 @@ REQUIRED = [
     "scripts/audit_submission_handoff_docs.py",
     "scripts/audit_submission_preflight_bundle.py",
     "scripts/audit_submission_env_template.py",
+    "scripts/audit_notebook_structure.py",
     "scripts/audit_submission_artifact_manifest.py",
     "scripts/audit_submission_blockers_summary.py",
     "scripts/audit_plaintext_secrets.py",
@@ -944,6 +947,31 @@ def main() -> int:
     ):
         print("真实提交环境变量模板审计未通过")
         return 1
+    notebook_structure = json.loads((ROOT / "runs/notebook_structure_audit.json").read_text(encoding="utf-8"))
+    if not all(
+        [
+            notebook_structure.get("kind") == "notebook_structure_audit",
+            notebook_structure.get("passed"),
+            notebook_structure.get("platform_contacted") is False,
+            notebook_structure.get("uploads_performed") is False,
+            notebook_structure.get("credentials_read") is False,
+            notebook_structure.get("credentials_printed") is False,
+            notebook_structure.get("link_values_printed") is False,
+            notebook_structure.get("secret_values_printed") is False,
+            notebook_structure.get("notebook_path") == "notebooks/robochallenge_pi05_submit_cn.ipynb",
+            notebook_structure.get("nbformat") == 4,
+            notebook_structure.get("cell_count", 0) >= 40,
+            notebook_structure.get("missing_id_indexes") == [],
+            notebook_structure.get("duplicate_ids") == [],
+            notebook_structure.get("code_cells_with_outputs") == [],
+            notebook_structure.get("code_cells_with_execution_count") == [],
+            notebook_structure.get("crlf_count") == 0,
+            notebook_structure.get("bad_marker_hits") == [],
+            all(notebook_structure.get("required_markers", {}).values()),
+        ]
+    ):
+        print("Notebook 结构与编码审计未通过")
+        return 1
     artifact_manifest = json.loads((ROOT / "runs/submission_artifact_manifest.json").read_text(encoding="utf-8"))
     artifact_inputs = artifact_manifest.get("inputs", {})
     artifact_leaks = artifact_manifest.get("leak_flags", {})
@@ -982,6 +1010,7 @@ def main() -> int:
         "checkpoint_link_intake",
         "checkpoint_link_download_verification",
         "submission_env_template",
+        "notebook_structure",
         "submission_artifact_manifest",
         "real_submission_readiness",
         "submission_handoff_docs",
@@ -1216,6 +1245,7 @@ def main() -> int:
     print("真实提交 readiness 场景 smoke 已通过")
     print("真实提交交接文档审计已通过")
     print("真实提交环境变量模板审计已通过")
+    print("Notebook 结构与编码审计已通过")
     print("提交准备材料 manifest 审计已通过")
     print("真实提交前预检汇总已通过")
     print("真实提交阻塞项摘要已通过")

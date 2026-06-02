@@ -22,6 +22,7 @@ SUBCOMMANDS = [
     ("checkpoint_link_intake", "scripts/audit_checkpoint_link_intake.py"),
     ("checkpoint_link_download_verification", "scripts/audit_checkpoint_link_download_verification.py"),
     ("submission_env_template", "scripts/audit_submission_env_template.py"),
+    ("notebook_structure", "scripts/audit_notebook_structure.py"),
     ("submission_artifact_manifest", "scripts/audit_submission_artifact_manifest.py"),
     ("real_submission_readiness", "scripts/audit_real_submission_readiness.py"),
     ("submission_handoff_docs", "scripts/audit_submission_handoff_docs.py"),
@@ -73,6 +74,7 @@ def build_status() -> dict[str, Any]:
     link_intake = read_json(RUNS_DIR / "checkpoint_link_intake.json")
     link_download = read_json(RUNS_DIR / "checkpoint_link_download_verification.json")
     artifact_manifest = read_json(RUNS_DIR / "submission_artifact_manifest.json")
+    notebook_structure = read_json(RUNS_DIR / "notebook_structure_audit.json")
     readiness = read_json(RUNS_DIR / "real_submission_readiness.json")
     handoff = read_json(RUNS_DIR / "submission_handoff_docs_audit.json")
     secret_scan = read_json(RUNS_DIR / "plaintext_secret_scan.json")
@@ -80,22 +82,48 @@ def build_status() -> dict[str, Any]:
     leak_flags = {
         "credentials_printed": any(
             bool(item.get("credentials_printed"))
-            for item in [link_intake, link_download, artifact_manifest, readiness, handoff, secret_scan]
+            for item in [
+                link_intake,
+                link_download,
+                artifact_manifest,
+                notebook_structure,
+                readiness,
+                handoff,
+                secret_scan,
+            ]
         ),
         "link_values_printed": bool(link_intake.get("link_values_printed"))
         or bool(link_download.get("link_value_printed"))
-        or bool(artifact_manifest.get("link_values_printed")),
+        or bool(artifact_manifest.get("link_values_printed"))
+        or bool(notebook_structure.get("link_values_printed")),
         "secret_values_printed": bool(secret_scan.get("secret_values_printed"))
-        or bool(artifact_manifest.get("secret_values_printed")),
+        or bool(artifact_manifest.get("secret_values_printed"))
+        or bool(notebook_structure.get("secret_values_printed")),
     }
     contact_flags = {
         "platform_contacted": any(
             bool(item.get("platform_contacted"))
-            for item in [link_intake, link_download, artifact_manifest, readiness, handoff, secret_scan]
+            for item in [
+                link_intake,
+                link_download,
+                artifact_manifest,
+                notebook_structure,
+                readiness,
+                handoff,
+                secret_scan,
+            ]
         ),
         "uploads_performed": any(
             bool(item.get(key))
-            for item in [link_intake, link_download, artifact_manifest, readiness, handoff, secret_scan]
+            for item in [
+                link_intake,
+                link_download,
+                artifact_manifest,
+                notebook_structure,
+                readiness,
+                handoff,
+                secret_scan,
+            ]
             for key in ["uploads_performed", "upload_performed"]
         ),
         "download_host_contacted": bool(

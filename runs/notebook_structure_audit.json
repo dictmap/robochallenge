@@ -1,0 +1,29 @@
+{
+  "kind": "notebook_structure_audit",
+  "passed": true,
+  "platform_contacted": false,
+  "uploads_performed": false,
+  "credentials_read": false,
+  "credentials_printed": false,
+  "link_values_printed": false,
+  "secret_values_printed": false,
+  "notebook_path": "notebooks/robochallenge_pi05_submit_cn.ipynb",
+  "nbformat": 4,
+  "nbformat_minor": 5,
+  "cell_count": 83,
+  "missing_id_indexes": [],
+  "duplicate_ids": [],
+  "code_cells_with_outputs": [],
+  "code_cells_with_execution_count": [],
+  "crlf_count": 0,
+  "bad_marker_hits": [],
+  "required_markers": {
+    "# RoboChallenge pi0.5 复现与提交操作手册": true,
+    "第 40 节：真实提交阻塞项摘要": true,
+    "RUN_SUBMISSION_BLOCKERS_SUMMARY": true,
+    "scripts/audit_submission_blockers_summary.py": true
+  },
+  "blocking": [
+    "Notebook 结构、编码和提交阻塞项章节已通过静态审计。"
+  ]
+}

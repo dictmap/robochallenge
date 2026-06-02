@@ -1184,3 +1184,29 @@
 
 - P0：提交并推送本轮阻塞项摘要审计产物。
 - P1：用户提供真实凭据和 checkpoint link 后，先运行 `python3 scripts/audit_real_submission_readiness.py`，再决定是否进入真实 runner。
+
+## 2026-06-02 第四十二轮：Notebook 结构与编码审计
+
+### 已完成
+
+- 修复 `notebooks/robochallenge_pi05_submit_cn.ipynb` 中第 38、39 节 4 个历史 cell 缺失 `id` 的问题。
+- 新增 `scripts/audit_notebook_structure.py`，静态审计 Notebook cell id、输出状态、execution_count、LF 行尾、乱码哨兵和第 40 节阻塞摘要标记。
+- 新增 `runs/notebook_structure_audit.json` 和 `reports/notebook_structure_audit.md`。
+- `scripts/audit_submission_preflight_bundle.py` 已将 `notebook_structure` 纳入一键预检。
+- `scripts/audit_submission_artifact_manifest.py`、`scripts/audit_submission_blockers_summary.py` 和 `scripts/validate_repro_workspace.py` 已纳入 Notebook 结构审计证据。
+
+### 验证结果
+
+- Linux 端 Notebook 结构审计已通过：`cell_count=83`，`missing_id_indexes=[]`，`duplicate_ids=[]`，`crlf_count=0`，`bad_marker_hits=[]`。
+- Linux 端 Notebook preflight 已通过，并且不再出现 `MissingIDFieldWarning`。
+- Linux 端总体验证 `python3 scripts/validate_repro_workspace.py` 已通过，新增输出“Notebook 结构与编码审计已通过”。
+- Linux 端 `git diff --check` 已通过；本轮新增脚本和报告没有乱码哨兵命中。
+
+### 当前边界
+
+- 本轮只修复和审计 Notebook 结构，不连接 RoboChallenge 平台、不读取凭据、不上传 checkpoint、不生成大 tar。
+- 真实提交仍需要用户提供 `ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、真实可访问 checkpoint link，并明确授权 checkpoint 归档/上传。
+
+### 下一步
+
+- P0：提交并推送本轮 Notebook 结构审计产物。

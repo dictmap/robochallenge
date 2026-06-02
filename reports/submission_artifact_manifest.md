@@ -3,7 +3,7 @@
 ## 结论
 
 - 审计状态：`passed=True`。
-- 材料数量：`32`。
+- 材料数量：`33`。
 - 缺失材料数量：`0`。
 - 禁止跟踪路径数量：`0`。
 - 是否连接平台：`False`。
@@ -14,8 +14,8 @@
 ## 材料清单
 
 - `README.md`：exists=`True`，tracked=`True`，size=`18481`，sha256=`b75c47a50df3af20c4ba3eb4e2c3a3aede49504420432120c940d8ae7950659b`。
-- `work.md`：exists=`True`，tracked=`True`，size=`78645`，sha256=`6ee6c2b7ad5cc8dd85974675803bd250020d3c98063064bea9da6468c3e95ba9`。
-- `notebooks/robochallenge_pi05_submit_cn.ipynb`：exists=`True`，tracked=`True`，size=`77356`，sha256=`6caee497ba7e225fe6747e78fbe605db2d3b3275209920c8ddd3e977fa82e44a`。
+- `work.md`：exists=`True`，tracked=`True`，size=`80296`，sha256=`1ac017ee9571bf51ab2160ef54b7fe217058a135ca460ea154b12faaacaa0755`。
+- `notebooks/robochallenge_pi05_submit_cn.ipynb`：exists=`True`，tracked=`True`，size=`77538`，sha256=`fe1748d6e0e8c95ef6f8f60929cc23cb7864ec0bfa4a767acc77b0dfe085a105`。
 - `submission/README.md`：exists=`True`，tracked=`True`，size=`1515`，sha256=`2cde21317add90ad127853e652fc1c54ed023b638a250453d8584df1a44e9bb1`。
 - `submission/REAL_SUBMISSION_HANDOFF.md`：exists=`True`，tracked=`True`，size=`5675`，sha256=`672f835262f629c35db065adebfde643a8bc22e677fdecf245f1252f745cebf3`。
 - `submission/AUTHORIZED_SUBMISSION_SEQUENCE.md`：exists=`True`，tracked=`True`，size=`3766`，sha256=`05b1420587fb2129065d77578b9b77f1bc24c879296fd0efb36b8745af16ac62`。
@@ -40,10 +40,11 @@
 - `reports/real_submission_readiness.md`：exists=`True`，tracked=`True`，size=`1306`，sha256=`fac759b5bd681903dae8c9f672998797b35430b4b37c3d61baf146903aa92d11`。
 - `reports/real_submission_readiness_scenarios.md`：exists=`True`，tracked=`True`，size=`1152`，sha256=`682ba066efc018aaeee94e4064afdbed25a4bab356fedf55ba6562b9889ffb0a`。
 - `reports/submission_env_template_audit.md`：exists=`True`，tracked=`True`，size=`1006`，sha256=`aff3ab4d14b54dd1a593360171a5c2ab531fca797dfeb9a2fd91a5ab4f7ff1c0`。
+- `reports/notebook_structure_audit.md`：exists=`True`，tracked=`False`，size=`814`，sha256=`6bdebc2eaf869890d54c75419005ae4ad077cbea4ca17b59c18eba714f2d73ca`。
 - `reports/submission_handoff_docs_audit.md`：exists=`True`，tracked=`True`，size=`3060`，sha256=`889eb8eae02c21707fe482a58c5ea6c0cf215b746edc640e22710910d0f71952`。
 - `reports/authorized_submission_sequence_audit.md`：exists=`True`，tracked=`True`，size=`2715`，sha256=`5010e018bd6f3c3a8076f4ff99e1d2d74e0c928a3082877ebe664744a9c0d5e8`。
-- `reports/submission_preflight_bundle.md`：exists=`True`，tracked=`True`，size=`1668`，sha256=`684c9ada674cc2eeee73884d972ec8023e690ba83844d569158c1ad385ed5bff`。
-- `reports/plaintext_secret_scan.md`：exists=`True`，tracked=`True`，size=`610`，sha256=`bfefc2566d96736e348108f9c58dcdee35d9df04fb6fa12b77b658126a52c79c`。
+- `reports/submission_preflight_bundle.md`：exists=`True`，tracked=`True`，size=`1727`，sha256=`05712689d15cb3ee7daf13664631645fdc0e9a74def6f8735dc03e4879e20499`。
+- `reports/plaintext_secret_scan.md`：exists=`True`，tracked=`True`，size=`610`，sha256=`179128fe1fb6ec456ca392ca4417141f1e482fd2091316a06ca69b50a1d53802`。
 - `reports/submission_status_dashboard.html`：exists=`True`，tracked=`True`，size=`9467`，sha256=`163316d3dc44d94f2453902457eb48e784f8f25dfd192951618404578d8d91cc`。
 
 ## 本地凭据与大文件忽略检查
@@ -60,6 +61,7 @@
 
 - `preflight_passed`：`True`。
 - `preflight_go_no_go_blocked`：`True`。
+- `notebook_structure_passed`：`True`。
 - `readiness_currently_blocked`：`True`。
 - `env_template_passed`：`True`。
 - `secret_scan_passed`：`True`。

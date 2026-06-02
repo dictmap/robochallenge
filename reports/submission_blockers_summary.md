@@ -18,6 +18,7 @@
 - `submission_package_ready`：`True`。
 - `artifact_manifest_ready`：`True`。
 - `env_template_ready`：`True`。
+- `notebook_structure_ready`：`True`。
 - `upload_channels_audited`：`True`。
 - `preflight_bundle_ready`：`True`。
 - `secret_scan_clean`：`True`。

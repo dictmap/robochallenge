@@ -7,7 +7,7 @@
   "credentials_printed": false,
   "link_values_printed": false,
   "secret_values_printed": false,
-  "artifact_count": 32,
+  "artifact_count": 33,
   "artifacts": [
     {
       "path": "README.md",
@@ -20,15 +20,15 @@
       "path": "work.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 78645,
-      "sha256": "6ee6c2b7ad5cc8dd85974675803bd250020d3c98063064bea9da6468c3e95ba9"
+      "size_bytes": 80296,
+      "sha256": "1ac017ee9571bf51ab2160ef54b7fe217058a135ca460ea154b12faaacaa0755"
     },
     {
       "path": "notebooks/robochallenge_pi05_submit_cn.ipynb",
       "exists": true,
       "tracked": true,
-      "size_bytes": 77356,
-      "sha256": "6caee497ba7e225fe6747e78fbe605db2d3b3275209920c8ddd3e977fa82e44a"
+      "size_bytes": 77538,
+      "sha256": "fe1748d6e0e8c95ef6f8f60929cc23cb7864ec0bfa4a767acc77b0dfe085a105"
     },
     {
       "path": "submission/README.md",
@@ -199,6 +199,13 @@
       "sha256": "aff3ab4d14b54dd1a593360171a5c2ab531fca797dfeb9a2fd91a5ab4f7ff1c0"
     },
     {
+      "path": "reports/notebook_structure_audit.md",
+      "exists": true,
+      "tracked": false,
+      "size_bytes": 814,
+      "sha256": "6bdebc2eaf869890d54c75419005ae4ad077cbea4ca17b59c18eba714f2d73ca"
+    },
+    {
       "path": "reports/submission_handoff_docs_audit.md",
       "exists": true,
       "tracked": true,
@@ -216,15 +223,15 @@
       "path": "reports/submission_preflight_bundle.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 1668,
-      "sha256": "684c9ada674cc2eeee73884d972ec8023e690ba83844d569158c1ad385ed5bff"
+      "size_bytes": 1727,
+      "sha256": "05712689d15cb3ee7daf13664631645fdc0e9a74def6f8735dc03e4879e20499"
     },
     {
       "path": "reports/plaintext_secret_scan.md",
       "exists": true,
       "tracked": true,
       "size_bytes": 610,
-      "sha256": "bfefc2566d96736e348108f9c58dcdee35d9df04fb6fa12b77b658126a52c79c"
+      "sha256": "179128fe1fb6ec456ca392ca4417141f1e482fd2091316a06ca69b50a1d53802"
     },
     {
       "path": "reports/submission_status_dashboard.html",
@@ -277,6 +284,7 @@
   "inputs": {
     "preflight_passed": true,
     "preflight_go_no_go_blocked": true,
+    "notebook_structure_passed": true,
     "readiness_currently_blocked": true,
     "env_template_passed": true,
     "secret_scan_passed": true,

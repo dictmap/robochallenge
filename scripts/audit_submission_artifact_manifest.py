@@ -46,6 +46,7 @@ REQUIRED_ARTIFACTS = [
     "reports/real_submission_readiness.md",
     "reports/real_submission_readiness_scenarios.md",
     "reports/submission_env_template_audit.md",
+    "reports/notebook_structure_audit.md",
     "reports/submission_handoff_docs_audit.md",
     "reports/authorized_submission_sequence_audit.md",
     "reports/submission_preflight_bundle.md",
@@ -143,6 +144,7 @@ def build_status() -> dict[str, Any]:
     ignored_paths = {rel: git_check_ignore(rel) for rel in LOCAL_SECRET_OR_LARGE_PATHS}
 
     preflight = read_json(RUNS_DIR / "submission_preflight_bundle.json")
+    notebook_structure = read_json(RUNS_DIR / "notebook_structure_audit.json")
     readiness = read_json(RUNS_DIR / "real_submission_readiness.json")
     env_template = read_json(RUNS_DIR / "submission_env_template_audit.json")
     secret_scan = read_json(RUNS_DIR / "plaintext_secret_scan.json")
@@ -150,6 +152,7 @@ def build_status() -> dict[str, Any]:
     inputs = {
         "preflight_passed": preflight.get("passed") is True,
         "preflight_go_no_go_blocked": preflight.get("go_no_go") == "blocked",
+        "notebook_structure_passed": notebook_structure.get("passed") is True,
         "readiness_currently_blocked": readiness.get("ready_for_real_submission") is False,
         "env_template_passed": env_template.get("passed") is True,
         "secret_scan_passed": secret_scan.get("passed") is True,
@@ -157,18 +160,19 @@ def build_status() -> dict[str, Any]:
     }
     leak_flags = {
         "credentials_printed": any(
-            bool(item.get("credentials_printed")) for item in [preflight, readiness, env_template]
+            bool(item.get("credentials_printed")) for item in [preflight, notebook_structure, readiness, env_template]
         ),
         "link_values_printed": bool(preflight.get("leak_flags", {}).get("link_values_printed")),
         "secret_values_printed": bool(secret_scan.get("secret_values_printed")),
     }
     contact_flags = {
         "platform_contacted": any(
-            bool(item.get("platform_contacted")) for item in [preflight, readiness, env_template, secret_scan]
+            bool(item.get("platform_contacted"))
+            for item in [preflight, notebook_structure, readiness, env_template, secret_scan]
         ),
         "uploads_performed": any(
             bool(item.get("uploads_performed") or item.get("upload_performed"))
-            for item in [preflight, readiness, env_template, secret_scan]
+            for item in [preflight, notebook_structure, readiness, env_template, secret_scan]
         ),
         "download_host_contacted": bool(preflight.get("contact_flags", {}).get("download_host_contacted")),
     }

@@ -71,6 +71,7 @@ def build_status() -> dict[str, Any]:
     link_download = read_json(RUNS_DIR / "checkpoint_link_download_verification.json")
     upload_channels = read_json(RUNS_DIR / "checkpoint_upload_channels_audit.json")
     env_template = read_json(RUNS_DIR / "submission_env_template_audit.json")
+    notebook_structure = read_json(RUNS_DIR / "notebook_structure_audit.json")
     artifact_manifest = read_json(RUNS_DIR / "submission_artifact_manifest.json")
     package = read_json(RUNS_DIR / "robochallenge_submission_package_audit.json")
     secret_scan = read_json(RUNS_DIR / "plaintext_secret_scan.json")
@@ -86,6 +87,7 @@ def build_status() -> dict[str, Any]:
         "submission_package_ready": package.get("passed") is True,
         "artifact_manifest_ready": artifact_manifest.get("passed") is True,
         "env_template_ready": env_template.get("passed") is True,
+        "notebook_structure_ready": notebook_structure.get("passed") is True,
         "upload_channels_audited": upload_channels.get("passed") is True,
         "preflight_bundle_ready": preflight.get("passed") is True,
         "secret_scan_clean": secret_scan.get("passed") is True and secret_scan.get("hit_count") == 0,

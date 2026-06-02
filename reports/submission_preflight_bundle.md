@@ -38,14 +38,14 @@
 - `authorized_preflight_template`：returncode=`0`，passed=`True`。
 - `ready_real_runner_template`：returncode=`0`，passed=`True`。
 - `authorized_checkpoint_archive_template`：returncode=`0`，passed=`True`。
-- `submission_handoff_docs`：returncode=`0`，passed=`True`。
 - `plaintext_secret_scan`：returncode=`0`，passed=`True`。
-- `authorized_execution_checklist`：returncode=`0`，passed=`True`。
 - `submission_variant_route_packet`：returncode=`0`，passed=`True`。
 - `baseline_submission_quickstart`：returncode=`0`，passed=`True`。
+- `authorized_execution_checklist`：returncode=`0`，passed=`True`。
 - `next_user_action_packet`：returncode=`0`，passed=`True`。
 - `web_form_field_packet`：returncode=`0`，passed=`True`。
 - `route_aware_submission_blockers`：returncode=`0`，passed=`True`。
+- `submission_handoff_docs`：returncode=`0`，passed=`True`。
 - `submission_artifact_manifest`：returncode=`0`，passed=`True`。
 
 ## Baseline 最短路线当前只差
@@ -67,6 +67,14 @@
 - `ROBOCHALLENGE_REAL_RUN_CONFIRM`
 
 ## Blocking
+
+- SUBMISSION_TARGET_CONFIRMATION
+- ROBOCHALLENGE_USER_TOKEN
+- ROBOCHALLENGE_SUBMISSION_ID
+- ROBOCHALLENGE_SUBMISSION_VARIANT=baseline
+- ROBOCHALLENGE_REAL_RUN_CONFIRM
+
+## 旧全局阻塞（兼容 readiness/web/LoRA）
 
 - 缺少 ROBOCHALLENGE_USER_TOKEN。
 - 缺少 ROBOCHALLENGE_SUBMISSION_ID。

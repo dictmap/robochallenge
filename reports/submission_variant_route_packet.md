@@ -74,8 +74,6 @@
 
 - `package_audit_passed`：`True`。
 - `readiness_gate_passed`：`True`。
-- `action_packet_passed`：`True`。
-- `web_form_packet_passed`：`True`。
 - `baseline_local_route_ready_without_credentials`：`True`。
 - `baseline_does_not_need_upload_or_link`：`True`。
 - `lora_local_checkpoint_ready`：`True`。

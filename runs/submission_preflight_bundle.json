@@ -103,13 +103,6 @@
       "stdout_tail": "ONFIRM=CREATE_ROBOCHALLENGE_CHECKPOINT_ARCHIVE only after user authorizes local 12GB+ tar creation\\n[authorized-checkpoint-archive] stop before creating tar\\n\",\n    \"stderr_tail\": \"\",\n    \"archive_absent_before\": true,\n    \"sha256_absent_before\": true,\n    \"archive_absent_after\": true,\n    \"sha256_absent_after\": true,\n    \"missing_confirmation\": true,\n    \"stops_before_creating_tar\": true,\n    \"archive_created\": false,\n    \"sha256_created\": false,\n    \"upload_performed\": false,\n    \"credentials_read\": false,\n    \"platform_contacted\": false,\n    \"dry_run_passed\": true,\n    \"confirm_phrase_accepted\": false,\n    \"passed\": true\n  },\n  \"input_evidence\": {\n    \"archive_plan_passed\": true,\n    \"split_plan_passed\": true,\n    \"archive_dry_run_passed\": true,\n    \"archive_not_created\": true,\n    \"sha256_not_created\": true,\n    \"upload_not_performed\": true,\n    \"credentials_not_read\": true,\n    \"platform_not_contacted\": true\n  },\n  \"blocking\": [\n    \"授权后 checkpoint 归档模板已通过；没有确认短语时不会生成 tar。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
-    "submission_handoff_docs": {
-      "script": "scripts/audit_submission_handoff_docs.py",
-      "returncode": 0,
-      "passed": true,
-      "stdout_tail": "\": true,\n    \"link_download_no_plaintext\": true,\n    \"jupyter_input_template_passed\": true,\n    \"jupyter_input_default_false\": true,\n    \"jupyter_input_local_env_ignored\": true,\n    \"jupyter_authorized_preflight_template_passed\": true,\n    \"jupyter_authorized_preflight_audit_default_true\": true,\n    \"jupyter_authorized_preflight_execution_default_false\": true,\n    \"jupyter_authorized_preflight_runner_not_started\": true,\n    \"ready_real_runner_template_passed\": true,\n    \"ready_real_runner_no_confirm_blocks\": true,\n    \"authorized_checkpoint_archive_template_passed\": true,\n    \"authorized_checkpoint_archive_no_confirm_blocks\": true,\n    \"route_aware_blockers_passed\": true,\n    \"route_aware_recommended_baseline\": true,\n    \"route_aware_baseline_no_link\": true,\n    \"route_aware_baseline_no_upload\": true,\n    \"route_aware_lora_web_needs_link\": true\n  },\n  \"blocking\": [\n    \"无文档侧阻塞；baseline 仍取决于用户 token、submission id 和真实 runner 强确认，LoRA/web checkpoint 路线额外取决于授权上传和真实 checkpoint link。\"\n  ]\n}\n",
-      "stderr_tail": ""
-    },
     "plaintext_secret_scan": {
       "script": "scripts/audit_plaintext_secrets.py",
       "returncode": 0,
@@ -117,18 +110,11 @@
       "stdout_tail": "{\n  \"kind\": \"plaintext_secret_scan\",\n  \"passed\": true,\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"secret_values_printed\": false,\n  \"scan_scope\": \"git tracked files plus unignored untracked files\",\n  \"scanned_files\": 196,\n  \"skipped_binary_files\": 0,\n  \"pattern_count\": 7,\n  \"hit_count\": 0,\n  \"hits\": [],\n  \"blocking\": [\n    \"如发现命中项，先移除明文凭据并轮换对应 token，再重新运行本审计。\",\n    \"本审计不替代真实平台权限检查；真实提交仍需要用户提供凭据。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
-    "authorized_execution_checklist": {
-      "script": "scripts/audit_authorized_execution_checklist.py",
-      "returncode": 0,
-      "passed": true,
-      "stdout_tail": "secret_scan_clean\"\n  ],\n  \"required_evidence_passed\": true,\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false\n  },\n  \"blocking\": [\n    \"缺少 ROBOCHALLENGE_USER_TOKEN。\",\n    \"缺少 ROBOCHALLENGE_SUBMISSION_ID。\",\n    \"缺少真实可访问 checkpoint link；可使用 ROBOCHALLENGE_CHECKPOINT_LINK 或 ROBOCHALLENGE_LORA_CHECKPOINT_LINK 记录。\",\n    \"尚未执行 checkpoint 上传，本地 tar 文件也未生成。\",\n    \"缺少 checkpoint link；请设置 ROBOCHALLENGE_CHECKPOINT_LINK 或 ROBOCHALLENGE_LORA_CHECKPOINT_LINK。\",\n    \"缺少真实 checkpoint link；当前只能审计下载校验协议，不能联网验证。\",\n    \"未请求 --verify-download；本轮不联网、不下载、不接触 checkpoint link host。\",\n    \"需要用户提供真实 ROBOCHALLENGE_USER_TOKEN。\",\n    \"需要用户提供真实 ROBOCHALLENGE_SUBMISSION_ID。\",\n    \"需要确认本次要提交的是 Table30v2 ALOHA 还是原始 Table30；当前可运行链路是 Table30v2 ALOHA。\",\n    \"若要提交 LoRA 版本，还需要把本地 12GB+ checkpoint 放到网站可访问的 checkpoint link。\"\n  ]\n}\n",
-      "stderr_tail": ""
-    },
     "submission_variant_route_packet": {
       "script": "scripts/render_submission_variant_route_packet.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": "t 已能被 policy 加载；如果作为网页可访问 checkpoint 提交，仍需要用户授权归档/上传并回填真实 HTTPS checkpoint link。\"\n    }\n  ],\n  \"evidence\": {\n    \"package_audit_passed\": true,\n    \"readiness_gate_passed\": true,\n    \"action_packet_passed\": true,\n    \"web_form_packet_passed\": true,\n    \"baseline_local_route_ready_without_credentials\": true,\n    \"baseline_does_not_need_upload_or_link\": true,\n    \"lora_local_checkpoint_ready\": true,\n    \"lora_public_link_still_needs_upload\": true,\n    \"secret_scan_clean\": true\n  },\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false\n  },\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"提交路线已拆分；默认建议先走官方 ALOHA baseline 本地 runner 路线。\"\n  ]\n}\n",
+      "stdout_tail": "oint_link_present\": false\n      },\n      \"note\": \"本地 LoRA 物化 checkpoint 已能被 policy 加载；如果作为网页可访问 checkpoint 提交，仍需要用户授权归档/上传并回填真实 HTTPS checkpoint link。\"\n    }\n  ],\n  \"evidence\": {\n    \"package_audit_passed\": true,\n    \"readiness_gate_passed\": true,\n    \"baseline_local_route_ready_without_credentials\": true,\n    \"baseline_does_not_need_upload_or_link\": true,\n    \"lora_local_checkpoint_ready\": true,\n    \"lora_public_link_still_needs_upload\": true,\n    \"secret_scan_clean\": true\n  },\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false\n  },\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"提交路线已拆分；默认建议先走官方 ALOHA baseline 本地 runner 路线。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "baseline_submission_quickstart": {
@@ -136,6 +122,13 @@
       "returncode": 0,
       "passed": true,
       "stdout_tail": "ue,\n    \"baseline_is_recommended_default\": true,\n    \"baseline_route_ready_without_credentials\": true,\n    \"baseline_checkpoint_ready\": true,\n    \"baseline_does_not_need_upload\": true,\n    \"baseline_does_not_need_checkpoint_link\": true,\n    \"ready_runner_template_passed\": true,\n    \"ready_runner_default_baseline\": true,\n    \"synthetic_baseline_no_confirm_dry_run\": true,\n    \"package_audit_passed\": true,\n    \"readiness_gate_passed\": true,\n    \"secret_scan_clean\": true\n  },\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false\n  },\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"baseline 最短路径已固化；真实提交仍等待用户 token、submission id 和强确认。\"\n  ]\n}\n",
+      "stderr_tail": ""
+    },
+    "authorized_execution_checklist": {
+      "script": "scripts/audit_authorized_execution_checklist.py",
+      "returncode": 0,
+      "passed": true,
+      "stdout_tail": "   \"real_runner_confirmation_phrase\",\n    \"real_runner_no_confirm_blocks\",\n    \"authorized_archive_template_passed\",\n    \"archive_confirmation_phrase\",\n    \"archive_no_confirm_blocks\",\n    \"archive_not_created_without_confirm\",\n    \"authorized_sequence_passed\",\n    \"route_packet_passed\",\n    \"route_packet_recommends_baseline\",\n    \"baseline_quickstart_passed\",\n    \"baseline_quickstart_no_link\",\n    \"baseline_quickstart_no_upload\",\n    \"notebook_structure_passed\",\n    \"secret_scan_clean\"\n  ],\n  \"required_evidence_passed\": true,\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false\n  },\n  \"blocking\": [\n    \"SUBMISSION_TARGET_CONFIRMATION\",\n    \"ROBOCHALLENGE_USER_TOKEN\",\n    \"ROBOCHALLENGE_SUBMISSION_ID\",\n    \"ROBOCHALLENGE_SUBMISSION_VARIANT=baseline\",\n    \"ROBOCHALLENGE_REAL_RUN_CONFIRM\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "next_user_action_packet": {
@@ -159,6 +152,13 @@
       "stdout_tail": "complete\": true,\n    \"lora_web_requires_checkpoint_link\": true,\n    \"lora_web_requires_archive_authorization\": true,\n    \"lora_web_required_ids_complete\": true,\n    \"readiness_gate_passed\": true,\n    \"readiness_currently_false\": true,\n    \"web_form_packet_passed\": true,\n    \"action_packet_passed\": true,\n    \"action_packet_recommends_baseline\": true,\n    \"action_packet_baseline_no_link\": true,\n    \"action_packet_lora_web_needs_link\": true,\n    \"secret_scan_clean\": true\n  },\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false\n  },\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"路线感知阻塞摘要已生成；baseline 最短路线不需要 checkpoint link 或归档上传。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
+    "submission_handoff_docs": {
+      "script": "scripts/audit_submission_handoff_docs.py",
+      "returncode": 0,
+      "passed": true,
+      "stdout_tail": "\": true,\n    \"link_download_no_plaintext\": true,\n    \"jupyter_input_template_passed\": true,\n    \"jupyter_input_default_false\": true,\n    \"jupyter_input_local_env_ignored\": true,\n    \"jupyter_authorized_preflight_template_passed\": true,\n    \"jupyter_authorized_preflight_audit_default_true\": true,\n    \"jupyter_authorized_preflight_execution_default_false\": true,\n    \"jupyter_authorized_preflight_runner_not_started\": true,\n    \"ready_real_runner_template_passed\": true,\n    \"ready_real_runner_no_confirm_blocks\": true,\n    \"authorized_checkpoint_archive_template_passed\": true,\n    \"authorized_checkpoint_archive_no_confirm_blocks\": true,\n    \"route_aware_blockers_passed\": true,\n    \"route_aware_recommended_baseline\": true,\n    \"route_aware_baseline_no_link\": true,\n    \"route_aware_baseline_no_upload\": true,\n    \"route_aware_lora_web_needs_link\": true\n  },\n  \"blocking\": [\n    \"无文档侧阻塞；baseline 仍取决于用户 token、submission id 和真实 runner 强确认，LoRA/web checkpoint 路线额外取决于授权上传和真实 checkpoint link。\"\n  ]\n}\n",
+      "stderr_tail": ""
+    },
     "submission_artifact_manifest": {
       "script": "scripts/audit_submission_artifact_manifest.py",
       "returncode": 0,
@@ -177,7 +177,7 @@
     "uploads_performed": false,
     "download_host_contacted": false
   },
-  "blocking": [
+  "legacy_global_blocking": [
     "缺少 ROBOCHALLENGE_USER_TOKEN。",
     "缺少 ROBOCHALLENGE_SUBMISSION_ID。",
     "缺少真实可访问 checkpoint link；可使用 ROBOCHALLENGE_CHECKPOINT_LINK 或 ROBOCHALLENGE_LORA_CHECKPOINT_LINK 记录。",
@@ -185,5 +185,12 @@
     "缺少 checkpoint link；请设置 ROBOCHALLENGE_CHECKPOINT_LINK 或 ROBOCHALLENGE_LORA_CHECKPOINT_LINK。",
     "缺少真实 checkpoint link；当前只能审计下载校验协议，不能联网验证。",
     "未请求 --verify-download；本轮不联网、不下载、不接触 checkpoint link host。"
+  ],
+  "blocking": [
+    "SUBMISSION_TARGET_CONFIRMATION",
+    "ROBOCHALLENGE_USER_TOKEN",
+    "ROBOCHALLENGE_SUBMISSION_ID",
+    "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline",
+    "ROBOCHALLENGE_REAL_RUN_CONFIRM"
   ]
 }

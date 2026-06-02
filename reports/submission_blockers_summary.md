@@ -8,7 +8,7 @@
 - Web 表单就绪：`False`。
 - checkpoint link 形态就绪：`False`。
 - 下载已验证：`False`。
-- 阻塞项数量：`11`。
+- 阻塞项数量：`16`。
 - 推荐路线：`baseline_official_aloha`。
 - baseline 是否需要 checkpoint link：`False`。
 - baseline 是否需要 checkpoint upload：`False`。
@@ -62,6 +62,11 @@
 
 ## 当前阻塞项
 
+- SUBMISSION_TARGET_CONFIRMATION
+- ROBOCHALLENGE_USER_TOKEN
+- ROBOCHALLENGE_SUBMISSION_ID
+- ROBOCHALLENGE_SUBMISSION_VARIANT=baseline
+- ROBOCHALLENGE_REAL_RUN_CONFIRM
 - 缺少 ROBOCHALLENGE_USER_TOKEN。
 - 缺少 ROBOCHALLENGE_SUBMISSION_ID。
 - 缺少真实可访问 checkpoint link；可使用 ROBOCHALLENGE_CHECKPOINT_LINK 或 ROBOCHALLENGE_LORA_CHECKPOINT_LINK 记录。

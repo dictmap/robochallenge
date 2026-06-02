@@ -39,7 +39,12 @@
     "需要用户提供真实 ROBOCHALLENGE_USER_TOKEN。",
     "需要用户提供真实 ROBOCHALLENGE_SUBMISSION_ID。",
     "需要确认本次要提交的是 Table30v2 ALOHA 还是原始 Table30；当前可运行链路是 Table30v2 ALOHA。",
-    "若要提交 LoRA 版本，还需要把本地 12GB+ checkpoint 放到网站可访问的 checkpoint link。"
+    "若要提交 LoRA 版本，还需要把本地 12GB+ checkpoint 放到网站可访问的 checkpoint link。",
+    "SUBMISSION_TARGET_CONFIRMATION",
+    "ROBOCHALLENGE_USER_TOKEN",
+    "ROBOCHALLENGE_SUBMISSION_ID",
+    "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline",
+    "ROBOCHALLENGE_REAL_RUN_CONFIRM"
   ],
   "required_user_decisions": [
     {
@@ -61,16 +66,10 @@
       "detail": "必须来自 RoboChallenge 页面，不能伪造。"
     },
     {
-      "id": "ROBOCHALLENGE_CHECKPOINT_LINK",
-      "label": "真实 checkpoint link",
+      "id": "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline",
+      "label": "提交路线确认",
       "required": true,
-      "detail": "LoRA 提交需要可访问 checkpoint link；默认只做脱敏形态检查。"
-    },
-    {
-      "id": "CHECKPOINT_ARCHIVE_AUTHORIZATION",
-      "label": "checkpoint 归档授权",
-      "required": true,
-      "detail": "生成 11GB+ tar 前必须显式设置归档确认短语。"
+      "detail": "默认先走 baseline_official_aloha；baseline 不需要 checkpoint link 或 checkpoint upload。"
     },
     {
       "id": "ROBOCHALLENGE_REAL_RUN_CONFIRM",
@@ -83,8 +82,60 @@
     "SUBMISSION_TARGET_CONFIRMATION",
     "ROBOCHALLENGE_USER_TOKEN",
     "ROBOCHALLENGE_SUBMISSION_ID",
-    "ROBOCHALLENGE_CHECKPOINT_LINK",
+    "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline",
+    "ROBOCHALLENGE_REAL_RUN_CONFIRM"
+  ],
+  "lora_web_user_decisions": [
+    {
+      "id": "SUBMISSION_TARGET_CONFIRMATION",
+      "label": "提交对象确认",
+      "required": true,
+      "detail": "需要用户确认提交 Table30v2 ALOHA；原始 Table30 还不能直接沿用当前链路。"
+    },
+    {
+      "id": "ROBOCHALLENGE_USER_TOKEN",
+      "label": "RoboChallenge user token",
+      "required": true,
+      "detail": "只能放入本地 shell 或被 Git 忽略的 local env 文件，不能写入 tracked 文件。"
+    },
+    {
+      "id": "ROBOCHALLENGE_SUBMISSION_ID",
+      "label": "RoboChallenge submission id",
+      "required": true,
+      "detail": "必须来自 RoboChallenge 页面，不能伪造。"
+    },
+    {
+      "id": "ROBOCHALLENGE_SUBMISSION_VARIANT=lora",
+      "label": "LoRA/web checkpoint 路线确认",
+      "required": true,
+      "detail": "只有用户明确选择 LoRA/web checkpoint 路线时才需要。"
+    },
+    {
+      "id": "CHECKPOINT_ARCHIVE_AUTHORIZATION",
+      "label": "checkpoint 归档授权",
+      "required": true,
+      "detail": "生成 11GB+ tar 前必须显式设置归档确认短语。"
+    },
+    {
+      "id": "ROBOCHALLENGE_CHECKPOINT_LINK",
+      "label": "真实 checkpoint link",
+      "required": true,
+      "detail": "LoRA/web checkpoint 提交需要可访问 checkpoint link；默认只做脱敏形态检查。"
+    },
+    {
+      "id": "ROBOCHALLENGE_REAL_RUN_CONFIRM",
+      "label": "真实 runner 强确认",
+      "required": true,
+      "detail": "启动真实 runner 前必须显式设置真实提交确认短语。"
+    }
+  ],
+  "lora_web_decision_ids": [
+    "SUBMISSION_TARGET_CONFIRMATION",
+    "ROBOCHALLENGE_USER_TOKEN",
+    "ROBOCHALLENGE_SUBMISSION_ID",
+    "ROBOCHALLENGE_SUBMISSION_VARIANT=lora",
     "CHECKPOINT_ARCHIVE_AUTHORIZATION",
+    "ROBOCHALLENGE_CHECKPOINT_LINK",
     "ROBOCHALLENGE_REAL_RUN_CONFIRM"
   ],
   "first_notebook_steps": [
@@ -114,14 +165,18 @@
     "web_form_ready_false": true,
     "authorized_execution_checklist_passed": true,
     "authorized_execution_go_no_go_blocked": true,
+    "authorized_execution_recommends_baseline": true,
     "all_expected_decisions_listed": true,
+    "baseline_decisions_have_no_checkpoint_link": true,
+    "baseline_decisions_have_no_archive_authorization": true,
+    "lora_web_expected_decisions_listed": true,
     "jupyter_input_template_passed": true,
     "jupyter_input_default_false": true,
     "jupyter_authorized_preflight_template_passed": true,
     "jupyter_authorized_preflight_execution_default_false": true,
     "local_env_ignored": true,
-    "handoff_docs_passed": true,
-    "authorized_sequence_passed": true,
+    "handoff_docs_available": true,
+    "authorized_sequence_available": true,
     "route_packet_passed": true,
     "route_packet_recommends_baseline": true,
     "baseline_quickstart_passed": true,

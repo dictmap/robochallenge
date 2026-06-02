@@ -101,8 +101,6 @@ def build_status() -> dict[str, Any]:
     lora_export = read_json(RUNS_DIR / "lora_checkpoint_export_readiness.json")
     lora_policy = read_json(RUNS_DIR / "openpi_rtc_lora_materialized_policy_smoke_status.json")
     upload_channels = read_json(RUNS_DIR / "checkpoint_upload_channels_audit.json")
-    action_packet = read_json(RUNS_DIR / "next_user_action_packet.json")
-    web_form_packet = read_json(RUNS_DIR / "web_form_field_packet.json")
     secret_scan = read_json(RUNS_DIR / "plaintext_secret_scan.json")
 
     selected = package.get("selected_target", {})
@@ -202,7 +200,7 @@ def build_status() -> dict[str, Any]:
     )
     routes = [baseline_route, lora_route]
 
-    inputs = [package, readiness, lora_export, lora_policy, upload_channels, action_packet, web_form_packet, secret_scan]
+    inputs = [package, readiness, lora_export, lora_policy, upload_channels, secret_scan]
     leak_flags = {
         "credentials_printed": any_top(inputs, "credentials_printed"),
         "link_values_printed": any_top(inputs, "link_values_printed")
@@ -217,8 +215,6 @@ def build_status() -> dict[str, Any]:
     evidence = {
         "package_audit_passed": package.get("passed") is True,
         "readiness_gate_passed": readiness.get("passed") is True,
-        "action_packet_passed": action_packet.get("passed") is True,
-        "web_form_packet_passed": web_form_packet.get("passed") is True,
         "baseline_local_route_ready_without_credentials": baseline_route["local_runner_ready_without_credentials"],
         "baseline_does_not_need_upload_or_link": not baseline_route["requires_checkpoint_upload"]
         and not baseline_route["requires_checkpoint_link_for_local_runner"],

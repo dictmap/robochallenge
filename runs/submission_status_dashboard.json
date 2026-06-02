@@ -21,7 +21,7 @@
   "authorized_execution_checklist_passed": true,
   "authorized_execution_go_no_go": "blocked_by_user_inputs",
   "next_user_action_packet_passed": true,
-  "next_user_action_packet_decision_count": 6,
+  "next_user_action_packet_decision_count": 5,
   "next_user_action_packet_local_env_ignored": true,
   "next_user_action_packet_recommended_route": "baseline_official_aloha",
   "next_user_action_packet_baseline_no_upload": true,
@@ -61,6 +61,11 @@
   "jupyter_authorized_baseline_no_link": true,
   "jupyter_authorized_lora_web_needs_upload": true,
   "jupyter_authorized_lora_web_needs_link": true,
+  "authorized_execution_recommended_route": "baseline_official_aloha",
+  "authorized_execution_baseline_no_upload": true,
+  "authorized_execution_baseline_no_link": true,
+  "authorized_execution_lora_web_needs_upload": true,
+  "authorized_execution_lora_web_needs_link": true,
   "uploads_performed": false,
   "platform_contacted": false,
   "credentials_printed": false,
@@ -136,7 +141,7 @@
       "state": "blocked",
       "state_label": "待授权",
       "value": "缺少真实链接",
-      "detail": "当前未上传 checkpoint，未设置真实 checkpoint link。",
+      "detail": "仅 LoRA/web checkpoint 路线需要上传和真实 link；baseline 本地 runner 不等这个前置。",
       "report": "reports/checkpoint_link_intake.md"
     },
     {
@@ -144,7 +149,7 @@
       "state": "blocked",
       "state_label": "待授权",
       "value": "ready=false",
-      "detail": "缺少 user token、submission id、checkpoint link；runner 仍不会启动。",
+      "detail": "baseline 仍缺 token、submission id、variant=baseline 和真实 runner 强确认；checkpoint link 只属于 LoRA/web 分支。",
       "report": "reports/real_submission_readiness.md"
     },
     {
@@ -160,15 +165,15 @@
       "state": "done",
       "state_label": "已完成",
       "value": "顺序已固化",
-      "detail": "link intake -> readiness -> dry-run -> real runner 的顺序已通过审计。",
+      "detail": "默认先选 baseline 路线，再做授权预检和 dry-run gate；LoRA/web link/upload 分支单独保留。",
       "report": "reports/authorized_submission_sequence_audit.md"
     },
     {
       "title": "授权执行清单",
       "state": "done",
       "state_label": "已完成",
-      "value": "等待用户输入",
-      "detail": "模式确认、token、submission id、checkpoint link、归档授权和真实 runner 确认已整理成可复跑清单。",
+      "value": "baseline 输入",
+      "detail": "baseline 主清单只等目标确认、token、submission id、variant=baseline 和真实 runner 确认；LoRA/web 另列 link/upload。",
       "report": "reports/authorized_execution_checklist.md"
     },
     {
@@ -184,7 +189,7 @@
       "state": "done",
       "state_label": "已完成",
       "value": "7/12 已就绪",
-      "detail": "benchmark、robot、task、prompt、代码链接已整理；token、submission id 和 checkpoint link 仍待用户补齐。",
+      "detail": "baseline 表单先补 token、submission id 和 variant；checkpoint link 只在选择 LoRA/web checkpoint 路线时补齐。",
       "report": "reports/web_form_field_packet.md"
     },
     {

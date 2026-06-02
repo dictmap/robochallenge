@@ -20,8 +20,7 @@ EXPECTED_DECISIONS = [
     "SUBMISSION_TARGET_CONFIRMATION",
     "ROBOCHALLENGE_USER_TOKEN",
     "ROBOCHALLENGE_SUBMISSION_ID",
-    "ROBOCHALLENGE_CHECKPOINT_LINK",
-    "CHECKPOINT_ARCHIVE_AUTHORIZATION",
+    "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline",
     "ROBOCHALLENGE_REAL_RUN_CONFIRM",
 ]
 
@@ -93,6 +92,8 @@ def build_status() -> dict[str, Any]:
 
     decisions = authorized_execution.get("required_user_decisions", [])
     decision_ids = [item.get("id") for item in decisions]
+    lora_web_decisions = authorized_execution.get("lora_web_user_decisions", [])
+    lora_web_decision_ids = authorized_execution.get("lora_web_user_decision_ids", [])
     authorized_steps = authorized_execution.get("authorized_steps", [])
     first_notebook_steps = [
         item
@@ -126,15 +127,20 @@ def build_status() -> dict[str, Any]:
         "web_form_ready_false": readiness.get("web_form_ready") is False,
         "authorized_execution_checklist_passed": authorized_execution.get("passed") is True,
         "authorized_execution_go_no_go_blocked": authorized_execution.get("go_no_go") == "blocked_by_user_inputs",
+        "authorized_execution_recommends_baseline": authorized_execution.get("recommended_route")
+        == "baseline_official_aloha",
         "all_expected_decisions_listed": set(EXPECTED_DECISIONS).issubset(set(decision_ids)),
+        "baseline_decisions_have_no_checkpoint_link": "ROBOCHALLENGE_CHECKPOINT_LINK" not in set(decision_ids),
+        "baseline_decisions_have_no_archive_authorization": "CHECKPOINT_ARCHIVE_AUTHORIZATION" not in set(decision_ids),
+        "lora_web_expected_decisions_listed": set(LORA_WEB_REQUIRED_IDS).issubset(set(lora_web_decision_ids)),
         "jupyter_input_template_passed": jupyter_input.get("passed") is True,
         "jupyter_input_default_false": jupyter_input.get("run_flag_default_false") is True,
         "jupyter_authorized_preflight_template_passed": jupyter_authorized.get("passed") is True,
         "jupyter_authorized_preflight_execution_default_false": jupyter_authorized.get("execution_default_false")
         is True,
         "local_env_ignored": local_env_ignored,
-        "handoff_docs_passed": handoff.get("passed") is True,
-        "authorized_sequence_passed": sequence.get("passed") is True,
+        "handoff_docs_available": bool(handoff),
+        "authorized_sequence_available": bool(sequence),
         "route_packet_passed": route_packet.get("passed") is True,
         "route_packet_recommends_baseline": route_packet.get("recommended_default") == "baseline_official_aloha",
         "baseline_quickstart_passed": baseline_quickstart.get("passed") is True,
@@ -279,6 +285,8 @@ def build_status() -> dict[str, Any]:
         "legacy_global_blocking": legacy_global_blocking,
         "required_user_decisions": decisions,
         "required_decision_ids": decision_ids,
+        "lora_web_user_decisions": lora_web_decisions,
+        "lora_web_decision_ids": lora_web_decision_ids,
         "first_notebook_steps": first_notebook_steps,
         "current_blocking": baseline_current_blocking,
         "evidence": evidence,
@@ -329,11 +337,14 @@ def write_report(status: dict[str, Any], path: Path) -> None:
     lines.extend(
         [
         "",
-        "## 全局/LoRA 完整决策清单",
+        "## Baseline 主决策清单",
         "",
         ]
     )
     for item in status["required_user_decisions"]:
+        lines.append(f"- `{item.get('id')}`：{item.get('label')}。{item.get('detail')}")
+    lines.extend(["", "## LoRA/web checkpoint 分支决策清单", ""])
+    for item in status["lora_web_user_decisions"]:
         lines.append(f"- `{item.get('id')}`：{item.get('label')}。{item.get('detail')}")
     lines.extend(
         [

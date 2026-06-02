@@ -32,13 +32,22 @@
 - `ROBOCHALLENGE_CHECKPOINT_LINK`
 - `ROBOCHALLENGE_REAL_RUN_CONFIRM`
 
-## 全局/LoRA 完整决策清单
+## Baseline 主决策清单
 
 - `SUBMISSION_TARGET_CONFIRMATION`：提交对象确认。需要用户确认提交 Table30v2 ALOHA；原始 Table30 还不能直接沿用当前链路。
 - `ROBOCHALLENGE_USER_TOKEN`：RoboChallenge user token。只能放入本地 shell 或被 Git 忽略的 local env 文件，不能写入 tracked 文件。
 - `ROBOCHALLENGE_SUBMISSION_ID`：RoboChallenge submission id。必须来自 RoboChallenge 页面，不能伪造。
-- `ROBOCHALLENGE_CHECKPOINT_LINK`：真实 checkpoint link。LoRA 提交需要可访问 checkpoint link；默认只做脱敏形态检查。
+- `ROBOCHALLENGE_SUBMISSION_VARIANT=baseline`：提交路线确认。默认先走 baseline_official_aloha；baseline 不需要 checkpoint link 或 checkpoint upload。
+- `ROBOCHALLENGE_REAL_RUN_CONFIRM`：真实 runner 强确认。启动真实 runner 前必须显式设置真实提交确认短语。
+
+## LoRA/web checkpoint 分支决策清单
+
+- `SUBMISSION_TARGET_CONFIRMATION`：提交对象确认。需要用户确认提交 Table30v2 ALOHA；原始 Table30 还不能直接沿用当前链路。
+- `ROBOCHALLENGE_USER_TOKEN`：RoboChallenge user token。只能放入本地 shell 或被 Git 忽略的 local env 文件，不能写入 tracked 文件。
+- `ROBOCHALLENGE_SUBMISSION_ID`：RoboChallenge submission id。必须来自 RoboChallenge 页面，不能伪造。
+- `ROBOCHALLENGE_SUBMISSION_VARIANT=lora`：LoRA/web checkpoint 路线确认。只有用户明确选择 LoRA/web checkpoint 路线时才需要。
 - `CHECKPOINT_ARCHIVE_AUTHORIZATION`：checkpoint 归档授权。生成 11GB+ tar 前必须显式设置归档确认短语。
+- `ROBOCHALLENGE_CHECKPOINT_LINK`：真实 checkpoint link。LoRA/web checkpoint 提交需要可访问 checkpoint link；默认只做脱敏形态检查。
 - `ROBOCHALLENGE_REAL_RUN_CONFIRM`：真实 runner 强确认。启动真实 runner 前必须显式设置真实提交确认短语。
 
 ## 推荐入口
@@ -69,6 +78,11 @@
 - 需要用户提供真实 ROBOCHALLENGE_SUBMISSION_ID。
 - 需要确认本次要提交的是 Table30v2 ALOHA 还是原始 Table30；当前可运行链路是 Table30v2 ALOHA。
 - 若要提交 LoRA 版本，还需要把本地 12GB+ checkpoint 放到网站可访问的 checkpoint link。
+- SUBMISSION_TARGET_CONFIRMATION
+- ROBOCHALLENGE_USER_TOKEN
+- ROBOCHALLENGE_SUBMISSION_ID
+- ROBOCHALLENGE_SUBMISSION_VARIANT=baseline
+- ROBOCHALLENGE_REAL_RUN_CONFIRM
 
 ## 只读边界
 
@@ -86,14 +100,18 @@
 - `web_form_ready_false`：`True`。
 - `authorized_execution_checklist_passed`：`True`。
 - `authorized_execution_go_no_go_blocked`：`True`。
+- `authorized_execution_recommends_baseline`：`True`。
 - `all_expected_decisions_listed`：`True`。
+- `baseline_decisions_have_no_checkpoint_link`：`True`。
+- `baseline_decisions_have_no_archive_authorization`：`True`。
+- `lora_web_expected_decisions_listed`：`True`。
 - `jupyter_input_template_passed`：`True`。
 - `jupyter_input_default_false`：`True`。
 - `jupyter_authorized_preflight_template_passed`：`True`。
 - `jupyter_authorized_preflight_execution_default_false`：`True`。
 - `local_env_ignored`：`True`。
-- `handoff_docs_passed`：`True`。
-- `authorized_sequence_passed`：`True`。
+- `handoff_docs_available`：`True`。
+- `authorized_sequence_available`：`True`。
 - `route_packet_passed`：`True`。
 - `route_packet_recommends_baseline`：`True`。
 - `baseline_quickstart_passed`：`True`。

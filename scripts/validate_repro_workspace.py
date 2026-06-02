@@ -862,7 +862,7 @@ def main() -> int:
             dashboard.get("authorized_execution_checklist_passed") is True,
             dashboard.get("authorized_execution_go_no_go") == "blocked_by_user_inputs",
             dashboard.get("next_user_action_packet_passed") is True,
-            dashboard.get("next_user_action_packet_decision_count", 0) >= 6,
+            dashboard.get("next_user_action_packet_decision_count", 0) >= 5,
             dashboard.get("next_user_action_packet_local_env_ignored") is True,
             dashboard.get("next_user_action_packet_recommended_route") == "baseline_official_aloha",
             dashboard.get("next_user_action_packet_baseline_no_upload") is True,
@@ -902,6 +902,11 @@ def main() -> int:
             dashboard.get("jupyter_authorized_baseline_no_link") is True,
             dashboard.get("jupyter_authorized_lora_web_needs_upload") is True,
             dashboard.get("jupyter_authorized_lora_web_needs_link") is True,
+            dashboard.get("authorized_execution_recommended_route") == "baseline_official_aloha",
+            dashboard.get("authorized_execution_baseline_no_upload") is True,
+            dashboard.get("authorized_execution_baseline_no_link") is True,
+            dashboard.get("authorized_execution_lora_web_needs_upload") is True,
+            dashboard.get("authorized_execution_lora_web_needs_link") is True,
             dashboard.get("uploads_performed") is False,
             dashboard.get("platform_contacted") is False,
             dashboard.get("credentials_printed") is False,
@@ -1269,6 +1274,7 @@ def main() -> int:
     authorized_execution_required_ids = {
         item.get("id") for item in authorized_execution.get("required_user_decisions", [])
     }
+    authorized_execution_lora_web_ids = set(authorized_execution.get("lora_web_user_decision_ids", []))
     authorized_execution_commands = {item.get("command") for item in authorized_execution.get("authorized_steps", [])}
     if not all(
         [
@@ -1283,14 +1289,29 @@ def main() -> int:
             authorized_execution.get("link_values_printed") is False,
             authorized_execution.get("secret_values_printed") is False,
             authorized_execution.get("current_runnable_target") == "Table30v2 ALOHA",
+            authorized_execution.get("recommended_route") == "baseline_official_aloha",
+            authorized_execution.get("baseline_requires_checkpoint_link") is False,
+            authorized_execution.get("baseline_requires_checkpoint_upload") is False,
+            authorized_execution.get("lora_web_requires_checkpoint_link") is True,
+            authorized_execution.get("lora_web_requires_checkpoint_upload") is True,
             {
                 "SUBMISSION_TARGET_CONFIRMATION",
                 "ROBOCHALLENGE_USER_TOKEN",
                 "ROBOCHALLENGE_SUBMISSION_ID",
+                "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline",
+                "ROBOCHALLENGE_REAL_RUN_CONFIRM",
+            }.issubset(authorized_execution_required_ids),
+            "ROBOCHALLENGE_CHECKPOINT_LINK" not in authorized_execution_required_ids,
+            "CHECKPOINT_ARCHIVE_AUTHORIZATION" not in authorized_execution_required_ids,
+            {
+                "SUBMISSION_TARGET_CONFIRMATION",
+                "ROBOCHALLENGE_USER_TOKEN",
+                "ROBOCHALLENGE_SUBMISSION_ID",
+                "ROBOCHALLENGE_SUBMISSION_VARIANT=lora",
                 "ROBOCHALLENGE_CHECKPOINT_LINK",
                 "CHECKPOINT_ARCHIVE_AUTHORIZATION",
                 "ROBOCHALLENGE_REAL_RUN_CONFIRM",
-            }.issubset(authorized_execution_required_ids),
+            }.issubset(authorized_execution_lora_web_ids),
             "Notebook 第 45 节：RUN_JUPYTER_AUTHORIZED_PREFLIGHT=True" in authorized_execution_commands,
             "bash submission/run_authorized_preflight_template.sh" in authorized_execution_commands,
             (
@@ -1310,7 +1331,8 @@ def main() -> int:
             ),
             not any(authorized_execution_leaks.values()),
             not any(authorized_execution_contacts.values()),
-            len(authorized_execution.get("must_stop_if", [])) >= 6,
+            len(authorized_execution.get("must_stop_if", [])) >= 5,
+            len(authorized_execution.get("lora_web_must_stop_if", [])) >= 7,
             len(authorized_execution.get("blocking", [])) >= 4,
         ]
     ):
@@ -1366,10 +1388,11 @@ def main() -> int:
                 "SUBMISSION_TARGET_CONFIRMATION",
                 "ROBOCHALLENGE_USER_TOKEN",
                 "ROBOCHALLENGE_SUBMISSION_ID",
-                "ROBOCHALLENGE_CHECKPOINT_LINK",
-                "CHECKPOINT_ARCHIVE_AUTHORIZATION",
+                "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline",
                 "ROBOCHALLENGE_REAL_RUN_CONFIRM",
             }.issubset(action_packet_required_ids),
+            "ROBOCHALLENGE_CHECKPOINT_LINK" not in action_packet_required_ids,
+            "CHECKPOINT_ARCHIVE_AUTHORIZATION" not in action_packet_required_ids,
             len(action_packet.get("first_notebook_steps", [])) >= 2,
             len(action_packet.get("current_blocking", [])) >= 5,
             "ROBOCHALLENGE_CHECKPOINT_LINK" not in set(action_packet.get("current_blocking", [])),

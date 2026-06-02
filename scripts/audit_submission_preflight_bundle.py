@@ -29,14 +29,14 @@ SUBCOMMANDS = [
     ("authorized_preflight_template", "scripts/audit_authorized_preflight_template.py"),
     ("ready_real_runner_template", "scripts/audit_ready_real_runner_template.py"),
     ("authorized_checkpoint_archive_template", "scripts/audit_authorized_checkpoint_archive_template.py"),
-    ("submission_handoff_docs", "scripts/audit_submission_handoff_docs.py"),
     ("plaintext_secret_scan", "scripts/audit_plaintext_secrets.py"),
-    ("authorized_execution_checklist", "scripts/audit_authorized_execution_checklist.py"),
     ("submission_variant_route_packet", "scripts/render_submission_variant_route_packet.py"),
     ("baseline_submission_quickstart", "scripts/render_baseline_submission_quickstart.py"),
+    ("authorized_execution_checklist", "scripts/audit_authorized_execution_checklist.py"),
     ("next_user_action_packet", "scripts/render_next_user_action_packet.py"),
     ("web_form_field_packet", "scripts/render_web_form_field_packet.py"),
     ("route_aware_submission_blockers", "scripts/render_route_aware_submission_blockers.py"),
+    ("submission_handoff_docs", "scripts/audit_submission_handoff_docs.py"),
     ("submission_artifact_manifest", "scripts/audit_submission_artifact_manifest.py"),
 ]
 
@@ -204,11 +204,12 @@ def build_status() -> dict[str, Any]:
     readiness_blocking = readiness.get("blocking", [])
     link_blocking = link_intake.get("current_env", {}).get("blocking", [])
     download_blocking = link_download.get("blocking", [])
-    blocking = []
+    legacy_global_blocking = []
     for source in [readiness_blocking, link_blocking, download_blocking]:
         for item in source:
-            if item not in blocking:
-                blocking.append(item)
+            if item not in legacy_global_blocking:
+                legacy_global_blocking.append(item)
+    blocking = list(route_aware_blockers.get("baseline_current_blocking", [])) or legacy_global_blocking
     go_no_go = "ready" if readiness.get("ready_for_real_submission") is True else "blocked"
     passed = all(item["passed"] for item in subcommands.values()) and not any(leak_flags.values()) and not any(
         contact_flags.values()
@@ -236,6 +237,7 @@ def build_status() -> dict[str, Any]:
         "subcommands": subcommands,
         "leak_flags": leak_flags,
         "contact_flags": contact_flags,
+        "legacy_global_blocking": legacy_global_blocking,
         "blocking": blocking,
     }
 
@@ -283,6 +285,9 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         lines.append(f"- `{item}`")
     lines.extend(["", "## Blocking", ""])
     for item in status["blocking"]:
+        lines.append(f"- {item}")
+    lines.extend(["", "## 旧全局阻塞（兼容 readiness/web/LoRA）", ""])
+    for item in status["legacy_global_blocking"]:
         lines.append(f"- {item}")
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")

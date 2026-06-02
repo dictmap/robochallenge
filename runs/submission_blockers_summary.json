@@ -90,6 +90,11 @@
   "lora_web_requires_checkpoint_link": true,
   "lora_web_requires_checkpoint_upload": true,
   "blocking": [
+    "SUBMISSION_TARGET_CONFIRMATION",
+    "ROBOCHALLENGE_USER_TOKEN",
+    "ROBOCHALLENGE_SUBMISSION_ID",
+    "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline",
+    "ROBOCHALLENGE_REAL_RUN_CONFIRM",
     "缺少 ROBOCHALLENGE_USER_TOKEN。",
     "缺少 ROBOCHALLENGE_SUBMISSION_ID。",
     "缺少真实可访问 checkpoint link；可使用 ROBOCHALLENGE_CHECKPOINT_LINK 或 ROBOCHALLENGE_LORA_CHECKPOINT_LINK 记录。",
@@ -102,7 +107,7 @@
     "需要确认本次要提交的是 Table30v2 ALOHA 还是原始 Table30；当前可运行链路是 Table30v2 ALOHA。",
     "若要提交 LoRA 版本，还需要把本地 12GB+ checkpoint 放到网站可访问的 checkpoint link。"
   ],
-  "blocking_count": 11,
+  "blocking_count": 16,
   "leak_flags": {
     "credentials_printed": false,
     "link_values_printed": false,

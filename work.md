@@ -1655,3 +1655,33 @@
 
 - P0：重新同步 `work.md` 到 Linux，刷新 manifest/dashboard/总验证后提交并推送本轮 Jupyter baseline 引导固化。
 - P1：下一轮继续从 GUI 和 `reports/baseline_submission_quickstart.md` 检查真实授权入口的人机操作顺序，确保用户拿到 token 后先复现 baseline 基模。
+
+## 2026-06-03 第五十九轮：授权执行清单 baseline 主路径化
+
+### 已完成
+
+- 更新 `scripts/audit_authorized_execution_checklist.py`：`required_user_decisions` 现在是 baseline 主路径 5 项，分别是提交对象确认、`ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline`、真实 runner 强确认。
+- 同一清单新增 `lora_web_user_decisions`，单独保留 LoRA/web checkpoint 路线需要的 `CHECKPOINT_ARCHIVE_AUTHORIZATION` 和 `ROBOCHALLENGE_CHECKPOINT_LINK`。
+- 更新 `scripts/render_next_user_action_packet.py`：动作包不再把 checkpoint link/归档授权当成 baseline 必需项，同时会检查 LoRA/web 分支仍包含这些项。
+- 更新 `scripts/render_submission_variant_route_packet.py`：路线拆分包不再依赖 action/web 下游产物，打破 preflight 子审计循环依赖。
+- 更新 `scripts/audit_submission_preflight_bundle.py`：子审计顺序改为 route packet -> baseline quickstart -> 授权清单 -> 动作包 -> web form -> route-aware -> handoff -> manifest；preflight 主 blocking 改为 baseline 5 项，旧全局 readiness/link 阻塞只作为兼容字段保留。
+- 更新 `scripts/render_submission_status_dashboard.py` 和 `scripts/validate_repro_workspace.py`：GUI 的真实提交 gate、授权执行清单、网页表单字段卡片都改成 route-aware 文案，并强制验证 baseline no-link / LoRA-web needs-link。
+
+### 验证结果
+
+- Linux 端语法检查已通过，覆盖 route packet、baseline quickstart、授权清单、动作包、web form、route-aware、preflight、manifest、dashboard、总验证脚本。
+- Linux 端完整 no-contact 链已通过：明文凭据扫描、preflight bundle、blockers summary、artifact manifest、GUI dashboard、总体验证和 `git diff --check` 均通过。
+- `runs/authorized_execution_checklist.json`：`passed=true`，`recommended_route=baseline_official_aloha`，baseline 主决策数为 5，不含 `ROBOCHALLENGE_CHECKPOINT_LINK` 和 `CHECKPOINT_ARCHIVE_AUTHORIZATION`。
+- `runs/next_user_action_packet.json`：`passed=true`，`next_user_action_packet_decision_count=5`，`baseline_current_blocking` 只含 baseline 5 项；`lora_web_current_blocking` 单独包含 checkpoint link 和归档授权。
+- GUI dashboard 仍为 `source_count=20`、`card_count=20`、`done_count=15`；“授权执行清单”卡片显示 `baseline 输入`，底部当前阻塞不含 checkpoint link。
+
+### 当前边界
+
+- 本轮没有读取真实 token、submission id 或 checkpoint link，没有连接 RoboChallenge 平台，没有上传 checkpoint，没有生成 checkpoint tar，没有启动真实 runner。
+- baseline 官方路线仍只等待：提交对象确认、`ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline`、真实 runner 强确认。
+- LoRA/web checkpoint 路线仍单独等待归档/上传授权和真实 checkpoint link。
+
+### 下一步
+
+- P0：同步 `work.md` 后刷新 manifest/dashboard/总验证，提交并推送本轮授权执行清单 baseline 主路径化。
+- P1：下一轮继续检查真实 token 到位后的 dry-run gate 命令，保证第一条可执行授权路径就是 baseline 基模复现。

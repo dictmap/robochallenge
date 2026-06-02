@@ -119,12 +119,15 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
         authorized_execution.get("passed")
         and authorized_execution.get("go_no_go") == "blocked_by_user_inputs"
         and authorized_execution.get("ready_for_real_submission") is False
+        and authorized_execution.get("recommended_route") == "baseline_official_aloha"
+        and authorized_execution.get("baseline_requires_checkpoint_link") is False
+        and authorized_execution.get("lora_web_requires_checkpoint_link") is True
     )
     action_packet_ready = bool(
         action_packet.get("passed")
         and action_packet.get("go_no_go") == "blocked_by_user_inputs"
         and action_packet.get("local_env_ignored") is True
-        and len(action_packet.get("required_user_decisions", [])) >= 6
+        and len(action_packet.get("required_user_decisions", [])) >= 5
         and action_packet.get("recommended_route") == "baseline_official_aloha"
         and action_packet.get("baseline_requires_checkpoint_link") is False
         and action_packet.get("lora_web_requires_checkpoint_link") is True
@@ -229,14 +232,14 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
             "上传与链接",
             "blocked" if not current_link_ready else "done",
             "缺少真实链接" if not current_link_ready else "链接形态就绪",
-            "当前未上传 checkpoint，未设置真实 checkpoint link。",
+            "仅 LoRA/web checkpoint 路线需要上传和真实 link；baseline 本地 runner 不等这个前置。",
             "reports/checkpoint_link_intake.md",
         ),
         card(
             "真实提交 gate",
             "blocked" if not ready_for_real else "done",
             "ready=false" if not ready_for_real else "ready=true",
-            "缺少 user token、submission id、checkpoint link；runner 仍不会启动。",
+            "baseline 仍缺 token、submission id、variant=baseline 和真实 runner 强确认；checkpoint link 只属于 LoRA/web 分支。",
             "reports/real_submission_readiness.md",
         ),
         card(
@@ -253,14 +256,14 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
             "授权后顺序",
             "done" if sequence.get("passed") and sequence.get("commands", {}).get("critical_order_passed") else "watch",
             "顺序已固化",
-            "link intake -> readiness -> dry-run -> real runner 的顺序已通过审计。",
+            "默认先选 baseline 路线，再做授权预检和 dry-run gate；LoRA/web link/upload 分支单独保留。",
             "reports/authorized_submission_sequence_audit.md",
         ),
         card(
             "授权执行清单",
             "done" if authorized_execution_ready else "watch",
-            "等待用户输入",
-            "模式确认、token、submission id、checkpoint link、归档授权和真实 runner 确认已整理成可复跑清单。",
+            "baseline 输入",
+            "baseline 主清单只等目标确认、token、submission id、variant=baseline 和真实 runner 确认；LoRA/web 另列 link/upload。",
             "reports/authorized_execution_checklist.md",
         ),
         card(
@@ -274,7 +277,7 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
             "网页表单字段",
             "done" if web_form_packet_ready else "watch",
             f"{web_form_packet.get('ready_field_count', 0)}/{web_form_packet.get('field_count', 0)} 已就绪",
-            "benchmark、robot、task、prompt、代码链接已整理；token、submission id 和 checkpoint link 仍待用户补齐。",
+            "baseline 表单先补 token、submission id 和 variant；checkpoint link 只在选择 LoRA/web checkpoint 路线时补齐。",
             "reports/web_form_field_packet.md",
         ),
         card(
@@ -407,6 +410,13 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
         "jupyter_authorized_lora_web_needs_upload": jupyter_authorized.get("lora_web_requires_checkpoint_upload")
         is True,
         "jupyter_authorized_lora_web_needs_link": jupyter_authorized.get("lora_web_requires_checkpoint_link")
+        is True,
+        "authorized_execution_recommended_route": authorized_execution.get("recommended_route"),
+        "authorized_execution_baseline_no_upload": authorized_execution.get("baseline_requires_checkpoint_upload") is False,
+        "authorized_execution_baseline_no_link": authorized_execution.get("baseline_requires_checkpoint_link") is False,
+        "authorized_execution_lora_web_needs_upload": authorized_execution.get("lora_web_requires_checkpoint_upload")
+        is True,
+        "authorized_execution_lora_web_needs_link": authorized_execution.get("lora_web_requires_checkpoint_link")
         is True,
         "uploads_performed": readiness.get("inputs", {}).get("uploads_performed"),
         "platform_contacted": False,

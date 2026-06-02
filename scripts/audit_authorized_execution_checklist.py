@@ -16,7 +16,7 @@ RUNS_DIR = ROOT / "runs"
 DEFAULT_STATUS = RUNS_DIR / "authorized_execution_checklist.json"
 DEFAULT_REPORT = REPORTS_DIR / "authorized_execution_checklist.md"
 
-REQUIRED_USER_DECISIONS = [
+BASELINE_USER_DECISIONS = [
     {
         "id": "SUBMISSION_TARGET_CONFIRMATION",
         "label": "提交对象确认",
@@ -36,16 +36,55 @@ REQUIRED_USER_DECISIONS = [
         "detail": "必须来自 RoboChallenge 页面，不能伪造。",
     },
     {
-        "id": "ROBOCHALLENGE_CHECKPOINT_LINK",
-        "label": "真实 checkpoint link",
+        "id": "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline",
+        "label": "提交路线确认",
         "required": True,
-        "detail": "LoRA 提交需要可访问 checkpoint link；默认只做脱敏形态检查。",
+        "detail": "默认先走 baseline_official_aloha；baseline 不需要 checkpoint link 或 checkpoint upload。",
+    },
+    {
+        "id": "ROBOCHALLENGE_REAL_RUN_CONFIRM",
+        "label": "真实 runner 强确认",
+        "required": True,
+        "detail": "启动真实 runner 前必须显式设置真实提交确认短语。",
+    },
+]
+
+LORA_WEB_USER_DECISIONS = [
+    {
+        "id": "SUBMISSION_TARGET_CONFIRMATION",
+        "label": "提交对象确认",
+        "required": True,
+        "detail": "需要用户确认提交 Table30v2 ALOHA；原始 Table30 还不能直接沿用当前链路。",
+    },
+    {
+        "id": "ROBOCHALLENGE_USER_TOKEN",
+        "label": "RoboChallenge user token",
+        "required": True,
+        "detail": "只能放入本地 shell 或被 Git 忽略的 local env 文件，不能写入 tracked 文件。",
+    },
+    {
+        "id": "ROBOCHALLENGE_SUBMISSION_ID",
+        "label": "RoboChallenge submission id",
+        "required": True,
+        "detail": "必须来自 RoboChallenge 页面，不能伪造。",
+    },
+    {
+        "id": "ROBOCHALLENGE_SUBMISSION_VARIANT=lora",
+        "label": "LoRA/web checkpoint 路线确认",
+        "required": True,
+        "detail": "只有用户明确选择 LoRA/web checkpoint 路线时才需要。",
     },
     {
         "id": "CHECKPOINT_ARCHIVE_AUTHORIZATION",
         "label": "checkpoint 归档授权",
         "required": True,
         "detail": "生成 11GB+ tar 前必须显式设置归档确认短语。",
+    },
+    {
+        "id": "ROBOCHALLENGE_CHECKPOINT_LINK",
+        "label": "真实 checkpoint link",
+        "required": True,
+        "detail": "LoRA/web checkpoint 提交需要可访问 checkpoint link；默认只做脱敏形态检查。",
     },
     {
         "id": "ROBOCHALLENGE_REAL_RUN_CONFIRM",
@@ -116,8 +155,15 @@ MUST_STOP_IF = [
     "未确认提交对象是 Table30v2 ALOHA。",
     "缺少 ROBOCHALLENGE_USER_TOKEN。",
     "缺少 ROBOCHALLENGE_SUBMISSION_ID。",
-    "缺少真实 checkpoint link。",
     "ready_for_real_submission=false。",
+    "未设置 ROBOCHALLENGE_REAL_RUN_CONFIRM 但试图启动真实 runner。",
+]
+
+LORA_WEB_MUST_STOP_IF = [
+    "未确认提交对象是 Table30v2 ALOHA。",
+    "缺少 ROBOCHALLENGE_USER_TOKEN。",
+    "缺少 ROBOCHALLENGE_SUBMISSION_ID。",
+    "缺少真实 checkpoint link。",
     "link_shape_ready=false。",
     "未设置 ROBOCHALLENGE_ARCHIVE_CONFIRM 但试图生成 checkpoint tar。",
     "未设置 ROBOCHALLENGE_REAL_RUN_CONFIRM 但试图启动真实 runner。",
@@ -145,6 +191,11 @@ REQUIRED_EVIDENCE_KEYS = [
     "archive_no_confirm_blocks",
     "archive_not_created_without_confirm",
     "authorized_sequence_passed",
+    "route_packet_passed",
+    "route_packet_recommends_baseline",
+    "baseline_quickstart_passed",
+    "baseline_quickstart_no_link",
+    "baseline_quickstart_no_upload",
     "notebook_structure_passed",
     "secret_scan_clean",
 ]
@@ -179,6 +230,8 @@ def build_status() -> dict[str, Any]:
     ready_real_runner = read_json(RUNS_DIR / "ready_real_runner_template_audit.json")
     authorized_archive = read_json(RUNS_DIR / "authorized_checkpoint_archive_template_audit.json")
     authorized_sequence = read_json(RUNS_DIR / "authorized_submission_sequence_audit.json")
+    route_packet = read_json(RUNS_DIR / "submission_variant_route_packet.json")
+    baseline_quickstart = read_json(RUNS_DIR / "baseline_submission_quickstart.json")
     secret_scan = read_json(RUNS_DIR / "plaintext_secret_scan.json")
     notebook_structure = read_json(RUNS_DIR / "notebook_structure_audit.json")
 
@@ -219,6 +272,11 @@ def build_status() -> dict[str, Any]:
         "archive_no_confirm_blocks": archive_smoke.get("passed") is True,
         "archive_not_created_without_confirm": archive_smoke.get("archive_created") is False,
         "authorized_sequence_passed": authorized_sequence.get("passed") is True,
+        "route_packet_passed": route_packet.get("passed") is True,
+        "route_packet_recommends_baseline": route_packet.get("recommended_default") == "baseline_official_aloha",
+        "baseline_quickstart_passed": baseline_quickstart.get("passed") is True,
+        "baseline_quickstart_no_link": baseline_quickstart.get("requires_checkpoint_link") is False,
+        "baseline_quickstart_no_upload": baseline_quickstart.get("requires_checkpoint_upload") is False,
         "notebook_structure_passed": notebook_structure.get("passed") is True,
         "secret_scan_clean": secret_scan.get("passed") is True and secret_scan.get("hit_count") == 0,
     }
@@ -271,7 +329,13 @@ def build_status() -> dict[str, Any]:
 
     required_evidence_passed = all(evidence.get(key) is True for key in REQUIRED_EVIDENCE_KEYS)
     passed = bool(required_evidence_passed and not any(leak_flags.values()) and not any(contact_flags.values()))
-    current_blocking = list(blockers.get("blocking", [])) or list(preflight.get("blocking", []))
+    current_blocking = (
+        [item.get("id", "") for item in baseline_quickstart.get("required_user_inputs", [])]
+        or list(blockers.get("blocking", []))
+        or list(preflight.get("blocking", []))
+    )
+    baseline_decision_ids = [item["id"] for item in BASELINE_USER_DECISIONS]
+    lora_web_decision_ids = [item["id"] for item in LORA_WEB_USER_DECISIONS]
     return {
         "kind": "authorized_execution_checklist",
         "passed": passed,
@@ -285,9 +349,20 @@ def build_status() -> dict[str, Any]:
         "secret_values_printed": False,
         "current_runnable_target": "Table30v2 ALOHA",
         "current_release_gap": "pi0.6/pi0.7 未发现公开 checkpoint；本清单只覆盖 pi0.5 当前链路。",
-        "required_user_decisions": REQUIRED_USER_DECISIONS,
+        "recommended_route": "baseline_official_aloha",
+        "baseline_requires_checkpoint_link": False,
+        "baseline_requires_checkpoint_upload": False,
+        "lora_web_requires_checkpoint_link": True,
+        "lora_web_requires_checkpoint_upload": True,
+        "required_user_decisions": BASELINE_USER_DECISIONS,
+        "baseline_user_decisions": BASELINE_USER_DECISIONS,
+        "lora_web_user_decisions": LORA_WEB_USER_DECISIONS,
+        "required_decision_ids": baseline_decision_ids,
+        "baseline_user_decision_ids": baseline_decision_ids,
+        "lora_web_user_decision_ids": lora_web_decision_ids,
         "authorized_steps": AUTHORIZED_STEPS,
         "must_stop_if": MUST_STOP_IF,
+        "lora_web_must_stop_if": LORA_WEB_MUST_STOP_IF,
         "evidence": evidence,
         "required_evidence_keys": REQUIRED_EVIDENCE_KEYS,
         "required_evidence_passed": required_evidence_passed,
@@ -307,21 +382,32 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         f"- go/no-go：`{status['go_no_go']}`。",
         f"- 当前可运行目标：`{status['current_runnable_target']}`。",
         f"- 真实提交就绪：`{status['ready_for_real_submission']}`。",
+        f"- 推荐路线：`{status['recommended_route']}`。",
+        f"- baseline 是否需要 checkpoint link：`{status['baseline_requires_checkpoint_link']}`。",
+        f"- baseline 是否需要 checkpoint upload：`{status['baseline_requires_checkpoint_upload']}`。",
+        f"- LoRA/web 是否需要 checkpoint link：`{status['lora_web_requires_checkpoint_link']}`。",
+        f"- LoRA/web 是否需要 checkpoint upload：`{status['lora_web_requires_checkpoint_upload']}`。",
         f"- 是否连接平台：`{status['platform_contacted']}`。",
         f"- 是否上传：`{status['uploads_performed']}`。",
         f"- 是否读取真实凭据：`{status['credentials_read']}`。",
         "",
-        "## 需要用户确认或提供",
+        "## Baseline 最短路线需要用户确认或提供",
         "",
     ]
-    for item in status["required_user_decisions"]:
+    for item in status["baseline_user_decisions"]:
+        lines.append(f"- `{item['id']}`：{item['detail']}")
+    lines.extend(["", "## LoRA/web checkpoint 分支额外需要", ""])
+    for item in status["lora_web_user_decisions"]:
         lines.append(f"- `{item['id']}`：{item['detail']}")
     lines.extend(["", "## 授权后执行顺序", ""])
     for item in status["authorized_steps"]:
         lines.append(f"{item['step']}. {item['name']}：`{item['command']}`")
         lines.append(f"   - 边界：{item['guard']}")
-    lines.extend(["", "## 必须停止的情况", ""])
+    lines.extend(["", "## Baseline 必须停止的情况", ""])
     for item in status["must_stop_if"]:
+        lines.append(f"- {item}")
+    lines.extend(["", "## LoRA/web checkpoint 分支必须停止的情况", ""])
+    for item in status["lora_web_must_stop_if"]:
         lines.append(f"- {item}")
     lines.extend(["", "## 本地证据", ""])
     for key, ok in status["evidence"].items():

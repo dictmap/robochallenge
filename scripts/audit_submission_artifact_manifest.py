@@ -204,6 +204,15 @@ def build_status() -> dict[str, Any]:
         "ready_real_runner_template_passed": ready_real_runner.get("passed") is True,
         "authorized_checkpoint_archive_template_passed": authorized_archive.get("passed") is True,
         "authorized_execution_checklist_passed": authorized_execution.get("passed") is True,
+        "authorized_execution_recommended_baseline": authorized_execution.get("recommended_route")
+        == "baseline_official_aloha",
+        "authorized_execution_baseline_no_upload": authorized_execution.get("baseline_requires_checkpoint_upload")
+        is False,
+        "authorized_execution_baseline_no_link": authorized_execution.get("baseline_requires_checkpoint_link") is False,
+        "authorized_execution_lora_web_needs_upload": authorized_execution.get("lora_web_requires_checkpoint_upload")
+        is True,
+        "authorized_execution_lora_web_needs_link": authorized_execution.get("lora_web_requires_checkpoint_link")
+        is True,
         "next_user_action_packet_passed": action_packet.get("passed") is True,
         "next_user_action_packet_recommended_baseline": action_packet.get("recommended_route")
         == "baseline_official_aloha",

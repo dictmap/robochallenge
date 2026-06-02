@@ -65,8 +65,6 @@
   "evidence": {
     "package_audit_passed": true,
     "readiness_gate_passed": true,
-    "action_packet_passed": true,
-    "web_form_packet_passed": true,
     "baseline_local_route_ready_without_credentials": true,
     "baseline_does_not_need_upload_or_link": true,
     "lora_local_checkpoint_ready": true,

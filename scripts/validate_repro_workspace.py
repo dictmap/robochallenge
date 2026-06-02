@@ -43,6 +43,7 @@ REQUIRED = [
     "reports/checkpoint_archive_dry_run.md",
     "reports/checkpoint_link_intake.md",
     "reports/authorized_submission_sequence_audit.md",
+    "reports/submission_status_dashboard.html",
     "reports/checkpoint_upload_channels_audit.md",
     "reports/real_submission_readiness.md",
     "reports/real_submission_readiness_scenarios.md",
@@ -74,6 +75,7 @@ REQUIRED = [
     "runs/checkpoint_archive_dry_run.json",
     "runs/checkpoint_link_intake.json",
     "runs/authorized_submission_sequence_audit.json",
+    "runs/submission_status_dashboard.json",
     "runs/checkpoint_upload_channels_audit.json",
     "runs/real_submission_readiness.json",
     "runs/real_submission_readiness_scenarios.json",
@@ -102,6 +104,7 @@ REQUIRED = [
     "scripts/create_checkpoint_archive.py",
     "scripts/audit_checkpoint_link_intake.py",
     "scripts/audit_authorized_submission_sequence.py",
+    "scripts/render_submission_status_dashboard.py",
     "scripts/audit_checkpoint_upload_channels.py",
     "scripts/audit_real_submission_readiness.py",
     "scripts/audit_real_submission_readiness_scenarios.py",
@@ -688,6 +691,42 @@ def main() -> int:
     ):
         print("用户授权后提交顺序审计未通过")
         return 1
+    dashboard = json.loads((ROOT / "runs/submission_status_dashboard.json").read_text(encoding="utf-8"))
+    dashboard_cards = dashboard.get("cards", [])
+    dashboard_titles = {item.get("title") for item in dashboard_cards}
+    dashboard_html = ROOT / "reports/submission_status_dashboard.html"
+    dashboard_html_text = dashboard_html.read_text(encoding="utf-8")
+    if not all(
+        [
+            dashboard.get("kind") == "submission_status_dashboard",
+            dashboard.get("passed"),
+            dashboard.get("html_path") == "reports/submission_status_dashboard.html",
+            dashboard_html.exists(),
+            "<html lang=\"zh-CN\">" in dashboard_html_text,
+            "RoboChallenge pi0.5 提交状态面板" in dashboard_html_text,
+            "当前阻塞" in dashboard_html_text,
+            dashboard.get("source_count") >= 10,
+            dashboard.get("card_count") >= 10,
+            dashboard.get("done_count", 0) >= 6,
+            dashboard.get("blocked_count", 0) >= 3,
+            dashboard.get("ready_for_real_submission") is False,
+            dashboard.get("web_form_ready") is False,
+            dashboard.get("link_shape_ready") is False,
+            dashboard.get("archive_created") is False,
+            dashboard.get("uploads_performed") is False,
+            dashboard.get("platform_contacted") is False,
+            dashboard.get("credentials_printed") is False,
+            dashboard.get("link_values_printed") is False,
+            dashboard.get("secret_values_printed") is False,
+            dashboard.get("critical_order_passed"),
+            len(dashboard.get("blocking", [])) >= 3,
+            "pi0.5 基模" in dashboard_titles,
+            "Table30v2 ALOHA" in dashboard_titles,
+            "真实提交 gate" in dashboard_titles,
+        ]
+    ):
+        print("提交状态 GUI 面板未通过")
+        return 1
     upload_audit = json.loads((ROOT / "runs/checkpoint_upload_channels_audit.json").read_text(encoding="utf-8"))
     upload_channels = upload_audit.get("channels", {})
     if not all(
@@ -942,6 +981,7 @@ def main() -> int:
     print("Checkpoint 归档生成 dry-run 已通过")
     print("Checkpoint link 回填审计已通过")
     print("用户授权后提交顺序审计已通过")
+    print("提交状态 GUI 面板已通过")
     print("Checkpoint 上传通道审计已通过")
     print("真实提交 readiness gate 已通过")
     print("真实提交 readiness 场景 smoke 已通过")

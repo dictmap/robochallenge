@@ -852,6 +852,34 @@
 
 - P0：同步到 Linux 后完成最终验证并提交推送。
 
+## 2026-06-02 第三十三轮：提交状态 GUI 面板
+
+### 已完成
+
+- 新增 `scripts/render_submission_status_dashboard.py`，从现有 JSON 审计结果生成静态 HTML 状态面板。
+- 新增 `reports/submission_status_dashboard.html`，汇总 pi0.5 基模、pi0.6/pi0.7 release gap、Table30v2 ALOHA、LoRA policy、checkpoint 导出、归档生成、上传/link、readiness gate、授权后顺序和明文凭据扫描。
+- 新增 `runs/submission_status_dashboard.json`，记录面板来源数量、卡片数量、已完成/待授权/需关注统计和当前阻塞。
+- `scripts/validate_repro_workspace.py` 已纳入提交状态 GUI 面板检查。
+- Notebook 新增第 34 节“提交状态 GUI 面板”，可在 Jupyter 中重新生成 HTML。
+
+### 验证结果
+
+- Linux 渲染已通过：`card_count=10`，`done_count=6`，`blocked_count=3`，`watch_count=1`。
+- 面板不读取或显示真实凭据，状态中 `credentials_printed=false`，`link_values_printed=false`，`platform_contacted=false`。
+- `python3 scripts/validate_repro_workspace.py` 已通过，并新增输出“提交状态 GUI 面板已通过”。
+- Notebook preflight 已通过；第 34 节中文检查无问号乱码、无替换字符、无拉丁化 mojibake。
+- 最终明文凭据扫描已通过：`hit_count=0`，`scanned_files=138`。
+- `git diff --check` 已通过。
+
+### 当前边界
+
+- 本轮只生成静态 HTML GUI，不启动 Web 服务，不连接 RoboChallenge 平台，不上传 checkpoint。
+- 真实提交仍缺 `ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID` 和真实可访问 checkpoint link。
+
+### 下一步
+
+- P0：提交推送本轮 GUI 面板产物。
+
 ## 2026-06-02 第二十七轮：readiness gate 场景 smoke 与 Notebook 乱码修复
 
 ### 已完成

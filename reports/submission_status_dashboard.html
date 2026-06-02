@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RoboChallenge pi0.5 提交状态面板</title>
+  <style>
+    :root {
+      --ink: #16201b;
+      --muted: #657067;
+      --paper: #f2f5f1;
+      --line: #cbd5cf;
+      --done: #2f7d5b;
+      --blocked: #b64b34;
+      --watch: #8a6d24;
+      --panel: #ffffff;
+      --shadow: 0 16px 42px rgba(34, 54, 44, .12);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: "Aptos", "Segoe UI", "Microsoft YaHei", sans-serif;
+      letter-spacing: 0;
+    }
+    .shell { max-width: 1180px; margin: 0 auto; padding: 28px 22px 44px; }
+    header {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 18px;
+      align-items: end;
+      border-bottom: 2px solid var(--ink);
+      padding-bottom: 18px;
+    }
+    h1 { margin: 0; font-size: 30px; line-height: 1.1; font-weight: 800; }
+    .sub { margin: 10px 0 0; color: var(--muted); font-size: 14px; max-width: 760px; }
+    .stamp { font-size: 12px; color: var(--muted); text-align: right; }
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      margin: 18px 0;
+    }
+    .metric {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      padding: 12px;
+      min-height: 86px;
+    }
+    .metric b { display: block; font-size: 24px; margin-bottom: 8px; }
+    .metric span { color: var(--muted); font-size: 12px; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-left: 6px solid var(--muted);
+      padding: 14px 16px 16px;
+      box-shadow: var(--shadow);
+      min-height: 150px;
+    }
+    .card.done { border-left-color: var(--done); }
+    .card.blocked { border-left-color: var(--blocked); }
+    .card.watch { border-left-color: var(--watch); }
+    .card-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+    .state {
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 7px;
+      border: 1px solid currentColor;
+      color: var(--muted);
+    }
+    .done .state { color: var(--done); }
+    .blocked .state { color: var(--blocked); }
+    .watch .state { color: var(--watch); }
+    a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+    h2 { margin: 14px 0 8px; font-size: 18px; line-height: 1.2; }
+    p { margin: 0; color: var(--muted); line-height: 1.55; font-size: 14px; }
+    .value { color: var(--ink); font-size: 21px; font-weight: 800; margin-bottom: 8px; }
+    .blockers {
+      margin-top: 18px;
+      background: #1f2924;
+      color: #f5fff8;
+      padding: 18px;
+    }
+    .blockers h2 { margin-top: 0; color: #f5fff8; }
+    .blockers li { margin: 7px 0; line-height: 1.45; }
+    @media (max-width: 820px) {
+      header { grid-template-columns: 1fr; }
+      .stamp { text-align: left; }
+      .summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <div>
+        <h1>RoboChallenge pi0.5 提交状态面板</h1>
+        <p class="sub">静态 GUI 汇总当前复现、LoRA checkpoint、上传/link/readiness 阻塞和授权后执行顺序。面板由 JSON 审计结果生成，不读取或显示真实凭据。</p>
+      </div>
+      <div class="stamp">生成时间<br>2026-06-02 04:15:48 UTC</div>
+    </header>
+    <section class="summary">
+      <div class="metric"><b>6</b><span>已完成项</span></div>
+      <div class="metric"><b>3</b><span>待授权项</span></div>
+      <div class="metric"><b>否</b><span>真实提交就绪</span></div>
+      <div class="metric"><b>否</b><span>checkpoint link 就绪</span></div>
+      <div class="metric"><b>否</b><span>本地 tar 已生成</span></div>
+    </section>
+    <section class="grid">
+
+            <article class="card done">
+              <div class="card-top">
+                <span class="state">已完成</span>
+                <a href="../reports/pi05_base_repro.md">报告</a>
+              </div>
+              <h2>pi0.5 基模</h2>
+              <p class="value">29 个对象</p>
+              <p>本地缓存完整，匹配字节 12,441,749,581。</p>
+            </article>
+
+            <article class="card watch">
+              <div class="card-top">
+                <span class="state">需关注</span>
+                <a href="../reports/pi06_pi07_public_release_audit.md">报告</a>
+              </div>
+              <h2>pi0.6 / pi0.7</h2>
+              <p class="value">未发现公开 checkpoint</p>
+              <p>公开 OpenPI/GCS 审计未找到可直接复现 checkpoint；当前只能记录为 release gap。</p>
+            </article>
+
+            <article class="card done">
+              <div class="card-top">
+                <span class="state">已完成</span>
+                <a href="../reports/table30v2_aloha_mapping.md">报告</a>
+              </div>
+              <h2>Table30v2 ALOHA</h2>
+              <p class="value">1100 帧任务链</p>
+              <p>pack_the_toothbrush_holder 映射、转换、短 episode dataloader 已完成。</p>
+            </article>
+
+            <article class="card done">
+              <div class="card-top">
+                <span class="state">已完成</span>
+                <a href="../reports/openpi_rtc_lora_materialized_policy_smoke.md">报告</a>
+              </div>
+              <h2>LoRA 物化 policy</h2>
+              <p class="value">Pi0</p>
+              <p>完整物化 checkpoint 已通过 create_trained_policy 加载 smoke。</p>
+            </article>
+
+            <article class="card done">
+              <div class="card-top">
+                <span class="state">已完成</span>
+                <a href="../reports/lora_checkpoint_export_readiness.md">报告</a>
+              </div>
+              <h2>Checkpoint 导出</h2>
+              <p class="value">11.064 GB</p>
+              <p>目录结构、必需文件、tar stream smoke 已就绪。</p>
+            </article>
+
+            <article class="card blocked">
+              <div class="card-top">
+                <span class="state">待授权</span>
+                <a href="../reports/checkpoint_archive_dry_run.md">报告</a>
+              </div>
+              <h2>归档生成</h2>
+              <p class="value">dry-run 已通过</p>
+              <p>默认不生成 tar；真实生成必须显式授权 --execute --confirm-create-large-archive。</p>
+            </article>
+
+            <article class="card blocked">
+              <div class="card-top">
+                <span class="state">待授权</span>
+                <a href="../reports/checkpoint_link_intake.md">报告</a>
+              </div>
+              <h2>上传与链接</h2>
+              <p class="value">缺少真实链接</p>
+              <p>当前未上传 checkpoint，未设置真实 checkpoint link。</p>
+            </article>
+
+            <article class="card blocked">
+              <div class="card-top">
+                <span class="state">待授权</span>
+                <a href="../reports/real_submission_readiness.md">报告</a>
+              </div>
+              <h2>真实提交 gate</h2>
+              <p class="value">ready=false</p>
+              <p>缺少 user token、submission id、checkpoint link；runner 仍不会启动。</p>
+            </article>
+
+            <article class="card done">
+              <div class="card-top">
+                <span class="state">已完成</span>
+                <a href="../reports/authorized_submission_sequence_audit.md">报告</a>
+              </div>
+              <h2>授权后顺序</h2>
+              <p class="value">顺序已固化</p>
+              <p>link intake -&gt; readiness -&gt; dry-run -&gt; real runner 的顺序已通过审计。</p>
+            </article>
+
+            <article class="card done">
+              <div class="card-top">
+                <span class="state">已完成</span>
+                <a href="../reports/plaintext_secret_scan.md">报告</a>
+              </div>
+              <h2>明文凭据扫描</h2>
+              <p class="value">hit_count=0</p>
+              <p>仓库跟踪文件和未忽略文件未发现明文凭据模式。</p>
+            </article>
+
+    </section>
+    <section class="blockers">
+      <h2>当前阻塞</h2>
+      <ul><li>缺少 ROBOCHALLENGE_USER_TOKEN。</li><li>缺少 ROBOCHALLENGE_SUBMISSION_ID。</li><li>缺少真实可访问 checkpoint link；可使用 ROBOCHALLENGE_CHECKPOINT_LINK 或 ROBOCHALLENGE_LORA_CHECKPOINT_LINK 记录。</li><li>尚未执行 checkpoint 上传，本地 tar 文件也未生成。</li></ul>
+    </section>
+  </main>
+</body>
+</html>

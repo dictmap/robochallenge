@@ -1,0 +1,108 @@
+{
+  "kind": "submission_status_dashboard",
+  "passed": true,
+  "html_path": "reports/submission_status_dashboard.html",
+  "source_count": 10,
+  "card_count": 10,
+  "done_count": 6,
+  "blocked_count": 3,
+  "watch_count": 1,
+  "ready_for_real_submission": false,
+  "web_form_ready": false,
+  "link_shape_ready": false,
+  "archive_created": false,
+  "uploads_performed": false,
+  "platform_contacted": false,
+  "credentials_printed": false,
+  "link_values_printed": false,
+  "secret_values_printed": false,
+  "critical_order_passed": true,
+  "blocking": [
+    "缺少 ROBOCHALLENGE_USER_TOKEN。",
+    "缺少 ROBOCHALLENGE_SUBMISSION_ID。",
+    "缺少真实可访问 checkpoint link；可使用 ROBOCHALLENGE_CHECKPOINT_LINK 或 ROBOCHALLENGE_LORA_CHECKPOINT_LINK 记录。",
+    "尚未执行 checkpoint 上传，本地 tar 文件也未生成。"
+  ],
+  "cards": [
+    {
+      "title": "pi0.5 基模",
+      "state": "done",
+      "state_label": "已完成",
+      "value": "29 个对象",
+      "detail": "本地缓存完整，匹配字节 12,441,749,581。",
+      "report": "reports/pi05_base_repro.md"
+    },
+    {
+      "title": "pi0.6 / pi0.7",
+      "state": "watch",
+      "state_label": "需关注",
+      "value": "未发现公开 checkpoint",
+      "detail": "公开 OpenPI/GCS 审计未找到可直接复现 checkpoint；当前只能记录为 release gap。",
+      "report": "reports/pi06_pi07_public_release_audit.md"
+    },
+    {
+      "title": "Table30v2 ALOHA",
+      "state": "done",
+      "state_label": "已完成",
+      "value": "1100 帧任务链",
+      "detail": "pack_the_toothbrush_holder 映射、转换、短 episode dataloader 已完成。",
+      "report": "reports/table30v2_aloha_mapping.md"
+    },
+    {
+      "title": "LoRA 物化 policy",
+      "state": "done",
+      "state_label": "已完成",
+      "value": "Pi0",
+      "detail": "完整物化 checkpoint 已通过 create_trained_policy 加载 smoke。",
+      "report": "reports/openpi_rtc_lora_materialized_policy_smoke.md"
+    },
+    {
+      "title": "Checkpoint 导出",
+      "state": "done",
+      "state_label": "已完成",
+      "value": "11.064 GB",
+      "detail": "目录结构、必需文件、tar stream smoke 已就绪。",
+      "report": "reports/lora_checkpoint_export_readiness.md"
+    },
+    {
+      "title": "归档生成",
+      "state": "blocked",
+      "state_label": "待授权",
+      "value": "dry-run 已通过",
+      "detail": "默认不生成 tar；真实生成必须显式授权 --execute --confirm-create-large-archive。",
+      "report": "reports/checkpoint_archive_dry_run.md"
+    },
+    {
+      "title": "上传与链接",
+      "state": "blocked",
+      "state_label": "待授权",
+      "value": "缺少真实链接",
+      "detail": "当前未上传 checkpoint，未设置真实 checkpoint link。",
+      "report": "reports/checkpoint_link_intake.md"
+    },
+    {
+      "title": "真实提交 gate",
+      "state": "blocked",
+      "state_label": "待授权",
+      "value": "ready=false",
+      "detail": "缺少 user token、submission id、checkpoint link；runner 仍不会启动。",
+      "report": "reports/real_submission_readiness.md"
+    },
+    {
+      "title": "授权后顺序",
+      "state": "done",
+      "state_label": "已完成",
+      "value": "顺序已固化",
+      "detail": "link intake -> readiness -> dry-run -> real runner 的顺序已通过审计。",
+      "report": "reports/authorized_submission_sequence_audit.md"
+    },
+    {
+      "title": "明文凭据扫描",
+      "state": "done",
+      "state_label": "已完成",
+      "value": "hit_count=0",
+      "detail": "仓库跟踪文件和未忽略文件未发现明文凭据模式。",
+      "report": "reports/plaintext_secret_scan.md"
+    }
+  ]
+}

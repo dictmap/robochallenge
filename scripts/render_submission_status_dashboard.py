@@ -185,6 +185,7 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
         and baseline_dry_run_gate.get("requires_checkpoint_link") is False
         and baseline_dry_run_gate.get("stops_before_real_runner_without_confirmation") is True
         and baseline_dry_run_gate.get("stops_before_real_runner_with_wrong_confirmation") is True
+        and baseline_dry_run_gate.get("stops_before_real_runner_with_malformed_confirmation") is True
     )
     baseline_credential_hygiene_ready = bool(
         baseline_credential_hygiene.get("passed")
@@ -489,7 +490,7 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
             "Baseline dry-run gate",
             "done" if baseline_dry_run_gate_ready else "watch",
             "先 dry-run",
-            "拿到 token/submission id 后先跑授权前只读预检，再跑 baseline wrapper dry-run gate；无强确认时停在真实 runner 前。",
+            "拿到 token/submission id 后先跑授权前只读预检，再跑 baseline wrapper dry-run gate；缺少或畸形强确认时停在真实 runner 前。",
             "reports/baseline_dry_run_gate.md",
         ),
         card(
@@ -708,6 +709,10 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
         is True,
         "baseline_dry_run_gate_wrong_confirm_stops_before_real_runner": baseline_dry_run_gate.get(
             "stops_before_real_runner_with_wrong_confirmation"
+        )
+        is True,
+        "baseline_dry_run_gate_malformed_confirm_stops_before_real_runner": baseline_dry_run_gate.get(
+            "stops_before_real_runner_with_malformed_confirmation"
         )
         is True,
         "baseline_dry_run_gate_command": baseline_dry_run_gate.get("dry_run_gate_command"),

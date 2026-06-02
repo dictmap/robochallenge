@@ -304,6 +304,10 @@ def build_status() -> dict[str, Any]:
             "stops_before_real_runner_with_wrong_confirmation"
         )
         is True,
+        "baseline_dry_run_gate_malformed_confirm_stops_before_real_runner": baseline_dry_run_gate.get(
+            "stops_before_real_runner_with_malformed_confirmation"
+        )
+        is True,
         "baseline_credential_hygiene_passed": baseline_credential_hygiene.get("passed") is True,
         "baseline_credential_hygiene_local_env_gitignored": baseline_credential_hygiene.get(
             "local_env_gitignored"

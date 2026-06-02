@@ -2212,3 +2212,27 @@
 - 本轮只补提交脚本的参数安全 gate，不读取真实 token、submission id、checkpoint link 或真实 local env 内容。
 - 不连接 RoboChallenge 平台，不上传 checkpoint，不生成 checkpoint tar，不启动真实 runner。
 - baseline 官方路线的剩余 blocking 不变：提交对象确认、`ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline`、`ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION`。
+
+## 2026-06-03 第七十八轮：真实 runner 确认短语精确匹配审计
+
+### 已完成
+
+- 扩展 `scripts/audit_ready_real_runner_template.py`，在已有“缺少确认”和“错误确认” smoke 之外，新增 4 个畸形确认短语场景：结尾空格、开头空格、小写、结尾换行。
+- 扩展 `scripts/render_baseline_dry_run_gate.py`，把畸形确认短语拒绝证据纳入 baseline dry-run gate。
+- 更新 `scripts/audit_submission_preflight_bundle.py`、`scripts/audit_submission_artifact_manifest.py`、`scripts/render_submission_status_dashboard.py` 与 `scripts/validate_repro_workspace.py`，将 `stops_before_real_runner_with_malformed_confirmation` 纳入汇总和总验证。
+- 本轮不新增 GUI 卡片，仍复用 `Baseline dry-run gate` 卡片；dashboard 数量保持不变。
+
+### 验证结果
+
+- Linux 端 `python3 scripts/audit_ready_real_runner_template.py` 已通过：`malformed_confirmation_case_count=4`、`malformed_confirmation_cases_rejected=true`、`malformed_confirmation_real_runner_started=false`。
+- Linux 端 `python3 scripts/render_baseline_dry_run_gate.py` 已通过：`stops_before_real_runner_with_malformed_confirmation=true`。
+- Linux 端完整链路 `audit_chinese_utf8_artifacts.py`、`audit_plaintext_secrets.py`、`audit_submission_preflight_bundle.py`、`audit_submission_artifact_manifest.py`、`render_submission_status_dashboard.py`、`validate_repro_workspace.py` 和 `git diff --check` 均已通过。
+- GUI dashboard 实测仍为 `source_count=35`、`card_count=35`、`done_count=30`、`blocked_count=4`、`watch_count=1`、`ready_for_real_submission=false`。
+- 明文凭据扫描仍为 `hit_count=0`；中文 UTF-8 审计为 `scanned_file_count=152`、`decode_error_count=0`、`bad_marker_hit_count=0`。
+
+### 当前边界
+
+- 本轮只验证确认短语的精确匹配 gate；不会尝试正确确认短语下的真实 runner，因为这需要用户明确授权和真实平台凭据。
+- 不读取真实 token、submission id、checkpoint link 或真实 local env 内容。
+- 不连接 RoboChallenge 平台，不上传 checkpoint，不生成 checkpoint tar，不启动真实 runner。
+- baseline 官方路线剩余 blocking 不变：提交对象确认、`ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline`、`ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION`。

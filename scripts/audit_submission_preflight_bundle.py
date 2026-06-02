@@ -347,6 +347,9 @@ def build_status() -> dict[str, Any]:
         "baseline_dry_run_gate_wrong_confirm_stops_before_real_runner": baseline_dry_run_gate.get(
             "stops_before_real_runner_with_wrong_confirmation"
         ),
+        "baseline_dry_run_gate_malformed_confirm_stops_before_real_runner": baseline_dry_run_gate.get(
+            "stops_before_real_runner_with_malformed_confirmation"
+        ),
         "baseline_credential_hygiene_passed": baseline_credential_hygiene.get("passed") is True,
         "baseline_credential_hygiene_local_env_gitignored": baseline_credential_hygiene.get(
             "local_env_gitignored"
@@ -567,6 +570,7 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         f"- baseline dry-run gate：`{status['baseline_dry_run_gate_passed']}`。",
         f"- baseline dry-run 命令：`{status['baseline_dry_run_gate_command']}`。",
         f"- dry-run 是否停在真实 runner 前：`{status['baseline_dry_run_gate_stops_before_real_runner']}`。",
+        f"- 畸形确认短语是否停在真实 runner 前：`{status['baseline_dry_run_gate_malformed_confirm_stops_before_real_runner']}`。",
         f"- baseline 凭据卫生：`{status['baseline_credential_hygiene_passed']}`。",
         f"- local env 是否被 Git 忽略：`{status['baseline_credential_hygiene_local_env_gitignored']}`。",
         f"- 是否读取 local env 内容：`{status['baseline_credential_hygiene_local_env_content_read']}`。",

@@ -21,6 +21,12 @@ DEFAULT_STATUS = RUNS_DIR / "ready_real_runner_template_audit.json"
 DEFAULT_REPORT = REPORTS_DIR / "ready_real_runner_template_audit.md"
 CONFIRM_PHRASE = "RUN_REAL_ROBOCHALLENGE_SUBMISSION"
 WRONG_CONFIRM_PHRASE = "RUN_REAL_ROBOCHALLENGE_SUBMISSION_WRONG"
+MALFORMED_CONFIRM_CASES = [
+    ("trailing_space", CONFIRM_PHRASE + " "),
+    ("leading_space", " " + CONFIRM_PHRASE),
+    ("lowercase", CONFIRM_PHRASE.lower()),
+    ("newline", CONFIRM_PHRASE + "\n"),
+]
 SYNTHETIC_TOKEN = "audit-token-shape-only"
 SYNTHETIC_SUBMISSION_ID = "audit-submission-shape-only"
 
@@ -203,6 +209,20 @@ def build_status() -> dict[str, Any]:
             "ROBOCHALLENGE_REAL_RUN_CONFIRM": WRONG_CONFIRM_PHRASE,
         }
     )
+    malformed_confirmation_cases = []
+    for name, confirm_value in MALFORMED_CONFIRM_CASES:
+        item = run_template(
+            {
+                "ROBOCHALLENGE_ENV_FILE": str(ROOT / "submission" / "__missing_env_for_real_runner_audit__.sh"),
+                "ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD": "0",
+                "ROBOCHALLENGE_USER_TOKEN": SYNTHETIC_TOKEN,
+                "ROBOCHALLENGE_SUBMISSION_ID": SYNTHETIC_SUBMISSION_ID,
+                "ROBOCHALLENGE_REAL_RUN_CONFIRM": confirm_value,
+            }
+        )
+        item["name"] = name
+        item["confirm_value_length"] = len(confirm_value)
+        malformed_confirmation_cases.append(item)
     restore = restore_clean_submission_state()
 
     no_credentials["passed"] = all(
@@ -241,6 +261,21 @@ def build_status() -> dict[str, Any]:
             not synthetic_wrong_confirm["printed_protected_values"],
         ]
     )
+    for item in malformed_confirmation_cases:
+        item["passed"] = all(
+            [
+                item["returncode"] != 0,
+                item["variant"] == "baseline",
+                item["dry_run_called"],
+                item["confirmation_present"],
+                item["missing_confirmation"],
+                item["stops_before_real_runner"],
+                not item["real_runner_started"],
+                not item["demo_mentioned"],
+                not item["printed_protected_values"],
+            ]
+        )
+    malformed_confirmation_cases_rejected = all(item["passed"] for item in malformed_confirmation_cases)
 
     secret_hits = scan_secret_patterns(text)
     passed = bool(
@@ -252,6 +287,7 @@ def build_status() -> dict[str, Any]:
         and no_credentials["passed"]
         and synthetic_no_confirm["passed"]
         and synthetic_wrong_confirm["passed"]
+        and malformed_confirmation_cases_rejected
         and restore["passed"]
     )
     return {
@@ -266,6 +302,11 @@ def build_status() -> dict[str, Any]:
         "template_path": "submission/run_ready_real_submission_template.sh",
         "confirmation_phrase": CONFIRM_PHRASE,
         "wrong_confirmation_phrase": WRONG_CONFIRM_PHRASE,
+        "malformed_confirmation_case_count": len(malformed_confirmation_cases),
+        "malformed_confirmation_cases_rejected": malformed_confirmation_cases_rejected,
+        "malformed_confirmation_real_runner_started": any(
+            item["real_runner_started"] for item in malformed_confirmation_cases
+        ),
         "default_variant": "baseline" if REQUIRED_FRAGMENTS["default_variant_baseline"] in text else "",
         "bash_n": bash_n,
         "required_fragments": required,
@@ -274,6 +315,7 @@ def build_status() -> dict[str, Any]:
         "no_credentials_smoke": no_credentials,
         "synthetic_no_confirm_smoke": synthetic_no_confirm,
         "synthetic_wrong_confirm_smoke": synthetic_wrong_confirm,
+        "malformed_confirmation_cases": malformed_confirmation_cases,
         "clean_state_restore": restore,
         "blocking": [
             "强确认真实 runner 模板已通过；没有确认短语或确认短语写错时都不会启动真实 runner。"

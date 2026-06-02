@@ -8,6 +8,7 @@
 - baseline 是否需要 checkpoint link：`False`。
 - 无真实确认短语时是否停在 runner 前：`True`。
 - 错误确认短语时是否停在 runner 前：`True`。
+- 畸形确认短语时是否停在 runner 前：`True`。
 
 ## 拿到 token / submission id 后先跑
 
@@ -55,6 +56,9 @@
 - `wrong_confirm_stops_before_real_runner`：`True`。
 - `wrong_confirm_real_runner_not_started`：`True`。
 - `wrong_confirm_no_protected_values_printed`：`True`。
+- `malformed_confirm_cases_rejected`：`True`。
+- `malformed_confirm_case_count`：`True`。
+- `malformed_confirm_real_runner_not_started`：`True`。
 - `authorized_execution_passed`：`True`。
 - `authorized_execution_baseline_required_ids`：`True`。
 - `authorized_execution_baseline_no_lora_ids`：`True`。

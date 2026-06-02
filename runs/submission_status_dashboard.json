@@ -43,6 +43,7 @@
   "baseline_dry_run_gate_no_link": true,
   "baseline_dry_run_gate_stops_before_real_runner": true,
   "baseline_dry_run_gate_wrong_confirm_stops_before_real_runner": true,
+  "baseline_dry_run_gate_malformed_confirm_stops_before_real_runner": true,
   "baseline_dry_run_gate_command": "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_ready_real_submission_template.sh",
   "baseline_credential_hygiene_passed": true,
   "baseline_credential_hygiene_local_env_gitignored": true,
@@ -177,7 +178,7 @@
   "jupyter_final_handoff_no_contact_command_count": 3,
   "jupyter_final_handoff_real_runner_requires_confirmation": true,
   "chinese_utf8_artifact_audit_passed": true,
-  "chinese_utf8_artifact_scanned_file_count": 150,
+  "chinese_utf8_artifact_scanned_file_count": 152,
   "chinese_utf8_artifact_decode_error_count": 0,
   "chinese_utf8_artifact_bad_marker_hit_count": 0,
   "chinese_utf8_artifact_required_phrases_present": true,
@@ -333,7 +334,7 @@
       "state": "done",
       "state_label": "已完成",
       "value": "先 dry-run",
-      "detail": "拿到 token/submission id 后先跑授权前只读预检，再跑 baseline wrapper dry-run gate；无强确认时停在真实 runner 前。",
+      "detail": "拿到 token/submission id 后先跑授权前只读预检，再跑 baseline wrapper dry-run gate；缺少或畸形强确认时停在真实 runner 前。",
       "report": "reports/baseline_dry_run_gate.md"
     },
     {
@@ -468,7 +469,7 @@
       "title": "中文 UTF-8",
       "state": "done",
       "state_label": "已完成",
-      "value": "150 个文件",
+      "value": "152 个文件",
       "detail": "关键报告、GUI、Notebook 和交接文档已做 UTF-8 解码与常见乱码哨兵扫描。",
       "report": "reports/chinese_utf8_artifact_audit.md"
     },

@@ -13,12 +13,13 @@
 - baseline 是否需要 checkpoint link：`False`。
 - baseline 是否需要 checkpoint upload：`False`。
 - 中文 UTF-8 产物审计：`True`。
-- 中文 UTF-8 扫描文件数：`150`。
+- 中文 UTF-8 扫描文件数：`152`。
 - 中文 UTF-8 解码错误数：`0`。
 - 中文乱码哨兵命中数：`0`。
 - baseline dry-run gate：`True`。
 - baseline dry-run 命令：`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_ready_real_submission_template.sh`。
 - dry-run 是否停在真实 runner 前：`True`。
+- 畸形确认短语是否停在真实 runner 前：`True`。
 - baseline 凭据卫生：`True`。
 - local env 是否被 Git 忽略：`True`。
 - 是否读取 local env 内容：`False`。

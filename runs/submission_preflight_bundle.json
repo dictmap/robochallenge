@@ -13,13 +13,14 @@
   "baseline_requires_checkpoint_link": false,
   "baseline_requires_checkpoint_upload": false,
   "chinese_utf8_artifact_audit_passed": true,
-  "chinese_utf8_artifact_scanned_file_count": 150,
+  "chinese_utf8_artifact_scanned_file_count": 152,
   "chinese_utf8_artifact_decode_error_count": 0,
   "chinese_utf8_artifact_bad_marker_hit_count": 0,
   "baseline_dry_run_gate_passed": true,
   "baseline_dry_run_gate_command": "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_ready_real_submission_template.sh",
   "baseline_dry_run_gate_stops_before_real_runner": true,
   "baseline_dry_run_gate_wrong_confirm_stops_before_real_runner": true,
+  "baseline_dry_run_gate_malformed_confirm_stops_before_real_runner": true,
   "baseline_credential_hygiene_passed": true,
   "baseline_credential_hygiene_local_env_gitignored": true,
   "baseline_credential_hygiene_local_env_content_read": false,
@@ -173,7 +174,7 @@
       "script": "scripts/audit_chinese_utf8_artifacts.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": " \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"runs/baseline_final_handoff_rehearsal.json\",\n      \"size_bytes\": 5113,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"runs/baseline_local_env_smoke.json\",\n      \"size_bytes\": 10682,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"runs/baseline_submission_quickstart.json\",\n      \"size_bytes\": 3353,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    }\n  ],\n  \"decode_error_paths\": [],\n  \"bad_marker_hit_paths\": [],\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"中文交接产物 UTF-8 解码与乱码哨兵扫描通过。\"\n  ]\n}\n",
+      "stdout_tail": ": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"runs/baseline_final_handoff_packet.json\",\n      \"size_bytes\": 4599,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"runs/baseline_final_handoff_rehearsal.json\",\n      \"size_bytes\": 5113,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"runs/baseline_local_env_smoke.json\",\n      \"size_bytes\": 10682,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    }\n  ],\n  \"decode_error_paths\": [],\n  \"bad_marker_hit_paths\": [],\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"中文交接产物 UTF-8 解码与乱码哨兵扫描通过。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "real_submission_readiness": {
@@ -194,7 +195,7 @@
       "script": "scripts/audit_ready_real_runner_template.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": "M=RUN_REAL_ROBOCHALLENGE_SUBMISSION only after user authorizes platform submission\\n[ready-real-runner] stop before real runner\\n\",\n    \"stderr_tail\": \"\",\n    \"variant\": \"baseline\",\n    \"printed_protected_values\": false,\n    \"leaked_value_count\": 0,\n    \"ready_false\": false,\n    \"dry_run_called\": true,\n    \"missing_confirmation\": true,\n    \"confirmation_present\": true,\n    \"stops_before_real_runner\": true,\n    \"real_runner_started\": false,\n    \"demo_mentioned\": false,\n    \"passed\": true\n  },\n  \"clean_state_restore\": {\n    \"passed\": true,\n    \"commands\": [\n      {\n        \"command\": \"python3 scripts/audit_checkpoint_link_intake.py\",\n        \"returncode\": 0\n      },\n      {\n        \"command\": \"python3 scripts/audit_checkpoint_link_download_verification.py\",\n        \"returncode\": 0\n      },\n      {\n        \"command\": \"python3 scripts/audit_real_submission_readiness.py\",\n        \"returncode\": 0\n      }\n    ]\n  },\n  \"blocking\": [\n    \"强确认真实 runner 模板已通过；没有确认短语或确认短语写错时都不会启动真实 runner。\"\n  ]\n}\n",
+      "stdout_tail": "y-real-runner] stop before real runner\\n\",\n      \"stderr_tail\": \"\",\n      \"variant\": \"baseline\",\n      \"printed_protected_values\": false,\n      \"leaked_value_count\": 0,\n      \"ready_false\": false,\n      \"dry_run_called\": true,\n      \"missing_confirmation\": true,\n      \"confirmation_present\": true,\n      \"stops_before_real_runner\": true,\n      \"real_runner_started\": false,\n      \"demo_mentioned\": false,\n      \"name\": \"newline\",\n      \"confirm_value_length\": 34,\n      \"passed\": true\n    }\n  ],\n  \"clean_state_restore\": {\n    \"passed\": true,\n    \"commands\": [\n      {\n        \"command\": \"python3 scripts/audit_checkpoint_link_intake.py\",\n        \"returncode\": 0\n      },\n      {\n        \"command\": \"python3 scripts/audit_checkpoint_link_download_verification.py\",\n        \"returncode\": 0\n      },\n      {\n        \"command\": \"python3 scripts/audit_real_submission_readiness.py\",\n        \"returncode\": 0\n      }\n    ]\n  },\n  \"blocking\": [\n    \"强确认真实 runner 模板已通过；没有确认短语或确认短语写错时都不会启动真实 runner。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "authorized_checkpoint_archive_template": {

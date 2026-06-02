@@ -1,7 +1,7 @@
 {
   "kind": "chinese_utf8_artifact_audit",
   "passed": true,
-  "scanned_file_count": 150,
+  "scanned_file_count": 152,
   "decode_error_count": 0,
   "bad_marker_hit_file_count": 0,
   "bad_marker_hit_count": 0,
@@ -104,7 +104,7 @@
     },
     {
       "path": "reports/baseline_dry_run_gate.md",
-      "size_bytes": 3423,
+      "size_bytes": 3634,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -137,6 +137,14 @@
     {
       "path": "reports/baseline_submission_quickstart.md",
       "size_bytes": 2755,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/boolean_env_gate.md",
+      "size_bytes": 3238,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -480,7 +488,7 @@
     },
     {
       "path": "reports/submission_artifact_manifest.md",
-      "size_bytes": 23765,
+      "size_bytes": 23844,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -512,7 +520,7 @@
     },
     {
       "path": "reports/submission_preflight_bundle.md",
-      "size_bytes": 8204,
+      "size_bytes": 8266,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -520,7 +528,7 @@
     },
     {
       "path": "reports/submission_status_dashboard.html",
-      "size_bytes": 21455,
+      "size_bytes": 21467,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -640,7 +648,7 @@
     },
     {
       "path": "runs/baseline_dry_run_gate.json",
-      "size_bytes": 3420,
+      "size_bytes": 3627,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -665,14 +673,6 @@
     {
       "path": "runs/baseline_local_env_smoke.json",
       "size_bytes": 10682,
-      "utf8_decode_ok": true,
-      "decode_error": "",
-      "bad_marker_count": 0,
-      "bad_marker_hits": []
-    },
-    {
-      "path": "runs/baseline_submission_quickstart.json",
-      "size_bytes": 3353,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,

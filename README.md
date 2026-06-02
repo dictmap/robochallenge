@@ -57,6 +57,7 @@
 - `reports/openpi_rtc_lora_numeric_weight_preflight.md`：LoRA reduced 数值 dry-run 的权重预检结果。
 - `reports/openpi_rtc_lora_numeric_forward_reduced.md`：LoRA reduced 数值 forward smoke 结果。
 - `reports/openpi_rtc_lora_numeric_grad_reduced.md`：LoRA reduced trainable-filter grad 与 scoped checkpoint dry-run 结果。
+- `reports/robochallenge_submission_package_checklist.md`：RoboChallenge 提交包清单、入口参数、凭据缺口和链接位说明。
 - `runs/table30v2_aloha_dry_run_status.json`：dry-run converter 的机器可读状态。
 - `runs/table30v2_aloha_dry_run_samples.jsonl`：5 帧抽样的 LeRobot-like schema 与数值摘要。
 - `runs/table30v2_aloha_short_lerobot_status.json`：短 episode writer 与 dataloader smoke 的机器可读状态。
@@ -71,6 +72,9 @@
 - `runs/openpi_rtc_lora_numeric_weight_preflight_status.json`：LoRA reduced 权重预检机器可读状态。
 - `runs/openpi_rtc_lora_numeric_forward_reduced_status.json`：LoRA reduced forward smoke 机器可读状态。
 - `runs/openpi_rtc_lora_numeric_grad_reduced_status.json`：LoRA reduced trainable-filter grad/checkpoint smoke 机器可读状态。
+- `runs/robochallenge_submission_package_audit.json`：提交包清单和启动模板的机器可读审计状态。
+- `submission/submission_manifest_template.json`：不含明文凭据的提交 manifest 模板。
+- `submission/run_table30v2_aloha_demo_template.sh`：Table30v2 ALOHA baseline 的 `demo.py` 启动模板。
 - `scripts/collect_hf_manifest.py`：轻量拉取 Hugging Face repo manifest。
 - `scripts/probe_pi05_base_model.sh`：探测/下载/校验 `pi05_base`，可选读取参数树。
 - `scripts/audit_pi06_pi07_public_release.py`：审计 pi0.6/pi0.7 是否已有公开 OpenPI 配置或 checkpoint。
@@ -80,6 +84,7 @@
 - `scripts/audit_openpi_rtc_train_entry.py`：审计 `openpi_rtc` 训练入口并运行抽象 `train_step` 前向/反向 shape smoke。
 - `scripts/run_openpi_rtc_numeric_dry_run.py`：分阶段运行 `openpi_rtc` 数值 dry-run，支持权重预检、forward、grad、head_grad 和低显存覆盖参数。
 - `scripts/audit_openpi_rtc_lora_path.py`：审计 `openpi_rtc` LoRA 低显存路线并验证 `pi05_base` 权重合并。
+- `scripts/audit_robochallenge_submission_package.py`：生成并审计提交包清单、manifest 和无凭据启动模板。
 - `scripts/run_pi05_base_download_background.sh`：后台下载 `pi05_base` 的辅助脚本。
 - `scripts/run_pi05_base_load_smoke_background.sh`：后台执行参数读取 smoke 的辅助脚本。
 - `scripts/validate_repro_workspace.py`：检查本工作区是否具备后续迭代的最低材料。
@@ -87,9 +92,9 @@
 
 ## 下一轮 P0
 
-1. 准备 RoboChallenge 提交包清单：入口脚本、依赖、模型恢复材料、Table30/Table30v2 目标说明、不可伪造的 token/submission_id 缺口。
-2. 把 `pi05_base + LoRA scoped trainable params` 的恢复步骤整理成最小推理/提交模板，避免把 scoped checkpoint 当完整 checkpoint 单独提交。
-3. 继续明确 RoboChallenge 提交流程需要的账号/API token/模型包格式；涉及登录和提交动作必须等用户凭据或授权。
+1. 把 `pi05_base + LoRA scoped trainable params` 的恢复步骤整理成 `demo.py` 可复用的最小推理入口，避免只能停留在参数树恢复审计。
+2. 若继续走当前可运行提交路线，等待用户提供 `ROBOCHALLENGE_USER_TOKEN` 和 `ROBOCHALLENGE_SUBMISSION_ID` 后再运行 `submission/run_table30v2_aloha_demo_template.sh`。
+3. 若目标改回原始 Table30，先补原始 Table30 数据/配置入口；不能把当前 Table30v2 ALOHA 证据当作 Table30 原榜单证据。
 
 ## 2026-06-02 恢复审计更新
 

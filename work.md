@@ -474,3 +474,36 @@
 
 - P0：准备 RoboChallenge 提交包清单和最小提交模板，明确入口脚本、依赖、模型恢复材料、Table30/Table30v2 目标说明与 token/submission_id 缺口。
 - P1：把 `pi05_base + LoRA scoped trainable params` 的恢复步骤整理成最小推理模板，供后续真实提交入口复用。
+
+## 2026-06-02 第十七轮：RoboChallenge 提交包清单和最小启动模板
+
+### 已完成
+
+- 新增 `scripts/audit_robochallenge_submission_package.py`，生成并审计提交包清单、机器可读 manifest 和无明文凭据启动模板。
+- 生成 `reports/robochallenge_submission_package_checklist.md`。
+- 生成 `runs/robochallenge_submission_package_audit.json`。
+- 生成 `submission/README.md`、`submission/submission_manifest_template.json` 和 `submission/run_table30v2_aloha_demo_template.sh`。
+- 中文 Notebook 新增第 20 节“RoboChallenge 提交包清单与最小启动模板”。
+- 已将提交包清单/模板审计纳入 `scripts/validate_repro_workspace.py`。
+
+### 验证结果
+
+- 提交包审计：`passed=true`。
+- 当前可运行目标：`Table30v2 / aloha / pack_the_toothbrush_holder`。
+- `demo.py` 必需参数检查通过：`user_token`、`submission_id`、`checkpoint`、`prompt`、`action_type`、`duration`、`valid_action_num`、`image_size`、`robot_type`。
+- mock smoke、Table30v2 ALOHA 映射、LoRA restore 审计均被提交包审计引用并通过。
+- `submission/run_table30v2_aloha_demo_template.sh` 通过 `bash -n`。
+- 无凭据运行模板会立即要求 `ROBOCHALLENGE_USER_TOKEN`，不会误连真实平台。
+- 远端 `python3 scripts/validate_repro_workspace.py` 已通过。
+
+### 当前边界
+
+- 当前提交模板默认走官方 pi0.5 Table30v2 ALOHA baseline checkpoint。
+- LoRA scoped checkpoint 已通过恢复/合并审计，但仍不是 `demo.py --checkpoint` 可直接消费的完整 policy checkpoint。
+- 真实提交仍需要用户提供 `ROBOCHALLENGE_USER_TOKEN` 和 `ROBOCHALLENGE_SUBMISSION_ID`。
+- 如果目标是原始 Table30，而不是 Table30v2 ALOHA，需要另补原始 Table30 数据、任务和机器人配置入口。
+
+### 下一步
+
+- P0：把 `pi05_base + LoRA scoped trainable params` 整理成 `demo.py` 可复用的最小推理入口或完整 checkpoint 包，缩小 LoRA 路线与真实提交入口之间的差距。
+- P1：等待用户提供真实 token/submission_id 后，才运行 `submission/run_table30v2_aloha_demo_template.sh` 进入真实评测。

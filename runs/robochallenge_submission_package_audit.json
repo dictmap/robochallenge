@@ -1,0 +1,62 @@
+{
+  "passed": true,
+  "selected_target": {
+    "benchmark": "Table30v2",
+    "robot_type": "aloha",
+    "robot_tag": "aloha",
+    "task_name": "pack_the_toothbrush_holder",
+    "prompt": "Put the toothbrush and toothpaste into the toiletries case in sequence, close the case, and then place it into the basket.",
+    "checkpoint": "/home/yjl/yjl/RoboChallenge/checkpoints/table30v2_multitask_baseline_aloha",
+    "checkpoint_exists": true
+  },
+  "entrypoint_audit": {
+    "demo_py_exists": true,
+    "test_py_exists": true,
+    "required_args_present": {
+      "user_token": true,
+      "submission_id": true,
+      "checkpoint": true,
+      "prompt": true,
+      "action_type": true,
+      "duration": true,
+      "valid_action_num": true,
+      "image_size": true,
+      "robot_type": true
+    },
+    "api_base_url_present": true,
+    "job_loop_uses_submission_id": true
+  },
+  "evidence": {
+    "mock_smoke_passed": true,
+    "table30v2_mapping_ready": true,
+    "notebook_exists": true,
+    "validator_exists": true
+  },
+  "model_restore_materials": {
+    "official_aloha_checkpoint": "/home/yjl/yjl/RoboChallenge/checkpoints/table30v2_multitask_baseline_aloha",
+    "official_aloha_checkpoint_exists": true,
+    "pi05_base_params": "/home/yjl/.cache/openpi/openpi-assets/checkpoints/pi05_base/params",
+    "scoped_checkpoint_npz": "runs/openpi_rtc_lora_grad_checkpoint/trainable_params_step1.npz",
+    "scoped_checkpoint_exists": true,
+    "scoped_checkpoint_git_ignored": true,
+    "restore_audit_passed": true,
+    "checkpoint_key_count": 53,
+    "trainable_filter_key_count": 53,
+    "placeholder_after_count": 0,
+    "lora_grad_passed": true,
+    "direct_demo_checkpoint_ready": false,
+    "direct_demo_checkpoint_note": "scoped checkpoint 不是完整 checkpoint；demo.py 当前可直接使用的是官方 ALOHA baseline checkpoint。"
+  },
+  "outputs": {
+    "report": "reports/robochallenge_submission_package_checklist.md",
+    "manifest": "submission/submission_manifest_template.json",
+    "runner": "submission/run_table30v2_aloha_demo_template.sh",
+    "readme": "submission/README.md"
+  },
+  "blocking": [
+    "需要用户提供真实 ROBOCHALLENGE_USER_TOKEN。",
+    "需要用户提供真实 ROBOCHALLENGE_SUBMISSION_ID。",
+    "需要确认本次要提交的是 Table30v2 ALOHA 还是原始 Table30；当前可运行链路是 Table30v2 ALOHA。",
+    "若要提交 LoRA scoped 路线，还需要把 scoped params 打包成 demo.py 可直接恢复的完整 policy 入口。"
+  ]
+}

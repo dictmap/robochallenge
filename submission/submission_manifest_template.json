@@ -1,0 +1,68 @@
+{
+  "kind": "robochallenge_submission_manifest_template",
+  "status": "template_pending_credentials",
+  "language": "zh-CN",
+  "target": {
+    "benchmark": "Table30v2",
+    "robot_type": "aloha",
+    "task_name": "pack_the_toothbrush_holder",
+    "prompt": "Put the toothbrush and toothpaste into the toiletries case in sequence, close the case, and then place it into the basket.",
+    "note": "当前可运行链路是 Table30v2 ALOHA；原始 Table30 数据/配置仍需单独补齐后才能声明 Table30 原榜单提交。"
+  },
+  "required_runtime_inputs": {
+    "ROBOCHALLENGE_USER_TOKEN": "用户登录 RoboChallenge 后提供；不能写入仓库。",
+    "ROBOCHALLENGE_SUBMISSION_ID": "在 My Submission/Detail 页面获得；不能伪造。",
+    "ROBOCHALLENGE_CHECKPOINT": "默认使用本机已验证 ALOHA baseline checkpoint，可按需覆盖。",
+    "ROBOCHALLENGE_PROMPT": "默认使用当前任务 prompt，可按当前 run prompt 覆盖。"
+  },
+  "current_verified_entrypoint": {
+    "demo_py_exists": true,
+    "test_py_exists": true,
+    "required_args_present": {
+      "user_token": true,
+      "submission_id": true,
+      "checkpoint": true,
+      "prompt": true,
+      "action_type": true,
+      "duration": true,
+      "valid_action_num": true,
+      "image_size": true,
+      "robot_type": true
+    },
+    "api_base_url_present": true,
+    "job_loop_uses_submission_id": true
+  },
+  "model_restore_materials": {
+    "official_aloha_checkpoint": "/home/yjl/yjl/RoboChallenge/checkpoints/table30v2_multitask_baseline_aloha",
+    "official_aloha_checkpoint_exists": true,
+    "pi05_base_params": "/home/yjl/.cache/openpi/openpi-assets/checkpoints/pi05_base/params",
+    "scoped_checkpoint_npz": "runs/openpi_rtc_lora_grad_checkpoint/trainable_params_step1.npz",
+    "scoped_checkpoint_exists": true,
+    "scoped_checkpoint_git_ignored": true,
+    "restore_audit_passed": true,
+    "checkpoint_key_count": 53,
+    "trainable_filter_key_count": 53,
+    "placeholder_after_count": 0,
+    "lora_grad_passed": true,
+    "direct_demo_checkpoint_ready": false,
+    "direct_demo_checkpoint_note": "scoped checkpoint 不是完整 checkpoint；demo.py 当前可直接使用的是官方 ALOHA baseline checkpoint。"
+  },
+  "evidence_files": {
+    "mock_smoke": "runs/policy_smoke_aloha_status.json",
+    "table30v2_mapping": "runs/table30v2_aloha_mapping_audit.json",
+    "lora_restore_audit": "runs/openpi_rtc_lora_checkpoint_restore_audit.json",
+    "workspace_validator": "scripts/validate_repro_workspace.py",
+    "notebook": "notebooks/robochallenge_pi05_submit_cn.ipynb"
+  },
+  "links_to_fill_before_web_submission": {
+    "checkpoint_link": "需要填真实可访问 checkpoint 链接；baseline 可指向 Hugging Face 官方模型，LoRA scoped 需要先打包完整恢复流程。",
+    "inference_code_link": "建议填 GitHub 仓库链接：https://github.com/dictmap/robochallenge/tree/main",
+    "fine_tuning_code_link": "建议填同仓库脚本和报告；若提交 LoRA 版本，需补完整训练/恢复脚本入口。"
+  },
+  "blocking": [
+    "需要用户提供真实 ROBOCHALLENGE_USER_TOKEN。",
+    "需要用户提供真实 ROBOCHALLENGE_SUBMISSION_ID。",
+    "需要确认本次要提交的是 Table30v2 ALOHA 还是原始 Table30；当前可运行链路是 Table30v2 ALOHA。",
+    "若要提交 LoRA scoped 路线，还需要把 scoped params 打包成 demo.py 可直接恢复的完整 policy 入口。"
+  ]
+}

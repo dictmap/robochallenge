@@ -35,6 +35,7 @@ REQUIRED = [
     "reports/openpi_rtc_lora_numeric_forward_reduced.md",
     "reports/openpi_rtc_lora_numeric_grad_reduced.md",
     "reports/openpi_rtc_lora_checkpoint_restore_audit.md",
+    "reports/robochallenge_submission_package_checklist.md",
     "runs/pi05_base_probe_status.json",
     "runs/pi06_pi07_public_audit.json",
     "runs/table30v2_aloha_mapping_audit.json",
@@ -52,6 +53,10 @@ REQUIRED = [
     "runs/openpi_rtc_lora_numeric_forward_reduced_status.json",
     "runs/openpi_rtc_lora_numeric_grad_reduced_status.json",
     "runs/openpi_rtc_lora_checkpoint_restore_audit.json",
+    "runs/robochallenge_submission_package_audit.json",
+    "submission/README.md",
+    "submission/submission_manifest_template.json",
+    "submission/run_table30v2_aloha_demo_template.sh",
     "scripts/probe_pi05_base_model.sh",
     "scripts/audit_pi06_pi07_public_release.py",
     "scripts/audit_table30v2_aloha_mapping.py",
@@ -61,6 +66,7 @@ REQUIRED = [
     "scripts/run_openpi_rtc_numeric_dry_run.py",
     "scripts/audit_openpi_rtc_lora_path.py",
     "scripts/audit_openpi_rtc_lora_checkpoint_restore.py",
+    "scripts/audit_robochallenge_submission_package.py",
 ]
 
 
@@ -420,6 +426,48 @@ def main() -> int:
     ):
         print("openpi_rtc LoRA reduced trainable-filter grad/checkpoint smoke 未通过")
         return 1
+    submission_audit = json.loads(
+        (ROOT / "runs/robochallenge_submission_package_audit.json").read_text(encoding="utf-8")
+    )
+    submission_target = submission_audit.get("selected_target", {})
+    submission_entry = submission_audit.get("entrypoint_audit", {})
+    submission_evidence = submission_audit.get("evidence", {})
+    submission_restore = submission_audit.get("model_restore_materials", {})
+    submission_outputs = submission_audit.get("outputs", {})
+    submission_manifest = json.loads(
+        (ROOT / "submission/submission_manifest_template.json").read_text(encoding="utf-8")
+    )
+    runner_text = (ROOT / "submission/run_table30v2_aloha_demo_template.sh").read_text(encoding="utf-8")
+    if not all(
+        [
+            submission_audit.get("passed"),
+            submission_target.get("benchmark") == "Table30v2",
+            submission_target.get("robot_type") == "aloha",
+            submission_target.get("task_name") == "pack_the_toothbrush_holder",
+            submission_target.get("checkpoint_exists"),
+            all(submission_entry.get("required_args_present", {}).values()),
+            submission_entry.get("api_base_url_present"),
+            submission_entry.get("job_loop_uses_submission_id"),
+            submission_evidence.get("mock_smoke_passed"),
+            submission_evidence.get("table30v2_mapping_ready"),
+            submission_restore.get("official_aloha_checkpoint_exists"),
+            submission_restore.get("scoped_checkpoint_exists"),
+            submission_restore.get("scoped_checkpoint_git_ignored"),
+            submission_restore.get("restore_audit_passed"),
+            submission_restore.get("placeholder_after_count") == 0,
+            submission_restore.get("direct_demo_checkpoint_ready") is False,
+            submission_outputs.get("manifest") == "submission/submission_manifest_template.json",
+            submission_outputs.get("runner") == "submission/run_table30v2_aloha_demo_template.sh",
+            submission_manifest.get("status") == "template_pending_credentials",
+            "ROBOCHALLENGE_USER_TOKEN" in runner_text,
+            "ROBOCHALLENGE_SUBMISSION_ID" in runner_text,
+            "4f0c447" not in runner_text,
+            "sk-" not in runner_text,
+            "hf_" not in runner_text,
+        ]
+    ):
+        print("RoboChallenge submission package checklist/template audit 未通过")
+        return 1
 
     print("工作区最低交接材料检查通过")
     print(f"根目录: {ROOT}")
@@ -436,6 +484,7 @@ def main() -> int:
     print("openpi_rtc LoRA reduced 数值 forward smoke 已通过")
     print("openpi_rtc LoRA reduced trainable-filter grad/checkpoint smoke 已通过")
     print("openpi_rtc LoRA scoped checkpoint restore/merge audit 已通过")
+    print("RoboChallenge submission package checklist/template audit 已通过")
     return 0
 
 

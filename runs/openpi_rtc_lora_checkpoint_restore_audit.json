@@ -155,7 +155,7 @@
   },
   "ema_decay": null,
   "merge_audit": {
-    "base_load_seconds": 3.796,
+    "base_load_seconds": 3.833,
     "expected_leaf_count": 73,
     "base_loaded_leaf_count": 73,
     "trainable_filter_key_count": 53,

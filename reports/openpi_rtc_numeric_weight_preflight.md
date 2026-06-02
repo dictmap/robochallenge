@@ -14,7 +14,7 @@
 - dataloader actions shape：`[1, 5, 50, 32]`。
 - tokenized prompt shape：`[1, 5, 200]`。
 - 权重结构校验：`passed=True`。
-- 权重加载耗时：`3.811` 秒。
+- 权重加载耗时：`3.995` 秒。
 - 权重 leaf 数：`53`。
 - 可实际注入的 partial params leaf 数：`51`。
 - 已过滤 `ShapeDtypeStruct` leaf 数：`2`。

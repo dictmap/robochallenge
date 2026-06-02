@@ -53,6 +53,7 @@ REQUIRED = [
     "reports/submission_preflight_bundle.md",
     "reports/submission_env_template_audit.md",
     "reports/notebook_structure_audit.md",
+    "reports/jupyter_input_template_audit.md",
     "reports/authorized_preflight_template_audit.md",
     "reports/ready_real_runner_template_audit.md",
     "reports/authorized_checkpoint_archive_template_audit.md",
@@ -96,6 +97,7 @@ REQUIRED = [
     "runs/submission_preflight_bundle.json",
     "runs/submission_env_template_audit.json",
     "runs/notebook_structure_audit.json",
+    "runs/jupyter_input_template_audit.json",
     "runs/authorized_preflight_template_audit.json",
     "runs/ready_real_runner_template_audit.json",
     "runs/authorized_checkpoint_archive_template_audit.json",
@@ -140,6 +142,7 @@ REQUIRED = [
     "scripts/audit_submission_preflight_bundle.py",
     "scripts/audit_submission_env_template.py",
     "scripts/audit_notebook_structure.py",
+    "scripts/audit_jupyter_input_template.py",
     "scripts/audit_authorized_preflight_template.py",
     "scripts/audit_ready_real_runner_template.py",
     "scripts/audit_authorized_checkpoint_archive_template.py",
@@ -814,9 +817,9 @@ def main() -> int:
             "<html lang=\"zh-CN\">" in dashboard_html_text,
             "RoboChallenge pi0.5 提交状态面板" in dashboard_html_text,
             "当前阻塞" in dashboard_html_text,
-            dashboard.get("source_count") >= 13,
-            dashboard.get("card_count") >= 13,
-            dashboard.get("done_count", 0) >= 8,
+            dashboard.get("source_count") >= 14,
+            dashboard.get("card_count") >= 14,
+            dashboard.get("done_count", 0) >= 9,
             dashboard.get("blocked_count", 0) >= 4,
             dashboard.get("ready_for_real_submission") is False,
             dashboard.get("web_form_ready") is False,
@@ -831,6 +834,9 @@ def main() -> int:
             dashboard.get("archive_no_confirm_blocks") is True,
             dashboard.get("authorized_execution_checklist_passed") is True,
             dashboard.get("authorized_execution_go_no_go") == "blocked_by_user_inputs",
+            dashboard.get("jupyter_input_template_passed") is True,
+            dashboard.get("jupyter_input_default_off") is True,
+            dashboard.get("jupyter_local_env_ignored") is True,
             dashboard.get("uploads_performed") is False,
             dashboard.get("platform_contacted") is False,
             dashboard.get("credentials_printed") is False,
@@ -842,6 +848,7 @@ def main() -> int:
             "Table30v2 ALOHA" in dashboard_titles,
             "归档强确认入口" in dashboard_titles,
             "授权执行清单" in dashboard_titles,
+            "Jupyter 安全填空" in dashboard_titles,
             "真实提交 gate" in dashboard_titles,
             "提交前预检汇总" in dashboard_titles,
             "CREATE_ROBOCHALLENGE_CHECKPOINT_ARCHIVE" in dashboard_html_text,
@@ -994,6 +1001,37 @@ def main() -> int:
         ]
     ):
         print("Notebook 结构与编码审计未通过")
+        return 1
+    jupyter_input = json.loads((ROOT / "runs/jupyter_input_template_audit.json").read_text(encoding="utf-8"))
+    jupyter_required = jupyter_input.get("required_fragments", {})
+    jupyter_forbidden = jupyter_input.get("forbidden_fragments", {})
+    jupyter_keys = jupyter_input.get("required_keys", {})
+    if not all(
+        [
+            jupyter_input.get("kind") == "jupyter_input_template_audit",
+            jupyter_input.get("passed"),
+            jupyter_input.get("platform_contacted") is False,
+            jupyter_input.get("uploads_performed") is False,
+            jupyter_input.get("credentials_read") is False,
+            jupyter_input.get("credentials_printed") is False,
+            jupyter_input.get("link_values_printed") is False,
+            jupyter_input.get("secret_values_printed") is False,
+            jupyter_input.get("notebook_path") == "notebooks/robochallenge_pi05_submit_cn.ipynb",
+            jupyter_input.get("section_marker") == "第 44 节：安全填空本地 env 入口",
+            jupyter_input.get("run_flag") == "RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE",
+            jupyter_input.get("run_flag_default_false") is True,
+            jupyter_input.get("local_env_path") == "submission/robochallenge_env.local.sh",
+            jupyter_input.get("local_env_ignored", {}).get("ignored") is True,
+            all(jupyter_required.values()),
+            not any(jupyter_forbidden.values()),
+            all(jupyter_keys.values()),
+            jupyter_input.get("code_cell_clean") is True,
+            jupyter_input.get("code_cell_id") == "safe-local-env-input-code",
+            jupyter_input.get("secret_pattern_hits") == [],
+            jupyter_input.get("whole_notebook_secret_pattern_hits") == [],
+        ]
+    ):
+        print("Jupyter 安全填空本地 env 入口审计未通过")
         return 1
     authorized_preflight = json.loads((ROOT / "runs/authorized_preflight_template_audit.json").read_text(encoding="utf-8"))
     authorized_preflight_smoke = authorized_preflight.get("no_credentials_smoke", {})
@@ -1183,6 +1221,7 @@ def main() -> int:
         "checkpoint_link_download_verification",
         "submission_env_template",
         "notebook_structure",
+        "jupyter_input_template",
         "real_submission_readiness",
         "authorized_preflight_template",
         "ready_real_runner_template",
@@ -1422,6 +1461,7 @@ def main() -> int:
     print("真实提交交接文档审计已通过")
     print("真实提交环境变量模板审计已通过")
     print("Notebook 结构与编码审计已通过")
+    print("Jupyter 安全填空本地 env 入口审计已通过")
     print("授权后安全预检模板审计已通过")
     print("强确认真实 runner 模板审计已通过")
     print("授权后 checkpoint 归档模板审计已通过")

@@ -27,6 +27,7 @@
 - `checkpoint_link_download_verification`：returncode=`0`，passed=`True`。
 - `submission_env_template`：returncode=`0`，passed=`True`。
 - `notebook_structure`：returncode=`0`，passed=`True`。
+- `jupyter_input_template`：returncode=`0`，passed=`True`。
 - `real_submission_readiness`：returncode=`0`，passed=`True`。
 - `authorized_preflight_template`：returncode=`0`，passed=`True`。
 - `ready_real_runner_template`：returncode=`0`，passed=`True`。

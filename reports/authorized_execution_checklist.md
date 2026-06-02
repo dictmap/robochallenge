@@ -21,17 +21,19 @@
 
 ## 授权后执行顺序
 
-1. 填写本地 env：`cp submission/robochallenge_env_template.sh submission/robochallenge_env.local.sh`
+1. Jupyter 安全填空本地 env：`Notebook 第 44 节：RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE=True`
+   - 边界：只写入被 Git 忽略的 submission/robochallenge_env.local.sh；不把真实 token/link 写入 Notebook 源码或 tracked 文件。
+2. 填写本地 env：`cp submission/robochallenge_env_template.sh submission/robochallenge_env.local.sh`
    - 边界：只编辑被 Git 忽略的 local env 文件；不把真实 token 写入 tracked 文件。
-2. 加载本地 env：`source submission/robochallenge_env.local.sh`
+3. 加载本地 env：`source submission/robochallenge_env.local.sh`
    - 边界：shell 中加载，不打印变量值。
-3. 只读预检：`bash submission/run_authorized_preflight_template.sh`
+4. 只读预检：`bash submission/run_authorized_preflight_template.sh`
    - 边界：如果 ready_for_real_submission=false，必须停止。
-4. 可选下载校验：`python3 scripts/audit_checkpoint_link_download_verification.py --verify-download`
+5. 可选下载校验：`python3 scripts/audit_checkpoint_link_download_verification.py --verify-download`
    - 边界：只有用户明确允许联网验证 checkpoint link 时才运行。
-5. 可选 checkpoint 归档：`ROBOCHALLENGE_ARCHIVE_CONFIRM=CREATE_ROBOCHALLENGE_CHECKPOINT_ARCHIVE bash submission/run_authorized_checkpoint_archive_template.sh`
+6. 可选 checkpoint 归档：`ROBOCHALLENGE_ARCHIVE_CONFIRM=CREATE_ROBOCHALLENGE_CHECKPOINT_ARCHIVE bash submission/run_authorized_checkpoint_archive_template.sh`
    - 边界：只有用户明确授权生成 11GB+ tar 时才运行。
-6. 真实 runner 强确认：`ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION bash submission/run_ready_real_submission_template.sh`
+7. 真实 runner 强确认：`ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION bash submission/run_ready_real_submission_template.sh`
    - 边界：只有 readiness、dry-run 和确认短语全部通过后才会进入真实 runner。
 
 ## 必须停止的情况
@@ -59,6 +61,8 @@
 - `checkpoint_link_missing_as_expected`：`True`。
 - `env_template_passed`：`True`。
 - `local_env_ignored`：`True`。
+- `jupyter_input_template_passed`：`True`。
+- `jupyter_local_env_ignored`：`True`。
 - `authorized_preflight_template_passed`：`True`。
 - `ready_real_runner_template_passed`：`True`。
 - `real_runner_confirmation_phrase`：`True`。

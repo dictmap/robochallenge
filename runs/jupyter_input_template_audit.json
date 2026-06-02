@@ -1,0 +1,62 @@
+{
+  "kind": "jupyter_input_template_audit",
+  "passed": true,
+  "platform_contacted": false,
+  "uploads_performed": false,
+  "credentials_read": false,
+  "credentials_printed": false,
+  "link_values_printed": false,
+  "secret_values_printed": false,
+  "notebook_path": "notebooks/robochallenge_pi05_submit_cn.ipynb",
+  "section_marker": "第 44 节：安全填空本地 env 入口",
+  "section_index": 89,
+  "run_flag": "RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE",
+  "run_flag_default_false": true,
+  "local_env_path": "submission/robochallenge_env.local.sh",
+  "local_env_ignored": {
+    "path": "submission/robochallenge_env.local.sh",
+    "ignored": true,
+    "returncode": 0
+  },
+  "required_keys": {
+    "ROBOCHALLENGE_USER_TOKEN": true,
+    "ROBOCHALLENGE_SUBMISSION_ID": true,
+    "ROBOCHALLENGE_LORA_CHECKPOINT_LINK": true,
+    "ROBOCHALLENGE_CHECKPOINT_LINK": true
+  },
+  "required_fragments": {
+    "第 44 节：安全填空本地 env 入口": true,
+    "RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE": true,
+    "RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE = False": true,
+    "import getpass": true,
+    "import shlex": true,
+    "getpass.getpass": true,
+    "shlex.quote": true,
+    "is_placeholder_like": true,
+    "PLACEHOLDER_MARKERS": true,
+    "missing_or_placeholder": true,
+    "os.chmod": true,
+    "submission/robochallenge_env.local.sh": true,
+    "ROBOCHALLENGE_USER_TOKEN": true,
+    "ROBOCHALLENGE_SUBMISSION_ID": true,
+    "ROBOCHALLENGE_LORA_CHECKPOINT_LINK": true,
+    "ROBOCHALLENGE_CHECKPOINT_LINK": true
+  },
+  "forbidden_fragments": {
+    "print(token": false,
+    "print(env_values": false,
+    "print(value": false,
+    "display(env_values": false,
+    "ROBOCHALLENGE_USER_TOKEN =": false,
+    "ROBOCHALLENGE_SUBMISSION_ID =": false,
+    "ROBOCHALLENGE_LORA_CHECKPOINT_LINK =": false,
+    "ROBOCHALLENGE_CHECKPOINT_LINK =": false
+  },
+  "code_cell_clean": true,
+  "code_cell_id": "safe-local-env-input-code",
+  "secret_pattern_hits": [],
+  "whole_notebook_secret_pattern_hits": [],
+  "blocking": [
+    "Jupyter 安全填空本地 env 入口已就绪；当前未读取、未写入、未打印真实凭据。"
+  ]
+}

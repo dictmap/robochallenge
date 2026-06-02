@@ -4,7 +4,7 @@
 
 - 审计状态：`passed=True`。
 - Notebook：`notebooks/robochallenge_pi05_submit_cn.ipynb`。
-- cell 数量：`89`。
+- cell 数量：`91`。
 - 缺失 cell id 数量：`0`。
 - 重复 cell id 数量：`0`。
 - 带输出的代码 cell 数量：`0`。
@@ -29,6 +29,9 @@
 - `第 43 节：授权执行清单审计`：`True`。
 - `RUN_AUTHORIZED_EXECUTION_CHECKLIST`：`True`。
 - `scripts/audit_authorized_execution_checklist.py`：`True`。
+- `第 44 节：安全填空本地 env 入口`：`True`。
+- `RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE`：`True`。
+- `scripts/audit_jupyter_input_template.py`：`True`。
 
 ## Blocking
 

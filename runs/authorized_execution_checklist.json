@@ -52,36 +52,42 @@
   "authorized_steps": [
     {
       "step": 1,
+      "name": "Jupyter 安全填空本地 env",
+      "command": "Notebook 第 44 节：RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE=True",
+      "guard": "只写入被 Git 忽略的 submission/robochallenge_env.local.sh；不把真实 token/link 写入 Notebook 源码或 tracked 文件。"
+    },
+    {
+      "step": 2,
       "name": "填写本地 env",
       "command": "cp submission/robochallenge_env_template.sh submission/robochallenge_env.local.sh",
       "guard": "只编辑被 Git 忽略的 local env 文件；不把真实 token 写入 tracked 文件。"
     },
     {
-      "step": 2,
+      "step": 3,
       "name": "加载本地 env",
       "command": "source submission/robochallenge_env.local.sh",
       "guard": "shell 中加载，不打印变量值。"
     },
     {
-      "step": 3,
+      "step": 4,
       "name": "只读预检",
       "command": "bash submission/run_authorized_preflight_template.sh",
       "guard": "如果 ready_for_real_submission=false，必须停止。"
     },
     {
-      "step": 4,
+      "step": 5,
       "name": "可选下载校验",
       "command": "python3 scripts/audit_checkpoint_link_download_verification.py --verify-download",
       "guard": "只有用户明确允许联网验证 checkpoint link 时才运行。"
     },
     {
-      "step": 5,
+      "step": 6,
       "name": "可选 checkpoint 归档",
       "command": "ROBOCHALLENGE_ARCHIVE_CONFIRM=CREATE_ROBOCHALLENGE_CHECKPOINT_ARCHIVE bash submission/run_authorized_checkpoint_archive_template.sh",
       "guard": "只有用户明确授权生成 11GB+ tar 时才运行。"
     },
     {
-      "step": 6,
+      "step": 7,
       "name": "真实 runner 强确认",
       "command": "ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION bash submission/run_ready_real_submission_template.sh",
       "guard": "只有 readiness、dry-run 和确认短语全部通过后才会进入真实 runner。"
@@ -110,6 +116,8 @@
     "checkpoint_link_missing_as_expected": true,
     "env_template_passed": true,
     "local_env_ignored": true,
+    "jupyter_input_template_passed": true,
+    "jupyter_local_env_ignored": true,
     "authorized_preflight_template_passed": true,
     "ready_real_runner_template_passed": true,
     "real_runner_confirmation_phrase": true,
@@ -131,6 +139,8 @@
     "checkpoint_link_missing_as_expected",
     "env_template_passed",
     "local_env_ignored",
+    "jupyter_input_template_passed",
+    "jupyter_local_env_ignored",
     "authorized_preflight_template_passed",
     "ready_real_runner_template_passed",
     "real_runner_confirmation_phrase",

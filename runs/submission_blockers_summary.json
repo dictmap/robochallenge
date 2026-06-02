@@ -19,6 +19,7 @@
     "artifact_manifest_ready": true,
     "env_template_ready": true,
     "notebook_structure_ready": true,
+    "jupyter_input_template_ready": true,
     "authorized_preflight_template_ready": true,
     "ready_real_runner_template_ready": true,
     "authorized_checkpoint_archive_template_ready": true,

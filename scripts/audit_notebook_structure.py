@@ -44,6 +44,9 @@ REQUIRED_MARKERS = [
     "第 43 节：授权执行清单审计",
     "RUN_AUTHORIZED_EXECUTION_CHECKLIST",
     "scripts/audit_authorized_execution_checklist.py",
+    "第 44 节：安全填空本地 env 入口",
+    "RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE",
+    "scripts/audit_jupyter_input_template.py",
 ]
 
 

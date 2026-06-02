@@ -58,30 +58,36 @@ REQUIRED_USER_DECISIONS = [
 AUTHORIZED_STEPS = [
     {
         "step": 1,
+        "name": "Jupyter 安全填空本地 env",
+        "command": "Notebook 第 44 节：RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE=True",
+        "guard": "只写入被 Git 忽略的 submission/robochallenge_env.local.sh；不把真实 token/link 写入 Notebook 源码或 tracked 文件。",
+    },
+    {
+        "step": 2,
         "name": "填写本地 env",
         "command": "cp submission/robochallenge_env_template.sh submission/robochallenge_env.local.sh",
         "guard": "只编辑被 Git 忽略的 local env 文件；不把真实 token 写入 tracked 文件。",
     },
     {
-        "step": 2,
+        "step": 3,
         "name": "加载本地 env",
         "command": "source submission/robochallenge_env.local.sh",
         "guard": "shell 中加载，不打印变量值。",
     },
     {
-        "step": 3,
+        "step": 4,
         "name": "只读预检",
         "command": "bash submission/run_authorized_preflight_template.sh",
         "guard": "如果 ready_for_real_submission=false，必须停止。",
     },
     {
-        "step": 4,
+        "step": 5,
         "name": "可选下载校验",
         "command": "python3 scripts/audit_checkpoint_link_download_verification.py --verify-download",
         "guard": "只有用户明确允许联网验证 checkpoint link 时才运行。",
     },
     {
-        "step": 5,
+        "step": 6,
         "name": "可选 checkpoint 归档",
         "command": (
             "ROBOCHALLENGE_ARCHIVE_CONFIRM=CREATE_ROBOCHALLENGE_CHECKPOINT_ARCHIVE "
@@ -90,7 +96,7 @@ AUTHORIZED_STEPS = [
         "guard": "只有用户明确授权生成 11GB+ tar 时才运行。",
     },
     {
-        "step": 6,
+        "step": 7,
         "name": "真实 runner 强确认",
         "command": (
             "ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION "
@@ -120,6 +126,8 @@ REQUIRED_EVIDENCE_KEYS = [
     "checkpoint_link_missing_as_expected",
     "env_template_passed",
     "local_env_ignored",
+    "jupyter_input_template_passed",
+    "jupyter_local_env_ignored",
     "authorized_preflight_template_passed",
     "ready_real_runner_template_passed",
     "real_runner_confirmation_phrase",
@@ -157,6 +165,7 @@ def build_status() -> dict[str, Any]:
     readiness = read_json(RUNS_DIR / "real_submission_readiness.json")
     link_intake = read_json(RUNS_DIR / "checkpoint_link_intake.json")
     env_template = read_json(RUNS_DIR / "submission_env_template_audit.json")
+    jupyter_input = read_json(RUNS_DIR / "jupyter_input_template_audit.json")
     authorized_preflight = read_json(RUNS_DIR / "authorized_preflight_template_audit.json")
     ready_real_runner = read_json(RUNS_DIR / "ready_real_runner_template_audit.json")
     authorized_archive = read_json(RUNS_DIR / "authorized_checkpoint_archive_template_audit.json")
@@ -186,6 +195,8 @@ def build_status() -> dict[str, Any]:
         .get("submission/robochallenge_env.local.sh", {})
         .get("ignored")
         is True,
+        "jupyter_input_template_passed": jupyter_input.get("passed") is True,
+        "jupyter_local_env_ignored": jupyter_input.get("local_env_ignored", {}).get("ignored") is True,
         "authorized_preflight_template_passed": authorized_preflight.get("passed") is True,
         "ready_real_runner_template_passed": ready_real_runner.get("passed") is True,
         "real_runner_confirmation_phrase": ready_real_runner.get("confirmation_phrase")
@@ -205,18 +216,21 @@ def build_status() -> dict[str, Any]:
         "credentials_printed": bool(preflight.get("leak_flags", {}).get("credentials_printed"))
         or bool(blockers.get("credentials_printed"))
         or bool(readiness.get("credentials_printed"))
+        or bool(jupyter_input.get("credentials_printed"))
         or bool(authorized_preflight.get("credentials_printed"))
         or bool(ready_real_runner.get("credentials_printed"))
         or bool(authorized_archive.get("credentials_printed")),
         "link_values_printed": bool(preflight.get("leak_flags", {}).get("link_values_printed"))
         or bool(blockers.get("link_values_printed"))
         or bool(link_intake.get("link_values_printed"))
+        or bool(jupyter_input.get("link_values_printed"))
         or bool(authorized_preflight.get("link_values_printed"))
         or bool(ready_real_runner.get("link_values_printed"))
         or bool(authorized_archive.get("link_values_printed")),
         "secret_values_printed": bool(preflight.get("leak_flags", {}).get("secret_values_printed"))
         or bool(blockers.get("secret_values_printed"))
         or bool(secret_scan.get("secret_values_printed"))
+        or bool(jupyter_input.get("secret_values_printed"))
         or bool(authorized_preflight.get("secret_values_printed"))
         or bool(ready_real_runner.get("secret_values_printed"))
         or bool(authorized_archive.get("secret_values_printed")),
@@ -225,12 +239,14 @@ def build_status() -> dict[str, Any]:
         "platform_contacted": bool(preflight.get("contact_flags", {}).get("platform_contacted"))
         or bool(blockers.get("platform_contacted"))
         or bool(readiness.get("platform_contacted"))
+        or bool(jupyter_input.get("platform_contacted"))
         or bool(authorized_preflight.get("platform_contacted"))
         or bool(ready_real_runner.get("platform_contacted"))
         or bool(authorized_archive.get("platform_contacted")),
         "uploads_performed": bool(preflight.get("contact_flags", {}).get("uploads_performed"))
         or bool(blockers.get("uploads_performed"))
         or bool(readiness.get("uploads_performed"))
+        or bool(jupyter_input.get("uploads_performed"))
         or bool(authorized_preflight.get("uploads_performed"))
         or bool(ready_real_runner.get("uploads_performed"))
         or bool(authorized_archive.get("uploads_performed")),

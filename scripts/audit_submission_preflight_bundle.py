@@ -23,6 +23,7 @@ SUBCOMMANDS = [
     ("checkpoint_link_download_verification", "scripts/audit_checkpoint_link_download_verification.py"),
     ("submission_env_template", "scripts/audit_submission_env_template.py"),
     ("notebook_structure", "scripts/audit_notebook_structure.py"),
+    ("jupyter_input_template", "scripts/audit_jupyter_input_template.py"),
     ("real_submission_readiness", "scripts/audit_real_submission_readiness.py"),
     ("authorized_preflight_template", "scripts/audit_authorized_preflight_template.py"),
     ("ready_real_runner_template", "scripts/audit_ready_real_runner_template.py"),
@@ -79,6 +80,7 @@ def build_status() -> dict[str, Any]:
     link_download = read_json(RUNS_DIR / "checkpoint_link_download_verification.json")
     artifact_manifest = read_json(RUNS_DIR / "submission_artifact_manifest.json")
     notebook_structure = read_json(RUNS_DIR / "notebook_structure_audit.json")
+    jupyter_input = read_json(RUNS_DIR / "jupyter_input_template_audit.json")
     readiness = read_json(RUNS_DIR / "real_submission_readiness.json")
     authorized_preflight = read_json(RUNS_DIR / "authorized_preflight_template_audit.json")
     ready_real_runner = read_json(RUNS_DIR / "ready_real_runner_template_audit.json")
@@ -94,6 +96,7 @@ def build_status() -> dict[str, Any]:
                 link_download,
                 artifact_manifest,
                 notebook_structure,
+                jupyter_input,
                 readiness,
                 authorized_preflight,
                 ready_real_runner,
@@ -106,12 +109,14 @@ def build_status() -> dict[str, Any]:
         or bool(link_download.get("link_value_printed"))
         or bool(artifact_manifest.get("link_values_printed"))
         or bool(notebook_structure.get("link_values_printed"))
+        or bool(jupyter_input.get("link_values_printed"))
         or bool(authorized_preflight.get("link_values_printed"))
         or bool(ready_real_runner.get("link_values_printed"))
         or bool(authorized_archive.get("link_values_printed")),
         "secret_values_printed": bool(secret_scan.get("secret_values_printed"))
         or bool(artifact_manifest.get("secret_values_printed"))
         or bool(notebook_structure.get("secret_values_printed"))
+        or bool(jupyter_input.get("secret_values_printed"))
         or bool(authorized_preflight.get("secret_values_printed"))
         or bool(ready_real_runner.get("secret_values_printed"))
         or bool(authorized_archive.get("secret_values_printed")),
@@ -124,6 +129,7 @@ def build_status() -> dict[str, Any]:
                 link_download,
                 artifact_manifest,
                 notebook_structure,
+                jupyter_input,
                 readiness,
                 authorized_preflight,
                 ready_real_runner,
@@ -139,6 +145,7 @@ def build_status() -> dict[str, Any]:
                 link_download,
                 artifact_manifest,
                 notebook_structure,
+                jupyter_input,
                 readiness,
                 authorized_preflight,
                 ready_real_runner,

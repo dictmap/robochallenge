@@ -1351,3 +1351,29 @@
 
 - P0：提交并推送本轮授权执行清单与 Notebook 第 43 节产物。
 - P1：用户补齐真实凭据和 checkpoint link 后，先在 Jupyter 第 43 节复跑授权执行清单，再运行 `bash submission/run_authorized_preflight_template.sh`。
+
+## 2026-06-03 第四十八轮：Jupyter 安全填空本地 env 入口审计
+
+### 已完成
+- 新增 `scripts/audit_jupyter_input_template.py`，静态审计 Notebook 第 44 节的本地 env 填空入口；审计不执行 Notebook、不读取凭据、不联网、不上传。
+- Notebook `notebooks/robochallenge_pi05_submit_cn.ipynb` 新增第 44 节“安全填空本地 env 入口”，默认 `RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE=False`，只有用户手动改成 `True` 后才会通过 `getpass`/`input` 写入本地 env。
+- 第 44 节只写入 `submission/robochallenge_env.local.sh`，该路径已被 `.gitignore` 覆盖；写入时使用 `shlex.quote`，并拒绝空值、占位符和值中换行。
+- `scripts/audit_notebook_structure.py`、`scripts/audit_submission_preflight_bundle.py`、`scripts/audit_submission_artifact_manifest.py`、`scripts/audit_submission_blockers_summary.py`、`scripts/audit_authorized_execution_checklist.py`、`scripts/render_submission_status_dashboard.py` 和 `scripts/validate_repro_workspace.py` 已纳入该入口审计。
+- GUI 面板新增“Jupyter 安全填空”卡片，显示 local env 入口已就绪、默认关闭、等待用户输入。
+
+### 验证结果
+
+- Linux 端 `python3 scripts/audit_jupyter_input_template.py` 已通过：`passed=true`，`section_index=89`，`run_flag_default_false=true`，`code_cell_clean=true`，`local_env_ignored=true`，`secret_pattern_hits=[]`。
+- Linux 端 `python3 scripts/audit_notebook_structure.py` 已通过：`cell_count=91`，无缺失/重复 cell id，无输出，无 `execution_count`，第 44 节关键标记齐全。
+- Linux 端完整 no-contact 预检链已通过：`python3 scripts/audit_plaintext_secrets.py`、`python3 scripts/audit_submission_preflight_bundle.py`、`python3 scripts/audit_submission_artifact_manifest.py`、`python3 scripts/audit_submission_blockers_summary.py`、`python3 scripts/render_submission_status_dashboard.py` 和 `python3 scripts/validate_repro_workspace.py` 均通过。
+- GUI 状态 JSON 已更新：`source_count=14`，`card_count=14`，`done_count=9`，`blocked_count=4`，`jupyter_input_template_passed=true`，`jupyter_input_default_off=true`，`jupyter_local_env_ignored=true`。
+- Linux 端 `git diff --check` 已通过；明文凭据扫描 `hit_count=0`。
+
+### 当前边界
+
+- 本轮没有读取真实 token、submission id 或 checkpoint link，没有接触 RoboChallenge 平台，没有上传 checkpoint，没有生成 checkpoint tar，也没有启动真实 runner。
+- 真实提交仍处于 `go_no_go=blocked`：还缺 `ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、真实可访问 checkpoint link，以及用户对 checkpoint 归档/上传和真实 runner 的明确授权。
+
+### 下一步
+- P0：提交并推送本轮 Jupyter 安全填空入口、审计脚本、GUI 和总体验证更新。
+- P1：用户拿到真实凭据和 checkpoint link 后，在 Notebook 第 44 节手动设置 `RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE=True` 写入 `submission/robochallenge_env.local.sh`，然后运行 `python3 scripts/audit_real_submission_readiness.py` 和 `bash submission/run_authorized_preflight_template.sh`。

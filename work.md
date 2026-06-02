@@ -507,3 +507,34 @@
 
 - P0：把 `pi05_base + LoRA scoped trainable params` 整理成 `demo.py` 可复用的最小推理入口或完整 checkpoint 包，缩小 LoRA 路线与真实提交入口之间的差距。
 - P1：等待用户提供真实 token/submission_id 后，才运行 `submission/run_table30v2_aloha_demo_template.sh` 进入真实评测。
+## 2026-06-02 第十八轮：LoRA 推理 checkpoint 物化布局审计
+
+### 已完成
+
+- 新增 `scripts/audit_openpi_rtc_lora_inference_checkpoint_layout.py`，用于审计 `pi05_base + LoRA scoped trainable params` 如何整理成 `create_trained_policy` / `demo.py` 可读取的完整推理 checkpoint 目录。
+- 默认只做布局审计和 tiny Orbax checkpoint save/restore smoke，不自动写出 12GB+ 完整权重目录。
+- 明确推理目录形态：`<checkpoint>/params` 必须是 Orbax PyTree checkpoint，顶层 item 为 `{"params": full_params}`；norm stats 需要放在 `<checkpoint>/assets/cvpr_multitask_aloha/norm_stats.json`。
+- 确认完整物化目标目录 `runs/openpi_rtc_lora_materialized_policy_checkpoint/` 的内容会被 `.gitignore` 的 `runs/*checkpoint*/` 规则排除。
+- 生成 `reports/openpi_rtc_lora_inference_checkpoint_layout.md` 和 `runs/openpi_rtc_lora_inference_checkpoint_layout_audit.json`。
+- 已将该审计纳入 `scripts/validate_repro_workspace.py`。
+
+### 验证结果
+
+- layout audit：`passed=true`。
+- LoRA 模型 leaf：`73`；`cfg.trainable_filter` key：`53`。
+- scoped checkpoint leaf：`53`，metadata 为 `scoped_trainable_checkpoint / cfg.trainable_filter`。
+- restore/merge 审计引用通过：合并后 `ShapeDtypeStruct` 占位 leaf 为 `0`。
+- 官方 ALOHA norm stats 存在：`/home/yjl/yjl/RoboChallenge/checkpoints/table30v2_multitask_baseline_aloha/assets/cvpr_multitask_aloha/norm_stats.json`。
+- tiny Orbax save/restore smoke 通过：写入 `runs/openpi_rtc_lora_checkpoint_layout_smoke/params` 后可由 `openpi_rtc.models.model.restore_params` 读回。
+- 远端 `python3 scripts/validate_repro_workspace.py` 已通过。
+
+### 当前边界
+
+- `direct_demo_checkpoint_ready=false`：本轮没有自动物化完整 12GB+ checkpoint，因此 LoRA scoped checkpoint 仍不能直接传给 `demo.py --checkpoint`。
+- 如需写出完整 checkpoint，需要显式运行：`python3 scripts/audit_openpi_rtc_lora_inference_checkpoint_layout.py --materialize --force`。
+- 真实 RoboChallenge 提交仍需要用户提供 `ROBOCHALLENGE_USER_TOKEN` 和 `ROBOCHALLENGE_SUBMISSION_ID`，不能伪造。
+
+### 下一步
+
+- P0：在用户确认允许写出大文件后，运行 `--materialize --force` 生成完整 LoRA 推理 checkpoint，并用 `create_trained_policy` 做恢复 smoke。
+- P1：如果不走 LoRA 物化路线，继续使用官方 Table30v2 ALOHA baseline checkpoint 作为当前可运行提交模板。

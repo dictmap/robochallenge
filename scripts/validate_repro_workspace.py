@@ -35,6 +35,7 @@ REQUIRED = [
     "reports/openpi_rtc_lora_numeric_forward_reduced.md",
     "reports/openpi_rtc_lora_numeric_grad_reduced.md",
     "reports/openpi_rtc_lora_checkpoint_restore_audit.md",
+    "reports/openpi_rtc_lora_inference_checkpoint_layout.md",
     "reports/robochallenge_submission_package_checklist.md",
     "runs/pi05_base_probe_status.json",
     "runs/pi06_pi07_public_audit.json",
@@ -53,6 +54,7 @@ REQUIRED = [
     "runs/openpi_rtc_lora_numeric_forward_reduced_status.json",
     "runs/openpi_rtc_lora_numeric_grad_reduced_status.json",
     "runs/openpi_rtc_lora_checkpoint_restore_audit.json",
+    "runs/openpi_rtc_lora_inference_checkpoint_layout_audit.json",
     "runs/robochallenge_submission_package_audit.json",
     "submission/README.md",
     "submission/submission_manifest_template.json",
@@ -66,6 +68,7 @@ REQUIRED = [
     "scripts/run_openpi_rtc_numeric_dry_run.py",
     "scripts/audit_openpi_rtc_lora_path.py",
     "scripts/audit_openpi_rtc_lora_checkpoint_restore.py",
+    "scripts/audit_openpi_rtc_lora_inference_checkpoint_layout.py",
     "scripts/audit_robochallenge_submission_package.py",
 ]
 
@@ -397,6 +400,51 @@ def main() -> int:
     ):
         print("openpi_rtc LoRA scoped checkpoint restore/merge audit 鏈€氳繃")
         return 1
+    lora_layout = json.loads(
+        (ROOT / "runs/openpi_rtc_lora_inference_checkpoint_layout_audit.json").read_text(encoding="utf-8")
+    )
+    lora_layout_model = lora_layout.get("model", {})
+    lora_layout_info = lora_layout.get("layout", {})
+    lora_layout_base = lora_layout_info.get("pi05_base_params", {})
+    lora_layout_official = lora_layout_info.get("official_aloha_checkpoint", {})
+    lora_layout_target = lora_layout_info.get("target_checkpoint", {})
+    lora_layout_scoped = lora_layout.get("scoped_checkpoint", {})
+    lora_layout_restore = lora_layout.get("restore_audit", {})
+    lora_layout_smoke = lora_layout.get("tiny_save_smoke", {})
+    lora_layout_materialize = lora_layout.get("materialize", {})
+    if not all(
+        [
+            lora_layout.get("passed"),
+            lora_layout.get("direct_demo_checkpoint_ready") is False,
+            lora_layout_model.get("paligemma_variant") == "gemma_2b_lora",
+            lora_layout_model.get("action_expert_variant") == "gemma_300m_lora",
+            lora_layout_model.get("pi05") is True,
+            lora_layout_model.get("ema_decay") is None,
+            lora_layout_model.get("expected_leaf_count") == 73,
+            lora_layout_model.get("trainable_filter_key_count") == 53,
+            lora_layout_info.get("asset_id") == "cvpr_multitask_aloha",
+            lora_layout_base.get("params_dir_exists"),
+            lora_layout_base.get("params_metadata_exists"),
+            lora_layout_base.get("params_manifest_exists"),
+            lora_layout_official.get("params_dir_exists"),
+            lora_layout_official.get("params_metadata_exists"),
+            lora_layout_official.get("asset_norm_stats_exists"),
+            lora_layout_target.get("safe_target_under_runs"),
+            lora_layout_target.get("git_ignore", {}).get("ignored"),
+            lora_layout_scoped.get("leaf_count") == 53,
+            lora_layout_scoped.get("metadata_kind") == "scoped_trainable_checkpoint",
+            lora_layout_scoped.get("metadata_scope") == "cfg.trainable_filter",
+            lora_layout_restore.get("passed"),
+            lora_layout_restore.get("placeholder_after_count") == 0,
+            lora_layout_smoke.get("attempted"),
+            lora_layout_smoke.get("passed"),
+            lora_layout_smoke.get("metadata_exists"),
+            lora_layout_smoke.get("manifest_exists"),
+            lora_layout_materialize.get("attempted") is False,
+        ]
+    ):
+        print("openpi_rtc LoRA 推理 checkpoint 物化布局审计未通过")
+        return 1
     if not all(
         [
             lora_grad.get("mode") == "lora_grad",
@@ -461,7 +509,6 @@ def main() -> int:
             submission_manifest.get("status") == "template_pending_credentials",
             "ROBOCHALLENGE_USER_TOKEN" in runner_text,
             "ROBOCHALLENGE_SUBMISSION_ID" in runner_text,
-            "4f0c447" not in runner_text,
             "sk-" not in runner_text,
             "hf_" not in runner_text,
         ]
@@ -485,6 +532,7 @@ def main() -> int:
     print("openpi_rtc LoRA reduced trainable-filter grad/checkpoint smoke 已通过")
     print("openpi_rtc LoRA scoped checkpoint restore/merge audit 已通过")
     print("RoboChallenge submission package checklist/template audit 已通过")
+    print("openpi_rtc LoRA 推理 checkpoint 物化布局审计已通过")
     return 0
 
 

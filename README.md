@@ -102,3 +102,17 @@
 - 已生成 `reports/openpi_rtc_lora_checkpoint_restore_audit.md` 和 `runs/openpi_rtc_lora_checkpoint_restore_audit.json`。
 - 审计结论：53 个 checkpoint key 严格匹配 `cfg.trainable_filter`；合并前 22 个 `ShapeDtypeStruct` LoRA/knob 占位，合并后剩余 0 个；参数树 shape/dtype 校验和 NNX state replace smoke 均通过。
 - 该 checkpoint 仍然不是完整 policy checkpoint；推理或提交时必须同时携带相同 config、相同 LoRA variant、`pi05_base` 基础权重和 scoped trainable params。
+## 2026-06-02 LoRA 推理 checkpoint 物化布局更新
+
+- 已新增 `scripts/audit_openpi_rtc_lora_inference_checkpoint_layout.py`。
+- 已生成 `reports/openpi_rtc_lora_inference_checkpoint_layout.md` 和 `runs/openpi_rtc_lora_inference_checkpoint_layout_audit.json`。
+- 审计结论：`pi05_base + LoRA scoped trainable params` 可以整理为 `create_trained_policy` 需要的目录形态，关键结构是 `<checkpoint>/params` 的 Orbax PyTree checkpoint 和 `<checkpoint>/assets/cvpr_multitask_aloha/norm_stats.json`。
+- 本轮默认没有写出 12GB+ 完整 checkpoint，因此 `direct_demo_checkpoint_ready=false` 仍然成立；LoRA scoped checkpoint 还不能直接作为 `demo.py --checkpoint` 参数。
+- tiny Orbax save/restore smoke 已通过，说明 `{"params": ...}` 这种保存形态可以被 `openpi_rtc.models.model.restore_params` 正常读回。
+- 完整物化需要显式运行：`python3 scripts/audit_openpi_rtc_lora_inference_checkpoint_layout.py --materialize --force`。生成目录位于 `runs/openpi_rtc_lora_materialized_policy_checkpoint/`，已被 `.gitignore` 排除，不能提交到 Git。
+
+## 下一轮 P0 更新
+
+1. 如果允许写出大文件，运行 `--materialize --force` 生成完整 LoRA 推理 checkpoint，并用 `create_trained_policy` 做加载 smoke。
+2. 如果暂不写大文件，继续以官方 Table30v2 ALOHA baseline checkpoint 作为当前可运行提交模板。
+3. 真实 RoboChallenge 提交仍等待 `ROBOCHALLENGE_USER_TOKEN` 和 `ROBOCHALLENGE_SUBMISSION_ID`。

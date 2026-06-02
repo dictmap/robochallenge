@@ -42,6 +42,19 @@ validate_variant() {
   esac
 }
 
+validate_bool_flag() {
+  local name="$1"
+  local value="$2"
+  case "$value" in
+    0|1)
+      ;;
+    *)
+      echo "[ready-real-runner] $name must be 0 or 1; do not use true/false/yes/no or blank values" >&2
+      exit 68
+      ;;
+  esac
+}
+
 echo "[ready-real-runner] repo=$REPO_ROOT"
 echo "[ready-real-runner] env_file_present=$([[ -f "$ENV_FILE" ]] && echo true || echo false)"
 
@@ -56,6 +69,7 @@ VERIFY_DOWNLOAD="${ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD:-0}"
 CONFIRM_VALUE="${ROBOCHALLENGE_REAL_RUN_CONFIRM:-}"
 
 validate_variant "$VARIANT"
+validate_bool_flag ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD "$VERIFY_DOWNLOAD"
 
 echo "[ready-real-runner] variant=$VARIANT"
 echo "[ready-real-runner] verify_download=$VERIFY_DOWNLOAD"

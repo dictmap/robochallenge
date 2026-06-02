@@ -36,6 +36,7 @@ SOURCE_FILES = {
     "local_env_permission": RUNS_DIR / "local_env_permission_contract.json",
     "local_env_runtime_permission": RUNS_DIR / "local_env_runtime_permission_gate.json",
     "submission_variant_gate": RUNS_DIR / "submission_variant_gate.json",
+    "boolean_env_gate": RUNS_DIR / "boolean_env_gate.json",
     "placeholder_credentials": RUNS_DIR / "placeholder_credential_rejection.json",
     "credential_whitespace_guard": RUNS_DIR / "credential_whitespace_guard.json",
     "synthetic_dry_run_redaction": RUNS_DIR / "synthetic_dry_run_redaction.json",
@@ -110,6 +111,7 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
     local_env_permission = data["local_env_permission"]
     local_env_runtime_permission = data["local_env_runtime_permission"]
     submission_variant_gate = data["submission_variant_gate"]
+    boolean_env_gate = data["boolean_env_gate"]
     placeholder_credentials = data["placeholder_credentials"]
     credential_whitespace_guard = data["credential_whitespace_guard"]
     synthetic_dry_run = data["synthetic_dry_run_redaction"]
@@ -225,6 +227,18 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
         and submission_variant_gate.get("evidence", {}).get("real_runner_not_started") is True
         and not any(submission_variant_gate.get("leak_flags", {}).values())
         and not any(submission_variant_gate.get("contact_flags", {}).values())
+    )
+    boolean_env_ready = bool(
+        boolean_env_gate.get("passed")
+        and boolean_env_gate.get("bad_flags_rejected") is True
+        and boolean_env_gate.get("bad_flags_stop_before_preflight") is True
+        and boolean_env_gate.get("valid_flags_accepted") is True
+        and boolean_env_gate.get("real_runner_started") is False
+        and boolean_env_gate.get("synthetic_values_recorded") is False
+        and boolean_env_gate.get("evidence", {}).get("all_cases_no_protected_values") is True
+        and boolean_env_gate.get("evidence", {}).get("real_runner_not_started") is True
+        and not any(boolean_env_gate.get("leak_flags", {}).values())
+        and not any(boolean_env_gate.get("contact_flags", {}).values())
     )
     placeholder_credentials_ready = bool(
         placeholder_credentials.get("passed")
@@ -507,6 +521,13 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
             "reports/submission_variant_gate.md",
         ),
         card(
+            "布尔环境变量 gate",
+            "done" if boolean_env_ready else "watch",
+            f"{boolean_env_gate.get('case_count', 0)} 个场景",
+            "授权入口只接受 0/1；true/false/yes/no 或空白会在 checkpoint/readiness 预检前被拒绝。",
+            "reports/boolean_env_gate.md",
+        ),
+        card(
             "占位符凭据拒绝",
             "done" if placeholder_credentials_ready else "watch",
             f"{placeholder_credentials.get('case_count', 0)} 个场景",
@@ -615,6 +636,7 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
     local_env_permission = data["local_env_permission"]
     local_env_runtime_permission = data["local_env_runtime_permission"]
     submission_variant_gate = data["submission_variant_gate"]
+    boolean_env_gate = data["boolean_env_gate"]
     placeholder_credentials = data["placeholder_credentials"]
     credential_whitespace_guard = data["credential_whitespace_guard"]
     synthetic_dry_run = data["synthetic_dry_run_redaction"]
@@ -750,6 +772,16 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
         is False,
         "submission_variant_no_contact": not any(submission_variant_gate.get("contact_flags", {}).values()),
         "submission_variant_no_leak": not any(submission_variant_gate.get("leak_flags", {}).values()),
+        "boolean_env_gate_passed": boolean_env_gate.get("passed") is True,
+        "boolean_env_case_count": boolean_env_gate.get("case_count"),
+        "boolean_env_bad_rejected": boolean_env_gate.get("bad_flags_rejected") is True,
+        "boolean_env_bad_stop_before_preflight": boolean_env_gate.get("bad_flags_stop_before_preflight")
+        is True,
+        "boolean_env_valid_accepted": boolean_env_gate.get("valid_flags_accepted") is True,
+        "boolean_env_real_runner_not_started": boolean_env_gate.get("real_runner_started") is False,
+        "boolean_env_values_not_recorded": boolean_env_gate.get("synthetic_values_recorded") is False,
+        "boolean_env_no_contact": not any(boolean_env_gate.get("contact_flags", {}).values()),
+        "boolean_env_no_leak": not any(boolean_env_gate.get("leak_flags", {}).values()),
         "placeholder_credential_rejection_passed": placeholder_credentials.get("passed") is True,
         "placeholder_credential_rejection_case_count": placeholder_credentials.get("case_count"),
         "placeholder_baseline_rejected_before_dry_run": placeholder_credentials.get("baseline_placeholder_rejected")

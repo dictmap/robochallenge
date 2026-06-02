@@ -7,7 +7,7 @@
   "credentials_printed": false,
   "link_values_printed": false,
   "secret_values_printed": false,
-  "artifact_count": 83,
+  "artifact_count": 85,
   "artifacts": [
     {
       "path": "README.md",
@@ -20,8 +20,8 @@
       "path": "work.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 178054,
-      "sha256": "5c6637d0c5c30b8a595ea6d5d43e8baf7b3689df03e13f2eb3659db1057577e4"
+      "size_bytes": 181018,
+      "sha256": "424f196efb6e67990c5b751fafdecb27e30b1e689bbd1f5bd48081c0ccc9611c"
     },
     {
       "path": "notebooks/robochallenge_pi05_submit_cn.ipynb",
@@ -83,15 +83,15 @@
       "path": "submission/run_authorized_preflight_template.sh",
       "exists": true,
       "tracked": true,
-      "size_bytes": 2926,
-      "sha256": "9b81af2a3285dcd7c503c6bc90a596cb06185e8911d0371a397e024652004a05"
+      "size_bytes": 3313,
+      "sha256": "8cc859f362eb2bf3755ec460059ba010f895ab82a6c8608c67cc7145fa002764"
     },
     {
       "path": "submission/run_ready_real_submission_template.sh",
       "exists": true,
       "tracked": true,
-      "size_bytes": 3549,
-      "sha256": "61d602509ad0c0d086f866f79d84ad711bf4ddc0ea7f6291ca045bb5979733b7"
+      "size_bytes": 3869,
+      "sha256": "84a7b10dec1f67ea95b95955def37048acdff6f0a74358d553afd80cbbbe225f"
     },
     {
       "path": "submission/run_authorized_checkpoint_archive_template.sh",
@@ -252,7 +252,7 @@
       "exists": true,
       "tracked": true,
       "size_bytes": 1045,
-      "sha256": "a076f80dae328eece16aaabb7289e6561dfc2c0379ce0320250440d670ad081f"
+      "sha256": "f09d9229cf861cd1480e34be5995650b61c0145c5597774ec65a8670e42c4cb2"
     },
     {
       "path": "reports/authorized_preflight_template_audit.md",
@@ -341,9 +341,16 @@
     {
       "path": "reports/submission_variant_gate.md",
       "exists": true,
-      "tracked": false,
+      "tracked": true,
       "size_bytes": 2865,
       "sha256": "deaa7580b05ca0fda09cc29cfb637dc4bddbae759cd4a72bb1e5528e35c43aea"
+    },
+    {
+      "path": "reports/boolean_env_gate.md",
+      "exists": true,
+      "tracked": false,
+      "size_bytes": 3238,
+      "sha256": "821a119464f6c2975dd0391c9918bfcece6da4d6b2a94f0c4ecc3513152a0d71"
     },
     {
       "path": "reports/placeholder_credential_rejection.md",
@@ -419,22 +426,22 @@
       "path": "reports/submission_preflight_bundle.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 7901,
-      "sha256": "0953dce4915ce2982466fcd3c1da2cfd790224098afd3981e8f84761a535956b"
+      "size_bytes": 8204,
+      "sha256": "f74c9807935c58184e1c32c377d5766793c1934447adc11a417d0e1c11efe23a"
     },
     {
       "path": "reports/plaintext_secret_scan.md",
       "exists": true,
       "tracked": true,
       "size_bytes": 610,
-      "sha256": "61394ec2909121e52364446f648d274664a807925f7e20709bff42058848c9d2"
+      "sha256": "262d063bf26f436c63608c8ca2a54f113698c876ac88582be27ad3d8d961b0ad"
     },
     {
       "path": "reports/submission_status_dashboard.html",
       "exists": true,
       "tracked": true,
-      "size_bytes": 20992,
-      "sha256": "094b59cc8f46efea1839604f2d9425db47fcc762ea7d7e693d1dafa5bd019f2c"
+      "size_bytes": 21455,
+      "sha256": "163f60b5a6f6dc666f344b0744d79c64b1a0bbeb9232f987288ee150fc7d85e7"
     },
     {
       "path": "scripts/render_next_user_action_packet.py",
@@ -495,9 +502,16 @@
     {
       "path": "scripts/audit_submission_variant_gate.py",
       "exists": true,
-      "tracked": false,
+      "tracked": true,
       "size_bytes": 11770,
       "sha256": "bef72793f347282da8eb4781c380c4a312d0a0a9a5c7111d20efad9eda99fbb3"
+    },
+    {
+      "path": "scripts/audit_boolean_env_gate.py",
+      "exists": true,
+      "tracked": false,
+      "size_bytes": 13140,
+      "sha256": "2a0ff991d21bc9be862622ff9c42531b217254436abcb9e5cfec9ff4bfccb8b2"
     },
     {
       "path": "scripts/audit_placeholder_credential_rejection.py",
@@ -711,6 +725,12 @@
     "submission_variant_valid_accepted": true,
     "submission_variant_real_runner_not_started": true,
     "submission_variant_values_not_recorded": true,
+    "boolean_env_gate_passed": true,
+    "boolean_env_bad_rejected": true,
+    "boolean_env_bad_stop_before_preflight": true,
+    "boolean_env_valid_accepted": true,
+    "boolean_env_real_runner_not_started": true,
+    "boolean_env_values_not_recorded": true,
     "placeholder_credential_rejection_passed": true,
     "placeholder_credential_rejection_case_count": true,
     "placeholder_baseline_rejected_before_dry_run": true,

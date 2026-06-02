@@ -1,0 +1,256 @@
+{
+  "kind": "boolean_env_gate",
+  "passed": true,
+  "recommended_route": "baseline_official_aloha",
+  "case_count": 8,
+  "bad_case_count": 4,
+  "good_case_count": 4,
+  "bad_flags_rejected": true,
+  "bad_flags_stop_before_preflight": true,
+  "valid_flags_accepted": true,
+  "real_runner_started": false,
+  "synthetic_values_recorded": false,
+  "cases": [
+    {
+      "name": "authorized_verify_true",
+      "script_key": "authorized_preflight",
+      "script": "submission/run_authorized_preflight_template.sh",
+      "bad_flag_name": "ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD",
+      "override_keys": [
+        "ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD"
+      ],
+      "override_value_lengths": {
+        "ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD": 4
+      },
+      "returncode": 68,
+      "expected_returncode": 68,
+      "returncode_expected": true,
+      "bool_rejected": true,
+      "preflight_started": false,
+      "valid_flags_accepted": false,
+      "stdout_tail": "[authorized-preflight] repo=/home/yjl/robochallenge/repo\n[authorized-preflight] env_file_present=false\n",
+      "stderr_tail": "[authorized-preflight] ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD must be 0 or 1; do not use true/false/yes/no or blank values\n",
+      "printed_protected_values": false,
+      "real_runner_started": false,
+      "platform_contacted": false,
+      "uploads_performed": false,
+      "passed": true
+    },
+    {
+      "name": "ready_verify_yes",
+      "script_key": "ready_runner",
+      "script": "submission/run_ready_real_submission_template.sh",
+      "bad_flag_name": "ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD",
+      "override_keys": [
+        "ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD"
+      ],
+      "override_value_lengths": {
+        "ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD": 3
+      },
+      "returncode": 68,
+      "expected_returncode": 68,
+      "returncode_expected": true,
+      "bool_rejected": true,
+      "preflight_started": false,
+      "valid_flags_accepted": false,
+      "stdout_tail": "[ready-real-runner] repo=/home/yjl/robochallenge/repo\n[ready-real-runner] env_file_present=false\n",
+      "stderr_tail": "[ready-real-runner] ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD must be 0 or 1; do not use true/false/yes/no or blank values\n",
+      "printed_protected_values": false,
+      "real_runner_started": false,
+      "platform_contacted": false,
+      "uploads_performed": false,
+      "passed": true
+    },
+    {
+      "name": "authorized_require_ready_true",
+      "script_key": "authorized_preflight",
+      "script": "submission/run_authorized_preflight_template.sh",
+      "bad_flag_name": "ROBOCHALLENGE_REQUIRE_READY",
+      "override_keys": [
+        "ROBOCHALLENGE_REQUIRE_READY"
+      ],
+      "override_value_lengths": {
+        "ROBOCHALLENGE_REQUIRE_READY": 4
+      },
+      "returncode": 68,
+      "expected_returncode": 68,
+      "returncode_expected": true,
+      "bool_rejected": true,
+      "preflight_started": false,
+      "valid_flags_accepted": false,
+      "stdout_tail": "[authorized-preflight] repo=/home/yjl/robochallenge/repo\n[authorized-preflight] env_file_present=false\n",
+      "stderr_tail": "[authorized-preflight] ROBOCHALLENGE_REQUIRE_READY must be 0 or 1; do not use true/false/yes/no or blank values\n",
+      "printed_protected_values": false,
+      "real_runner_started": false,
+      "platform_contacted": false,
+      "uploads_performed": false,
+      "passed": true
+    },
+    {
+      "name": "authorized_verify_space",
+      "script_key": "authorized_preflight",
+      "script": "submission/run_authorized_preflight_template.sh",
+      "bad_flag_name": "ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD",
+      "override_keys": [
+        "ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD"
+      ],
+      "override_value_lengths": {
+        "ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD": 1
+      },
+      "returncode": 68,
+      "expected_returncode": 68,
+      "returncode_expected": true,
+      "bool_rejected": true,
+      "preflight_started": false,
+      "valid_flags_accepted": false,
+      "stdout_tail": "[authorized-preflight] repo=/home/yjl/robochallenge/repo\n[authorized-preflight] env_file_present=false\n",
+      "stderr_tail": "[authorized-preflight] ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD must be 0 or 1; do not use true/false/yes/no or blank values\n",
+      "printed_protected_values": false,
+      "real_runner_started": false,
+      "platform_contacted": false,
+      "uploads_performed": false,
+      "passed": true
+    },
+    {
+      "name": "authorized_flags_zero",
+      "script_key": "authorized_preflight",
+      "script": "submission/run_authorized_preflight_template.sh",
+      "bad_flag_name": "",
+      "override_keys": [],
+      "override_value_lengths": {},
+      "returncode": 0,
+      "expected_returncode": 0,
+      "returncode_expected": true,
+      "bool_rejected": false,
+      "preflight_started": true,
+      "valid_flags_accepted": true,
+      "stdout_tail": "未执行 checkpoint 上传，本地 tar 文件也未生成。\",\n    \"缺少 checkpoint link；请设置 ROBOCHALLENGE_CHECKPOINT_LINK 或 ROBOCHALLENGE_LORA_CHECKPOINT_LINK。\",\n    \"缺少真实 checkpoint link；当前只能审计下载校验协议，不能联网验证。\",\n    \"未请求 --verify-download；本轮不联网、不下载、不接触 checkpoint link host。\",\n    \"需要用户提供真实 ROBOCHALLENGE_USER_TOKEN。\",\n    \"需要用户提供真实 ROBOCHALLENGE_SUBMISSION_ID。\",\n    \"需要确认本次要提交的是 Table30v2 ALOHA 还是原始 Table30；当前可运行链路是 Table30v2 ALOHA。\",\n    \"若要提交 LoRA 版本，还需要把本地 12GB+ checkpoint 放到网站可访问的 checkpoint link。\"\n  ],\n  \"blocking_count\": 16,\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false\n  },\n  \"next_command_after_user_inputs\": \"python3 scripts/audit_real_submission_readiness.py\"\n}\n[authorized-preflight] ready_for_real_submission=false\n[authorized-preflight] stop before runner dry-run; see reports/submission_blockers_summary.md\n",
+      "stderr_tail": "",
+      "printed_protected_values": false,
+      "real_runner_started": false,
+      "platform_contacted": false,
+      "uploads_performed": false,
+      "passed": true
+    },
+    {
+      "name": "authorized_require_ready_one",
+      "script_key": "authorized_preflight",
+      "script": "submission/run_authorized_preflight_template.sh",
+      "bad_flag_name": "",
+      "override_keys": [
+        "ROBOCHALLENGE_REQUIRE_READY"
+      ],
+      "override_value_lengths": {
+        "ROBOCHALLENGE_REQUIRE_READY": 1
+      },
+      "returncode": 1,
+      "expected_returncode": 1,
+      "returncode_expected": true,
+      "bool_rejected": false,
+      "preflight_started": true,
+      "valid_flags_accepted": true,
+      "stdout_tail": "未执行 checkpoint 上传，本地 tar 文件也未生成。\",\n    \"缺少 checkpoint link；请设置 ROBOCHALLENGE_CHECKPOINT_LINK 或 ROBOCHALLENGE_LORA_CHECKPOINT_LINK。\",\n    \"缺少真实 checkpoint link；当前只能审计下载校验协议，不能联网验证。\",\n    \"未请求 --verify-download；本轮不联网、不下载、不接触 checkpoint link host。\",\n    \"需要用户提供真实 ROBOCHALLENGE_USER_TOKEN。\",\n    \"需要用户提供真实 ROBOCHALLENGE_SUBMISSION_ID。\",\n    \"需要确认本次要提交的是 Table30v2 ALOHA 还是原始 Table30；当前可运行链路是 Table30v2 ALOHA。\",\n    \"若要提交 LoRA 版本，还需要把本地 12GB+ checkpoint 放到网站可访问的 checkpoint link。\"\n  ],\n  \"blocking_count\": 16,\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false\n  },\n  \"next_command_after_user_inputs\": \"python3 scripts/audit_real_submission_readiness.py\"\n}\n[authorized-preflight] ready_for_real_submission=false\n[authorized-preflight] stop before runner dry-run; see reports/submission_blockers_summary.md\n",
+      "stderr_tail": "",
+      "printed_protected_values": false,
+      "real_runner_started": false,
+      "platform_contacted": false,
+      "uploads_performed": false,
+      "passed": true
+    },
+    {
+      "name": "ready_baseline_verify_zero",
+      "script_key": "ready_runner",
+      "script": "submission/run_ready_real_submission_template.sh",
+      "bad_flag_name": "",
+      "override_keys": [],
+      "override_value_lengths": {},
+      "returncode": 1,
+      "expected_returncode": 1,
+      "returncode_expected": true,
+      "bool_rejected": false,
+      "preflight_started": true,
+      "valid_flags_accepted": true,
+      "stdout_tail": "ALLENGE_LORA_CHECKPOINT_LINK\": {\n      \"present\": false,\n      \"length\": 0,\n      \"looks_like_url\": false\n    }\n  },\n  \"runner_checks\": {\n    \"baseline\": {\n      \"exists\": true,\n      \"passed\": true,\n      \"returncode\": 0,\n      \"stderr\": \"\"\n    },\n    \"lora\": {\n      \"exists\": true,\n      \"passed\": true,\n      \"returncode\": 0,\n      \"stderr\": \"\"\n    }\n  },\n  \"inputs\": {\n    \"submission_audit_passed\": true,\n    \"export_audit_local_ready\": true,\n    \"upload_audit_passed\": true,\n    \"uploads_performed\": false,\n    \"manifest_status\": \"template_pending_credentials\",\n    \"baseline_checkpoint_exists\": true,\n    \"lora_checkpoint_exists\": true\n  },\n  \"blocking\": [\n    \"缺少 ROBOCHALLENGE_USER_TOKEN。\",\n    \"缺少 ROBOCHALLENGE_SUBMISSION_ID。\",\n    \"缺少真实可访问 checkpoint link；可使用 ROBOCHALLENGE_CHECKPOINT_LINK 或 ROBOCHALLENGE_LORA_CHECKPOINT_LINK 记录。\",\n    \"尚未执行 checkpoint 上传，本地 tar 文件也未生成。\"\n  ]\n}\n[ready-real-runner] ready_for_real_submission=false\n[ready-real-runner] stop before dry-run and real runner\n",
+      "stderr_tail": "",
+      "printed_protected_values": false,
+      "real_runner_started": false,
+      "platform_contacted": false,
+      "uploads_performed": false,
+      "passed": true
+    },
+    {
+      "name": "ready_lora_verify_zero",
+      "script_key": "ready_runner",
+      "script": "submission/run_ready_real_submission_template.sh",
+      "bad_flag_name": "",
+      "override_keys": [
+        "ROBOCHALLENGE_SUBMISSION_VARIANT"
+      ],
+      "override_value_lengths": {
+        "ROBOCHALLENGE_SUBMISSION_VARIANT": 4
+      },
+      "returncode": 1,
+      "expected_returncode": 1,
+      "returncode_expected": true,
+      "bool_rejected": false,
+      "preflight_started": true,
+      "valid_flags_accepted": true,
+      "stdout_tail": "ALLENGE_LORA_CHECKPOINT_LINK\": {\n      \"present\": false,\n      \"length\": 0,\n      \"looks_like_url\": false\n    }\n  },\n  \"runner_checks\": {\n    \"baseline\": {\n      \"exists\": true,\n      \"passed\": true,\n      \"returncode\": 0,\n      \"stderr\": \"\"\n    },\n    \"lora\": {\n      \"exists\": true,\n      \"passed\": true,\n      \"returncode\": 0,\n      \"stderr\": \"\"\n    }\n  },\n  \"inputs\": {\n    \"submission_audit_passed\": true,\n    \"export_audit_local_ready\": true,\n    \"upload_audit_passed\": true,\n    \"uploads_performed\": false,\n    \"manifest_status\": \"template_pending_credentials\",\n    \"baseline_checkpoint_exists\": true,\n    \"lora_checkpoint_exists\": true\n  },\n  \"blocking\": [\n    \"缺少 ROBOCHALLENGE_USER_TOKEN。\",\n    \"缺少 ROBOCHALLENGE_SUBMISSION_ID。\",\n    \"缺少真实可访问 checkpoint link；可使用 ROBOCHALLENGE_CHECKPOINT_LINK 或 ROBOCHALLENGE_LORA_CHECKPOINT_LINK 记录。\",\n    \"尚未执行 checkpoint 上传，本地 tar 文件也未生成。\"\n  ]\n}\n[ready-real-runner] ready_for_real_submission=false\n[ready-real-runner] stop before dry-run and real runner\n",
+      "stderr_tail": "",
+      "printed_protected_values": false,
+      "real_runner_started": false,
+      "platform_contacted": false,
+      "uploads_performed": false,
+      "passed": true
+    }
+  ],
+  "clean_state_restore": {
+    "passed": true,
+    "commands": [
+      {
+        "command": "python3 scripts/audit_checkpoint_link_intake.py",
+        "returncode": 0
+      },
+      {
+        "command": "python3 scripts/audit_checkpoint_link_download_verification.py",
+        "returncode": 0
+      },
+      {
+        "command": "python3 scripts/audit_real_submission_readiness.py",
+        "returncode": 0
+      },
+      {
+        "command": "python3 scripts/audit_submission_blockers_summary.py",
+        "returncode": 0
+      }
+    ]
+  },
+  "evidence": {
+    "bad_flags_rejected": true,
+    "bad_flags_stop_before_preflight": true,
+    "valid_flags_accepted": true,
+    "all_cases_expected_returncodes": true,
+    "all_cases_no_protected_values": true,
+    "real_runner_not_started": true,
+    "restore_clean_state_passed": true
+  },
+  "leak_flags": {
+    "credentials_printed": false,
+    "link_values_printed": false,
+    "secret_values_printed": false
+  },
+  "contact_flags": {
+    "platform_contacted": false,
+    "uploads_performed": false,
+    "download_host_contacted": false
+  },
+  "platform_contacted": false,
+  "uploads_performed": false,
+  "credentials_read": false,
+  "credentials_printed": false,
+  "link_values_printed": false,
+  "secret_values_printed": false,
+  "blocking": [
+    "布尔环境变量 gate 已通过；提交入口只接受 0/1，true/false/yes/no 或空白会在预检前被拒绝。"
+  ]
+}

@@ -70,6 +70,7 @@ REQUIRED = [
     "reports/local_env_permission_contract.md",
     "reports/local_env_runtime_permission_gate.md",
     "reports/submission_variant_gate.md",
+    "reports/boolean_env_gate.md",
     "reports/placeholder_credential_rejection.md",
     "reports/credential_whitespace_guard.md",
     "reports/synthetic_dry_run_redaction.md",
@@ -134,6 +135,7 @@ REQUIRED = [
     "runs/local_env_permission_contract.json",
     "runs/local_env_runtime_permission_gate.json",
     "runs/submission_variant_gate.json",
+    "runs/boolean_env_gate.json",
     "runs/placeholder_credential_rejection.json",
     "runs/credential_whitespace_guard.json",
     "runs/synthetic_dry_run_redaction.json",
@@ -199,6 +201,7 @@ REQUIRED = [
     "scripts/audit_local_env_permission_contract.py",
     "scripts/audit_local_env_runtime_permission_gate.py",
     "scripts/audit_submission_variant_gate.py",
+    "scripts/audit_boolean_env_gate.py",
     "scripts/audit_placeholder_credential_rejection.py",
     "scripts/audit_credential_whitespace_guard.py",
     "scripts/audit_synthetic_dry_run_redaction.py",
@@ -985,6 +988,15 @@ def main() -> int:
             dashboard.get("submission_variant_values_not_recorded") is True,
             dashboard.get("submission_variant_no_contact") is True,
             dashboard.get("submission_variant_no_leak") is True,
+            dashboard.get("boolean_env_gate_passed") is True,
+            dashboard.get("boolean_env_case_count") == 8,
+            dashboard.get("boolean_env_bad_rejected") is True,
+            dashboard.get("boolean_env_bad_stop_before_preflight") is True,
+            dashboard.get("boolean_env_valid_accepted") is True,
+            dashboard.get("boolean_env_real_runner_not_started") is True,
+            dashboard.get("boolean_env_values_not_recorded") is True,
+            dashboard.get("boolean_env_no_contact") is True,
+            dashboard.get("boolean_env_no_leak") is True,
             dashboard.get("placeholder_credential_rejection_passed") is True,
             dashboard.get("placeholder_credential_rejection_case_count") == 4,
             dashboard.get("placeholder_baseline_rejected_before_dry_run") is True,
@@ -2046,6 +2058,70 @@ def main() -> int:
     ):
         print("提交 variant gate 审计未通过")
         return 1
+    boolean_env_gate = json.loads((ROOT / "runs/boolean_env_gate.json").read_text(encoding="utf-8"))
+    boolean_env_evidence = boolean_env_gate.get("evidence", {})
+    boolean_env_leaks = boolean_env_gate.get("leak_flags", {})
+    boolean_env_contacts = boolean_env_gate.get("contact_flags", {})
+    boolean_env_cases = {item.get("name"): item for item in boolean_env_gate.get("cases", [])}
+    bad_boolean_cases = [
+        item
+        for item in boolean_env_cases.values()
+        if item.get("name")
+        in {
+            "authorized_verify_true",
+            "ready_verify_yes",
+            "authorized_require_ready_true",
+            "authorized_verify_space",
+        }
+    ]
+    good_boolean_cases = [
+        item
+        for item in boolean_env_cases.values()
+        if item.get("name")
+        in {
+            "authorized_flags_zero",
+            "authorized_require_ready_one",
+            "ready_baseline_verify_zero",
+            "ready_lora_verify_zero",
+        }
+    ]
+    if not all(
+        [
+            boolean_env_gate.get("kind") == "boolean_env_gate",
+            boolean_env_gate.get("passed"),
+            boolean_env_gate.get("recommended_route") == "baseline_official_aloha",
+            boolean_env_gate.get("case_count") == 8,
+            boolean_env_gate.get("bad_case_count") == 4,
+            boolean_env_gate.get("good_case_count") == 4,
+            len(boolean_env_cases) == 8,
+            len(bad_boolean_cases) == 4,
+            len(good_boolean_cases) == 4,
+            boolean_env_gate.get("bad_flags_rejected") is True,
+            boolean_env_gate.get("bad_flags_stop_before_preflight") is True,
+            boolean_env_gate.get("valid_flags_accepted") is True,
+            boolean_env_gate.get("real_runner_started") is False,
+            boolean_env_gate.get("synthetic_values_recorded") is False,
+            all(item.get("returncode") == 68 for item in bad_boolean_cases),
+            all(item.get("bool_rejected") is True for item in bad_boolean_cases),
+            all(item.get("preflight_started") is False for item in bad_boolean_cases),
+            all(item.get("printed_protected_values") is False for item in bad_boolean_cases),
+            all(item.get("valid_flags_accepted") is True for item in good_boolean_cases),
+            all(item.get("preflight_started") is True for item in good_boolean_cases),
+            all(item.get("real_runner_started") is False for item in boolean_env_cases.values()),
+            all(boolean_env_evidence.values()),
+            boolean_env_gate.get("clean_state_restore", {}).get("passed") is True,
+            not any(boolean_env_leaks.values()),
+            not any(boolean_env_contacts.values()),
+            boolean_env_gate.get("platform_contacted") is False,
+            boolean_env_gate.get("uploads_performed") is False,
+            boolean_env_gate.get("credentials_read") is False,
+            boolean_env_gate.get("credentials_printed") is False,
+            boolean_env_gate.get("link_values_printed") is False,
+            boolean_env_gate.get("secret_values_printed") is False,
+        ]
+    ):
+        print("布尔环境变量 gate 审计未通过")
+        return 1
     placeholder_rejection = json.loads(
         (ROOT / "runs/placeholder_credential_rejection.json").read_text(encoding="utf-8")
     )
@@ -2507,6 +2583,7 @@ def main() -> int:
         "local_env_permission_contract",
         "local_env_runtime_permission_gate",
         "submission_variant_gate",
+        "boolean_env_gate",
         "placeholder_credential_rejection",
         "credential_whitespace_guard",
         "synthetic_dry_run_redaction",
@@ -2556,6 +2633,12 @@ def main() -> int:
             preflight.get("submission_variant_valid_accepted") is True,
             preflight.get("submission_variant_real_runner_not_started") is True,
             preflight.get("submission_variant_values_not_recorded") is True,
+            preflight.get("boolean_env_gate_passed") is True,
+            preflight.get("boolean_env_bad_rejected") is True,
+            preflight.get("boolean_env_bad_stop_before_preflight") is True,
+            preflight.get("boolean_env_valid_accepted") is True,
+            preflight.get("boolean_env_real_runner_not_started") is True,
+            preflight.get("boolean_env_values_not_recorded") is True,
             preflight.get("placeholder_credential_rejection_passed") is True,
             preflight.get("placeholder_baseline_rejected_before_dry_run") is True,
             preflight.get("placeholder_lora_rejected_before_dry_run") is True,

@@ -2186,3 +2186,29 @@
 
 - P0：提交并推送本轮提交 variant gate 前置审计。
 - P1：凭据到位后先运行 baseline 授权前只读预检与 dry-run gate；真实 runner 仍必须等待用户明确授权。
+
+## 2026-06-03 第七十七轮：布尔环境变量 gate 前置审计
+
+### 已完成
+
+- 更新 `submission/run_authorized_preflight_template.sh` 与 `submission/run_ready_real_submission_template.sh`，在 checkpoint link、readiness 和 dry-run 之前新增布尔环境变量校验。
+- 新增 `validate_bool_flag`：`ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD` 和 `ROBOCHALLENGE_REQUIRE_READY` 只接受 `0` 或 `1`；`true`、`false`、`yes`、`no` 或空白值会退出 `68`。
+- 新增 `scripts/audit_boolean_env_gate.py`，覆盖 8 个 synthetic 场景：4 个错误布尔值、4 个合法布尔值；审计显式把 `ROBOCHALLENGE_ENV_FILE` 指向不存在的 synthetic 路径，避免读取真实 local env。
+- 新增机器可读产物 `runs/boolean_env_gate.json` 和中文报告 `reports/boolean_env_gate.md`。
+- 已接入 `scripts/audit_submission_preflight_bundle.py`、`scripts/audit_submission_artifact_manifest.py`、`scripts/render_submission_status_dashboard.py` 与 `scripts/validate_repro_workspace.py`。
+- GUI dashboard 新增 `布尔环境变量 gate` 卡片，预期总计变为 `source_count=35`、`card_count=35`、`done_count=30`、`blocked_count=4`、`watch_count=1`。
+
+### 验证结果
+
+- Linux 端 `python3 scripts/audit_boolean_env_gate.py` 已通过：`case_count=8`、`bad_case_count=4`、`good_case_count=4`、`bad_flags_rejected=true`、`bad_flags_stop_before_preflight=true`、`valid_flags_accepted=true`、`real_runner_started=false`。
+- 4 个错误布尔值场景均在预检前退出 `68`：`ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD=true`、`ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD=yes`、`ROBOCHALLENGE_REQUIRE_READY=true`、`ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD=" "`。
+- 4 个合法布尔值场景均进入既有 no-contact 授权边界；因真实凭据和确认短语仍缺失，均不会启动真实 runner。
+- Linux 端完整链路 `audit_chinese_utf8_artifacts.py`、`audit_plaintext_secrets.py`、`audit_submission_preflight_bundle.py`、`audit_submission_artifact_manifest.py`、`render_submission_status_dashboard.py`、`validate_repro_workspace.py` 和 `git diff --check` 均已通过。
+- GUI dashboard 实测为 `source_count=35`、`card_count=35`、`done_count=30`、`blocked_count=4`、`watch_count=1`、`ready_for_real_submission=false`。
+- 明文凭据扫描仍为 `hit_count=0`；中文 UTF-8 审计为 `scanned_file_count=150`、`decode_error_count=0`、`bad_marker_hit_count=0`。
+
+### 当前边界
+
+- 本轮只补提交脚本的参数安全 gate，不读取真实 token、submission id、checkpoint link 或真实 local env 内容。
+- 不连接 RoboChallenge 平台，不上传 checkpoint，不生成 checkpoint tar，不启动真实 runner。
+- baseline 官方路线的剩余 blocking 不变：提交对象确认、`ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline`、`ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION`。

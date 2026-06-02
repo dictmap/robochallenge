@@ -41,6 +41,19 @@ validate_variant() {
   esac
 }
 
+validate_bool_flag() {
+  local name="$1"
+  local value="$2"
+  case "$value" in
+    0|1)
+      ;;
+    *)
+      echo "[authorized-preflight] $name must be 0 or 1; do not use true/false/yes/no or blank values" >&2
+      exit 68
+      ;;
+  esac
+}
+
 echo "[authorized-preflight] repo=$REPO_ROOT"
 echo "[authorized-preflight] env_file_present=$([[ -f "$ENV_FILE" ]] && echo true || echo false)"
 
@@ -55,6 +68,8 @@ VERIFY_DOWNLOAD="${ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD:-0}"
 REQUIRE_READY="${ROBOCHALLENGE_REQUIRE_READY:-0}"
 
 validate_variant "$VARIANT"
+validate_bool_flag ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD "$VERIFY_DOWNLOAD"
+validate_bool_flag ROBOCHALLENGE_REQUIRE_READY "$REQUIRE_READY"
 
 echo "[authorized-preflight] variant=$VARIANT"
 echo "[authorized-preflight] verify_download=$VERIFY_DOWNLOAD"

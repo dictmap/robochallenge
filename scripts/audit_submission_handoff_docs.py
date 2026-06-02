@@ -44,6 +44,7 @@ REQUIRED_COMMAND_FRAGMENTS = {
         "sha256sum runs/openpi_rtc_lora_materialized_policy_checkpoint.tar > "
         "runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.sha256"
     ),
+    "lora_runner_dry_run": "ROBOCHALLENGE_DRY_RUN=1 bash submission/run_table30v2_aloha_lora_demo_template.sh",
     "baseline_runner": "bash submission/run_table30v2_aloha_demo_template.sh",
     "lora_runner": "bash submission/run_table30v2_aloha_lora_demo_template.sh",
 }
@@ -100,6 +101,7 @@ def build_status(doc_path: Path) -> dict[str, Any]:
         "says_no_upload_without_authorization": "未获得用户授权" in text,
         "says_no_git_checkpoint": "不要把 `runs/openpi_rtc_lora_materialized_policy_checkpoint.tar`" in text,
         "says_stop_when_not_ready": "ready_for_real_submission=false" in text,
+        "says_dry_run_no_credentials": "不会打印 token 或 submission id 明文" in text,
         "uses_placeholders_instead_of_values": "<真实 user token>" in text and "<真实 checkpoint 下载 URL>" in text,
     }
     secret_hits = scan_secret_patterns(text)

@@ -153,6 +153,34 @@ def placeholder_credentials_failfast_check(path: Path) -> dict[str, Any]:
     }
 
 
+def dry_run_no_contact_check(path: Path) -> dict[str, Any]:
+    env = os.environ.copy()
+    token_value = "local-dry-run-token-value"
+    submission_value = "local-dry-run-submission-value"
+    env["ROBOCHALLENGE_USER_TOKEN"] = token_value
+    env["ROBOCHALLENGE_SUBMISSION_ID"] = submission_value
+    env["ROBOCHALLENGE_DRY_RUN"] = "1"
+    result = subprocess.run(
+        ["bash", str(path)],
+        cwd=ROOT,
+        env=env,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+        timeout=10,
+    )
+    output = "\n".join([result.stdout.strip(), result.stderr.strip()]).strip()
+    printed_secret = token_value in output or submission_value in output
+    return {
+        "returncode": result.returncode,
+        "passed": result.returncode == 0 and "dry_run=true" in output and not printed_secret and "Traceback" not in output,
+        "printed_secret": printed_secret,
+        "stdout": result.stdout.strip(),
+        "stderr": result.stderr.strip(),
+    }
+
+
 def audit_runner_file(path: Path, expected_checkpoint_fragment: str) -> dict[str, Any]:
     exists = path.exists()
     text = path.read_text(encoding="utf-8") if exists else ""
@@ -161,6 +189,7 @@ def audit_runner_file(path: Path, expected_checkpoint_fragment: str) -> dict[str
     placeholder_failfast = (
         placeholder_credentials_failfast_check(path) if exists else {"passed": False, "stderr": "runner missing"}
     )
+    dry_run = dry_run_no_contact_check(path) if exists else {"passed": False, "stderr": "runner missing"}
     return {
         "path": str(path.relative_to(ROOT)),
         "exists": exists,
@@ -168,12 +197,14 @@ def audit_runner_file(path: Path, expected_checkpoint_fragment: str) -> dict[str
         "mentions_submission_id": "ROBOCHALLENGE_SUBMISSION_ID" in text,
         "mentions_expected_checkpoint": expected_checkpoint_fragment in text,
         "mentions_placeholder_guard": "reject_placeholder" in text,
+        "mentions_dry_run_guard": "ROBOCHALLENGE_DRY_RUN" in text,
         "contains_plaintext_secret_pattern": bool(
             re.search(r"sk-[A-Za-z0-9_-]{20,}|hf_[A-Za-z0-9]{20,}|ROBOCHALLENGE_\w*TOKEN\s*=\s*[A-Za-z0-9_-]{20,}", text)
         ),
         "bash_n": syntax,
         "no_credentials_failfast": failfast,
         "placeholder_credentials_failfast": placeholder_failfast,
+        "dry_run_no_contact": dry_run,
     }
 
 
@@ -194,6 +225,7 @@ def build_manifest(status: dict[str, Any]) -> dict[str, Any]:
         "required_runtime_inputs": {
             "ROBOCHALLENGE_USER_TOKEN": "用户登录 RoboChallenge 后提供；不能写入仓库。",
             "ROBOCHALLENGE_SUBMISSION_ID": "在 My Submission/Detail 页面获得；不能伪造。",
+            "ROBOCHALLENGE_DRY_RUN": "可选；设为 1 时只打印不含凭据的本地命令摘要，不调用 demo.py。",
             "ROBOCHALLENGE_CHECKPOINT": "baseline runner 默认使用官方 ALOHA checkpoint；LoRA runner 默认使用本地物化 checkpoint，可按需覆盖。",
             "ROBOCHALLENGE_PROMPT": "默认使用当前任务 prompt，可按当前 run prompt 覆盖。",
         },
@@ -252,6 +284,16 @@ DEFAULT_PROMPT={quoted_prompt}
 CHECKPOINT="${{ROBOCHALLENGE_CHECKPOINT:-$DEFAULT_CHECKPOINT}}"
 PROMPT="${{ROBOCHALLENGE_PROMPT:-$DEFAULT_PROMPT}}"
 
+if [[ "${{ROBOCHALLENGE_DRY_RUN:-0}}" == "1" ]]; then
+  echo "dry_run=true"
+  echo "checkpoint=$CHECKPOINT"
+  echo "prompt_length=${{#PROMPT}}"
+  echo "user_token_length=${{#ROBOCHALLENGE_USER_TOKEN}}"
+  echo "submission_id_length=${{#ROBOCHALLENGE_SUBMISSION_ID}}"
+  echo "robot_type=aloha"
+  exit 0
+fi
+
 python3 demo.py \\
   --user_token "$ROBOCHALLENGE_USER_TOKEN" \\
   --submission_id "$ROBOCHALLENGE_SUBMISSION_ID" \\
@@ -280,7 +322,7 @@ def write_readme(path: Path, manifest_rel: str, runner_rel: str, lora_runner_rel
 
 当前默认稳妥提交路线仍是官方 pi0.5 Table30v2 ALOHA baseline。LoRA scoped checkpoint 已被物化为本地完整 checkpoint，并通过 `create_trained_policy` 加载 smoke；但真实网站提交仍需要用户提供凭据，并把本地 checkpoint 上传成网站可访问链接。
 
-运行前需要用户在 shell 中提供 `ROBOCHALLENGE_USER_TOKEN` 和 `ROBOCHALLENGE_SUBMISSION_ID` 两个环境变量；不要把具体值写入仓库、Notebook 或报告。runner 会拒绝 `<真实 ...>`、`example`、`replace_me` 这类占位符。设置好之后运行：
+运行前需要用户在 shell 中提供 `ROBOCHALLENGE_USER_TOKEN` 和 `ROBOCHALLENGE_SUBMISSION_ID` 两个环境变量；不要把具体值写入仓库、Notebook 或报告。runner 会拒绝 `<真实 ...>`、`example`、`replace_me` 这类占位符。可以先设置 `ROBOCHALLENGE_DRY_RUN=1` 做不连接平台的本地命令摘要检查，输出不会包含 token 或 submission id 明文。设置好之后运行：
 
 ```bash
 bash {runner_rel}
@@ -316,8 +358,10 @@ def write_report(status: dict[str, Any], report_path: Path) -> None:
         f"- `demo.py` 必需参数覆盖：`{entry['required_args_present']}`。",
         f"- baseline runner 语法检查：`{status['runner_audit']['baseline']['bash_n']['passed']}`，无凭据 fail-fast：`{status['runner_audit']['baseline']['no_credentials_failfast']['passed']}`。",
         f"- baseline runner 占位符凭据 fail-fast：`{status['runner_audit']['baseline']['placeholder_credentials_failfast']['passed']}`。",
+        f"- baseline runner dry-run 不连接平台：`{status['runner_audit']['baseline']['dry_run_no_contact']['passed']}`，打印凭据：`{status['runner_audit']['baseline']['dry_run_no_contact']['printed_secret']}`。",
         f"- LoRA runner 语法检查：`{status['runner_audit']['lora']['bash_n']['passed']}`，无凭据 fail-fast：`{status['runner_audit']['lora']['no_credentials_failfast']['passed']}`。",
         f"- LoRA runner 占位符凭据 fail-fast：`{status['runner_audit']['lora']['placeholder_credentials_failfast']['passed']}`。",
+        f"- LoRA runner dry-run 不连接平台：`{status['runner_audit']['lora']['dry_run_no_contact']['passed']}`，打印凭据：`{status['runner_audit']['lora']['dry_run_no_contact']['printed_secret']}`。",
         f"- mock 验证：`passed={status['evidence']['mock_smoke_passed']}`。",
         f"- Table30v2 ALOHA 映射：`ready={status['evidence']['table30v2_mapping_ready']}`。",
         f"- LoRA restore 审计：`passed={restore['restore_audit_passed']}`，合并后占位 leaf `{restore['placeholder_after_count']}`。",
@@ -496,19 +540,25 @@ def main() -> int:
             status["runner_audit"]["baseline"]["mentions_submission_id"],
             status["runner_audit"]["baseline"]["mentions_expected_checkpoint"],
             status["runner_audit"]["baseline"]["mentions_placeholder_guard"],
+            status["runner_audit"]["baseline"]["mentions_dry_run_guard"],
             not status["runner_audit"]["baseline"]["contains_plaintext_secret_pattern"],
             status["runner_audit"]["baseline"]["bash_n"]["passed"],
             status["runner_audit"]["baseline"]["no_credentials_failfast"]["passed"],
             status["runner_audit"]["baseline"]["placeholder_credentials_failfast"]["passed"],
+            status["runner_audit"]["baseline"]["dry_run_no_contact"]["passed"],
+            not status["runner_audit"]["baseline"]["dry_run_no_contact"]["printed_secret"],
             status["runner_audit"]["lora"]["exists"],
             status["runner_audit"]["lora"]["mentions_user_token"],
             status["runner_audit"]["lora"]["mentions_submission_id"],
             status["runner_audit"]["lora"]["mentions_expected_checkpoint"],
             status["runner_audit"]["lora"]["mentions_placeholder_guard"],
+            status["runner_audit"]["lora"]["mentions_dry_run_guard"],
             not status["runner_audit"]["lora"]["contains_plaintext_secret_pattern"],
             status["runner_audit"]["lora"]["bash_n"]["passed"],
             status["runner_audit"]["lora"]["no_credentials_failfast"]["passed"],
             status["runner_audit"]["lora"]["placeholder_credentials_failfast"]["passed"],
+            status["runner_audit"]["lora"]["dry_run_no_contact"]["passed"],
+            not status["runner_audit"]["lora"]["dry_run_no_contact"]["printed_secret"],
         ]
     )
 

@@ -12,6 +12,7 @@
   "required_runtime_inputs": {
     "ROBOCHALLENGE_USER_TOKEN": "用户登录 RoboChallenge 后提供；不能写入仓库。",
     "ROBOCHALLENGE_SUBMISSION_ID": "在 My Submission/Detail 页面获得；不能伪造。",
+    "ROBOCHALLENGE_DRY_RUN": "可选；设为 1 时只打印不含凭据的本地命令摘要，不调用 demo.py。",
     "ROBOCHALLENGE_CHECKPOINT": "baseline runner 默认使用官方 ALOHA checkpoint；LoRA runner 默认使用本地物化 checkpoint，可按需覆盖。",
     "ROBOCHALLENGE_PROMPT": "默认使用当前任务 prompt，可按当前 run prompt 覆盖。"
   },

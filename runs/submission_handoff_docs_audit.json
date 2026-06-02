@@ -23,6 +23,7 @@
     "readiness_gate": true,
     "tar_create": true,
     "sha256_create": true,
+    "lora_runner_dry_run": true,
     "baseline_runner": true,
     "lora_runner": true
   },
@@ -32,6 +33,7 @@
     "says_no_upload_without_authorization": true,
     "says_no_git_checkpoint": true,
     "says_stop_when_not_ready": true,
+    "says_dry_run_no_credentials": true,
     "uses_placeholders_instead_of_values": true
   },
   "input_evidence": {

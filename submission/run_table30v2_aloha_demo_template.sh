@@ -27,6 +27,16 @@ DEFAULT_PROMPT='Put the toothbrush and toothpaste into the toiletries case in se
 CHECKPOINT="${ROBOCHALLENGE_CHECKPOINT:-$DEFAULT_CHECKPOINT}"
 PROMPT="${ROBOCHALLENGE_PROMPT:-$DEFAULT_PROMPT}"
 
+if [[ "${ROBOCHALLENGE_DRY_RUN:-0}" == "1" ]]; then
+  echo "dry_run=true"
+  echo "checkpoint=$CHECKPOINT"
+  echo "prompt_length=${#PROMPT}"
+  echo "user_token_length=${#ROBOCHALLENGE_USER_TOKEN}"
+  echo "submission_id_length=${#ROBOCHALLENGE_SUBMISSION_ID}"
+  echo "robot_type=aloha"
+  exit 0
+fi
+
 python3 demo.py \
   --user_token "$ROBOCHALLENGE_USER_TOKEN" \
   --submission_id "$ROBOCHALLENGE_SUBMISSION_ID" \

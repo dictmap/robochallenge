@@ -70,6 +70,7 @@
       "mentions_submission_id": true,
       "mentions_expected_checkpoint": true,
       "mentions_placeholder_guard": true,
+      "mentions_dry_run_guard": true,
       "contains_plaintext_secret_pattern": false,
       "bash_n": {
         "returncode": 0,
@@ -88,6 +89,13 @@
         "passed": true,
         "stdout": "",
         "stderr": "ROBOCHALLENGE_USER_TOKEN 看起来仍是占位符，请设置真实值。"
+      },
+      "dry_run_no_contact": {
+        "returncode": 0,
+        "passed": true,
+        "printed_secret": false,
+        "stdout": "dry_run=true\ncheckpoint=/home/yjl/yjl/RoboChallenge/checkpoints/table30v2_multitask_baseline_aloha\nprompt_length=122\nuser_token_length=25\nsubmission_id_length=30\nrobot_type=aloha",
+        "stderr": ""
       }
     },
     "lora": {
@@ -97,6 +105,7 @@
       "mentions_submission_id": true,
       "mentions_expected_checkpoint": true,
       "mentions_placeholder_guard": true,
+      "mentions_dry_run_guard": true,
       "contains_plaintext_secret_pattern": false,
       "bash_n": {
         "returncode": 0,
@@ -115,6 +124,13 @@
         "passed": true,
         "stdout": "",
         "stderr": "ROBOCHALLENGE_USER_TOKEN 看起来仍是占位符，请设置真实值。"
+      },
+      "dry_run_no_contact": {
+        "returncode": 0,
+        "passed": true,
+        "printed_secret": false,
+        "stdout": "dry_run=true\ncheckpoint=runs/openpi_rtc_lora_materialized_policy_checkpoint\nprompt_length=122\nuser_token_length=25\nsubmission_id_length=30\nrobot_type=aloha",
+        "stderr": ""
       }
     }
   },

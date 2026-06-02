@@ -29,6 +29,7 @@
 - `readiness_gate`：`True`。
 - `tar_create`：`True`。
 - `sha256_create`：`True`。
+- `lora_runner_dry_run`：`True`。
 - `baseline_runner`：`True`。
 - `lora_runner`：`True`。
 
@@ -39,6 +40,7 @@
 - `says_no_upload_without_authorization`：`True`。
 - `says_no_git_checkpoint`：`True`。
 - `says_stop_when_not_ready`：`True`。
+- `says_dry_run_no_credentials`：`True`。
 - `uses_placeholders_instead_of_values`：`True`。
 
 ## 输入证据

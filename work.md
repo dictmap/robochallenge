@@ -738,3 +738,30 @@
 
 - P0：最终 secret scan、diff check 后提交推送。
 - P1：用户提供真实凭据和 checkpoint link 后，重新运行 readiness gate。
+
+## 2026-06-02 第二十六轮：runner dry-run 不连接平台检查
+
+### 已完成
+
+- baseline/LoRA runner 新增 `ROBOCHALLENGE_DRY_RUN=1`，用于只打印安全命令摘要，不调用 `demo.py`。
+- 提交包审计新增 `dry_run_no_contact`，验证 dry-run 不打印 token/submission id 明文。
+- 真实提交交接文档补充 LoRA runner dry-run 命令：`ROBOCHALLENGE_DRY_RUN=1 bash submission/run_table30v2_aloha_lora_demo_template.sh`。
+- `scripts/audit_submission_handoff_docs.py` 已将 dry-run 命令和“不打印凭据”边界纳入审计。
+
+### 验证结果
+
+- 提交包审计：`passed=true`，baseline/LoRA `dry_run_no_contact.passed=true`，`printed_secret=false`。
+- dry-run 输出只包含 `dry_run=true`、checkpoint、prompt 长度、token 长度、submission id 长度和 robot type。
+- 交接文档审计：`passed=true`，新增 `lora_runner_dry_run=true` 和 `says_dry_run_no_credentials=true`。
+- `python3 scripts/validate_repro_workspace.py` 已通过。
+- Notebook preflight 已通过；无关耗时和磁盘字段漂移已恢复。
+- 待运行：最终 secret scan、diff check 和提交推送。
+
+### 当前边界
+
+- dry-run 只验证 runner 命令形态和凭据不泄露，不代表 RoboChallenge 平台提交成功。
+- 真实提交仍需要用户提供真实 token、submission id、checkpoint link，并在 readiness gate 通过后执行。
+
+### 下一步
+
+- P0：最终 secret scan、diff check 后提交推送。

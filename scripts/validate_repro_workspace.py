@@ -68,6 +68,7 @@ REQUIRED = [
     "reports/baseline_credential_hygiene.md",
     "reports/baseline_local_env_smoke.md",
     "reports/baseline_final_handoff_packet.md",
+    "reports/baseline_final_handoff_rehearsal.md",
     "reports/route_aware_submission_blockers.md",
     "reports/submission_artifact_manifest.md",
     "reports/submission_blockers_summary.md",
@@ -123,6 +124,7 @@ REQUIRED = [
     "runs/baseline_credential_hygiene.json",
     "runs/baseline_local_env_smoke.json",
     "runs/baseline_final_handoff_packet.json",
+    "runs/baseline_final_handoff_rehearsal.json",
     "runs/route_aware_submission_blockers.json",
     "runs/submission_artifact_manifest.json",
     "runs/submission_blockers_summary.json",
@@ -179,6 +181,7 @@ REQUIRED = [
     "scripts/render_baseline_credential_hygiene.py",
     "scripts/render_baseline_local_env_smoke.py",
     "scripts/render_baseline_final_handoff_packet.py",
+    "scripts/render_baseline_final_handoff_rehearsal.py",
     "scripts/render_route_aware_submission_blockers.py",
     "scripts/audit_submission_artifact_manifest.py",
     "scripts/audit_submission_blockers_summary.py",
@@ -917,6 +920,13 @@ def main() -> int:
             dashboard.get("baseline_final_handoff_no_contact_command_count") == 3,
             dashboard.get("baseline_final_handoff_real_runner_requires_confirmation") is True,
             dashboard.get("baseline_final_handoff_does_not_read_local_env") is True,
+            dashboard.get("baseline_final_handoff_rehearsal_passed") is True,
+            dashboard.get("baseline_final_handoff_rehearsal_command_count") == 3,
+            dashboard.get("baseline_final_handoff_rehearsal_synthetic_values_not_recorded") is True,
+            dashboard.get("baseline_final_handoff_rehearsal_temp_env_removed") is True,
+            dashboard.get("baseline_final_handoff_rehearsal_workspace_restored") is True,
+            dashboard.get("baseline_final_handoff_rehearsal_no_contact") is True,
+            dashboard.get("baseline_final_handoff_rehearsal_no_leak") is True,
             dashboard.get("route_aware_submission_blockers_passed") is True,
             dashboard.get("route_aware_recommended_route") == "baseline_official_aloha",
             dashboard.get("route_aware_baseline_no_upload") is True,
@@ -971,6 +981,8 @@ def main() -> int:
             "Baseline dry-run gate" in dashboard_titles,
             "Baseline 凭据卫生" in dashboard_titles,
             "Baseline local env smoke" in dashboard_titles,
+            "Baseline final handoff" in dashboard_titles,
+            "Baseline handoff rehearsal" in dashboard_titles,
             "路线感知阻塞" in dashboard_titles,
             "Jupyter 安全填空" in dashboard_titles,
             "Jupyter 授权预检" in dashboard_titles,
@@ -1840,6 +1852,64 @@ def main() -> int:
     ):
         print("baseline final handoff 证据包审计未通过")
         return 1
+    baseline_final_handoff_rehearsal = json.loads(
+        (ROOT / "runs/baseline_final_handoff_rehearsal.json").read_text(encoding="utf-8")
+    )
+    rehearsal_evidence = baseline_final_handoff_rehearsal.get("evidence", {})
+    rehearsal_leaks = baseline_final_handoff_rehearsal.get("leak_flags", {})
+    rehearsal_contacts = baseline_final_handoff_rehearsal.get("contact_flags", {})
+    rehearsal_commands = baseline_final_handoff_rehearsal.get("commands", [])
+    rehearsal_step1 = rehearsal_commands[0] if len(rehearsal_commands) > 0 else {}
+    rehearsal_step2 = rehearsal_commands[1] if len(rehearsal_commands) > 1 else {}
+    rehearsal_step3 = rehearsal_commands[2] if len(rehearsal_commands) > 2 else {}
+    if not all(
+        [
+            baseline_final_handoff_rehearsal.get("kind") == "baseline_final_handoff_rehearsal",
+            baseline_final_handoff_rehearsal.get("passed"),
+            baseline_final_handoff_rehearsal.get("recommended_route") == "baseline_official_aloha",
+            baseline_final_handoff_rehearsal.get("command_count") == 3,
+            baseline_final_handoff_rehearsal.get("synthetic_token_length", 0) > 20,
+            baseline_final_handoff_rehearsal.get("synthetic_submission_id_length", 0) > 20,
+            baseline_final_handoff_rehearsal.get("synthetic_values_recorded") is False,
+            baseline_final_handoff_rehearsal.get("synthetic_env_file_removed_after_run") is True,
+            baseline_final_handoff_rehearsal.get("workspace_state_restored_after_rehearsal") is True,
+            baseline_final_handoff_rehearsal.get("expected_first_three_commands")
+            == [
+                "python3 scripts/render_baseline_credential_hygiene.py",
+                "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_authorized_preflight_template.sh",
+                "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_ready_real_submission_template.sh",
+            ],
+            baseline_final_handoff_rehearsal.get("handoff_first_three_commands")
+            == baseline_final_handoff_rehearsal.get("expected_first_three_commands"),
+            rehearsal_step1.get("returncode") == 0,
+            rehearsal_step1.get("printed_protected_values") is False,
+            rehearsal_step2.get("returncode") == 0,
+            rehearsal_step2.get("env_file_present_true") is True,
+            rehearsal_step2.get("variant_baseline") is True,
+            rehearsal_step2.get("dry_run_called") is True,
+            rehearsal_step2.get("robot_type_aloha") is True,
+            rehearsal_step2.get("printed_protected_values") is False,
+            rehearsal_step3.get("returncode") == 1,
+            rehearsal_step3.get("env_file_present_true") is True,
+            rehearsal_step3.get("variant_baseline") is True,
+            rehearsal_step3.get("dry_run_called") is True,
+            rehearsal_step3.get("missing_confirmation") is True,
+            rehearsal_step3.get("stops_before_real_runner") is True,
+            rehearsal_step3.get("real_runner_started") is False,
+            rehearsal_step3.get("printed_protected_values") is False,
+            all(rehearsal_evidence.values()),
+            not any(rehearsal_leaks.values()),
+            not any(rehearsal_contacts.values()),
+            baseline_final_handoff_rehearsal.get("platform_contacted") is False,
+            baseline_final_handoff_rehearsal.get("uploads_performed") is False,
+            baseline_final_handoff_rehearsal.get("credentials_read") is False,
+            baseline_final_handoff_rehearsal.get("credentials_printed") is False,
+            baseline_final_handoff_rehearsal.get("link_values_printed") is False,
+            baseline_final_handoff_rehearsal.get("secret_values_printed") is False,
+        ]
+    ):
+        print("baseline final handoff 前三步演练审计未通过")
+        return 1
     route_aware_blockers = json.loads((ROOT / "runs/route_aware_submission_blockers.json").read_text(encoding="utf-8"))
     route_aware_evidence = route_aware_blockers.get("evidence", {})
     route_aware_leaks = route_aware_blockers.get("leak_flags", {})
@@ -1945,6 +2015,7 @@ def main() -> int:
         "baseline_credential_hygiene",
         "baseline_local_env_smoke",
         "baseline_final_handoff_packet",
+        "baseline_final_handoff_rehearsal",
         "route_aware_submission_blockers",
         "submission_artifact_manifest",
     }
@@ -1983,6 +2054,11 @@ def main() -> int:
             preflight.get("baseline_final_handoff_no_upload") is True,
             preflight.get("baseline_final_handoff_no_link") is True,
             preflight.get("baseline_final_handoff_does_not_read_local_env") is True,
+            preflight.get("baseline_final_handoff_rehearsal_passed") is True,
+            preflight.get("baseline_final_handoff_rehearsal_command_count") == 3,
+            preflight.get("baseline_final_handoff_rehearsal_ready_runner_stops") is True,
+            preflight.get("baseline_final_handoff_rehearsal_no_contact") is True,
+            preflight.get("baseline_final_handoff_rehearsal_no_leak") is True,
             preflight.get("secret_scan_hit_count") == 0,
             set(preflight_subcommands) == expected_preflight_subcommands,
             all(item.get("returncode") == 0 and item.get("passed") for item in preflight_subcommands.values()),

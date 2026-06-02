@@ -41,6 +41,7 @@ SUBCOMMANDS = [
     ("baseline_credential_hygiene", "scripts/render_baseline_credential_hygiene.py"),
     ("baseline_local_env_smoke", "scripts/render_baseline_local_env_smoke.py"),
     ("baseline_final_handoff_packet", "scripts/render_baseline_final_handoff_packet.py"),
+    ("baseline_final_handoff_rehearsal", "scripts/render_baseline_final_handoff_rehearsal.py"),
     ("submission_handoff_docs", "scripts/audit_submission_handoff_docs.py"),
     ("submission_artifact_manifest", "scripts/audit_submission_artifact_manifest.py"),
 ]
@@ -108,6 +109,7 @@ def build_status() -> dict[str, Any]:
     baseline_credential_hygiene = read_json(RUNS_DIR / "baseline_credential_hygiene.json")
     baseline_local_env_smoke = read_json(RUNS_DIR / "baseline_local_env_smoke.json")
     baseline_final_handoff = read_json(RUNS_DIR / "baseline_final_handoff_packet.json")
+    baseline_final_handoff_rehearsal = read_json(RUNS_DIR / "baseline_final_handoff_rehearsal.json")
     route_aware_blockers = read_json(RUNS_DIR / "route_aware_submission_blockers.json")
 
     leak_flags = {
@@ -135,6 +137,7 @@ def build_status() -> dict[str, Any]:
                 baseline_credential_hygiene,
                 baseline_local_env_smoke,
                 baseline_final_handoff,
+                baseline_final_handoff_rehearsal,
                 route_aware_blockers,
             ]
         ),
@@ -156,6 +159,7 @@ def build_status() -> dict[str, Any]:
         or bool(baseline_credential_hygiene.get("link_values_printed"))
         or bool(baseline_local_env_smoke.get("link_values_printed"))
         or bool(baseline_final_handoff.get("link_values_printed"))
+        or bool(baseline_final_handoff_rehearsal.get("link_values_printed"))
         or bool(route_aware_blockers.get("link_values_printed")),
         "secret_values_printed": bool(secret_scan.get("secret_values_printed"))
         or bool(artifact_manifest.get("secret_values_printed"))
@@ -174,6 +178,7 @@ def build_status() -> dict[str, Any]:
         or bool(baseline_credential_hygiene.get("secret_values_printed"))
         or bool(baseline_local_env_smoke.get("secret_values_printed"))
         or bool(baseline_final_handoff.get("secret_values_printed"))
+        or bool(baseline_final_handoff_rehearsal.get("secret_values_printed"))
         or bool(route_aware_blockers.get("secret_values_printed")),
     }
     contact_flags = {
@@ -201,6 +206,7 @@ def build_status() -> dict[str, Any]:
                 baseline_credential_hygiene,
                 baseline_local_env_smoke,
                 baseline_final_handoff,
+                baseline_final_handoff_rehearsal,
                 route_aware_blockers,
             ]
         ),
@@ -228,6 +234,7 @@ def build_status() -> dict[str, Any]:
                 baseline_credential_hygiene,
                 baseline_local_env_smoke,
                 baseline_final_handoff,
+                baseline_final_handoff_rehearsal,
                 route_aware_blockers,
             ]
             for key in ["uploads_performed", "upload_performed"]
@@ -246,6 +253,8 @@ def build_status() -> dict[str, Any]:
                 legacy_global_blocking.append(item)
     blocking = list(route_aware_blockers.get("baseline_current_blocking", [])) or legacy_global_blocking
     go_no_go = "ready" if readiness.get("ready_for_real_submission") is True else "blocked"
+    rehearsal_commands = baseline_final_handoff_rehearsal.get("commands", [])
+    rehearsal_step3 = rehearsal_commands[2] if len(rehearsal_commands) >= 3 else {}
     passed = all(item["passed"] for item in subcommands.values()) and not any(leak_flags.values()) and not any(
         contact_flags.values()
     )
@@ -307,6 +316,16 @@ def build_status() -> dict[str, Any]:
         "baseline_final_handoff_no_upload": baseline_final_handoff.get("requires_checkpoint_upload") is False,
         "baseline_final_handoff_no_link": baseline_final_handoff.get("requires_checkpoint_link") is False,
         "baseline_final_handoff_does_not_read_local_env": baseline_final_handoff.get("local_env_content_read") is False,
+        "baseline_final_handoff_rehearsal_passed": baseline_final_handoff_rehearsal.get("passed") is True,
+        "baseline_final_handoff_rehearsal_command_count": baseline_final_handoff_rehearsal.get("command_count"),
+        "baseline_final_handoff_rehearsal_ready_runner_stops": rehearsal_step3.get("stops_before_real_runner")
+        is True,
+        "baseline_final_handoff_rehearsal_no_contact": not any(
+            baseline_final_handoff_rehearsal.get("contact_flags", {}).values()
+        ),
+        "baseline_final_handoff_rehearsal_no_leak": not any(
+            baseline_final_handoff_rehearsal.get("leak_flags", {}).values()
+        ),
         "lora_web_requires_checkpoint_link": route_aware_blockers.get("lora_web_requires_checkpoint_link"),
         "lora_web_requires_checkpoint_upload": route_aware_blockers.get("lora_web_requires_checkpoint_upload"),
         "baseline_current_blocking": route_aware_blockers.get("baseline_current_blocking", []),
@@ -353,6 +372,10 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         f"- final handoff 命令数：`{status['baseline_final_handoff_command_count']}`。",
         f"- final handoff no-contact 命令数：`{status['baseline_final_handoff_no_contact_command_count']}`。",
         f"- final handoff 真实 runner 是否需要强确认：`{status['baseline_final_handoff_real_runner_requires_confirmation']}`。",
+        f"- final handoff 前三步演练：`{status['baseline_final_handoff_rehearsal_passed']}`。",
+        f"- rehearsal 命令数：`{status['baseline_final_handoff_rehearsal_command_count']}`。",
+        f"- rehearsal 是否 no-contact：`{status['baseline_final_handoff_rehearsal_no_contact']}`。",
+        f"- rehearsal 是否 no-leak：`{status['baseline_final_handoff_rehearsal_no_leak']}`。",
         f"- LoRA/web 是否需要 checkpoint link：`{status['lora_web_requires_checkpoint_link']}`。",
         f"- LoRA/web 是否需要 checkpoint upload：`{status['lora_web_requires_checkpoint_upload']}`。",
         f"- 下载已验证：`{status['download_verified']}`。",

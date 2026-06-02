@@ -28,6 +28,10 @@
 - final handoff 命令数：`4`。
 - final handoff no-contact 命令数：`3`。
 - final handoff 真实 runner 是否需要强确认：`True`。
+- final handoff 前三步演练：`True`。
+- rehearsal 命令数：`3`。
+- rehearsal 是否 no-contact：`True`。
+- rehearsal 是否 no-leak：`True`。
 - LoRA/web 是否需要 checkpoint link：`True`。
 - LoRA/web 是否需要 checkpoint upload：`True`。
 - 下载已验证：`False`。
@@ -66,6 +70,7 @@
 - `baseline_credential_hygiene`：returncode=`0`，passed=`True`。
 - `baseline_local_env_smoke`：returncode=`0`，passed=`True`。
 - `baseline_final_handoff_packet`：returncode=`0`，passed=`True`。
+- `baseline_final_handoff_rehearsal`：returncode=`0`，passed=`True`。
 - `submission_handoff_docs`：returncode=`0`，passed=`True`。
 - `submission_artifact_manifest`：returncode=`0`，passed=`True`。
 

@@ -1,0 +1,116 @@
+{
+  "kind": "baseline_final_handoff_rehearsal",
+  "passed": true,
+  "recommended_route": "baseline_official_aloha",
+  "command_count": 3,
+  "expected_first_three_commands": [
+    "python3 scripts/render_baseline_credential_hygiene.py",
+    "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_authorized_preflight_template.sh",
+    "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_ready_real_submission_template.sh"
+  ],
+  "handoff_first_three_commands": [
+    "python3 scripts/render_baseline_credential_hygiene.py",
+    "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_authorized_preflight_template.sh",
+    "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_ready_real_submission_template.sh"
+  ],
+  "commands": [
+    {
+      "command": "python3 scripts/render_baseline_credential_hygiene.py",
+      "returncode": 0,
+      "stdout_line_count": 62,
+      "stderr_line_count": 0,
+      "env_file_present_true": false,
+      "variant_baseline": false,
+      "dry_run_called": false,
+      "robot_type_aloha": false,
+      "ready_false": false,
+      "missing_confirmation": false,
+      "stops_before_real_runner": false,
+      "real_runner_started": false,
+      "printed_protected_values": false,
+      "leaked_value_count": 0
+    },
+    {
+      "command": "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_authorized_preflight_template.sh",
+      "returncode": 0,
+      "stdout_line_count": 333,
+      "stderr_line_count": 1,
+      "env_file_present_true": true,
+      "variant_baseline": true,
+      "dry_run_called": true,
+      "robot_type_aloha": true,
+      "ready_false": false,
+      "missing_confirmation": false,
+      "stops_before_real_runner": false,
+      "real_runner_started": false,
+      "printed_protected_values": false,
+      "leaked_value_count": 0
+    },
+    {
+      "command": "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_ready_real_submission_template.sh",
+      "returncode": 1,
+      "stdout_line_count": 177,
+      "stderr_line_count": 0,
+      "env_file_present_true": true,
+      "variant_baseline": true,
+      "dry_run_called": true,
+      "robot_type_aloha": true,
+      "ready_false": false,
+      "missing_confirmation": true,
+      "stops_before_real_runner": true,
+      "real_runner_started": false,
+      "printed_protected_values": false,
+      "leaked_value_count": 0
+    }
+  ],
+  "synthetic_token_length": 53,
+  "synthetic_submission_id_length": 56,
+  "synthetic_values_recorded": false,
+  "synthetic_env_file_removed_after_run": true,
+  "workspace_state_restored_after_rehearsal": true,
+  "evidence": {
+    "handoff_packet_passed": true,
+    "handoff_first_three_commands_exact": true,
+    "handoff_first_three_declared_no_contact": true,
+    "rehearsal_command_count": true,
+    "synthetic_env_file_existed_during_run": true,
+    "synthetic_env_file_removed_after_run": true,
+    "workspace_state_restored_after_rehearsal": true,
+    "step1_returncode_zero": true,
+    "step1_credential_hygiene_passed": true,
+    "step1_no_protected_values_printed": true,
+    "step2_returncode_zero": true,
+    "step2_loaded_env_file": true,
+    "step2_variant_baseline": true,
+    "step2_dry_run_called": true,
+    "step2_robot_type_aloha": true,
+    "step2_no_protected_values_printed": true,
+    "step3_returncode_missing_confirmation": true,
+    "step3_loaded_env_file": true,
+    "step3_variant_baseline": true,
+    "step3_dry_run_called": true,
+    "step3_missing_confirmation": true,
+    "step3_stops_before_real_runner": true,
+    "step3_real_runner_not_started": true,
+    "step3_no_protected_values_printed": true
+  },
+  "leak_flags": {
+    "credentials_printed": false,
+    "link_values_printed": false,
+    "secret_values_printed": false
+  },
+  "contact_flags": {
+    "platform_contacted": false,
+    "uploads_performed": false,
+    "download_host_contacted": false
+  },
+  "platform_contacted": false,
+  "uploads_performed": false,
+  "credentials_read": false,
+  "credentials_printed": false,
+  "link_values_printed": false,
+  "secret_values_printed": false,
+  "blocking": [
+    "baseline final handoff 前三条命令已用 synthetic local env 按顺序演练；前三步不会启动真实 runner，第四步仍必须等待用户明确授权。"
+  ]
+}

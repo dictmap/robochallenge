@@ -65,6 +65,7 @@ REQUIRED_ARTIFACTS = [
     "reports/baseline_credential_hygiene.md",
     "reports/baseline_local_env_smoke.md",
     "reports/baseline_final_handoff_packet.md",
+    "reports/baseline_final_handoff_rehearsal.md",
     "reports/route_aware_submission_blockers.md",
     "reports/submission_handoff_docs_audit.md",
     "reports/authorized_submission_sequence_audit.md",
@@ -79,6 +80,7 @@ REQUIRED_ARTIFACTS = [
     "scripts/render_baseline_credential_hygiene.py",
     "scripts/render_baseline_local_env_smoke.py",
     "scripts/render_baseline_final_handoff_packet.py",
+    "scripts/render_baseline_final_handoff_rehearsal.py",
     "scripts/render_route_aware_submission_blockers.py",
     "scripts/audit_jupyter_input_template.py",
     "scripts/audit_jupyter_authorized_preflight_template.py",
@@ -192,6 +194,7 @@ def build_status() -> dict[str, Any]:
     baseline_credential_hygiene = read_json(RUNS_DIR / "baseline_credential_hygiene.json")
     baseline_local_env_smoke = read_json(RUNS_DIR / "baseline_local_env_smoke.json")
     baseline_final_handoff = read_json(RUNS_DIR / "baseline_final_handoff_packet.json")
+    baseline_final_handoff_rehearsal = read_json(RUNS_DIR / "baseline_final_handoff_rehearsal.json")
     route_aware_blockers = read_json(RUNS_DIR / "route_aware_submission_blockers.json")
     readiness = read_json(RUNS_DIR / "real_submission_readiness.json")
     env_template = read_json(RUNS_DIR / "submission_env_template_audit.json")
@@ -316,6 +319,21 @@ def build_status() -> dict[str, Any]:
         is True,
         "baseline_final_handoff_does_not_read_local_env": baseline_final_handoff.get("local_env_content_read")
         is False,
+        "baseline_final_handoff_rehearsal_passed": baseline_final_handoff_rehearsal.get("passed") is True,
+        "baseline_final_handoff_rehearsal_command_count": baseline_final_handoff_rehearsal.get("command_count")
+        == 3,
+        "baseline_final_handoff_rehearsal_synthetic_values_not_recorded": baseline_final_handoff_rehearsal.get(
+            "synthetic_values_recorded"
+        )
+        is False,
+        "baseline_final_handoff_rehearsal_temp_env_removed": baseline_final_handoff_rehearsal.get(
+            "synthetic_env_file_removed_after_run"
+        )
+        is True,
+        "baseline_final_handoff_rehearsal_workspace_restored": baseline_final_handoff_rehearsal.get(
+            "workspace_state_restored_after_rehearsal"
+        )
+        is True,
         "route_aware_submission_blockers_passed": route_aware_blockers.get("passed") is True,
         "route_aware_recommended_baseline": route_aware_blockers.get("recommended_route") == "baseline_official_aloha",
         "route_aware_baseline_no_upload": route_aware_blockers.get("baseline_requires_checkpoint_upload") is False,
@@ -348,6 +366,7 @@ def build_status() -> dict[str, Any]:
                 baseline_credential_hygiene,
                 baseline_local_env_smoke,
                 baseline_final_handoff,
+                baseline_final_handoff_rehearsal,
                 route_aware_blockers,
                 readiness,
                 env_template,
@@ -369,6 +388,7 @@ def build_status() -> dict[str, Any]:
         or bool(baseline_credential_hygiene.get("link_values_printed"))
         or bool(baseline_local_env_smoke.get("link_values_printed"))
         or bool(baseline_final_handoff.get("link_values_printed"))
+        or bool(baseline_final_handoff_rehearsal.get("link_values_printed"))
         or bool(route_aware_blockers.get("link_values_printed")),
         "secret_values_printed": bool(secret_scan.get("secret_values_printed"))
         or bool(jupyter_input.get("secret_values_printed"))
@@ -382,6 +402,7 @@ def build_status() -> dict[str, Any]:
         or bool(baseline_credential_hygiene.get("secret_values_printed"))
         or bool(baseline_local_env_smoke.get("secret_values_printed"))
         or bool(baseline_final_handoff.get("secret_values_printed"))
+        or bool(baseline_final_handoff_rehearsal.get("secret_values_printed"))
         or bool(route_aware_blockers.get("secret_values_printed")),
     }
     contact_flags = {
@@ -405,6 +426,7 @@ def build_status() -> dict[str, Any]:
                 baseline_credential_hygiene,
                 baseline_local_env_smoke,
                 baseline_final_handoff,
+                baseline_final_handoff_rehearsal,
                 route_aware_blockers,
                 readiness,
                 env_template,
@@ -431,6 +453,7 @@ def build_status() -> dict[str, Any]:
                 baseline_credential_hygiene,
                 baseline_local_env_smoke,
                 baseline_final_handoff,
+                baseline_final_handoff_rehearsal,
                 route_aware_blockers,
                 readiness,
                 env_template,

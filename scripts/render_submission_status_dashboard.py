@@ -35,6 +35,7 @@ SOURCE_FILES = {
     "baseline_credential_hygiene": RUNS_DIR / "baseline_credential_hygiene.json",
     "baseline_local_env_smoke": RUNS_DIR / "baseline_local_env_smoke.json",
     "baseline_final_handoff": RUNS_DIR / "baseline_final_handoff_packet.json",
+    "baseline_final_handoff_rehearsal": RUNS_DIR / "baseline_final_handoff_rehearsal.json",
     "route_aware_submission_blockers": RUNS_DIR / "route_aware_submission_blockers.json",
     "jupyter_input": RUNS_DIR / "jupyter_input_template_audit.json",
     "jupyter_authorized": RUNS_DIR / "jupyter_authorized_preflight_template_audit.json",
@@ -100,6 +101,7 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
     baseline_credential_hygiene = data["baseline_credential_hygiene"]
     baseline_local_env_smoke = data["baseline_local_env_smoke"]
     baseline_final_handoff = data["baseline_final_handoff"]
+    baseline_final_handoff_rehearsal = data["baseline_final_handoff_rehearsal"]
     route_aware_blockers = data["route_aware_submission_blockers"]
     jupyter_input = data["jupyter_input"]
     jupyter_authorized = data["jupyter_authorized"]
@@ -189,6 +191,19 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
         and baseline_final_handoff.get("command_count") == 4
         and baseline_final_handoff.get("no_contact_command_count") == 3
         and baseline_final_handoff.get("real_runner_requires_confirmation") is True
+    )
+    rehearsal_commands = baseline_final_handoff_rehearsal.get("commands", [])
+    rehearsal_step3 = rehearsal_commands[2] if len(rehearsal_commands) >= 3 else {}
+    baseline_final_handoff_rehearsal_ready = bool(
+        baseline_final_handoff_rehearsal.get("passed")
+        and baseline_final_handoff_rehearsal.get("recommended_route") == "baseline_official_aloha"
+        and baseline_final_handoff_rehearsal.get("command_count") == 3
+        and baseline_final_handoff_rehearsal.get("synthetic_values_recorded") is False
+        and baseline_final_handoff_rehearsal.get("synthetic_env_file_removed_after_run") is True
+        and baseline_final_handoff_rehearsal.get("workspace_state_restored_after_rehearsal") is True
+        and rehearsal_step3.get("stops_before_real_runner") is True
+        and not any(baseline_final_handoff_rehearsal.get("contact_flags", {}).values())
+        and not any(baseline_final_handoff_rehearsal.get("leak_flags", {}).values())
     )
     route_aware_blockers_ready = bool(
         route_aware_blockers.get("passed")
@@ -374,6 +389,13 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
             "reports/baseline_final_handoff_packet.md",
         ),
         card(
+            "Baseline handoff rehearsal",
+            "done" if baseline_final_handoff_rehearsal_ready else "watch",
+            "前三步已演练",
+            "临时 synthetic local env 已按 final handoff 前三条命令顺序跑通；第三步缺少真实确认时仍停在 runner 前。",
+            "reports/baseline_final_handoff_rehearsal.md",
+        ),
+        card(
             "路线感知阻塞",
             "done" if route_aware_blockers_ready else "watch",
             "baseline 不等 link",
@@ -425,6 +447,7 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
     baseline_credential_hygiene = data["baseline_credential_hygiene"]
     baseline_local_env_smoke = data["baseline_local_env_smoke"]
     baseline_final_handoff = data["baseline_final_handoff"]
+    baseline_final_handoff_rehearsal = data["baseline_final_handoff_rehearsal"]
     route_aware_blockers = data["route_aware_submission_blockers"]
     jupyter_input = data["jupyter_input"]
     jupyter_authorized = data["jupyter_authorized"]
@@ -527,6 +550,26 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
         )
         is True,
         "baseline_final_handoff_does_not_read_local_env": baseline_final_handoff.get("local_env_content_read") is False,
+        "baseline_final_handoff_rehearsal_passed": baseline_final_handoff_rehearsal.get("passed") is True,
+        "baseline_final_handoff_rehearsal_command_count": baseline_final_handoff_rehearsal.get("command_count"),
+        "baseline_final_handoff_rehearsal_synthetic_values_not_recorded": baseline_final_handoff_rehearsal.get(
+            "synthetic_values_recorded"
+        )
+        is False,
+        "baseline_final_handoff_rehearsal_temp_env_removed": baseline_final_handoff_rehearsal.get(
+            "synthetic_env_file_removed_after_run"
+        )
+        is True,
+        "baseline_final_handoff_rehearsal_workspace_restored": baseline_final_handoff_rehearsal.get(
+            "workspace_state_restored_after_rehearsal"
+        )
+        is True,
+        "baseline_final_handoff_rehearsal_no_contact": not any(
+            baseline_final_handoff_rehearsal.get("contact_flags", {}).values()
+        ),
+        "baseline_final_handoff_rehearsal_no_leak": not any(
+            baseline_final_handoff_rehearsal.get("leak_flags", {}).values()
+        ),
         "route_aware_submission_blockers_passed": route_aware_blockers.get("passed") is True,
         "route_aware_recommended_route": route_aware_blockers.get("recommended_route"),
         "route_aware_baseline_no_upload": route_aware_blockers.get("baseline_requires_checkpoint_upload") is False,

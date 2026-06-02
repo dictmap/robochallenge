@@ -1843,3 +1843,35 @@
 
 - P0：提交并推送本轮 Notebook 第 46 节、Jupyter final handoff 审计、GUI 卡片、manifest 和验证链更新。
 - P1：下一轮可继续做凭据到位后的只读执行演练说明，但真实 runner 仍必须等用户明确提供凭据和授权。
+## 2026-06-03 第六十五轮：baseline final handoff 前三步演练
+
+### 已完成
+
+- 新增 `scripts/render_baseline_final_handoff_rehearsal.py`，从 `runs/baseline_final_handoff_packet.json` 读取最终交接包前 3 条 no-contact 命令，并用临时 synthetic local env 按顺序实际演练。
+- 新增机器可读产物 `runs/baseline_final_handoff_rehearsal.json` 和中文报告 `reports/baseline_final_handoff_rehearsal.md`。
+- 演练覆盖 3 条命令：
+  1. `python3 scripts/render_baseline_credential_hygiene.py`
+  2. `ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_authorized_preflight_template.sh`
+  3. `ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_ready_real_submission_template.sh`
+- 演练只写入临时 fake token/submission id，产物只记录长度和布尔证据，不记录 synthetic 明文值；运行后删除临时 env，并恢复 wrapper 刷新的 readiness/link/blockers 状态文件。
+- 已接入 `scripts/audit_submission_preflight_bundle.py`、`scripts/audit_submission_artifact_manifest.py`、`scripts/render_submission_status_dashboard.py` 和 `scripts/validate_repro_workspace.py`。
+- GUI dashboard 新增 `Baseline handoff rehearsal` 卡片，链接到 `reports/baseline_final_handoff_rehearsal.md`。
+
+### 验证结果
+
+- Linux 端 `python3 -m py_compile` 已通过，覆盖新增脚本和所有接线脚本。
+- Linux 端 `python3 scripts/render_baseline_final_handoff_rehearsal.py` 已通过：`passed=true`、`command_count=3`、前三条命令顺序完全匹配 final handoff 包。
+- rehearsal 关键证据：第 2 步 `returncode=0`、`variant_baseline=true`、`dry_run_called=true`、`robot_type_aloha=true`；第 3 步 `returncode=1`、`missing_confirmation=true`、`stops_before_real_runner=true`、`real_runner_started=false`。
+- 完整 no-contact 链已通过：`audit_plaintext_secrets.py`、`audit_submission_preflight_bundle.py`、`audit_submission_blockers_summary.py`、`audit_submission_artifact_manifest.py`、`render_submission_status_dashboard.py`、`validate_repro_workspace.py` 和 `git diff --check` 均通过。
+- GUI 状态升级为 `source_count=26`、`card_count=26`、`done_count=21`、`blocked_count=4`；底部 baseline 当前阻塞仍为 5 项，不包含 checkpoint link。
+- 本轮没有读取真实 token、submission id 或 checkpoint link，没有连接 RoboChallenge 平台，没有上传 checkpoint，没有生成 checkpoint tar，也没有启动真实 runner。
+
+### 当前边界
+
+- baseline 官方路线距离真实 runner 仍只等待：提交对象确认、`ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline`、`ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION`。
+- LoRA/web checkpoint 路线仍单独等待归档/上传授权和真实可访问 checkpoint link；这不是 baseline 官方 ALOHA 最短路线的前置条件。
+
+### 下一步
+
+- P0：同步本轮 rehearsal 产物、GUI 截图和工作记录，提交并推送。
+- P1：用户提供 token/submission id 且明确授权后，先按 rehearsal 已验证的前三条 no-contact 命令跑 baseline 授权预检；第四条真实 runner 强确认命令必须继续等待用户明确允许真实提交。

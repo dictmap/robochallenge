@@ -73,6 +73,7 @@ def build_status() -> dict[str, Any]:
     env_template = read_json(RUNS_DIR / "submission_env_template_audit.json")
     notebook_structure = read_json(RUNS_DIR / "notebook_structure_audit.json")
     jupyter_input = read_json(RUNS_DIR / "jupyter_input_template_audit.json")
+    jupyter_authorized = read_json(RUNS_DIR / "jupyter_authorized_preflight_template_audit.json")
     authorized_preflight = read_json(RUNS_DIR / "authorized_preflight_template_audit.json")
     ready_real_runner = read_json(RUNS_DIR / "ready_real_runner_template_audit.json")
     authorized_archive = read_json(RUNS_DIR / "authorized_checkpoint_archive_template_audit.json")
@@ -94,6 +95,7 @@ def build_status() -> dict[str, Any]:
         "env_template_ready": env_template.get("passed") is True,
         "notebook_structure_ready": notebook_structure.get("passed") is True,
         "jupyter_input_template_ready": jupyter_input.get("passed") is True,
+        "jupyter_authorized_preflight_template_ready": jupyter_authorized.get("passed") is True,
         "authorized_preflight_template_ready": authorized_preflight.get("passed") is True,
         "ready_real_runner_template_ready": ready_real_runner.get("passed") is True,
         "authorized_checkpoint_archive_template_ready": authorized_archive.get("passed") is True,
@@ -106,6 +108,7 @@ def build_status() -> dict[str, Any]:
         "credentials_printed": bool(preflight.get("leak_flags", {}).get("credentials_printed"))
         or bool(readiness.get("credentials_printed"))
         or bool(jupyter_input.get("credentials_printed"))
+        or bool(jupyter_authorized.get("credentials_printed"))
         or bool(ready_real_runner.get("credentials_printed"))
         or bool(authorized_archive.get("credentials_printed"))
         or bool(authorized_execution.get("credentials_printed")),
@@ -113,12 +116,14 @@ def build_status() -> dict[str, Any]:
         or bool(link_intake.get("link_values_printed"))
         or bool(link_download.get("link_value_printed"))
         or bool(jupyter_input.get("link_values_printed"))
+        or bool(jupyter_authorized.get("link_values_printed"))
         or bool(ready_real_runner.get("link_values_printed"))
         or bool(authorized_archive.get("link_values_printed"))
         or bool(authorized_execution.get("link_values_printed")),
         "secret_values_printed": bool(preflight.get("leak_flags", {}).get("secret_values_printed"))
         or bool(secret_scan.get("secret_values_printed"))
         or bool(jupyter_input.get("secret_values_printed"))
+        or bool(jupyter_authorized.get("secret_values_printed"))
         or bool(ready_real_runner.get("secret_values_printed"))
         or bool(authorized_archive.get("secret_values_printed"))
         or bool(authorized_execution.get("secret_values_printed")),
@@ -127,12 +132,14 @@ def build_status() -> dict[str, Any]:
         "platform_contacted": bool(preflight.get("contact_flags", {}).get("platform_contacted"))
         or bool(readiness.get("platform_contacted"))
         or bool(jupyter_input.get("platform_contacted"))
+        or bool(jupyter_authorized.get("platform_contacted"))
         or bool(ready_real_runner.get("platform_contacted"))
         or bool(authorized_archive.get("platform_contacted"))
         or bool(authorized_execution.get("platform_contacted")),
         "uploads_performed": bool(preflight.get("contact_flags", {}).get("uploads_performed"))
         or bool(upload_channels.get("uploads_performed"))
         or bool(jupyter_input.get("uploads_performed"))
+        or bool(jupyter_authorized.get("uploads_performed"))
         or bool(ready_real_runner.get("uploads_performed"))
         or bool(authorized_archive.get("uploads_performed"))
         or bool(authorized_execution.get("uploads_performed")),

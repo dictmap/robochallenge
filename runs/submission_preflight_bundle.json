@@ -10,7 +10,7 @@
   "download_verified": false,
   "link_shape_ready": false,
   "secret_scan_hit_count": 0,
-  "secret_scan_scanned_files": 178,
+  "secret_scan_scanned_files": 181,
   "subcommands": {
     "checkpoint_link_intake": {
       "script": "scripts/audit_checkpoint_link_intake.py",
@@ -37,7 +37,7 @@
       "script": "scripts/audit_notebook_structure.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": "[],\n  \"duplicate_ids\": [],\n  \"code_cells_with_outputs\": [],\n  \"code_cells_with_execution_count\": [],\n  \"crlf_count\": 0,\n  \"bad_marker_hits\": [],\n  \"required_markers\": {\n    \"# RoboChallenge pi0.5 复现与提交操作手册\": true,\n    \"第 40 节：真实提交阻塞项摘要\": true,\n    \"RUN_SUBMISSION_BLOCKERS_SUMMARY\": true,\n    \"scripts/audit_submission_blockers_summary.py\": true,\n    \"第 41 节：强确认真实 runner 模板审计\": true,\n    \"RUN_READY_REAL_RUNNER_TEMPLATE_AUDIT\": true,\n    \"scripts/audit_ready_real_runner_template.py\": true,\n    \"第 42 节：授权后 checkpoint 归档模板审计\": true,\n    \"RUN_AUTHORIZED_CHECKPOINT_ARCHIVE_TEMPLATE_AUDIT\": true,\n    \"scripts/audit_authorized_checkpoint_archive_template.py\": true,\n    \"第 43 节：授权执行清单审计\": true,\n    \"RUN_AUTHORIZED_EXECUTION_CHECKLIST\": true,\n    \"scripts/audit_authorized_execution_checklist.py\": true,\n    \"第 44 节：安全填空本地 env 入口\": true,\n    \"RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE\": true,\n    \"scripts/audit_jupyter_input_template.py\": true\n  },\n  \"blocking\": [\n    \"Notebook 结构、编码和提交阻塞项章节已通过静态审计。\"\n  ]\n}\n",
+      "stdout_tail": ",\n    \"第 40 节：真实提交阻塞项摘要\": true,\n    \"RUN_SUBMISSION_BLOCKERS_SUMMARY\": true,\n    \"scripts/audit_submission_blockers_summary.py\": true,\n    \"第 41 节：强确认真实 runner 模板审计\": true,\n    \"RUN_READY_REAL_RUNNER_TEMPLATE_AUDIT\": true,\n    \"scripts/audit_ready_real_runner_template.py\": true,\n    \"第 42 节：授权后 checkpoint 归档模板审计\": true,\n    \"RUN_AUTHORIZED_CHECKPOINT_ARCHIVE_TEMPLATE_AUDIT\": true,\n    \"scripts/audit_authorized_checkpoint_archive_template.py\": true,\n    \"第 43 节：授权执行清单审计\": true,\n    \"RUN_AUTHORIZED_EXECUTION_CHECKLIST\": true,\n    \"scripts/audit_authorized_execution_checklist.py\": true,\n    \"第 44 节：安全填空本地 env 入口\": true,\n    \"RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE\": true,\n    \"scripts/audit_jupyter_input_template.py\": true,\n    \"第 45 节：授权后 Jupyter 预检入口\": true,\n    \"RUN_JUPYTER_AUTHORIZED_PREFLIGHT_TEMPLATE_AUDIT\": true,\n    \"RUN_JUPYTER_AUTHORIZED_PREFLIGHT\": true,\n    \"scripts/audit_jupyter_authorized_preflight_template.py\": true\n  },\n  \"blocking\": [\n    \"Notebook 结构、编码和提交阻塞项章节已通过静态审计。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "jupyter_input_template": {
@@ -45,6 +45,13 @@
       "returncode": 0,
       "passed": true,
       "stdout_tail": "import getpass\": true,\n    \"import shlex\": true,\n    \"getpass.getpass\": true,\n    \"shlex.quote\": true,\n    \"is_placeholder_like\": true,\n    \"PLACEHOLDER_MARKERS\": true,\n    \"missing_or_placeholder\": true,\n    \"os.chmod\": true,\n    \"submission/robochallenge_env.local.sh\": true,\n    \"ROBOCHALLENGE_USER_TOKEN\": true,\n    \"ROBOCHALLENGE_SUBMISSION_ID\": true,\n    \"ROBOCHALLENGE_LORA_CHECKPOINT_LINK\": true,\n    \"ROBOCHALLENGE_CHECKPOINT_LINK\": true\n  },\n  \"forbidden_fragments\": {\n    \"print(token\": false,\n    \"print(env_values\": false,\n    \"print(value\": false,\n    \"display(env_values\": false,\n    \"ROBOCHALLENGE_USER_TOKEN =\": false,\n    \"ROBOCHALLENGE_SUBMISSION_ID =\": false,\n    \"ROBOCHALLENGE_LORA_CHECKPOINT_LINK =\": false,\n    \"ROBOCHALLENGE_CHECKPOINT_LINK =\": false\n  },\n  \"code_cell_clean\": true,\n  \"code_cell_id\": \"safe-local-env-input-code\",\n  \"secret_pattern_hits\": [],\n  \"whole_notebook_secret_pattern_hits\": [],\n  \"blocking\": [\n    \"Jupyter 安全填空本地 env 入口已就绪；当前未读取、未写入、未打印真实凭据。\"\n  ]\n}\n",
+      "stderr_tail": ""
+    },
+    "jupyter_authorized_preflight_template": {
+      "script": "scripts/audit_jupyter_authorized_preflight_template.py",
+      "returncode": 0,
+      "passed": true,
+      "stdout_tail": " true,\n    \"set -euo pipefail\": true,\n    \"redact_sensitive_output\": true,\n    \"subprocess.run\": true,\n    \"returncode\": true,\n    \"ROBOCHALLENGE_USER_TOKEN\": true,\n    \"ROBOCHALLENGE_SUBMISSION_ID\": true,\n    \"ROBOCHALLENGE_LORA_CHECKPOINT_LINK\": true,\n    \"ROBOCHALLENGE_CHECKPOINT_LINK\": true\n  },\n  \"forbidden_fragments\": {\n    \"set -x\": false,\n    \"cat submission/robochallenge_env.local.sh\": false,\n    \"print(env_values\": false,\n    \"print(open(\": false,\n    \"--verify-download\": false,\n    \"RUN_REAL_ROBOCHALLENGE_SUBMISSION\": false,\n    \"CREATE_ROBOCHALLENGE_CHECKPOINT_ARCHIVE\": false,\n    \"run_ready_real_submission_template.sh\": false,\n    \"run_table30v2_aloha_demo_template.sh\": false,\n    \"run_table30v2_aloha_lora_demo_template.sh\": false\n  },\n  \"code_cell_clean\": true,\n  \"code_cell_id\": \"jupyter-authorized-preflight-code\",\n  \"secret_pattern_hits\": [],\n  \"whole_notebook_secret_pattern_hits\": [],\n  \"blocking\": [\n    \"授权后 Jupyter 预检入口已就绪；默认只审计，不读取 local env，不连接平台，不启动 runner。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "real_submission_readiness": {
@@ -86,7 +93,7 @@
       "script": "scripts/audit_plaintext_secrets.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": "{\n  \"kind\": \"plaintext_secret_scan\",\n  \"passed\": true,\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"secret_values_printed\": false,\n  \"scan_scope\": \"git tracked files plus unignored untracked files\",\n  \"scanned_files\": 178,\n  \"skipped_binary_files\": 0,\n  \"pattern_count\": 7,\n  \"hit_count\": 0,\n  \"hits\": [],\n  \"blocking\": [\n    \"如发现命中项，先移除明文凭据并轮换对应 token，再重新运行本审计。\",\n    \"本审计不替代真实平台权限检查；真实提交仍需要用户提供凭据。\"\n  ]\n}\n",
+      "stdout_tail": "{\n  \"kind\": \"plaintext_secret_scan\",\n  \"passed\": true,\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"secret_values_printed\": false,\n  \"scan_scope\": \"git tracked files plus unignored untracked files\",\n  \"scanned_files\": 181,\n  \"skipped_binary_files\": 0,\n  \"pattern_count\": 7,\n  \"hit_count\": 0,\n  \"hits\": [],\n  \"blocking\": [\n    \"如发现命中项，先移除明文凭据并轮换对应 token，再重新运行本审计。\",\n    \"本审计不替代真实平台权限检查；真实提交仍需要用户提供凭据。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "authorized_execution_checklist": {
@@ -100,7 +107,7 @@
       "script": "scripts/audit_submission_artifact_manifest.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": "ns/openpi_rtc_lora_materialized_policy_checkpoint.tar.part-aa\",\n      \"ignored\": true,\n      \"returncode\": 0\n    }\n  },\n  \"inputs\": {\n    \"preflight_status_available\": true,\n    \"preflight_go_no_go_blocked\": true,\n    \"notebook_structure_passed\": true,\n    \"jupyter_input_template_passed\": true,\n    \"authorized_preflight_template_passed\": true,\n    \"ready_real_runner_template_passed\": true,\n    \"authorized_checkpoint_archive_template_passed\": true,\n    \"authorized_execution_checklist_passed\": true,\n    \"readiness_currently_blocked\": true,\n    \"env_template_passed\": true,\n    \"secret_scan_passed\": true,\n    \"secret_scan_hit_count_zero\": true\n  },\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false\n  },\n  \"blocking\": [\n    \"提交准备材料 manifest 已完整；真实提交仍需要用户凭据、submission id 和 checkpoint link。\"\n  ]\n}\n",
+      "stdout_tail": "-aa\",\n      \"ignored\": true,\n      \"returncode\": 0\n    }\n  },\n  \"inputs\": {\n    \"preflight_status_available\": true,\n    \"preflight_go_no_go_blocked\": true,\n    \"notebook_structure_passed\": true,\n    \"jupyter_input_template_passed\": true,\n    \"jupyter_authorized_preflight_template_passed\": true,\n    \"authorized_preflight_template_passed\": true,\n    \"ready_real_runner_template_passed\": true,\n    \"authorized_checkpoint_archive_template_passed\": true,\n    \"authorized_execution_checklist_passed\": true,\n    \"readiness_currently_blocked\": true,\n    \"env_template_passed\": true,\n    \"secret_scan_passed\": true,\n    \"secret_scan_hit_count_zero\": true\n  },\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false\n  },\n  \"blocking\": [\n    \"提交准备材料 manifest 已完整；真实提交仍需要用户凭据、submission id 和 checkpoint link。\"\n  ]\n}\n",
       "stderr_tail": ""
     }
   },

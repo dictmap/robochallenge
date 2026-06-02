@@ -1377,3 +1377,29 @@
 ### 下一步
 - P0：提交并推送本轮 Jupyter 安全填空入口、审计脚本、GUI 和总体验证更新。
 - P1：用户拿到真实凭据和 checkpoint link 后，在 Notebook 第 44 节手动设置 `RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE=True` 写入 `submission/robochallenge_env.local.sh`，然后运行 `python3 scripts/audit_real_submission_readiness.py` 和 `bash submission/run_authorized_preflight_template.sh`。
+
+## 2026-06-03 第四十九轮：授权后 Jupyter 预检入口审计
+
+### 已完成
+- 新增 `scripts/audit_jupyter_authorized_preflight_template.py`，静态审计 Notebook 第 45 节“授权后 Jupyter 预检入口”；审计不执行 Notebook、不读取 `submission/robochallenge_env.local.sh`、不联网、不上传、不启动真实 runner。
+- Notebook `notebooks/robochallenge_pi05_submit_cn.ipynb` 新增第 45 节；默认 `RUN_JUPYTER_AUTHORIZED_PREFLIGHT_TEMPLATE_AUDIT=True` 只跑静态审计，`RUN_JUPYTER_AUTHORIZED_PREFLIGHT=False` 不读取 local env。
+- 第 45 节的真实执行路径只在用户手动改开关后运行 `source submission/robochallenge_env.local.sh; bash submission/run_authorized_preflight_template.sh`，并且只打印 returncode 和报告路径，不打印 token、submission id 或 checkpoint link。
+- `scripts/audit_notebook_structure.py`、`scripts/audit_submission_preflight_bundle.py`、`scripts/audit_submission_artifact_manifest.py`、`scripts/audit_submission_blockers_summary.py`、`scripts/audit_authorized_execution_checklist.py`、`scripts/render_submission_status_dashboard.py` 和 `scripts/validate_repro_workspace.py` 已纳入该入口审计。
+- GUI 面板新增“Jupyter 授权预检”卡片，显示第 45 节已就绪、默认只审计、等待用户完成 local env 后手动开启。
+
+### 验证结果
+
+- Linux 端 `python3 scripts/audit_jupyter_authorized_preflight_template.py` 已通过：`passed=true`，`section_index=91`，`audit_default_true=true`，`execution_default_false=true`，`code_cell_clean=true`，`runner_started=false`，`secret_pattern_hits=[]`。
+- Linux 端 `python3 scripts/audit_notebook_structure.py` 已通过：`cell_count=93`，无缺失/重复 cell id，无输出，无 `execution_count`，第 45 节关键标记齐全。
+- Linux 端完整 no-contact 预检链已通过：明文凭据扫描、授权顺序、handoff docs、preflight bundle、artifact manifest、blockers summary、GUI 渲染、总体验证和 `git diff --check` 均通过。
+- GUI 状态 JSON 已更新：`source_count=15`，`card_count=15`，`done_count=10`，`blocked_count=4`，`jupyter_authorized_preflight_template_passed=true`，`jupyter_authorized_preflight_default_off=true`，`jupyter_authorized_preflight_audit_on=true`。
+- 明文凭据扫描仍为 `hit_count=0`；本轮没有读取、打印或保存真实凭据。
+
+### 当前边界
+
+- 本轮没有读取真实 token、submission id 或 checkpoint link，没有接触 RoboChallenge 平台，没有上传 checkpoint，没有生成 checkpoint tar，也没有启动真实 runner。
+- 真实提交仍处于 `go_no_go=blocked`：还缺 `ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、真实可访问 checkpoint link，以及用户对 checkpoint 归档/上传和真实 runner 的明确授权。
+
+### 下一步
+- P0：提交并推送本轮授权后 Jupyter 预检入口、审计脚本、GUI 和总体验证更新。
+- P1：用户拿到真实凭据和 checkpoint link 后，先运行 Notebook 第 44 节写入 local env，再手动开启第 45 节 `RUN_JUPYTER_AUTHORIZED_PREFLIGHT=True` 复跑授权预检；只有预检显示 ready 后，才进入归档/上传或真实 runner 强确认入口。

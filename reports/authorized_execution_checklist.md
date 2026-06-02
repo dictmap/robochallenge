@@ -27,13 +27,15 @@
    - 边界：只编辑被 Git 忽略的 local env 文件；不把真实 token 写入 tracked 文件。
 3. 加载本地 env：`source submission/robochallenge_env.local.sh`
    - 边界：shell 中加载，不打印变量值。
-4. 只读预检：`bash submission/run_authorized_preflight_template.sh`
+4. Jupyter 授权预检：`Notebook 第 45 节：RUN_JUPYTER_AUTHORIZED_PREFLIGHT=True`
+   - 边界：只运行授权预检模板；不生成 tar、不上传、不启动真实 runner。
+5. 只读预检：`bash submission/run_authorized_preflight_template.sh`
    - 边界：如果 ready_for_real_submission=false，必须停止。
-5. 可选下载校验：`python3 scripts/audit_checkpoint_link_download_verification.py --verify-download`
+6. 可选下载校验：`python3 scripts/audit_checkpoint_link_download_verification.py --verify-download`
    - 边界：只有用户明确允许联网验证 checkpoint link 时才运行。
-6. 可选 checkpoint 归档：`ROBOCHALLENGE_ARCHIVE_CONFIRM=CREATE_ROBOCHALLENGE_CHECKPOINT_ARCHIVE bash submission/run_authorized_checkpoint_archive_template.sh`
+7. 可选 checkpoint 归档：`ROBOCHALLENGE_ARCHIVE_CONFIRM=CREATE_ROBOCHALLENGE_CHECKPOINT_ARCHIVE bash submission/run_authorized_checkpoint_archive_template.sh`
    - 边界：只有用户明确授权生成 11GB+ tar 时才运行。
-7. 真实 runner 强确认：`ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION bash submission/run_ready_real_submission_template.sh`
+8. 真实 runner 强确认：`ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION bash submission/run_ready_real_submission_template.sh`
    - 边界：只有 readiness、dry-run 和确认短语全部通过后才会进入真实 runner。
 
 ## 必须停止的情况
@@ -63,6 +65,8 @@
 - `local_env_ignored`：`True`。
 - `jupyter_input_template_passed`：`True`。
 - `jupyter_local_env_ignored`：`True`。
+- `jupyter_authorized_preflight_template_passed`：`True`。
+- `jupyter_authorized_preflight_default_off`：`True`。
 - `authorized_preflight_template_passed`：`True`。
 - `ready_real_runner_template_passed`：`True`。
 - `real_runner_confirmation_phrase`：`True`。

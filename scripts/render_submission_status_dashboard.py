@@ -28,6 +28,7 @@ SOURCE_FILES = {
     "authorized_archive": RUNS_DIR / "authorized_checkpoint_archive_template_audit.json",
     "authorized_execution": RUNS_DIR / "authorized_execution_checklist.json",
     "jupyter_input": RUNS_DIR / "jupyter_input_template_audit.json",
+    "jupyter_authorized": RUNS_DIR / "jupyter_authorized_preflight_template_audit.json",
     "link_intake": RUNS_DIR / "checkpoint_link_intake.json",
     "readiness": RUNS_DIR / "real_submission_readiness.json",
     "preflight_bundle": RUNS_DIR / "submission_preflight_bundle.json",
@@ -82,6 +83,7 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
     authorized_archive = data["authorized_archive"]
     authorized_execution = data["authorized_execution"]
     jupyter_input = data["jupyter_input"]
+    jupyter_authorized = data["jupyter_authorized"]
     link_intake = data["link_intake"]
     readiness = data["readiness"]
     preflight = data["preflight_bundle"]
@@ -112,6 +114,11 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
         jupyter_input.get("passed")
         and jupyter_input.get("run_flag_default_false")
         and jupyter_input.get("local_env_ignored", {}).get("ignored")
+    )
+    jupyter_authorized_ready = bool(
+        jupyter_authorized.get("passed")
+        and jupyter_authorized.get("audit_default_true")
+        and jupyter_authorized.get("execution_default_false")
     )
     uploads_performed = readiness.get("inputs", {}).get("uploads_performed")
     plaintext_clean = plaintext.get("hit_count") == 0 and plaintext.get("secret_values_printed") is False
@@ -215,6 +222,13 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
             "reports/jupyter_input_template_audit.md",
         ),
         card(
+            "Jupyter 授权预检",
+            "done" if jupyter_authorized_ready else "watch",
+            "默认只审计",
+            "Notebook 第 45 节用于填完 local env 后跑授权预检；默认不读 local env、不启动 runner。",
+            "reports/jupyter_authorized_preflight_template_audit.md",
+        ),
+        card(
             "明文凭据扫描",
             "done" if plaintext_clean else "watch",
             f"hit_count={plaintext.get('hit_count')}",
@@ -231,6 +245,7 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
     authorized_archive = data["authorized_archive"]
     authorized_execution = data["authorized_execution"]
     jupyter_input = data["jupyter_input"]
+    jupyter_authorized = data["jupyter_authorized"]
     sequence = data["authorized_sequence"]
     preflight = data["preflight_bundle"]
     plaintext = data["plaintext_scan"]
@@ -264,6 +279,9 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
         "jupyter_input_template_passed": jupyter_input.get("passed") is True,
         "jupyter_input_default_off": jupyter_input.get("run_flag_default_false") is True,
         "jupyter_local_env_ignored": jupyter_input.get("local_env_ignored", {}).get("ignored") is True,
+        "jupyter_authorized_preflight_template_passed": jupyter_authorized.get("passed") is True,
+        "jupyter_authorized_preflight_default_off": jupyter_authorized.get("execution_default_false") is True,
+        "jupyter_authorized_preflight_audit_on": jupyter_authorized.get("audit_default_true") is True,
         "uploads_performed": readiness.get("inputs", {}).get("uploads_performed"),
         "platform_contacted": False,
         "credentials_printed": False,

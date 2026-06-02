@@ -2,9 +2,9 @@
   "kind": "submission_status_dashboard",
   "passed": true,
   "html_path": "reports/submission_status_dashboard.html",
-  "source_count": 14,
-  "card_count": 14,
-  "done_count": 9,
+  "source_count": 15,
+  "card_count": 15,
+  "done_count": 10,
   "blocked_count": 4,
   "watch_count": 1,
   "ready_for_real_submission": false,
@@ -23,6 +23,9 @@
   "jupyter_input_template_passed": true,
   "jupyter_input_default_off": true,
   "jupyter_local_env_ignored": true,
+  "jupyter_authorized_preflight_template_passed": true,
+  "jupyter_authorized_preflight_default_off": true,
+  "jupyter_authorized_preflight_audit_on": true,
   "uploads_performed": false,
   "platform_contacted": false,
   "credentials_printed": false,
@@ -139,6 +142,14 @@
       "value": "local env 入口",
       "detail": "Notebook 第 44 节默认关闭；开启后只写入被 Git 忽略的 local env，且不打印 token/link。",
       "report": "reports/jupyter_input_template_audit.md"
+    },
+    {
+      "title": "Jupyter 授权预检",
+      "state": "done",
+      "state_label": "已完成",
+      "value": "默认只审计",
+      "detail": "Notebook 第 45 节用于填完 local env 后跑授权预检；默认不读 local env、不启动 runner。",
+      "report": "reports/jupyter_authorized_preflight_template_audit.md"
     },
     {
       "title": "明文凭据扫描",

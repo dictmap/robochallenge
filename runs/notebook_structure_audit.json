@@ -10,7 +10,7 @@
   "notebook_path": "notebooks/robochallenge_pi05_submit_cn.ipynb",
   "nbformat": 4,
   "nbformat_minor": 5,
-  "cell_count": 91,
+  "cell_count": 93,
   "missing_id_indexes": [],
   "duplicate_ids": [],
   "code_cells_with_outputs": [],
@@ -33,7 +33,11 @@
     "scripts/audit_authorized_execution_checklist.py": true,
     "第 44 节：安全填空本地 env 入口": true,
     "RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE": true,
-    "scripts/audit_jupyter_input_template.py": true
+    "scripts/audit_jupyter_input_template.py": true,
+    "第 45 节：授权后 Jupyter 预检入口": true,
+    "RUN_JUPYTER_AUTHORIZED_PREFLIGHT_TEMPLATE_AUDIT": true,
+    "RUN_JUPYTER_AUTHORIZED_PREFLIGHT": true,
+    "scripts/audit_jupyter_authorized_preflight_template.py": true
   },
   "blocking": [
     "Notebook 结构、编码和提交阻塞项章节已通过静态审计。"

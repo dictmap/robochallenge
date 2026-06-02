@@ -20,6 +20,7 @@
 - `env_template_ready`：`True`。
 - `notebook_structure_ready`：`True`。
 - `jupyter_input_template_ready`：`True`。
+- `jupyter_authorized_preflight_template_ready`：`True`。
 - `authorized_preflight_template_ready`：`True`。
 - `ready_real_runner_template_ready`：`True`。
 - `authorized_checkpoint_archive_template_ready`：`True`。

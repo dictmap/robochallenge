@@ -51,6 +51,7 @@ REQUIRED_ARTIFACTS = [
     "reports/submission_env_template_audit.md",
     "reports/notebook_structure_audit.md",
     "reports/jupyter_input_template_audit.md",
+    "reports/jupyter_authorized_preflight_template_audit.md",
     "reports/authorized_preflight_template_audit.md",
     "reports/ready_real_runner_template_audit.md",
     "reports/authorized_checkpoint_archive_template_audit.md",
@@ -61,6 +62,7 @@ REQUIRED_ARTIFACTS = [
     "reports/plaintext_secret_scan.md",
     "reports/submission_status_dashboard.html",
     "scripts/audit_jupyter_input_template.py",
+    "scripts/audit_jupyter_authorized_preflight_template.py",
     "scripts/audit_authorized_execution_checklist.py",
 ]
 
@@ -156,6 +158,7 @@ def build_status() -> dict[str, Any]:
     preflight = read_json(RUNS_DIR / "submission_preflight_bundle.json")
     notebook_structure = read_json(RUNS_DIR / "notebook_structure_audit.json")
     jupyter_input = read_json(RUNS_DIR / "jupyter_input_template_audit.json")
+    jupyter_authorized = read_json(RUNS_DIR / "jupyter_authorized_preflight_template_audit.json")
     authorized_preflight = read_json(RUNS_DIR / "authorized_preflight_template_audit.json")
     ready_real_runner = read_json(RUNS_DIR / "ready_real_runner_template_audit.json")
     authorized_archive = read_json(RUNS_DIR / "authorized_checkpoint_archive_template_audit.json")
@@ -169,6 +172,7 @@ def build_status() -> dict[str, Any]:
         "preflight_go_no_go_blocked": preflight.get("go_no_go") == "blocked",
         "notebook_structure_passed": notebook_structure.get("passed") is True,
         "jupyter_input_template_passed": jupyter_input.get("passed") is True,
+        "jupyter_authorized_preflight_template_passed": jupyter_authorized.get("passed") is True,
         "authorized_preflight_template_passed": authorized_preflight.get("passed") is True,
         "ready_real_runner_template_passed": ready_real_runner.get("passed") is True,
         "authorized_checkpoint_archive_template_passed": authorized_archive.get("passed") is True,
@@ -185,6 +189,7 @@ def build_status() -> dict[str, Any]:
                 preflight,
                 notebook_structure,
                 jupyter_input,
+                jupyter_authorized,
                 authorized_preflight,
                 ready_real_runner,
                 authorized_archive,
@@ -195,12 +200,14 @@ def build_status() -> dict[str, Any]:
         ),
         "link_values_printed": bool(preflight.get("leak_flags", {}).get("link_values_printed"))
         or bool(jupyter_input.get("link_values_printed"))
+        or bool(jupyter_authorized.get("link_values_printed"))
         or bool(authorized_preflight.get("link_values_printed"))
         or bool(ready_real_runner.get("link_values_printed"))
         or bool(authorized_archive.get("link_values_printed"))
         or bool(authorized_execution.get("link_values_printed")),
         "secret_values_printed": bool(secret_scan.get("secret_values_printed"))
-        or bool(jupyter_input.get("secret_values_printed")),
+        or bool(jupyter_input.get("secret_values_printed"))
+        or bool(jupyter_authorized.get("secret_values_printed")),
     }
     contact_flags = {
         "platform_contacted": any(
@@ -209,6 +216,7 @@ def build_status() -> dict[str, Any]:
                 preflight,
                 notebook_structure,
                 jupyter_input,
+                jupyter_authorized,
                 authorized_preflight,
                 ready_real_runner,
                 authorized_archive,
@@ -224,6 +232,7 @@ def build_status() -> dict[str, Any]:
                 preflight,
                 notebook_structure,
                 jupyter_input,
+                jupyter_authorized,
                 authorized_preflight,
                 ready_real_runner,
                 authorized_archive,

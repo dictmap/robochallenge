@@ -4,7 +4,7 @@
 
 - 审计状态：`passed=True`。
 - 扫描范围：`git tracked files plus unignored untracked files`。
-- 扫描文本文件数：`178`。
+- 扫描文本文件数：`181`。
 - 跳过二进制文件数：`0`。
 - 规则数量：`7`。
 - 命中数量：`0`。

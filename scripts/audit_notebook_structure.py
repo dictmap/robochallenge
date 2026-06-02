@@ -47,6 +47,10 @@ REQUIRED_MARKERS = [
     "第 44 节：安全填空本地 env 入口",
     "RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE",
     "scripts/audit_jupyter_input_template.py",
+    "第 45 节：授权后 Jupyter 预检入口",
+    "RUN_JUPYTER_AUTHORIZED_PREFLIGHT_TEMPLATE_AUDIT",
+    "RUN_JUPYTER_AUTHORIZED_PREFLIGHT",
+    "scripts/audit_jupyter_authorized_preflight_template.py",
 ]
 
 

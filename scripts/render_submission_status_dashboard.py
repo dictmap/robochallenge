@@ -125,6 +125,9 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
         and action_packet.get("go_no_go") == "blocked_by_user_inputs"
         and action_packet.get("local_env_ignored") is True
         and len(action_packet.get("required_user_decisions", [])) >= 6
+        and action_packet.get("recommended_route") == "baseline_official_aloha"
+        and action_packet.get("baseline_requires_checkpoint_link") is False
+        and action_packet.get("lora_web_requires_checkpoint_link") is True
     )
     web_form_packet_ready = bool(
         web_form_packet.get("passed")
@@ -257,8 +260,8 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
         card(
             "下一步动作包",
             "done" if action_packet_ready else "watch",
-            "Notebook 优先",
-            "把用户要补齐的 6 项和第 44/45 节入口合并成一页；不读取、不保存、不打印真实值。",
+            "baseline 优先",
+            "默认只列 baseline 最短缺口；LoRA/web checkpoint 的上传和 link 阻塞单独保留。",
             "reports/next_user_action_packet.md",
         ),
         card(
@@ -359,6 +362,11 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
         "next_user_action_packet_passed": action_packet.get("passed") is True,
         "next_user_action_packet_decision_count": len(action_packet.get("required_user_decisions", [])),
         "next_user_action_packet_local_env_ignored": action_packet.get("local_env_ignored") is True,
+        "next_user_action_packet_recommended_route": action_packet.get("recommended_route"),
+        "next_user_action_packet_baseline_no_upload": action_packet.get("baseline_requires_checkpoint_upload") is False,
+        "next_user_action_packet_baseline_no_link": action_packet.get("baseline_requires_checkpoint_link") is False,
+        "next_user_action_packet_lora_web_needs_upload": action_packet.get("lora_web_requires_checkpoint_upload") is True,
+        "next_user_action_packet_lora_web_needs_link": action_packet.get("lora_web_requires_checkpoint_link") is True,
         "web_form_field_packet_passed": web_form_packet.get("passed") is True,
         "web_form_field_count": web_form_packet.get("field_count"),
         "web_form_ready_field_count": web_form_packet.get("ready_field_count"),

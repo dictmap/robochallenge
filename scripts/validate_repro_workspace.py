@@ -864,6 +864,11 @@ def main() -> int:
             dashboard.get("next_user_action_packet_passed") is True,
             dashboard.get("next_user_action_packet_decision_count", 0) >= 6,
             dashboard.get("next_user_action_packet_local_env_ignored") is True,
+            dashboard.get("next_user_action_packet_recommended_route") == "baseline_official_aloha",
+            dashboard.get("next_user_action_packet_baseline_no_upload") is True,
+            dashboard.get("next_user_action_packet_baseline_no_link") is True,
+            dashboard.get("next_user_action_packet_lora_web_needs_upload") is True,
+            dashboard.get("next_user_action_packet_lora_web_needs_link") is True,
             dashboard.get("web_form_field_packet_passed") is True,
             dashboard.get("web_form_field_count", 0) >= 10,
             dashboard.get("web_form_ready_field_count", 0) >= 6,
@@ -1292,6 +1297,8 @@ def main() -> int:
     action_packet_leaks = action_packet.get("leak_flags", {})
     action_packet_contacts = action_packet.get("contact_flags", {})
     action_packet_required_ids = set(action_packet.get("required_decision_ids", []))
+    action_packet_baseline_ids = set(action_packet.get("baseline_current_blocking", []))
+    action_packet_lora_web_ids = set(action_packet.get("lora_web_current_blocking", []))
     if not all(
         [
             action_packet.get("kind") == "next_user_action_packet",
@@ -1308,6 +1315,29 @@ def main() -> int:
             action_packet.get("credentials_printed") is False,
             action_packet.get("link_values_printed") is False,
             action_packet.get("secret_values_printed") is False,
+            action_packet.get("recommended_route") == "baseline_official_aloha",
+            action_packet.get("baseline_requires_checkpoint_link") is False,
+            action_packet.get("baseline_requires_checkpoint_upload") is False,
+            action_packet.get("lora_web_requires_checkpoint_link") is True,
+            action_packet.get("lora_web_requires_checkpoint_upload") is True,
+            "ROBOCHALLENGE_CHECKPOINT_LINK" not in action_packet_baseline_ids,
+            "CHECKPOINT_ARCHIVE_AUTHORIZATION" not in action_packet_baseline_ids,
+            {
+                "SUBMISSION_TARGET_CONFIRMATION",
+                "ROBOCHALLENGE_USER_TOKEN",
+                "ROBOCHALLENGE_SUBMISSION_ID",
+                "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline",
+                "ROBOCHALLENGE_REAL_RUN_CONFIRM",
+            }.issubset(action_packet_baseline_ids),
+            {
+                "SUBMISSION_TARGET_CONFIRMATION",
+                "ROBOCHALLENGE_USER_TOKEN",
+                "ROBOCHALLENGE_SUBMISSION_ID",
+                "ROBOCHALLENGE_SUBMISSION_VARIANT=lora",
+                "CHECKPOINT_ARCHIVE_AUTHORIZATION",
+                "ROBOCHALLENGE_CHECKPOINT_LINK",
+                "ROBOCHALLENGE_REAL_RUN_CONFIRM",
+            }.issubset(action_packet_lora_web_ids),
             {
                 "SUBMISSION_TARGET_CONFIRMATION",
                 "ROBOCHALLENGE_USER_TOKEN",
@@ -1317,7 +1347,9 @@ def main() -> int:
                 "ROBOCHALLENGE_REAL_RUN_CONFIRM",
             }.issubset(action_packet_required_ids),
             len(action_packet.get("first_notebook_steps", [])) >= 2,
-            len(action_packet.get("current_blocking", [])) >= 4,
+            len(action_packet.get("current_blocking", [])) >= 5,
+            "ROBOCHALLENGE_CHECKPOINT_LINK" not in set(action_packet.get("current_blocking", [])),
+            len(action_packet.get("legacy_global_blocking", [])) >= 4,
             all(action_packet_evidence.values()),
             not any(action_packet_leaks.values()),
             not any(action_packet_contacts.values()),

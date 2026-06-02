@@ -8,8 +8,31 @@
 - Web 表单就绪：`False`。
 - Notebook：`notebooks/robochallenge_pi05_submit_cn.ipynb`。
 - 本地 env：`submission/robochallenge_env.local.sh`，Git 忽略：`True`。
+- 推荐路线：`baseline_official_aloha`。
+- baseline 是否需要 checkpoint link：`False`。
+- baseline 是否需要 checkpoint upload：`False`。
+- LoRA/web 是否需要 checkpoint link：`True`。
+- LoRA/web 是否需要 checkpoint upload：`True`。
 
-## 用户需要补齐或授权
+## Baseline 最短路线当前只差
+
+- `SUBMISSION_TARGET_CONFIRMATION`
+- `ROBOCHALLENGE_USER_TOKEN`
+- `ROBOCHALLENGE_SUBMISSION_ID`
+- `ROBOCHALLENGE_SUBMISSION_VARIANT=baseline`
+- `ROBOCHALLENGE_REAL_RUN_CONFIRM`
+
+## LoRA / 网页 checkpoint 路线当前只差
+
+- `SUBMISSION_TARGET_CONFIRMATION`
+- `ROBOCHALLENGE_USER_TOKEN`
+- `ROBOCHALLENGE_SUBMISSION_ID`
+- `ROBOCHALLENGE_SUBMISSION_VARIANT=lora`
+- `CHECKPOINT_ARCHIVE_AUTHORIZATION`
+- `ROBOCHALLENGE_CHECKPOINT_LINK`
+- `ROBOCHALLENGE_REAL_RUN_CONFIRM`
+
+## 全局/LoRA 完整决策清单
 
 - `SUBMISSION_TARGET_CONFIRMATION`：提交对象确认。需要用户确认提交 Table30v2 ALOHA；原始 Table30 还不能直接沿用当前链路。
 - `ROBOCHALLENGE_USER_TOKEN`：RoboChallenge user token。只能放入本地 shell 或被 Git 忽略的 local env 文件，不能写入 tracked 文件。
@@ -21,11 +44,19 @@
 ## 推荐入口
 
 1. 打开 `notebooks/robochallenge_pi05_submit_cn.ipynb`。
-2. 在第 44 节手动设置 `RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE=True`，把真实值写入被 Git 忽略的 local env。
-3. 在第 45 节手动设置 `RUN_JUPYTER_AUTHORIZED_PREFLIGHT=True`，只运行授权后预检。
-4. 只有预检显示 ready 后，才进入 checkpoint 归档/上传或真实 runner 强确认入口。
+2. 在第 44 节手动设置 `RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE=True`，把真实 token、submission id 和 `baseline` variant 写入被 Git 忽略的 local env。
+3. 在第 45 节手动设置 `RUN_JUPYTER_AUTHORIZED_PREFLIGHT=True`，优先运行 baseline 授权预检。
+4. 先按 `reports/baseline_submission_quickstart.md` 跑 baseline dry-run gate；只有明确选择 LoRA/web checkpoint 路线时，才进入 checkpoint 归档、上传和 link 回填。
 
-## 当前阻塞
+## 当前阻塞（baseline 默认路线）
+
+- SUBMISSION_TARGET_CONFIRMATION
+- ROBOCHALLENGE_USER_TOKEN
+- ROBOCHALLENGE_SUBMISSION_ID
+- ROBOCHALLENGE_SUBMISSION_VARIANT=baseline
+- ROBOCHALLENGE_REAL_RUN_CONFIRM
+
+## 旧全局阻塞（兼容 readiness/web/LoRA）
 
 - 缺少 ROBOCHALLENGE_USER_TOKEN。
 - 缺少 ROBOCHALLENGE_SUBMISSION_ID。
@@ -63,8 +94,19 @@
 - `local_env_ignored`：`True`。
 - `handoff_docs_passed`：`True`。
 - `authorized_sequence_passed`：`True`。
+- `route_packet_passed`：`True`。
+- `route_packet_recommends_baseline`：`True`。
+- `baseline_quickstart_passed`：`True`。
+- `baseline_quickstart_no_link`：`True`。
+- `baseline_quickstart_no_upload`：`True`。
+- `baseline_blocking_has_no_checkpoint_link`：`True`。
+- `baseline_blocking_has_no_archive_authorization`：`True`。
+- `baseline_required_ids_complete`：`True`。
+- `lora_web_requires_checkpoint_link`：`True`。
+- `lora_web_requires_archive_authorization`：`True`。
+- `lora_web_required_ids_complete`：`True`。
 - `secret_scan_clean`：`True`。
 
 ## Blocking
 
-- 动作包已生成；真实提交仍等待用户凭据、checkpoint link 和显式授权。
+- 动作包已生成；baseline 仍等待用户 token、submission id 和真实 runner 强确认，LoRA/web checkpoint 路线额外等待授权上传和真实 checkpoint link。

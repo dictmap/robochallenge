@@ -78,6 +78,9 @@
     "readiness_currently_false": true,
     "web_form_packet_passed": true,
     "action_packet_passed": true,
+    "action_packet_recommends_baseline": true,
+    "action_packet_baseline_no_link": true,
+    "action_packet_lora_web_needs_link": true,
     "secret_scan_clean": true
   },
   "leak_flags": {

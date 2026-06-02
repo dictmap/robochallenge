@@ -111,6 +111,9 @@ def build_status() -> dict[str, Any]:
         "readiness_currently_false": readiness.get("ready_for_real_submission") is False,
         "web_form_packet_passed": web_form_packet.get("passed") is True,
         "action_packet_passed": action_packet.get("passed") is True,
+        "action_packet_recommends_baseline": action_packet.get("recommended_route") == "baseline_official_aloha",
+        "action_packet_baseline_no_link": action_packet.get("baseline_requires_checkpoint_link") is False,
+        "action_packet_lora_web_needs_link": action_packet.get("lora_web_requires_checkpoint_link") is True,
         "secret_scan_clean": secret_scan.get("passed") is True and secret_scan.get("hit_count") == 0,
     }
     inputs = [route_packet, baseline_quickstart, readiness, blockers_summary, action_packet, web_form_packet, secret_scan]

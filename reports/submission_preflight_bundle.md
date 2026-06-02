@@ -41,10 +41,10 @@
 - `submission_handoff_docs`：returncode=`0`，passed=`True`。
 - `plaintext_secret_scan`：returncode=`0`，passed=`True`。
 - `authorized_execution_checklist`：returncode=`0`，passed=`True`。
-- `next_user_action_packet`：returncode=`0`，passed=`True`。
-- `web_form_field_packet`：returncode=`0`，passed=`True`。
 - `submission_variant_route_packet`：returncode=`0`，passed=`True`。
 - `baseline_submission_quickstart`：returncode=`0`，passed=`True`。
+- `next_user_action_packet`：returncode=`0`，passed=`True`。
+- `web_form_field_packet`：returncode=`0`，passed=`True`。
 - `route_aware_submission_blockers`：returncode=`0`，passed=`True`。
 - `submission_artifact_manifest`：returncode=`0`，passed=`True`。
 

@@ -76,6 +76,9 @@
 - `readiness_currently_false`：`True`。
 - `web_form_packet_passed`：`True`。
 - `action_packet_passed`：`True`。
+- `action_packet_recommends_baseline`：`True`。
+- `action_packet_baseline_no_link`：`True`。
+- `action_packet_lora_web_needs_link`：`True`。
 - `secret_scan_clean`：`True`。
 
 ## Blocking

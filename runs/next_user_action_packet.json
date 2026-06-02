@@ -7,6 +7,40 @@
   "notebook_path": "notebooks/robochallenge_pi05_submit_cn.ipynb",
   "local_env_path": "submission/robochallenge_env.local.sh",
   "local_env_ignored": true,
+  "recommended_route": "baseline_official_aloha",
+  "baseline_requires_checkpoint_link": false,
+  "baseline_requires_checkpoint_upload": false,
+  "baseline_current_blocking": [
+    "SUBMISSION_TARGET_CONFIRMATION",
+    "ROBOCHALLENGE_USER_TOKEN",
+    "ROBOCHALLENGE_SUBMISSION_ID",
+    "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline",
+    "ROBOCHALLENGE_REAL_RUN_CONFIRM"
+  ],
+  "lora_web_requires_checkpoint_link": true,
+  "lora_web_requires_checkpoint_upload": true,
+  "lora_web_current_blocking": [
+    "SUBMISSION_TARGET_CONFIRMATION",
+    "ROBOCHALLENGE_USER_TOKEN",
+    "ROBOCHALLENGE_SUBMISSION_ID",
+    "ROBOCHALLENGE_SUBMISSION_VARIANT=lora",
+    "CHECKPOINT_ARCHIVE_AUTHORIZATION",
+    "ROBOCHALLENGE_CHECKPOINT_LINK",
+    "ROBOCHALLENGE_REAL_RUN_CONFIRM"
+  ],
+  "legacy_global_blocking": [
+    "缺少 ROBOCHALLENGE_USER_TOKEN。",
+    "缺少 ROBOCHALLENGE_SUBMISSION_ID。",
+    "缺少真实可访问 checkpoint link；可使用 ROBOCHALLENGE_CHECKPOINT_LINK 或 ROBOCHALLENGE_LORA_CHECKPOINT_LINK 记录。",
+    "尚未执行 checkpoint 上传，本地 tar 文件也未生成。",
+    "缺少 checkpoint link；请设置 ROBOCHALLENGE_CHECKPOINT_LINK 或 ROBOCHALLENGE_LORA_CHECKPOINT_LINK。",
+    "缺少真实 checkpoint link；当前只能审计下载校验协议，不能联网验证。",
+    "未请求 --verify-download；本轮不联网、不下载、不接触 checkpoint link host。",
+    "需要用户提供真实 ROBOCHALLENGE_USER_TOKEN。",
+    "需要用户提供真实 ROBOCHALLENGE_SUBMISSION_ID。",
+    "需要确认本次要提交的是 Table30v2 ALOHA 还是原始 Table30；当前可运行链路是 Table30v2 ALOHA。",
+    "若要提交 LoRA 版本，还需要把本地 12GB+ checkpoint 放到网站可访问的 checkpoint link。"
+  ],
   "required_user_decisions": [
     {
       "id": "SUBMISSION_TARGET_CONFIRMATION",
@@ -68,17 +102,11 @@
     }
   ],
   "current_blocking": [
-    "缺少 ROBOCHALLENGE_USER_TOKEN。",
-    "缺少 ROBOCHALLENGE_SUBMISSION_ID。",
-    "缺少真实可访问 checkpoint link；可使用 ROBOCHALLENGE_CHECKPOINT_LINK 或 ROBOCHALLENGE_LORA_CHECKPOINT_LINK 记录。",
-    "尚未执行 checkpoint 上传，本地 tar 文件也未生成。",
-    "缺少 checkpoint link；请设置 ROBOCHALLENGE_CHECKPOINT_LINK 或 ROBOCHALLENGE_LORA_CHECKPOINT_LINK。",
-    "缺少真实 checkpoint link；当前只能审计下载校验协议，不能联网验证。",
-    "未请求 --verify-download；本轮不联网、不下载、不接触 checkpoint link host。",
-    "需要用户提供真实 ROBOCHALLENGE_USER_TOKEN。",
-    "需要用户提供真实 ROBOCHALLENGE_SUBMISSION_ID。",
-    "需要确认本次要提交的是 Table30v2 ALOHA 还是原始 Table30；当前可运行链路是 Table30v2 ALOHA。",
-    "若要提交 LoRA 版本，还需要把本地 12GB+ checkpoint 放到网站可访问的 checkpoint link。"
+    "SUBMISSION_TARGET_CONFIRMATION",
+    "ROBOCHALLENGE_USER_TOKEN",
+    "ROBOCHALLENGE_SUBMISSION_ID",
+    "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline",
+    "ROBOCHALLENGE_REAL_RUN_CONFIRM"
   ],
   "evidence": {
     "readiness_gate_passed": true,
@@ -94,6 +122,17 @@
     "local_env_ignored": true,
     "handoff_docs_passed": true,
     "authorized_sequence_passed": true,
+    "route_packet_passed": true,
+    "route_packet_recommends_baseline": true,
+    "baseline_quickstart_passed": true,
+    "baseline_quickstart_no_link": true,
+    "baseline_quickstart_no_upload": true,
+    "baseline_blocking_has_no_checkpoint_link": true,
+    "baseline_blocking_has_no_archive_authorization": true,
+    "baseline_required_ids_complete": true,
+    "lora_web_requires_checkpoint_link": true,
+    "lora_web_requires_archive_authorization": true,
+    "lora_web_required_ids_complete": true,
     "secret_scan_clean": true
   },
   "leak_flags": {
@@ -113,6 +152,6 @@
   "link_values_printed": false,
   "secret_values_printed": false,
   "blocking": [
-    "动作包已生成；真实提交仍等待用户凭据、checkpoint link 和显式授权。"
+    "动作包已生成；baseline 仍等待用户 token、submission id 和真实 runner 强确认，LoRA/web checkpoint 路线额外等待授权上传和真实 checkpoint link。"
   ]
 }

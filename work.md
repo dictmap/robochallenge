@@ -1598,3 +1598,31 @@
 
 - P0：提交并推送本轮交接文档和文档审计规则更新。
 - P1：用户拿到 token/submission id 后，从 `reports/baseline_submission_quickstart.md` 或 Notebook 第 44/45 节开始跑 baseline 授权预检。
+
+## 2026-06-03 第五十七轮：下一步动作包 baseline 化
+
+### 已完成
+
+- 更新 `scripts/render_next_user_action_packet.py`：动作包现在直接读取 `submission_variant_route_packet` 和 `baseline_submission_quickstart`，默认展示 baseline 官方路线当前只差 5 项。
+- 动作包新增字段：`recommended_route=baseline_official_aloha`、`baseline_requires_checkpoint_link=false`、`baseline_requires_checkpoint_upload=false`、`lora_web_requires_checkpoint_link=true`、`lora_web_requires_checkpoint_upload=true`。
+- 动作包报告 `reports/next_user_action_packet.md` 新增 “Baseline 最短路线当前只差” 和 “LoRA / 网页 checkpoint 路线当前只差” 两节；旧的 readiness/web/LoRA 全局阻塞保留在兼容区，不再作为默认当前阻塞。
+- 调整 `scripts/audit_submission_preflight_bundle.py` 的子审计顺序：先刷新路线拆分包和 baseline quickstart，再生成动作包，避免动作包读到旧路线状态。
+- 更新 `scripts/audit_submission_artifact_manifest.py`、`scripts/render_submission_status_dashboard.py` 和 `scripts/validate_repro_workspace.py`，把动作包的 route-aware 字段纳入 manifest、GUI 和总体验证。
+- 更新 `scripts/render_route_aware_submission_blockers.py`，反向检查动作包已经具备 baseline no-link / LoRA-web needs-link 语义，防止回退。
+
+### 验证结果
+
+- Linux 端动作包 smoke 已通过：`passed=true`，`recommended_route=baseline_official_aloha`，`baseline_requires_checkpoint_link=false`，`current_blocking` 只包含 baseline 5 项。
+- 完整 no-contact 链已通过：明文凭据扫描、preflight、blockers summary、manifest、GUI、总体验证和 `git diff --check` 均通过。
+- GUI 状态仍为 `source_count=20`、`card_count=20`、`done_count=15`；“下一步动作包”卡片现在显示 `baseline 优先`。
+- 明文扫描仍为 `hit_count=0`；本轮没有读取真实 token、submission id 或 checkpoint link，没有连接 RoboChallenge 平台，没有上传 checkpoint，没有生成 tar，没有启动真实 runner。
+
+### 当前边界
+
+- baseline 官方路线的默认动作包现在只等待：提交对象确认、`ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline`、真实 runner 强确认。
+- LoRA/web checkpoint 路线仍单独等待归档/上传授权和真实 checkpoint link。
+
+### 下一步
+
+- P0：提交并推送本轮动作包 baseline 化、GUI 和验证链更新。
+- P1：继续检查 Notebook 第 44/45 节中的用户提示文字，确保它们也默认引导 baseline 而不是 LoRA/web link。

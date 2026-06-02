@@ -23,6 +23,11 @@
   "next_user_action_packet_passed": true,
   "next_user_action_packet_decision_count": 6,
   "next_user_action_packet_local_env_ignored": true,
+  "next_user_action_packet_recommended_route": "baseline_official_aloha",
+  "next_user_action_packet_baseline_no_upload": true,
+  "next_user_action_packet_baseline_no_link": true,
+  "next_user_action_packet_lora_web_needs_upload": true,
+  "next_user_action_packet_lora_web_needs_link": true,
   "web_form_field_packet_passed": true,
   "web_form_field_count": 12,
   "web_form_ready_field_count": 7,
@@ -160,8 +165,8 @@
       "title": "下一步动作包",
       "state": "done",
       "state_label": "已完成",
-      "value": "Notebook 优先",
-      "detail": "把用户要补齐的 6 项和第 44/45 节入口合并成一页；不读取、不保存、不打印真实值。",
+      "value": "baseline 优先",
+      "detail": "默认只列 baseline 最短缺口；LoRA/web checkpoint 的上传和 link 阻塞单独保留。",
       "report": "reports/next_user_action_packet.md"
     },
     {

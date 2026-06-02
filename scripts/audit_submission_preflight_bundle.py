@@ -32,10 +32,10 @@ SUBCOMMANDS = [
     ("submission_handoff_docs", "scripts/audit_submission_handoff_docs.py"),
     ("plaintext_secret_scan", "scripts/audit_plaintext_secrets.py"),
     ("authorized_execution_checklist", "scripts/audit_authorized_execution_checklist.py"),
-    ("next_user_action_packet", "scripts/render_next_user_action_packet.py"),
-    ("web_form_field_packet", "scripts/render_web_form_field_packet.py"),
     ("submission_variant_route_packet", "scripts/render_submission_variant_route_packet.py"),
     ("baseline_submission_quickstart", "scripts/render_baseline_submission_quickstart.py"),
+    ("next_user_action_packet", "scripts/render_next_user_action_packet.py"),
+    ("web_form_field_packet", "scripts/render_web_form_field_packet.py"),
     ("route_aware_submission_blockers", "scripts/render_route_aware_submission_blockers.py"),
     ("submission_artifact_manifest", "scripts/audit_submission_artifact_manifest.py"),
 ]

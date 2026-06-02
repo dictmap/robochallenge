@@ -20,8 +20,8 @@
       "path": "work.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 119735,
-      "sha256": "0f696707592c47d7426a5a38df48ad8f30b28a876459aba9fe53ecc5b2df21c2"
+      "size_bytes": 122382,
+      "sha256": "f522627a97559605cb48e00a848c4c3e163a2df16fa0f515c1ab87e611f2d007"
     },
     {
       "path": "notebooks/robochallenge_pi05_submit_cn.ipynb",
@@ -272,8 +272,8 @@
       "path": "reports/next_user_action_packet.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 3525,
-      "sha256": "d8dc4be545ec54e8a241dbff28c09cf103d0fc895d6052d894d4b045c77f6e03"
+      "size_bytes": 5302,
+      "sha256": "365850bdb28271096ab3f983d1c5c48693d0f41ecfebb639ebc5f2eca87a5e79"
     },
     {
       "path": "reports/web_form_field_packet.md",
@@ -300,8 +300,8 @@
       "path": "reports/route_aware_submission_blockers.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 3465,
-      "sha256": "6058d71294ae1fa86d434a149d01894abef56e27dc7e1a844ecbfc5e2a3a517e"
+      "size_bytes": 3612,
+      "sha256": "fba03b13005208661137dc3a5d13302e548e1aa304c21e4e3cbd4ee8a18ba6e5"
     },
     {
       "path": "reports/submission_handoff_docs_audit.md",
@@ -322,7 +322,7 @@
       "exists": true,
       "tracked": true,
       "size_bytes": 3271,
-      "sha256": "c4771a1bed0babd4e4f0ca50678f0aba45a07985b7e5926903d9c7da1d38936e"
+      "sha256": "b1b0afe215664585ec2731872944fad28747a0582d7c7bdecf462d6a69d7af51"
     },
     {
       "path": "reports/plaintext_secret_scan.md",
@@ -335,15 +335,15 @@
       "path": "reports/submission_status_dashboard.html",
       "exists": true,
       "tracked": true,
-      "size_bytes": 13820,
-      "sha256": "614de5d804053ff56c9b2a1f2ae8d1ef17557c41c87e141500fe9f299226489c"
+      "size_bytes": 13804,
+      "sha256": "b08b3334c10a7286b64c07e9c7f195b75be7a2b8cb10c2d8e40a34befca73432"
     },
     {
       "path": "scripts/render_next_user_action_packet.py",
       "exists": true,
       "tracked": true,
-      "size_bytes": 11207,
-      "sha256": "dab2f1f20bb65566c0b8af6507e99439796419de30a2cd2443f95485a89aeeb0"
+      "size_bytes": 16157,
+      "sha256": "e11efdba75b681964fd16781589b74e001124c2177530ff2679460ab5e1f5ece"
     },
     {
       "path": "scripts/render_web_form_field_packet.py",
@@ -370,8 +370,8 @@
       "path": "scripts/render_route_aware_submission_blockers.py",
       "exists": true,
       "tracked": true,
-      "size_bytes": 11016,
-      "sha256": "91614c66737a768da85d85b091d863f0c387576686247144d9570fa4343491a3"
+      "size_bytes": 11346,
+      "sha256": "9192bb769e06e1e0480a263a97ad6ae79814eba77ad6855b1613cc89edf0d14e"
     },
     {
       "path": "scripts/audit_jupyter_input_template.py",
@@ -446,6 +446,11 @@
     "authorized_checkpoint_archive_template_passed": true,
     "authorized_execution_checklist_passed": true,
     "next_user_action_packet_passed": true,
+    "next_user_action_packet_recommended_baseline": true,
+    "next_user_action_packet_baseline_no_upload": true,
+    "next_user_action_packet_baseline_no_link": true,
+    "next_user_action_packet_lora_web_needs_upload": true,
+    "next_user_action_packet_lora_web_needs_link": true,
     "web_form_field_packet_passed": true,
     "web_form_field_packet_currently_not_ready": true,
     "submission_variant_route_packet_passed": true,

@@ -25,6 +25,24 @@ EXPECTED_DECISIONS = [
     "ROBOCHALLENGE_REAL_RUN_CONFIRM",
 ]
 
+BASELINE_REQUIRED_IDS = [
+    "SUBMISSION_TARGET_CONFIRMATION",
+    "ROBOCHALLENGE_USER_TOKEN",
+    "ROBOCHALLENGE_SUBMISSION_ID",
+    "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline",
+    "ROBOCHALLENGE_REAL_RUN_CONFIRM",
+]
+
+LORA_WEB_REQUIRED_IDS = [
+    "SUBMISSION_TARGET_CONFIRMATION",
+    "ROBOCHALLENGE_USER_TOKEN",
+    "ROBOCHALLENGE_SUBMISSION_ID",
+    "ROBOCHALLENGE_SUBMISSION_VARIANT=lora",
+    "CHECKPOINT_ARCHIVE_AUTHORIZATION",
+    "ROBOCHALLENGE_CHECKPOINT_LINK",
+    "ROBOCHALLENGE_REAL_RUN_CONFIRM",
+]
+
 NOTEBOOK_PATH = "notebooks/robochallenge_pi05_submit_cn.ipynb"
 LOCAL_ENV_PATH = "submission/robochallenge_env.local.sh"
 
@@ -53,6 +71,13 @@ def unique(items: list[str]) -> list[str]:
     return result
 
 
+def route_by_id(packet: dict[str, Any], route_id: str) -> dict[str, Any]:
+    for item in packet.get("routes", []):
+        if item.get("id") == route_id:
+            return item
+    return {}
+
+
 def build_status() -> dict[str, Any]:
     readiness = read_json(RUNS_DIR / "real_submission_readiness.json")
     blockers = read_json(RUNS_DIR / "submission_blockers_summary.json")
@@ -62,6 +87,8 @@ def build_status() -> dict[str, Any]:
     env_template = read_json(RUNS_DIR / "submission_env_template_audit.json")
     handoff = read_json(RUNS_DIR / "submission_handoff_docs_audit.json")
     sequence = read_json(RUNS_DIR / "authorized_submission_sequence_audit.json")
+    route_packet = read_json(RUNS_DIR / "submission_variant_route_packet.json")
+    baseline_quickstart = read_json(RUNS_DIR / "baseline_submission_quickstart.json")
     secret_scan = read_json(RUNS_DIR / "plaintext_secret_scan.json")
 
     decisions = authorized_execution.get("required_user_decisions", [])
@@ -73,11 +100,19 @@ def build_status() -> dict[str, Any]:
         if str(item.get("command", "")).startswith("Notebook 第 44 节")
         or str(item.get("command", "")).startswith("Notebook 第 45 节")
     ]
-    current_blocking = unique(
+    legacy_global_blocking = unique(
         list(readiness.get("blocking", []))
         + list(blockers.get("blocking", []))
         + list(authorized_execution.get("blocking", []))
     )
+    baseline_route = route_by_id(route_packet, "baseline_official_aloha")
+    lora_route = route_by_id(route_packet, "lora_materialized")
+    baseline_current_blocking = unique(
+        list(baseline_route.get("current_blocking", []))
+        or [item.get("id", "") for item in baseline_quickstart.get("required_user_inputs", [])]
+        or BASELINE_REQUIRED_IDS
+    )
+    lora_web_current_blocking = unique(list(lora_route.get("current_blocking", [])) or LORA_WEB_REQUIRED_IDS)
 
     local_env_ignored = (
         env_template.get("local_secret_paths", {})
@@ -100,6 +135,18 @@ def build_status() -> dict[str, Any]:
         "local_env_ignored": local_env_ignored,
         "handoff_docs_passed": handoff.get("passed") is True,
         "authorized_sequence_passed": sequence.get("passed") is True,
+        "route_packet_passed": route_packet.get("passed") is True,
+        "route_packet_recommends_baseline": route_packet.get("recommended_default") == "baseline_official_aloha",
+        "baseline_quickstart_passed": baseline_quickstart.get("passed") is True,
+        "baseline_quickstart_no_link": baseline_quickstart.get("requires_checkpoint_link") is False,
+        "baseline_quickstart_no_upload": baseline_quickstart.get("requires_checkpoint_upload") is False,
+        "baseline_blocking_has_no_checkpoint_link": "ROBOCHALLENGE_CHECKPOINT_LINK" not in baseline_current_blocking,
+        "baseline_blocking_has_no_archive_authorization": "CHECKPOINT_ARCHIVE_AUTHORIZATION"
+        not in baseline_current_blocking,
+        "baseline_required_ids_complete": set(BASELINE_REQUIRED_IDS).issubset(set(baseline_current_blocking)),
+        "lora_web_requires_checkpoint_link": "ROBOCHALLENGE_CHECKPOINT_LINK" in lora_web_current_blocking,
+        "lora_web_requires_archive_authorization": "CHECKPOINT_ARCHIVE_AUTHORIZATION" in lora_web_current_blocking,
+        "lora_web_required_ids_complete": set(LORA_WEB_REQUIRED_IDS).issubset(set(lora_web_current_blocking)),
         "secret_scan_clean": secret_scan.get("passed") is True and secret_scan.get("hit_count") == 0,
     }
     leak_flags = {
@@ -114,6 +161,8 @@ def build_status() -> dict[str, Any]:
                 env_template,
                 handoff,
                 sequence,
+                route_packet,
+                baseline_quickstart,
                 secret_scan,
             ]
         ),
@@ -126,6 +175,8 @@ def build_status() -> dict[str, Any]:
                 jupyter_authorized,
                 handoff,
                 sequence,
+                route_packet,
+                baseline_quickstart,
                 secret_scan,
             ]
         ),
@@ -139,6 +190,8 @@ def build_status() -> dict[str, Any]:
                 env_template,
                 handoff,
                 sequence,
+                route_packet,
+                baseline_quickstart,
                 secret_scan,
             ]
         ),
@@ -155,6 +208,8 @@ def build_status() -> dict[str, Any]:
                 env_template,
                 handoff,
                 sequence,
+                route_packet,
+                baseline_quickstart,
                 secret_scan,
             ]
         ),
@@ -169,6 +224,8 @@ def build_status() -> dict[str, Any]:
                 env_template,
                 handoff,
                 sequence,
+                route_packet,
+                baseline_quickstart,
                 secret_scan,
             ]
         ),
@@ -179,7 +236,8 @@ def build_status() -> dict[str, Any]:
         and not any(leak_flags.values())
         and not any(contact_flags.values())
         and len(first_notebook_steps) >= 2
-        and current_blocking
+        and baseline_current_blocking
+        and lora_web_current_blocking
     )
     blocking = []
     if not passed:
@@ -192,10 +250,15 @@ def build_status() -> dict[str, Any]:
             blocking.append("输入审计显示曾连接平台、接触下载 host 或执行上传。")
         if len(first_notebook_steps) < 2:
             blocking.append("授权执行清单未同时列出 Notebook 第 44/45 节。")
-        if not current_blocking:
-            blocking.append("当前阻塞项为空，动作包无法说明需要用户补齐什么。")
+        if not baseline_current_blocking:
+            blocking.append("baseline 当前阻塞项为空，动作包无法说明最短路线需要用户补齐什么。")
+        if not lora_web_current_blocking:
+            blocking.append("LoRA/web 当前阻塞项为空，动作包无法说明 checkpoint 路线需要用户补齐什么。")
     else:
-        blocking.append("动作包已生成；真实提交仍等待用户凭据、checkpoint link 和显式授权。")
+        blocking.append(
+            "动作包已生成；baseline 仍等待用户 token、submission id 和真实 runner 强确认，"
+            "LoRA/web checkpoint 路线额外等待授权上传和真实 checkpoint link。"
+        )
 
     return {
         "kind": "next_user_action_packet",
@@ -206,10 +269,18 @@ def build_status() -> dict[str, Any]:
         "notebook_path": NOTEBOOK_PATH,
         "local_env_path": LOCAL_ENV_PATH,
         "local_env_ignored": local_env_ignored,
+        "recommended_route": "baseline_official_aloha",
+        "baseline_requires_checkpoint_link": False,
+        "baseline_requires_checkpoint_upload": False,
+        "baseline_current_blocking": baseline_current_blocking,
+        "lora_web_requires_checkpoint_link": True,
+        "lora_web_requires_checkpoint_upload": True,
+        "lora_web_current_blocking": lora_web_current_blocking,
+        "legacy_global_blocking": legacy_global_blocking,
         "required_user_decisions": decisions,
         "required_decision_ids": decision_ids,
         "first_notebook_steps": first_notebook_steps,
-        "current_blocking": current_blocking,
+        "current_blocking": baseline_current_blocking,
         "evidence": evidence,
         "leak_flags": leak_flags,
         "contact_flags": contact_flags,
@@ -235,10 +306,33 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         f"- Web 表单就绪：`{status['web_form_ready']}`。",
         f"- Notebook：`{status['notebook_path']}`。",
         f"- 本地 env：`{status['local_env_path']}`，Git 忽略：`{status['local_env_ignored']}`。",
+        f"- 推荐路线：`{status['recommended_route']}`。",
+        f"- baseline 是否需要 checkpoint link：`{status['baseline_requires_checkpoint_link']}`。",
+        f"- baseline 是否需要 checkpoint upload：`{status['baseline_requires_checkpoint_upload']}`。",
+        f"- LoRA/web 是否需要 checkpoint link：`{status['lora_web_requires_checkpoint_link']}`。",
+        f"- LoRA/web 是否需要 checkpoint upload：`{status['lora_web_requires_checkpoint_upload']}`。",
         "",
-        "## 用户需要补齐或授权",
+        "## Baseline 最短路线当前只差",
         "",
     ]
+    for item in status["baseline_current_blocking"]:
+        lines.append(f"- `{item}`")
+    lines.extend(
+        [
+            "",
+            "## LoRA / 网页 checkpoint 路线当前只差",
+            "",
+        ]
+    )
+    for item in status["lora_web_current_blocking"]:
+        lines.append(f"- `{item}`")
+    lines.extend(
+        [
+        "",
+        "## 全局/LoRA 完整决策清单",
+        "",
+        ]
+    )
     for item in status["required_user_decisions"]:
         lines.append(f"- `{item.get('id')}`：{item.get('label')}。{item.get('detail')}")
     lines.extend(
@@ -247,15 +341,18 @@ def write_report(status: dict[str, Any], path: Path) -> None:
             "## 推荐入口",
             "",
             "1. 打开 `notebooks/robochallenge_pi05_submit_cn.ipynb`。",
-            "2. 在第 44 节手动设置 `RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE=True`，把真实值写入被 Git 忽略的 local env。",
-            "3. 在第 45 节手动设置 `RUN_JUPYTER_AUTHORIZED_PREFLIGHT=True`，只运行授权后预检。",
-            "4. 只有预检显示 ready 后，才进入 checkpoint 归档/上传或真实 runner 强确认入口。",
+            "2. 在第 44 节手动设置 `RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE=True`，把真实 token、submission id 和 `baseline` variant 写入被 Git 忽略的 local env。",
+            "3. 在第 45 节手动设置 `RUN_JUPYTER_AUTHORIZED_PREFLIGHT=True`，优先运行 baseline 授权预检。",
+            "4. 先按 `reports/baseline_submission_quickstart.md` 跑 baseline dry-run gate；只有明确选择 LoRA/web checkpoint 路线时，才进入 checkpoint 归档、上传和 link 回填。",
             "",
-            "## 当前阻塞",
+            "## 当前阻塞（baseline 默认路线）",
             "",
         ]
     )
     for item in status["current_blocking"]:
+        lines.append(f"- {item}")
+    lines.extend(["", "## 旧全局阻塞（兼容 readiness/web/LoRA）", ""])
+    for item in status["legacy_global_blocking"]:
         lines.append(f"- {item}")
     lines.extend(["", "## 只读边界", ""])
     for key, value in status["contact_flags"].items():

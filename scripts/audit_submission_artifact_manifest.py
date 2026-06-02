@@ -193,6 +193,12 @@ def build_status() -> dict[str, Any]:
         "authorized_checkpoint_archive_template_passed": authorized_archive.get("passed") is True,
         "authorized_execution_checklist_passed": authorized_execution.get("passed") is True,
         "next_user_action_packet_passed": action_packet.get("passed") is True,
+        "next_user_action_packet_recommended_baseline": action_packet.get("recommended_route")
+        == "baseline_official_aloha",
+        "next_user_action_packet_baseline_no_upload": action_packet.get("baseline_requires_checkpoint_upload") is False,
+        "next_user_action_packet_baseline_no_link": action_packet.get("baseline_requires_checkpoint_link") is False,
+        "next_user_action_packet_lora_web_needs_upload": action_packet.get("lora_web_requires_checkpoint_upload") is True,
+        "next_user_action_packet_lora_web_needs_link": action_packet.get("lora_web_requires_checkpoint_link") is True,
         "web_form_field_packet_passed": web_form_packet.get("passed") is True,
         "web_form_field_packet_currently_not_ready": web_form_packet.get("web_form_ready") is False,
         "submission_variant_route_packet_passed": route_packet.get("passed") is True,

@@ -766,6 +766,35 @@
 - P0：最终 secret scan、diff check 后提交推送。
 - P1：用户提供真实凭据和 checkpoint link 后，重新运行 readiness gate。
 
+## 2026-06-02 第二十八轮：checkpoint 归档计划审计
+
+### 已完成
+
+- 新增 `scripts/audit_checkpoint_archive_plan.py`，审计 LoRA 完整物化 checkpoint 的 tar/sha256 归档计划。
+- 检查 tar、sha256 和 split part 路径是否会被 Git 忽略，并验证磁盘空间是否满足预计 tar 的 2 倍余量。
+- `.gitignore` 新增 `*.tar.sha256`，避免用户生成 sha256 文件后误加入 Git。
+- Notebook 新增第 29 节 `checkpoint 归档计划审计`。
+- 已将归档计划审计纳入 `scripts/validate_repro_workspace.py`。
+
+### 验证结果
+
+- 归档计划审计：`passed=true`，`archive_created=false`，`upload_performed=false`，`credentials_read=false`。
+- 预计 tar 大小：`11.064 GB`；runs 剩余空间十 GB 桶：`480 GB`；2 倍空间余量检查通过。
+- `archive_ignored=true`，`sha256_ignored=true`，`split_part_ignored=true`。
+- 建议命令已审计：`tar -C runs -cf ...`、`sha256sum ... > ...tar.sha256` 和可选 `split -b 4G ...`。
+- `python3 scripts/validate_repro_workspace.py` 已通过，并新增输出“Checkpoint 归档计划审计已通过”。
+- Notebook preflight 已通过；无关耗时和磁盘字段漂移已恢复。
+- 待运行：最终 secret scan、diff check 和提交推送。
+
+### 当前边界
+
+- 本轮不生成 tar、不计算真实 sha256、不上传 checkpoint。
+- 真实上传仍需要用户选择并授权存储位置，再提供可访问 checkpoint link。
+
+### 下一步
+
+- P0：最终 secret scan、diff check 后提交推送。
+
 ## 2026-06-02 第二十六轮：runner dry-run 不连接平台检查
 
 ### 已完成

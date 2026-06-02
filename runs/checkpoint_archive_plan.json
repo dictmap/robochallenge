@@ -1,0 +1,43 @@
+{
+  "kind": "checkpoint_archive_plan",
+  "passed": true,
+  "archive_created": false,
+  "upload_performed": false,
+  "credentials_read": false,
+  "checkpoint_dir": "runs/openpi_rtc_lora_materialized_policy_checkpoint",
+  "archive_path": "runs/openpi_rtc_lora_materialized_policy_checkpoint.tar",
+  "sha256_path": "runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.sha256",
+  "expected_archive_bytes": 11879987200,
+  "expected_archive_gb": 11.064,
+  "required_inputs": {
+    "export_audit_local_ready": true,
+    "tar_stream_smoke_passed": true,
+    "upload_audit_passed": true,
+    "checkpoint_dir_exists": true,
+    "archive_absent": true,
+    "sha256_absent": true,
+    "uploads_not_performed": true
+  },
+  "git_ignore": {
+    "archive_ignored": true,
+    "sha256_ignored": true,
+    "split_part_ignored": true
+  },
+  "disk": {
+    "free_space_bucket_gb": 480,
+    "required_bytes": 11879987200,
+    "required_gb_rounded": 11.064,
+    "margin_factor_required": 2,
+    "free_space_margin_passed": true
+  },
+  "commands": {
+    "create_archive": "tar -C runs -cf runs/openpi_rtc_lora_materialized_policy_checkpoint.tar openpi_rtc_lora_materialized_policy_checkpoint",
+    "write_sha256": "sha256sum runs/openpi_rtc_lora_materialized_policy_checkpoint.tar > runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.sha256",
+    "optional_split_4g": "split -b 4G -d -a 3 runs/openpi_rtc_lora_materialized_policy_checkpoint.tar runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.part-",
+    "commands_safe": true
+  },
+  "blocking": [
+    "本审计不生成 tar、不计算真实 sha256、不上传 checkpoint。",
+    "真实上传仍需要用户选择并授权存储位置，再提供可访问 checkpoint link。"
+  ]
+}

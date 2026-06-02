@@ -9,6 +9,7 @@ checkpoints/
 data/
 20260413/
 *.tar
+*.tar.sha256
 *.tar.part-*
 *.mp4
 *.log

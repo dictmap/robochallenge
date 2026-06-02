@@ -39,6 +39,7 @@ REQUIRED = [
     "reports/openpi_rtc_lora_inference_checkpoint_materialize.md",
     "reports/openpi_rtc_lora_materialized_policy_smoke.md",
     "reports/lora_checkpoint_export_readiness.md",
+    "reports/checkpoint_archive_plan.md",
     "reports/checkpoint_upload_channels_audit.md",
     "reports/real_submission_readiness.md",
     "reports/real_submission_readiness_scenarios.md",
@@ -65,6 +66,7 @@ REQUIRED = [
     "runs/openpi_rtc_lora_inference_checkpoint_materialize_status.json",
     "runs/openpi_rtc_lora_materialized_policy_smoke_status.json",
     "runs/lora_checkpoint_export_readiness.json",
+    "runs/checkpoint_archive_plan.json",
     "runs/checkpoint_upload_channels_audit.json",
     "runs/real_submission_readiness.json",
     "runs/real_submission_readiness_scenarios.json",
@@ -87,6 +89,7 @@ REQUIRED = [
     "scripts/audit_openpi_rtc_lora_inference_checkpoint_layout.py",
     "scripts/smoke_openpi_rtc_materialized_policy.py",
     "scripts/audit_lora_checkpoint_export_readiness.py",
+    "scripts/audit_checkpoint_archive_plan.py",
     "scripts/audit_checkpoint_upload_channels.py",
     "scripts/audit_real_submission_readiness.py",
     "scripts/audit_real_submission_readiness_scenarios.py",
@@ -548,6 +551,33 @@ def main() -> int:
     ):
         print("LoRA checkpoint 导出就绪审计未通过")
         return 1
+    archive_plan = json.loads((ROOT / "runs/checkpoint_archive_plan.json").read_text(encoding="utf-8"))
+    archive_inputs = archive_plan.get("required_inputs", {})
+    archive_git = archive_plan.get("git_ignore", {})
+    archive_disk = archive_plan.get("disk", {})
+    archive_commands = archive_plan.get("commands", {})
+    if not all(
+        [
+            archive_plan.get("passed"),
+            archive_plan.get("archive_created") is False,
+            archive_plan.get("upload_performed") is False,
+            archive_plan.get("credentials_read") is False,
+            archive_plan.get("checkpoint_dir") == "runs/openpi_rtc_lora_materialized_policy_checkpoint",
+            archive_plan.get("archive_path") == "runs/openpi_rtc_lora_materialized_policy_checkpoint.tar",
+            archive_plan.get("sha256_path") == "runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.sha256",
+            archive_plan.get("expected_archive_bytes", 0) > 10 * 1024**3,
+            all(archive_inputs.values()),
+            archive_git.get("archive_ignored"),
+            archive_git.get("sha256_ignored"),
+            archive_git.get("split_part_ignored"),
+            archive_disk.get("free_space_margin_passed"),
+            archive_commands.get("commands_safe"),
+            "tar -C runs -cf" in archive_commands.get("create_archive", ""),
+            "sha256sum runs/" in archive_commands.get("write_sha256", ""),
+        ]
+    ):
+        print("Checkpoint 归档计划审计未通过")
+        return 1
     upload_audit = json.loads((ROOT / "runs/checkpoint_upload_channels_audit.json").read_text(encoding="utf-8"))
     upload_channels = upload_audit.get("channels", {})
     if not all(
@@ -783,6 +813,7 @@ def main() -> int:
     print("openpi_rtc LoRA 完整推理 checkpoint 物化已通过")
     print("openpi_rtc LoRA 完整物化 policy 加载 smoke 已通过")
     print("LoRA checkpoint 导出就绪审计已通过")
+    print("Checkpoint 归档计划审计已通过")
     print("Checkpoint 上传通道审计已通过")
     print("真实提交 readiness gate 已通过")
     print("真实提交 readiness 场景 smoke 已通过")

@@ -41,6 +41,7 @@ REQUIRED = [
     "reports/lora_checkpoint_export_readiness.md",
     "reports/checkpoint_archive_plan.md",
     "reports/checkpoint_archive_dry_run.md",
+    "reports/checkpoint_link_intake.md",
     "reports/checkpoint_upload_channels_audit.md",
     "reports/real_submission_readiness.md",
     "reports/real_submission_readiness_scenarios.md",
@@ -70,6 +71,7 @@ REQUIRED = [
     "runs/lora_checkpoint_export_readiness.json",
     "runs/checkpoint_archive_plan.json",
     "runs/checkpoint_archive_dry_run.json",
+    "runs/checkpoint_link_intake.json",
     "runs/checkpoint_upload_channels_audit.json",
     "runs/real_submission_readiness.json",
     "runs/real_submission_readiness_scenarios.json",
@@ -95,6 +97,7 @@ REQUIRED = [
     "scripts/audit_lora_checkpoint_export_readiness.py",
     "scripts/audit_checkpoint_archive_plan.py",
     "scripts/create_checkpoint_archive.py",
+    "scripts/audit_checkpoint_link_intake.py",
     "scripts/audit_checkpoint_upload_channels.py",
     "scripts/audit_real_submission_readiness.py",
     "scripts/audit_real_submission_readiness_scenarios.py",
@@ -621,6 +624,39 @@ def main() -> int:
     ):
         print("Checkpoint 归档生成 dry-run 未通过")
         return 1
+    link_intake = json.loads((ROOT / "runs/checkpoint_link_intake.json").read_text(encoding="utf-8"))
+    link_current = link_intake.get("current_env", {})
+    link_current_links = link_current.get("links", {})
+    link_scenarios = link_intake.get("scenarios", {})
+    link_expectations = link_intake.get("expectations", {})
+    link_missing = link_scenarios.get("missing_link_expected_blocked", {})
+    link_placeholder = link_scenarios.get("placeholder_link_expected_rejected", {})
+    link_synthetic = link_scenarios.get("synthetic_https_shape_expected_accepted", {})
+    if not all(
+        [
+            link_intake.get("kind") == "checkpoint_link_intake",
+            link_intake.get("passed"),
+            link_intake.get("platform_contacted") is False,
+            link_intake.get("uploads_performed") is False,
+            link_intake.get("archive_created") is False,
+            link_intake.get("credentials_printed") is False,
+            link_intake.get("link_values_printed") is False,
+            link_intake.get("synthetic_values_recorded") is False,
+            link_current.get("link_shape_ready") is False,
+            link_current.get("download_verified") is False,
+            link_current_links.get("ROBOCHALLENGE_CHECKPOINT_LINK", {}).get("present") is False,
+            link_current_links.get("ROBOCHALLENGE_LORA_CHECKPOINT_LINK", {}).get("present") is False,
+            all(link_expectations.values()),
+            link_missing.get("link_shape_ready") is False,
+            link_placeholder.get("link_shape_ready") is False,
+            link_synthetic.get("link_shape_ready") is True,
+            link_synthetic.get("download_verified") is False,
+            link_synthetic.get("platform_contacted") is False,
+            link_synthetic.get("link_values_printed") is False,
+        ]
+    ):
+        print("Checkpoint link 回填审计未通过")
+        return 1
     upload_audit = json.loads((ROOT / "runs/checkpoint_upload_channels_audit.json").read_text(encoding="utf-8"))
     upload_channels = upload_audit.get("channels", {})
     if not all(
@@ -873,6 +909,7 @@ def main() -> int:
     print("LoRA checkpoint 导出就绪审计已通过")
     print("Checkpoint 归档计划审计已通过")
     print("Checkpoint 归档生成 dry-run 已通过")
+    print("Checkpoint link 回填审计已通过")
     print("Checkpoint 上传通道审计已通过")
     print("真实提交 readiness gate 已通过")
     print("真实提交 readiness 场景 smoke 已通过")

@@ -17,9 +17,11 @@
     "runs/openpi_rtc_lora_materialized_policy_checkpoint": true,
     "runs/openpi_rtc_lora_materialized_policy_checkpoint.tar": true,
     "runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.sha256": true,
+    "scripts/audit_checkpoint_link_intake.py": true,
     "scripts/audit_real_submission_readiness.py": true
   },
   "command_mentions": {
+    "checkpoint_link_intake": true,
     "readiness_gate": true,
     "tar_create": true,
     "sha256_create": true,
@@ -34,6 +36,7 @@
     "says_no_git_checkpoint": true,
     "says_stop_when_not_ready": true,
     "says_dry_run_no_credentials": true,
+    "says_link_intake_no_plaintext": true,
     "uses_placeholders_instead_of_values": true
   },
   "input_evidence": {

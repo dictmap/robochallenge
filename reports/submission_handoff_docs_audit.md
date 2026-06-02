@@ -22,10 +22,12 @@
 - `runs/openpi_rtc_lora_materialized_policy_checkpoint`：`True`。
 - `runs/openpi_rtc_lora_materialized_policy_checkpoint.tar`：`True`。
 - `runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.sha256`：`True`。
+- `scripts/audit_checkpoint_link_intake.py`：`True`。
 - `scripts/audit_real_submission_readiness.py`：`True`。
 
 ## 必需命令提及
 
+- `checkpoint_link_intake`：`True`。
 - `readiness_gate`：`True`。
 - `tar_create`：`True`。
 - `sha256_create`：`True`。
@@ -41,6 +43,7 @@
 - `says_no_git_checkpoint`：`True`。
 - `says_stop_when_not_ready`：`True`。
 - `says_dry_run_no_credentials`：`True`。
+- `says_link_intake_no_plaintext`：`True`。
 - `uses_placeholders_instead_of_values`：`True`。
 
 ## 输入证据

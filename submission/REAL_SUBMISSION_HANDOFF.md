@@ -74,3 +74,17 @@ bash submission/run_table30v2_aloha_demo_template.sh
 - inference code：建议填写当前 GitHub 仓库主分支链接。
 - checkpoint link：必须由用户授权上传后填写真实可访问链接。
 - fine-tuning / restore evidence：使用仓库内 Notebook、reports 和 scripts 作为证据，不上传明文凭据。
+
+## Checkpoint Link 回填前检查
+
+拿到真实 checkpoint 下载链接后，先在当前 shell 中设置链接环境变量，再运行离线形态审计：
+
+```bash
+python3 scripts/audit_checkpoint_link_intake.py
+```
+
+该审计只检查 `ROBOCHALLENGE_CHECKPOINT_LINK` 和 `ROBOCHALLENGE_LORA_CHECKPOINT_LINK` 是否为非占位符 HTTPS 下载链接形态，不联网下载，不连接 RoboChallenge 平台，不打印链接明文。审计通过后再运行：
+
+```bash
+python3 scripts/audit_real_submission_readiness.py
+```

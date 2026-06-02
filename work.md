@@ -792,6 +792,36 @@
 
 - P0：同步到 Linux 后运行 dry-run、总体验证、Notebook preflight、明文凭据扫描和 `git diff --check`；通过后提交推送。
 
+## 2026-06-02 第三十一轮：checkpoint link 回填审计
+
+### 已完成
+
+- 新增 `scripts/audit_checkpoint_link_intake.py`，离线检查 `ROBOCHALLENGE_CHECKPOINT_LINK` 和 `ROBOCHALLENGE_LORA_CHECKPOINT_LINK` 的回填形态。
+- 审计只输出是否存在、长度、HTTPS 形态、archive/checkpoint 提示、占位符判定和布尔结论，不打印 checkpoint link 明文。
+- 场景 smoke 覆盖三种情况：缺失链接应 blocked、占位符链接应 rejected、synthetic HTTPS 形态应 accepted。
+- `submission/REAL_SUBMISSION_HANDOFF.md` 新增 checkpoint link 回填前检查步骤。
+- `scripts/audit_submission_handoff_docs.py` 和 `scripts/validate_repro_workspace.py` 已纳入 link intake 审计要求。
+- Notebook 新增第 32 节“checkpoint link 回填审计”，可在 Jupyter 中复跑该检查。
+
+### 验证结果
+
+- checkpoint link 回填审计：`passed=true`，当前环境 `link_shape_ready=false`，符合“真实链接缺失仍 blocked”的预期。
+- 场景 smoke：缺失链接 blocked、占位符链接 rejected、synthetic HTTPS 形态 accepted，且 `link_values_printed=false`。
+- 交接文档审计：`passed=true`，已要求包含 `python3 scripts/audit_checkpoint_link_intake.py` 和“不打印链接明文”边界。
+- `python3 scripts/validate_repro_workspace.py` 已通过，并新增输出“Checkpoint link 回填审计已通过”。
+- Notebook preflight 已通过，第 32 节可执行；新增 Notebook 文本未出现问号替换乱码。
+- 明文凭据扫描已通过：`hit_count=0`，`secret_values_printed=false`。
+- `git diff --check` 已通过。
+
+### 当前边界
+
+- 本轮不联网验证 checkpoint link 是否可下载，不生成 tar，不上传 checkpoint，不连接 RoboChallenge 平台。
+- 当前真实提交仍缺 `ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID` 和真实可访问 checkpoint link。
+
+### 下一步
+
+- P0：同步到 Linux 后完成最终验证并提交推送。
+
 ## 2026-06-02 第二十七轮：readiness gate 场景 smoke 与 Notebook 乱码修复
 
 ### 已完成

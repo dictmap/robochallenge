@@ -31,10 +31,12 @@ REQUIRED_PATHS = [
     "runs/openpi_rtc_lora_materialized_policy_checkpoint",
     "runs/openpi_rtc_lora_materialized_policy_checkpoint.tar",
     "runs/openpi_rtc_lora_materialized_policy_checkpoint.tar.sha256",
+    "scripts/audit_checkpoint_link_intake.py",
     "scripts/audit_real_submission_readiness.py",
 ]
 
 REQUIRED_COMMAND_FRAGMENTS = {
+    "checkpoint_link_intake": "python3 scripts/audit_checkpoint_link_intake.py",
     "readiness_gate": "python3 scripts/audit_real_submission_readiness.py",
     "tar_create": (
         "tar -C runs -cf runs/openpi_rtc_lora_materialized_policy_checkpoint.tar "
@@ -102,6 +104,7 @@ def build_status(doc_path: Path) -> dict[str, Any]:
         "says_no_git_checkpoint": "不要把 `runs/openpi_rtc_lora_materialized_policy_checkpoint.tar`" in text,
         "says_stop_when_not_ready": "ready_for_real_submission=false" in text,
         "says_dry_run_no_credentials": "不会打印 token 或 submission id 明文" in text,
+        "says_link_intake_no_plaintext": "不打印链接明文" in text,
         "uses_placeholders_instead_of_values": "<真实 user token>" in text and "<真实 checkpoint 下载 URL>" in text,
     }
     secret_hits = scan_secret_patterns(text)

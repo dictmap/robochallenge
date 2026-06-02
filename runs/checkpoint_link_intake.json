@@ -1,0 +1,79 @@
+{
+  "kind": "checkpoint_link_intake",
+  "passed": true,
+  "platform_contacted": false,
+  "uploads_performed": false,
+  "archive_created": false,
+  "credentials_printed": false,
+  "link_values_printed": false,
+  "synthetic_values_recorded": false,
+  "current_env": {
+    "links": {
+      "ROBOCHALLENGE_CHECKPOINT_LINK": {
+        "present": false,
+        "length": 0,
+        "looks_like_https_url": false,
+        "has_archive_hint": false,
+        "placeholder_like": false,
+        "accepted_shape": false
+      },
+      "ROBOCHALLENGE_LORA_CHECKPOINT_LINK": {
+        "present": false,
+        "length": 0,
+        "looks_like_https_url": false,
+        "has_archive_hint": false,
+        "placeholder_like": false,
+        "accepted_shape": false
+      }
+    },
+    "accepted_link_keys": [],
+    "link_shape_ready": false,
+    "download_verified": false,
+    "blocking": [
+      "缺少 checkpoint link；请设置 ROBOCHALLENGE_CHECKPOINT_LINK 或 ROBOCHALLENGE_LORA_CHECKPOINT_LINK。"
+    ]
+  },
+  "blocking": [
+    "本审计只检查 checkpoint link 回填形态，不联网验证下载有效性。",
+    "真实提交仍需要用户提供 token、submission id 和真实可访问 checkpoint link。"
+  ],
+  "scenarios": {
+    "missing_link_expected_blocked": {
+      "returncode": 0,
+      "link_shape_ready": false,
+      "download_verified": false,
+      "platform_contacted": false,
+      "credentials_printed": false,
+      "link_values_printed": false,
+      "leaked_value_keys": [],
+      "accepted_link_keys": []
+    },
+    "placeholder_link_expected_rejected": {
+      "returncode": 0,
+      "link_shape_ready": false,
+      "download_verified": false,
+      "platform_contacted": false,
+      "credentials_printed": false,
+      "link_values_printed": false,
+      "leaked_value_keys": [],
+      "accepted_link_keys": []
+    },
+    "synthetic_https_shape_expected_accepted": {
+      "returncode": 0,
+      "link_shape_ready": true,
+      "download_verified": false,
+      "platform_contacted": false,
+      "credentials_printed": false,
+      "link_values_printed": false,
+      "leaked_value_keys": [],
+      "accepted_link_keys": [
+        "ROBOCHALLENGE_LORA_CHECKPOINT_LINK"
+      ]
+    }
+  },
+  "expectations": {
+    "missing_link_expected_blocked": true,
+    "placeholder_link_expected_rejected": true,
+    "synthetic_https_shape_expected_accepted": true
+  }
+}

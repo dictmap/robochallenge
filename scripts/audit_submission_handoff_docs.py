@@ -116,7 +116,9 @@ def build_status(doc_path: Path) -> dict[str, Any]:
         "says_no_upload_without_authorization": "未获得用户授权" in text,
         "says_no_git_checkpoint": "不要把 `runs/openpi_rtc_lora_materialized_policy_checkpoint.tar`" in text,
         "says_stop_when_not_ready": "ready_for_real_submission=false" in text,
-        "says_dry_run_no_credentials": "不会打印 token 或 submission id 明文" in text,
+        "says_dry_run_no_credentials": "不会打印 token" in text and "submission id" in text,
+        "says_dry_run_no_checkpoint_plaintext": "checkpoint 长度" in text
+        and "checkpoint/link 明文" in text,
         "says_link_intake_no_plaintext": "不打印链接明文" in text,
         "says_download_verify_no_contact_by_default": "默认不联网、不下载" in text,
         "says_download_verify_no_plaintext": "不打印链接明文" in text and "HEAD 和 1MiB Range smoke" in text,

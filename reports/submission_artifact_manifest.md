@@ -14,15 +14,15 @@
 ## 材料清单
 
 - `README.md`：exists=`True`，tracked=`True`，size=`18481`，sha256=`b75c47a50df3af20c4ba3eb4e2c3a3aede49504420432120c940d8ae7950659b`。
-- `work.md`：exists=`True`，tracked=`True`，size=`74695`，sha256=`850df11021de1e1dce13962f72a8ebe02e06ff9853716dfc5eff72d5ae612445`。
+- `work.md`：exists=`True`，tracked=`True`，size=`76154`，sha256=`8b2ecda8b8fcb6384ddf16a18e20ae04a4e111174fe130db5ad95b195eee092d`。
 - `notebooks/robochallenge_pi05_submit_cn.ipynb`：exists=`True`，tracked=`True`，size=`75042`，sha256=`87476a8ecad9ce66f61263a2b9124dabc4532b261a75c7f39c7978f14c137ecd`。
-- `submission/README.md`：exists=`True`，tracked=`True`，size=`1497`，sha256=`72db2bf1eb4ce027e1269212dde2723d9bd9a8e94b971d773b30caad4fb614d9`。
-- `submission/REAL_SUBMISSION_HANDOFF.md`：exists=`True`，tracked=`True`，size=`5599`，sha256=`62b70f6a13978b9788c1e1cbd9db64378d505cc8b1f124b2eabb900e8b4e1c24`。
-- `submission/AUTHORIZED_SUBMISSION_SEQUENCE.md`：exists=`True`，tracked=`True`，size=`3685`，sha256=`73752fad25e452c58adc16e748bbfd299176173f03913d357acfc405825afca0`。
+- `submission/README.md`：exists=`True`，tracked=`True`，size=`1515`，sha256=`2cde21317add90ad127853e652fc1c54ed023b638a250453d8584df1a44e9bb1`。
+- `submission/REAL_SUBMISSION_HANDOFF.md`：exists=`True`，tracked=`True`，size=`5622`，sha256=`4cc672cba61b986c716a0a1ea9f1d994a10086bc114032ced8443c0b53296afb`。
+- `submission/AUTHORIZED_SUBMISSION_SEQUENCE.md`：exists=`True`，tracked=`True`，size=`3692`，sha256=`b9e1836e133feec14688ca1e4f593ece132a15c4f001ba37a7f0ba0c8c997224`。
 - `submission/robochallenge_env_template.sh`：exists=`True`，tracked=`True`，size=`838`，sha256=`612cbff35b9376312619409a560641bb803f8e140aa05a34f356da1207c93144`。
 - `submission/submission_manifest_template.json`：exists=`True`，tracked=`True`，size=`4182`，sha256=`89ff0fcc8e130546e373a757f3192cc737063822c9040dba316006869a41c9ec`。
-- `submission/run_table30v2_aloha_demo_template.sh`：exists=`True`，tracked=`True`，size=`1767`，sha256=`27873f0678d75a0f3cd576179c041ce17ddf6acddc5c6ad4e3a0336269ca4d5d`。
-- `submission/run_table30v2_aloha_lora_demo_template.sh`：exists=`True`，tracked=`True`，size=`1746`，sha256=`7ea6ae003e10c9071a348e51b697c46618e88158ccf5cd5f4e4ca51bd3100f8f`。
+- `submission/run_table30v2_aloha_demo_template.sh`：exists=`True`，tracked=`True`，size=`1777`，sha256=`05fd025a768fee996413976aef865c1da343a88d5c788aa53cb03e8d922e8afa`。
+- `submission/run_table30v2_aloha_lora_demo_template.sh`：exists=`True`，tracked=`True`，size=`1756`，sha256=`0fce1d85424ac3d2b9058cd93489e102d4eee7a1c9ac0052a35b49f887946975`。
 - `reports/pi05_base_repro.md`：exists=`True`，tracked=`True`，size=`4145`，sha256=`d537bdaeb9611c168c0edecdd5ee6c9183fd4e072538f0129090c8813d39802a`。
 - `reports/pi06_pi07_public_release_audit.md`：exists=`True`，tracked=`True`，size=`2191`，sha256=`bceae637e4cd02f91dfed63ab89477f81c5c5bd8b2cb5f95a3f150bf2013ad35`。
 - `reports/table30_vs_table30v2.md`：exists=`True`，tracked=`True`，size=`2680`，sha256=`701844a0a4316e38210400478fe3ea9b057019c054ef807a1a51f0f87f646ebe`。
@@ -40,8 +40,8 @@
 - `reports/real_submission_readiness.md`：exists=`True`，tracked=`True`，size=`1306`，sha256=`fac759b5bd681903dae8c9f672998797b35430b4b37c3d61baf146903aa92d11`。
 - `reports/real_submission_readiness_scenarios.md`：exists=`True`，tracked=`True`，size=`1152`，sha256=`682ba066efc018aaeee94e4064afdbed25a4bab356fedf55ba6562b9889ffb0a`。
 - `reports/submission_env_template_audit.md`：exists=`True`，tracked=`True`，size=`1006`，sha256=`aff3ab4d14b54dd1a593360171a5c2ab531fca797dfeb9a2fd91a5ab4f7ff1c0`。
-- `reports/submission_handoff_docs_audit.md`：exists=`True`，tracked=`True`，size=`2902`，sha256=`70a48c8cc280e1bcf4fa1b21faba09a92117fa1fa9c53f36e1c145a3c78daa19`。
-- `reports/authorized_submission_sequence_audit.md`：exists=`True`，tracked=`True`，size=`2463`，sha256=`0158edd358a18302c048685c465eddbcfe7d342ab9adba5644b2fc2047f65b1f`。
+- `reports/submission_handoff_docs_audit.md`：exists=`True`，tracked=`True`，size=`2955`，sha256=`bb33d6beb459a8f56b2c9b100e12fe2d38be430f3c1fcb194d91548cb0218006`。
+- `reports/authorized_submission_sequence_audit.md`：exists=`True`，tracked=`True`，size=`2511`，sha256=`cb95968878f39231dcd7cc28c50520b3cf8517fd223c63ab83e6167addbd2fba`。
 - `reports/submission_preflight_bundle.md`：exists=`True`，tracked=`True`，size=`1668`，sha256=`684c9ada674cc2eeee73884d972ec8023e690ba83844d569158c1ad385ed5bff`。
 - `reports/plaintext_secret_scan.md`：exists=`True`，tracked=`True`，size=`610`，sha256=`054f745aca70774118e1e79edf30733a5b8c437b1ec934cd6424a2f3e8cea2a8`。
 - `reports/submission_status_dashboard.html`：exists=`True`，tracked=`True`，size=`9467`，sha256=`163316d3dc44d94f2453902457eb48e784f8f25dfd192951618404578d8d91cc`。

@@ -20,8 +20,8 @@
       "path": "work.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 74695,
-      "sha256": "850df11021de1e1dce13962f72a8ebe02e06ff9853716dfc5eff72d5ae612445"
+      "size_bytes": 76154,
+      "sha256": "8b2ecda8b8fcb6384ddf16a18e20ae04a4e111174fe130db5ad95b195eee092d"
     },
     {
       "path": "notebooks/robochallenge_pi05_submit_cn.ipynb",
@@ -34,22 +34,22 @@
       "path": "submission/README.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 1497,
-      "sha256": "72db2bf1eb4ce027e1269212dde2723d9bd9a8e94b971d773b30caad4fb614d9"
+      "size_bytes": 1515,
+      "sha256": "2cde21317add90ad127853e652fc1c54ed023b638a250453d8584df1a44e9bb1"
     },
     {
       "path": "submission/REAL_SUBMISSION_HANDOFF.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 5599,
-      "sha256": "62b70f6a13978b9788c1e1cbd9db64378d505cc8b1f124b2eabb900e8b4e1c24"
+      "size_bytes": 5622,
+      "sha256": "4cc672cba61b986c716a0a1ea9f1d994a10086bc114032ced8443c0b53296afb"
     },
     {
       "path": "submission/AUTHORIZED_SUBMISSION_SEQUENCE.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 3685,
-      "sha256": "73752fad25e452c58adc16e748bbfd299176173f03913d357acfc405825afca0"
+      "size_bytes": 3692,
+      "sha256": "b9e1836e133feec14688ca1e4f593ece132a15c4f001ba37a7f0ba0c8c997224"
     },
     {
       "path": "submission/robochallenge_env_template.sh",
@@ -69,15 +69,15 @@
       "path": "submission/run_table30v2_aloha_demo_template.sh",
       "exists": true,
       "tracked": true,
-      "size_bytes": 1767,
-      "sha256": "27873f0678d75a0f3cd576179c041ce17ddf6acddc5c6ad4e3a0336269ca4d5d"
+      "size_bytes": 1777,
+      "sha256": "05fd025a768fee996413976aef865c1da343a88d5c788aa53cb03e8d922e8afa"
     },
     {
       "path": "submission/run_table30v2_aloha_lora_demo_template.sh",
       "exists": true,
       "tracked": true,
-      "size_bytes": 1746,
-      "sha256": "7ea6ae003e10c9071a348e51b697c46618e88158ccf5cd5f4e4ca51bd3100f8f"
+      "size_bytes": 1756,
+      "sha256": "0fce1d85424ac3d2b9058cd93489e102d4eee7a1c9ac0052a35b49f887946975"
     },
     {
       "path": "reports/pi05_base_repro.md",
@@ -202,15 +202,15 @@
       "path": "reports/submission_handoff_docs_audit.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 2902,
-      "sha256": "70a48c8cc280e1bcf4fa1b21faba09a92117fa1fa9c53f36e1c145a3c78daa19"
+      "size_bytes": 2955,
+      "sha256": "bb33d6beb459a8f56b2c9b100e12fe2d38be430f3c1fcb194d91548cb0218006"
     },
     {
       "path": "reports/authorized_submission_sequence_audit.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 2463,
-      "sha256": "0158edd358a18302c048685c465eddbcfe7d342ab9adba5644b2fc2047f65b1f"
+      "size_bytes": 2511,
+      "sha256": "cb95968878f39231dcd7cc28c50520b3cf8517fd223c63ab83e6167addbd2fba"
     },
     {
       "path": "reports/submission_preflight_bundle.md",

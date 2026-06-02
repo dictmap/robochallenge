@@ -47,6 +47,7 @@ REQUIRED_GUARDRAILS = {
     "no_git_checkpoint": ["不要把 `runs/openpi_rtc_lora_materialized_policy_checkpoint.tar`", "提交进 Git"],
     "link_gate_before_readiness": ["audit_checkpoint_link_intake.py", "audit_real_submission_readiness.py"],
     "dry_run_before_real_runner": ["ROBOCHALLENGE_DRY_RUN=1", "bash submission/run_table30v2_aloha_lora_demo_template.sh"],
+    "dry_run_no_checkpoint_plaintext": ["checkpoint 长度", "checkpoint link 明文"],
     "stop_on_not_ready": ["ready_for_real_submission=false", "停止"],
     "stop_on_bad_link": ["link_shape_ready=false", "停止"],
 }

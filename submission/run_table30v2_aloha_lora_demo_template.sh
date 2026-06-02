@@ -29,7 +29,7 @@ PROMPT="${ROBOCHALLENGE_PROMPT:-$DEFAULT_PROMPT}"
 
 if [[ "${ROBOCHALLENGE_DRY_RUN:-0}" == "1" ]]; then
   echo "dry_run=true"
-  echo "checkpoint=$CHECKPOINT"
+  echo "checkpoint_length=${#CHECKPOINT}"
   echo "prompt_length=${#PROMPT}"
   echo "user_token_length=${#ROBOCHALLENGE_USER_TOKEN}"
   echo "submission_id_length=${#ROBOCHALLENGE_SUBMISSION_ID}"

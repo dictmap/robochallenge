@@ -49,7 +49,7 @@ source submission/robochallenge_env.local.sh
 python3 scripts/audit_real_submission_readiness.py
 ```
 
-如果 gate 显示 LoRA runner 已就绪，先做不连接平台的 dry-run。该命令只打印 checkpoint、prompt 长度和凭据长度，不会打印 token 或 submission id 明文，也不会调用 `demo.py`：
+如果 gate 显示 LoRA runner 已就绪，先做不连接平台的 dry-run。该命令只打印 checkpoint 长度、prompt 长度和凭据长度，不会打印 token、submission id、checkpoint/link 明文，也不会调用 `demo.py`：
 
 ```bash
 ROBOCHALLENGE_DRY_RUN=1 bash submission/run_table30v2_aloha_lora_demo_template.sh

@@ -157,8 +157,10 @@ def dry_run_no_contact_check(path: Path) -> dict[str, Any]:
     env = os.environ.copy()
     token_value = "local-dry-run-token-value"
     submission_value = "local-dry-run-submission-value"
+    checkpoint_value = "https://example.invalid/private-checkpoint-link?dry_run_secret=1"
     env["ROBOCHALLENGE_USER_TOKEN"] = token_value
     env["ROBOCHALLENGE_SUBMISSION_ID"] = submission_value
+    env["ROBOCHALLENGE_CHECKPOINT"] = checkpoint_value
     env["ROBOCHALLENGE_DRY_RUN"] = "1"
     result = subprocess.run(
         ["bash", str(path)],
@@ -172,10 +174,19 @@ def dry_run_no_contact_check(path: Path) -> dict[str, Any]:
     )
     output = "\n".join([result.stdout.strip(), result.stderr.strip()]).strip()
     printed_secret = token_value in output or submission_value in output
+    printed_checkpoint = checkpoint_value in output
+    has_checkpoint_length = "checkpoint_length=" in output
     return {
         "returncode": result.returncode,
-        "passed": result.returncode == 0 and "dry_run=true" in output and not printed_secret and "Traceback" not in output,
+        "passed": result.returncode == 0
+        and "dry_run=true" in output
+        and has_checkpoint_length
+        and not printed_secret
+        and not printed_checkpoint
+        and "Traceback" not in output,
         "printed_secret": printed_secret,
+        "printed_checkpoint": printed_checkpoint,
+        "has_checkpoint_length": has_checkpoint_length,
         "stdout": result.stdout.strip(),
         "stderr": result.stderr.strip(),
     }
@@ -286,7 +297,7 @@ PROMPT="${{ROBOCHALLENGE_PROMPT:-$DEFAULT_PROMPT}}"
 
 if [[ "${{ROBOCHALLENGE_DRY_RUN:-0}}" == "1" ]]; then
   echo "dry_run=true"
-  echo "checkpoint=$CHECKPOINT"
+  echo "checkpoint_length=${{#CHECKPOINT}}"
   echo "prompt_length=${{#PROMPT}}"
   echo "user_token_length=${{#ROBOCHALLENGE_USER_TOKEN}}"
   echo "submission_id_length=${{#ROBOCHALLENGE_SUBMISSION_ID}}"
@@ -322,7 +333,7 @@ def write_readme(path: Path, manifest_rel: str, runner_rel: str, lora_runner_rel
 
 当前默认稳妥提交路线仍是官方 pi0.5 Table30v2 ALOHA baseline。LoRA scoped checkpoint 已被物化为本地完整 checkpoint，并通过 `create_trained_policy` 加载 smoke；但真实网站提交仍需要用户提供凭据，并把本地 checkpoint 上传成网站可访问链接。
 
-运行前需要用户在 shell 中提供 `ROBOCHALLENGE_USER_TOKEN` 和 `ROBOCHALLENGE_SUBMISSION_ID` 两个环境变量；不要把具体值写入仓库、Notebook 或报告。runner 会拒绝 `<真实 ...>`、`example`、`replace_me` 这类占位符。可以先设置 `ROBOCHALLENGE_DRY_RUN=1` 做不连接平台的本地命令摘要检查，输出不会包含 token 或 submission id 明文。设置好之后运行：
+运行前需要用户在 shell 中提供 `ROBOCHALLENGE_USER_TOKEN` 和 `ROBOCHALLENGE_SUBMISSION_ID` 两个环境变量；不要把具体值写入仓库、Notebook 或报告。runner 会拒绝 `<真实 ...>`、`example`、`replace_me` 这类占位符。可以先设置 `ROBOCHALLENGE_DRY_RUN=1` 做不连接平台的本地命令摘要检查，输出不会包含 token、submission id 或 checkpoint/link 明文。设置好之后运行：
 
 ```bash
 bash {runner_rel}
@@ -358,10 +369,10 @@ def write_report(status: dict[str, Any], report_path: Path) -> None:
         f"- `demo.py` 必需参数覆盖：`{entry['required_args_present']}`。",
         f"- baseline runner 语法检查：`{status['runner_audit']['baseline']['bash_n']['passed']}`，无凭据 fail-fast：`{status['runner_audit']['baseline']['no_credentials_failfast']['passed']}`。",
         f"- baseline runner 占位符凭据 fail-fast：`{status['runner_audit']['baseline']['placeholder_credentials_failfast']['passed']}`。",
-        f"- baseline runner dry-run 不连接平台：`{status['runner_audit']['baseline']['dry_run_no_contact']['passed']}`，打印凭据：`{status['runner_audit']['baseline']['dry_run_no_contact']['printed_secret']}`。",
+        f"- baseline runner dry-run 不连接平台：`{status['runner_audit']['baseline']['dry_run_no_contact']['passed']}`，打印凭据：`{status['runner_audit']['baseline']['dry_run_no_contact']['printed_secret']}`，打印 checkpoint/link 明文：`{status['runner_audit']['baseline']['dry_run_no_contact']['printed_checkpoint']}`。",
         f"- LoRA runner 语法检查：`{status['runner_audit']['lora']['bash_n']['passed']}`，无凭据 fail-fast：`{status['runner_audit']['lora']['no_credentials_failfast']['passed']}`。",
         f"- LoRA runner 占位符凭据 fail-fast：`{status['runner_audit']['lora']['placeholder_credentials_failfast']['passed']}`。",
-        f"- LoRA runner dry-run 不连接平台：`{status['runner_audit']['lora']['dry_run_no_contact']['passed']}`，打印凭据：`{status['runner_audit']['lora']['dry_run_no_contact']['printed_secret']}`。",
+        f"- LoRA runner dry-run 不连接平台：`{status['runner_audit']['lora']['dry_run_no_contact']['passed']}`，打印凭据：`{status['runner_audit']['lora']['dry_run_no_contact']['printed_secret']}`，打印 checkpoint/link 明文：`{status['runner_audit']['lora']['dry_run_no_contact']['printed_checkpoint']}`。",
         f"- mock 验证：`passed={status['evidence']['mock_smoke_passed']}`。",
         f"- Table30v2 ALOHA 映射：`ready={status['evidence']['table30v2_mapping_ready']}`。",
         f"- LoRA restore 审计：`passed={restore['restore_audit_passed']}`，合并后占位 leaf `{restore['placeholder_after_count']}`。",

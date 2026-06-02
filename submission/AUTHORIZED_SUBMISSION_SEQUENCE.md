@@ -69,7 +69,7 @@ python3 scripts/audit_real_submission_readiness.py
 ROBOCHALLENGE_DRY_RUN=1 bash submission/run_table30v2_aloha_lora_demo_template.sh
 ```
 
-dry-run 只能打印 checkpoint、prompt 长度、token 长度和 submission id 长度，不打印 token、submission id 或 checkpoint link 明文，也不调用 `demo.py`。
+dry-run 只能打印 checkpoint 长度、prompt 长度、token 长度和 submission id 长度，不打印 token、submission id 或 checkpoint link 明文，也不调用 `demo.py`。
 
 ## 6. 真实 LoRA 提交 runner
 

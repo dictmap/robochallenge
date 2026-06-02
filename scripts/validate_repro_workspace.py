@@ -1109,6 +1109,8 @@ def main() -> int:
             baseline_runner_audit.get("placeholder_credentials_failfast", {}).get("passed"),
             baseline_runner_audit.get("dry_run_no_contact", {}).get("passed"),
             baseline_runner_audit.get("dry_run_no_contact", {}).get("printed_secret") is False,
+            baseline_runner_audit.get("dry_run_no_contact", {}).get("printed_checkpoint") is False,
+            baseline_runner_audit.get("dry_run_no_contact", {}).get("has_checkpoint_length"),
             lora_runner_audit.get("exists"),
             lora_runner_audit.get("mentions_user_token"),
             lora_runner_audit.get("mentions_submission_id"),
@@ -1121,6 +1123,8 @@ def main() -> int:
             lora_runner_audit.get("placeholder_credentials_failfast", {}).get("passed"),
             lora_runner_audit.get("dry_run_no_contact", {}).get("passed"),
             lora_runner_audit.get("dry_run_no_contact", {}).get("printed_secret") is False,
+            lora_runner_audit.get("dry_run_no_contact", {}).get("printed_checkpoint") is False,
+            lora_runner_audit.get("dry_run_no_contact", {}).get("has_checkpoint_length"),
             submission_manifest.get("status") == "template_pending_credentials",
             submission_manifest.get("runner_templates", {}).get("baseline")
             == "submission/run_table30v2_aloha_demo_template.sh",

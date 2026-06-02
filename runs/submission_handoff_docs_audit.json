@@ -48,6 +48,7 @@
     "says_no_git_checkpoint": true,
     "says_stop_when_not_ready": true,
     "says_dry_run_no_credentials": true,
+    "says_dry_run_no_checkpoint_plaintext": true,
     "says_link_intake_no_plaintext": true,
     "says_download_verify_no_contact_by_default": true,
     "says_download_verify_no_plaintext": true,

@@ -40,6 +40,7 @@
 - `no_git_checkpoint`：`True`。
 - `link_gate_before_readiness`：`True`。
 - `dry_run_before_real_runner`：`True`。
+- `dry_run_no_checkpoint_plaintext`：`True`。
 - `stop_on_not_ready`：`True`。
 - `stop_on_bad_link`：`True`。
 

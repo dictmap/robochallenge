@@ -4,11 +4,14 @@
 
 - `submission/submission_manifest_template.json`：机器可读提交 manifest 模板。
 - `submission/run_table30v2_aloha_demo_template.sh`：Table30v2 ALOHA baseline 的 `demo.py` 启动模板。
+- `submission/run_table30v2_aloha_lora_demo_template.sh`：Table30v2 ALOHA LoRA 完整物化 checkpoint 的 `demo.py` 启动模板。
 
-当前默认可运行提交路线是官方 pi0.5 Table30v2 ALOHA baseline。LoRA scoped checkpoint 已通过恢复/合并审计，但它不是 `demo.py` 可直接消费的完整 checkpoint，不能单独作为 checkpoint 提交。
+当前默认稳妥提交路线仍是官方 pi0.5 Table30v2 ALOHA baseline。LoRA scoped checkpoint 已被物化为本地完整 checkpoint，并通过 `create_trained_policy` 加载 smoke；但真实网站提交仍需要用户提供凭据，并把本地 checkpoint 上传成网站可访问链接。
 
 运行前需要用户在 shell 中提供 `ROBOCHALLENGE_USER_TOKEN` 和 `ROBOCHALLENGE_SUBMISSION_ID` 两个环境变量；不要把具体值写入仓库、Notebook 或报告。设置好之后运行：
 
 ```bash
 bash submission/run_table30v2_aloha_demo_template.sh
+# 或本地 LoRA 物化 checkpoint 路线：
+bash submission/run_table30v2_aloha_lora_demo_template.sh
 ```

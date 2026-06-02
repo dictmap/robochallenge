@@ -16,6 +16,7 @@
 - 已完成 `openpi_rtc` LoRA 低显存路线审计：`gemma_2b_lora + gemma_300m_lora` 保持 `pi05=True`，`pi05_base` 权重可合并 20 个 LoRA leaf 和 2 个 knob leaf，见 `reports/openpi_rtc_lora_path_audit.md`。
 - 已跑通 LoRA reduced 数值前向：`bfloat16`、1-copy、`max_token_len=64`、`action_horizon=10` 下 `forward.passed=true`，见 `reports/openpi_rtc_lora_numeric_forward_reduced.md`。
 - 已跑通 LoRA reduced trainable-filter 反向与 scoped checkpoint dry-run：`lora_grad.passed=true`，远端写出 `runs/openpi_rtc_lora_grad_checkpoint/trainable_params_step1.npz`，见 `reports/openpi_rtc_lora_numeric_grad_reduced.md`。
+- 已将 LoRA scoped checkpoint 物化为本地完整 policy checkpoint，`create_trained_policy` 加载 smoke 通过，并新增 LoRA `demo.py` runner 模板，见 `reports/openpi_rtc_lora_materialized_policy_smoke.md` 和 `submission/run_table30v2_aloha_lora_demo_template.sh`。
 - Linux 上已有 RoboChallenge pi0.5 多任务 baseline：`/home/yjl/yjl/RoboChallenge/baseline_pi05_multitask`。
 - 已有 ALOHA checkpoint：`/home/yjl/yjl/RoboChallenge/checkpoints/table30v2_multitask_baseline_aloha`。
 - 核心操作已经写入中文 Jupyter：`notebooks/robochallenge_pi05_submit_cn.ipynb`。
@@ -57,6 +58,8 @@
 - `reports/openpi_rtc_lora_numeric_weight_preflight.md`：LoRA reduced 数值 dry-run 的权重预检结果。
 - `reports/openpi_rtc_lora_numeric_forward_reduced.md`：LoRA reduced 数值 forward smoke 结果。
 - `reports/openpi_rtc_lora_numeric_grad_reduced.md`：LoRA reduced trainable-filter grad 与 scoped checkpoint dry-run 结果。
+- `reports/openpi_rtc_lora_inference_checkpoint_materialize.md`：LoRA 完整推理 checkpoint 物化结果。
+- `reports/openpi_rtc_lora_materialized_policy_smoke.md`：LoRA 完整物化 checkpoint 的 `create_trained_policy` 加载 smoke 结果。
 - `reports/robochallenge_submission_package_checklist.md`：RoboChallenge 提交包清单、入口参数、凭据缺口和链接位说明。
 - `runs/table30v2_aloha_dry_run_status.json`：dry-run converter 的机器可读状态。
 - `runs/table30v2_aloha_dry_run_samples.jsonl`：5 帧抽样的 LeRobot-like schema 与数值摘要。
@@ -72,9 +75,12 @@
 - `runs/openpi_rtc_lora_numeric_weight_preflight_status.json`：LoRA reduced 权重预检机器可读状态。
 - `runs/openpi_rtc_lora_numeric_forward_reduced_status.json`：LoRA reduced forward smoke 机器可读状态。
 - `runs/openpi_rtc_lora_numeric_grad_reduced_status.json`：LoRA reduced trainable-filter grad/checkpoint smoke 机器可读状态。
+- `runs/openpi_rtc_lora_inference_checkpoint_materialize_status.json`：LoRA 完整推理 checkpoint 物化机器可读状态。
+- `runs/openpi_rtc_lora_materialized_policy_smoke_status.json`：LoRA 完整物化 checkpoint 加载 smoke 机器可读状态。
 - `runs/robochallenge_submission_package_audit.json`：提交包清单和启动模板的机器可读审计状态。
 - `submission/submission_manifest_template.json`：不含明文凭据的提交 manifest 模板。
 - `submission/run_table30v2_aloha_demo_template.sh`：Table30v2 ALOHA baseline 的 `demo.py` 启动模板。
+- `submission/run_table30v2_aloha_lora_demo_template.sh`：默认指向本地 LoRA 完整物化 checkpoint 的 `demo.py` 启动模板。
 - `scripts/collect_hf_manifest.py`：轻量拉取 Hugging Face repo manifest。
 - `scripts/probe_pi05_base_model.sh`：探测/下载/校验 `pi05_base`，可选读取参数树。
 - `scripts/audit_pi06_pi07_public_release.py`：审计 pi0.6/pi0.7 是否已有公开 OpenPI 配置或 checkpoint。
@@ -92,8 +98,8 @@
 
 ## 下一轮 P0
 
-1. 把 `pi05_base + LoRA scoped trainable params` 的恢复步骤整理成 `demo.py` 可复用的最小推理入口，避免只能停留在参数树恢复审计。
-2. 若继续走当前可运行提交路线，等待用户提供 `ROBOCHALLENGE_USER_TOKEN` 和 `ROBOCHALLENGE_SUBMISSION_ID` 后再运行 `submission/run_table30v2_aloha_demo_template.sh`。
+1. 将本地 `runs/openpi_rtc_lora_materialized_policy_checkpoint` 上传或挂载成 RoboChallenge 网站可访问的 checkpoint link；仓库本身不会提交 12GB+ 权重目录。
+2. 若继续走当前可运行提交路线，等待用户提供 `ROBOCHALLENGE_USER_TOKEN` 和 `ROBOCHALLENGE_SUBMISSION_ID` 后，再分别运行 baseline runner 和 LoRA runner 做真实提交入口验证。
 3. 若目标改回原始 Table30，先补原始 Table30 数据/配置入口；不能把当前 Table30v2 ALOHA 证据当作 Table30 原榜单证据。
 
 ## 2026-06-02 恢复审计更新
@@ -122,3 +128,10 @@
 - 物化状态：`runs/openpi_rtc_lora_inference_checkpoint_materialize_status.json`，`passed=true`，`direct_demo_checkpoint_ready=true`。
 - `create_trained_policy` 加载 smoke：`runs/openpi_rtc_lora_materialized_policy_smoke_status.json`，`passed=true`，policy 类型 `Policy`，模型类型 `Pi0`。
 - 提交包审计已更新：LoRA checkpoint 本地已可被 `demo.py/create_trained_policy` 消费；真实网站提交仍需要 `ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID` 和可访问的 checkpoint link。
+
+## 2026-06-02 LoRA 提交 runner 更新
+
+- 已新增 `submission/run_table30v2_aloha_lora_demo_template.sh`，默认 checkpoint 为 `runs/openpi_rtc_lora_materialized_policy_checkpoint`。
+- `scripts/audit_robochallenge_submission_package.py` 现在同时生成 baseline runner 和 LoRA runner，并对二者执行 `bash -n` 与无凭据 fail-fast 检查。
+- `scripts/validate_repro_workspace.py` 已把 LoRA runner、manifest 双 runner 字段和无明文凭据检查纳入最低交接验证。
+- 真实提交仍等待用户提供 `ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`，以及 LoRA checkpoint 的网站可访问链接。

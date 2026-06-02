@@ -12,8 +12,11 @@
 
 - 提交 manifest 模板：`submission/submission_manifest_template.json`。
 - 启动脚本模板：`submission/run_table30v2_aloha_demo_template.sh`。
+- LoRA 启动脚本模板：`submission/run_table30v2_aloha_lora_demo_template.sh`。
 - submission 目录说明：`submission/README.md`。
 - `demo.py` 必需参数覆盖：`{'user_token': True, 'submission_id': True, 'checkpoint': True, 'prompt': True, 'action_type': True, 'duration': True, 'valid_action_num': True, 'image_size': True, 'robot_type': True}`。
+- baseline runner 语法检查：`True`，无凭据 fail-fast：`True`。
+- LoRA runner 语法检查：`True`，无凭据 fail-fast：`True`。
 - mock 验证：`passed=True`。
 - Table30v2 ALOHA 映射：`ready=True`。
 - LoRA restore 审计：`passed=True`，合并后占位 leaf `0`。

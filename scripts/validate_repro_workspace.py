@@ -63,6 +63,7 @@ REQUIRED = [
     "submission/README.md",
     "submission/submission_manifest_template.json",
     "submission/run_table30v2_aloha_demo_template.sh",
+    "submission/run_table30v2_aloha_lora_demo_template.sh",
     "scripts/probe_pi05_base_model.sh",
     "scripts/audit_pi06_pi07_public_release.py",
     "scripts/audit_table30v2_aloha_mapping.py",
@@ -403,7 +404,7 @@ def main() -> int:
             lora_restore_merge.get("state_replace_passed"),
         ]
     ):
-        print("openpi_rtc LoRA scoped checkpoint restore/merge audit 鏈€氳繃")
+        print("openpi_rtc LoRA scoped checkpoint restore/merge audit 未通过")
         return 1
     lora_layout = json.loads(
         (ROOT / "runs/openpi_rtc_lora_inference_checkpoint_layout_audit.json").read_text(encoding="utf-8")
@@ -535,10 +536,14 @@ def main() -> int:
     submission_evidence = submission_audit.get("evidence", {})
     submission_restore = submission_audit.get("model_restore_materials", {})
     submission_outputs = submission_audit.get("outputs", {})
+    submission_runner_audit = submission_audit.get("runner_audit", {})
+    baseline_runner_audit = submission_runner_audit.get("baseline", {})
+    lora_runner_audit = submission_runner_audit.get("lora", {})
     submission_manifest = json.loads(
         (ROOT / "submission/submission_manifest_template.json").read_text(encoding="utf-8")
     )
     runner_text = (ROOT / "submission/run_table30v2_aloha_demo_template.sh").read_text(encoding="utf-8")
+    lora_runner_text = (ROOT / "submission/run_table30v2_aloha_lora_demo_template.sh").read_text(encoding="utf-8")
     if not all(
         [
             submission_audit.get("passed"),
@@ -565,11 +570,35 @@ def main() -> int:
             submission_restore.get("direct_demo_checkpoint_ready") is True,
             submission_outputs.get("manifest") == "submission/submission_manifest_template.json",
             submission_outputs.get("runner") == "submission/run_table30v2_aloha_demo_template.sh",
+            submission_outputs.get("lora_runner") == "submission/run_table30v2_aloha_lora_demo_template.sh",
+            baseline_runner_audit.get("exists"),
+            baseline_runner_audit.get("mentions_user_token"),
+            baseline_runner_audit.get("mentions_submission_id"),
+            baseline_runner_audit.get("mentions_expected_checkpoint"),
+            baseline_runner_audit.get("contains_plaintext_secret_pattern") is False,
+            baseline_runner_audit.get("bash_n", {}).get("passed"),
+            baseline_runner_audit.get("no_credentials_failfast", {}).get("passed"),
+            lora_runner_audit.get("exists"),
+            lora_runner_audit.get("mentions_user_token"),
+            lora_runner_audit.get("mentions_submission_id"),
+            lora_runner_audit.get("mentions_expected_checkpoint"),
+            lora_runner_audit.get("contains_plaintext_secret_pattern") is False,
+            lora_runner_audit.get("bash_n", {}).get("passed"),
+            lora_runner_audit.get("no_credentials_failfast", {}).get("passed"),
             submission_manifest.get("status") == "template_pending_credentials",
+            submission_manifest.get("runner_templates", {}).get("baseline")
+            == "submission/run_table30v2_aloha_demo_template.sh",
+            submission_manifest.get("runner_templates", {}).get("lora_materialized")
+            == "submission/run_table30v2_aloha_lora_demo_template.sh",
             "ROBOCHALLENGE_USER_TOKEN" in runner_text,
             "ROBOCHALLENGE_SUBMISSION_ID" in runner_text,
+            "ROBOCHALLENGE_USER_TOKEN" in lora_runner_text,
+            "ROBOCHALLENGE_SUBMISSION_ID" in lora_runner_text,
+            "runs/openpi_rtc_lora_materialized_policy_checkpoint" in lora_runner_text,
             "sk-" not in runner_text,
             "hf_" not in runner_text,
+            "sk-" not in lora_runner_text,
+            "hf_" not in lora_runner_text,
         ]
     ):
         print("RoboChallenge submission package checklist/template audit 未通过")

@@ -45,6 +45,12 @@ def parse_args() -> argparse.Namespace:
         help="不含明文凭据的 demo.py 启动模板输出路径。",
     )
     parser.add_argument(
+        "--lora-runner-path",
+        type=Path,
+        default=SUBMISSION_DIR / "run_table30v2_aloha_lora_demo_template.sh",
+        help="默认指向本地物化 LoRA checkpoint 的 demo.py 启动模板输出路径。",
+    )
+    parser.add_argument(
         "--readme-path",
         type=Path,
         default=SUBMISSION_DIR / "README.md",
@@ -85,6 +91,64 @@ def shell_quote(value: str) -> str:
     return "'" + value.replace("'", "'\"'\"'") + "'"
 
 
+def bash_syntax_check(path: Path) -> dict[str, Any]:
+    result = subprocess.run(
+        ["bash", "-n", str(path)],
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    return {
+        "returncode": result.returncode,
+        "passed": result.returncode == 0,
+        "stdout": result.stdout.strip(),
+        "stderr": result.stderr.strip(),
+    }
+
+
+def no_credentials_failfast_check(path: Path) -> dict[str, Any]:
+    env = os.environ.copy()
+    for key in ["ROBOCHALLENGE_USER_TOKEN", "ROBOCHALLENGE_SUBMISSION_ID"]:
+        env.pop(key, None)
+    result = subprocess.run(
+        ["bash", str(path)],
+        cwd=ROOT,
+        env=env,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+        timeout=10,
+    )
+    output = "\n".join([result.stdout.strip(), result.stderr.strip()]).strip()
+    return {
+        "returncode": result.returncode,
+        "passed": result.returncode != 0 and "ROBOCHALLENGE_USER_TOKEN" in output and "Traceback" not in output,
+        "stdout": result.stdout.strip(),
+        "stderr": result.stderr.strip(),
+    }
+
+
+def audit_runner_file(path: Path, expected_checkpoint_fragment: str) -> dict[str, Any]:
+    exists = path.exists()
+    text = path.read_text(encoding="utf-8") if exists else ""
+    syntax = bash_syntax_check(path) if exists else {"passed": False, "stderr": "runner missing"}
+    failfast = no_credentials_failfast_check(path) if exists else {"passed": False, "stderr": "runner missing"}
+    return {
+        "path": str(path.relative_to(ROOT)),
+        "exists": exists,
+        "mentions_user_token": "ROBOCHALLENGE_USER_TOKEN" in text,
+        "mentions_submission_id": "ROBOCHALLENGE_SUBMISSION_ID" in text,
+        "mentions_expected_checkpoint": expected_checkpoint_fragment in text,
+        "contains_plaintext_secret_pattern": bool(
+            re.search(r"sk-[A-Za-z0-9_-]{20,}|hf_[A-Za-z0-9]{20,}|ROBOCHALLENGE_\w*TOKEN\s*=\s*[A-Za-z0-9_-]{20,}", text)
+        ),
+        "bash_n": syntax,
+        "no_credentials_failfast": failfast,
+    }
+
+
 def build_manifest(status: dict[str, Any]) -> dict[str, Any]:
     selected = status["selected_target"]
     restore = status["model_restore_materials"]
@@ -102,8 +166,12 @@ def build_manifest(status: dict[str, Any]) -> dict[str, Any]:
         "required_runtime_inputs": {
             "ROBOCHALLENGE_USER_TOKEN": "用户登录 RoboChallenge 后提供；不能写入仓库。",
             "ROBOCHALLENGE_SUBMISSION_ID": "在 My Submission/Detail 页面获得；不能伪造。",
-            "ROBOCHALLENGE_CHECKPOINT": "默认使用本机已验证 ALOHA baseline checkpoint，可按需覆盖。",
+            "ROBOCHALLENGE_CHECKPOINT": "baseline runner 默认使用官方 ALOHA checkpoint；LoRA runner 默认使用本地物化 checkpoint，可按需覆盖。",
             "ROBOCHALLENGE_PROMPT": "默认使用当前任务 prompt，可按当前 run prompt 覆盖。",
+        },
+        "runner_templates": {
+            "baseline": status["outputs"]["runner"],
+            "lora_materialized": status["outputs"]["lora_runner"],
         },
         "current_verified_entrypoint": status["entrypoint_audit"],
         "model_restore_materials": restore,
@@ -115,29 +183,32 @@ def build_manifest(status: dict[str, Any]) -> dict[str, Any]:
             "notebook": "notebooks/robochallenge_pi05_submit_cn.ipynb",
         },
         "links_to_fill_before_web_submission": {
-            "checkpoint_link": "需要填真实可访问 checkpoint 链接；baseline 可指向 Hugging Face 官方模型，LoRA scoped 需要先打包完整恢复流程。",
+            "checkpoint_link": "需要填真实可访问 checkpoint 链接；baseline 可指向官方模型，LoRA 版本需要先上传本地物化 checkpoint。",
             "inference_code_link": "建议填 GitHub 仓库链接：https://github.com/dictmap/robochallenge/tree/main",
-            "fine_tuning_code_link": "建议填同仓库脚本和报告；若提交 LoRA 版本，需补完整训练/恢复脚本入口。",
+            "fine_tuning_code_link": "建议填同仓库脚本、Notebook 和报告；LoRA 训练/恢复/物化证据已在仓库内记录。",
         },
         "blocking": status["blocking"],
     }
 
 
-def write_runner(path: Path, selected: dict[str, Any]) -> None:
+def write_runner(path: Path, selected: dict[str, Any], title: str, default_checkpoint: str) -> None:
     prompt = selected["prompt"]
-    checkpoint = selected["checkpoint"]
+    quoted_prompt = shell_quote(prompt)
+    quoted_checkpoint = shell_quote(default_checkpoint)
     content = f"""#!/usr/bin/env bash
 set -euo pipefail
 
-# RoboChallenge Table30v2 ALOHA pi0.5 baseline 提交启动模板。
+# RoboChallenge Table30v2 ALOHA pi0.5 {title} 提交启动模板。
 # 不要把真实 token 写进仓库；运行前在 shell 里 export。
 : "${{ROBOCHALLENGE_USER_TOKEN:?请先 export ROBOCHALLENGE_USER_TOKEN}}"
 : "${{ROBOCHALLENGE_SUBMISSION_ID:?请先 export ROBOCHALLENGE_SUBMISSION_ID}}"
 
-CHECKPOINT="${{ROBOCHALLENGE_CHECKPOINT:-{checkpoint}}}"
-PROMPT="${{ROBOCHALLENGE_PROMPT:-{prompt}}}"
-
 cd "$(dirname "$0")/.."
+
+DEFAULT_CHECKPOINT={quoted_checkpoint}
+DEFAULT_PROMPT={quoted_prompt}
+CHECKPOINT="${{ROBOCHALLENGE_CHECKPOINT:-$DEFAULT_CHECKPOINT}}"
+PROMPT="${{ROBOCHALLENGE_PROMPT:-$DEFAULT_PROMPT}}"
 
 python3 demo.py \\
   --user_token "$ROBOCHALLENGE_USER_TOKEN" \\
@@ -155,20 +226,23 @@ python3 demo.py \\
     path.chmod(0o755)
 
 
-def write_readme(path: Path, manifest_rel: str, runner_rel: str) -> None:
+def write_readme(path: Path, manifest_rel: str, runner_rel: str, lora_runner_rel: str) -> None:
     content = f"""# RoboChallenge 提交包模板
 
 本目录只保存提交准备材料，不保存明文 `user_token`、`submission_id` 或大模型权重。
 
 - `{manifest_rel}`：机器可读提交 manifest 模板。
 - `{runner_rel}`：Table30v2 ALOHA baseline 的 `demo.py` 启动模板。
+- `{lora_runner_rel}`：Table30v2 ALOHA LoRA 完整物化 checkpoint 的 `demo.py` 启动模板。
 
-当前默认可运行提交路线是官方 pi0.5 Table30v2 ALOHA baseline。LoRA scoped checkpoint 已通过恢复/合并审计，但它不是 `demo.py` 可直接消费的完整 checkpoint，不能单独作为 checkpoint 提交。
+当前默认稳妥提交路线仍是官方 pi0.5 Table30v2 ALOHA baseline。LoRA scoped checkpoint 已被物化为本地完整 checkpoint，并通过 `create_trained_policy` 加载 smoke；但真实网站提交仍需要用户提供凭据，并把本地 checkpoint 上传成网站可访问链接。
 
 运行前需要用户在 shell 中提供 `ROBOCHALLENGE_USER_TOKEN` 和 `ROBOCHALLENGE_SUBMISSION_ID` 两个环境变量；不要把具体值写入仓库、Notebook 或报告。设置好之后运行：
 
 ```bash
 bash {runner_rel}
+# 或本地 LoRA 物化 checkpoint 路线：
+bash {lora_runner_rel}
 ```
 """
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -194,8 +268,11 @@ def write_report(status: dict[str, Any], report_path: Path) -> None:
         "",
         f"- 提交 manifest 模板：`{status['outputs']['manifest']}`。",
         f"- 启动脚本模板：`{status['outputs']['runner']}`。",
+        f"- LoRA 启动脚本模板：`{status['outputs']['lora_runner']}`。",
         f"- submission 目录说明：`{status['outputs']['readme']}`。",
         f"- `demo.py` 必需参数覆盖：`{entry['required_args_present']}`。",
+        f"- baseline runner 语法检查：`{status['runner_audit']['baseline']['bash_n']['passed']}`，无凭据 fail-fast：`{status['runner_audit']['baseline']['no_credentials_failfast']['passed']}`。",
+        f"- LoRA runner 语法检查：`{status['runner_audit']['lora']['bash_n']['passed']}`，无凭据 fail-fast：`{status['runner_audit']['lora']['no_credentials_failfast']['passed']}`。",
         f"- mock 验证：`passed={status['evidence']['mock_smoke_passed']}`。",
         f"- Table30v2 ALOHA 映射：`ready={status['evidence']['table30v2_mapping_ready']}`。",
         f"- LoRA restore 审计：`passed={restore['restore_audit_passed']}`，合并后占位 leaf `{restore['placeholder_after_count']}`。",
@@ -214,46 +291,6 @@ def write_report(status: dict[str, Any], report_path: Path) -> None:
         "- `Inference Code Link`：`https://github.com/dictmap/robochallenge/tree/main`。",
         "- `Fine-tuning Code Link`：同仓库中的 `scripts/`、`notebooks/`、`reports/`。",
         "- `Checkpoint Link`：baseline 可指向官方 ALOHA checkpoint；LoRA 版本需要上传本地物化 checkpoint 后填可访问链接。",
-        "",
-        "## Blocking",
-        "",
-    ]
-    for item in status["blocking"]:
-        lines.append(f"- {item}")
-    report_path.parent.mkdir(parents=True, exist_ok=True)
-    report_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
-    return
-    lines = [
-        "# RoboChallenge 提交包清单",
-        "",
-        "## 结论",
-        "",
-        f"- 审计状态：`passed={status['passed']}`。",
-        f"- 当前可运行目标：`Table30v2 / {selected['robot_type']} / {selected['task_name']}`。",
-        "- 当前最小提交模板走官方 pi0.5 Table30v2 ALOHA baseline；不会伪造网站 token 或 submission_id。",
-        "- LoRA scoped checkpoint 已完成恢复/合并审计，但仍不是完整 policy checkpoint，不能单独给 `demo.py --checkpoint` 使用。",
-        "",
-        "## 已准备材料",
-        "",
-        f"- 提交 manifest 模板：`{status['outputs']['manifest']}`。",
-        f"- 启动脚本模板：`{status['outputs']['runner']}`。",
-        f"- submission 目录说明：`{status['outputs']['readme']}`。",
-        f"- 入口脚本：`demo.py`，必需参数覆盖情况：`{entry['required_args_present']}`。",
-        f"- mock 验证：`passed={status['evidence']['mock_smoke_passed']}`。",
-        f"- Table30v2 ALOHA 映射：`ready={status['evidence']['table30v2_mapping_ready']}`。",
-        f"- LoRA 恢复审计：`passed={restore['restore_audit_passed']}`，合并后占位 leaf `{restore['placeholder_after_count']}`。",
-        "",
-        "## 提交时需要用户提供",
-        "",
-        "- `ROBOCHALLENGE_USER_TOKEN`：用户登录后获得，不能写入仓库。",
-        "- `ROBOCHALLENGE_SUBMISSION_ID`：在网站提交详情页获得，不能伪造。",
-        "- 当前评测 run 的 prompt/robot/benchmark 是否仍为 Table30v2 ALOHA；若目标切回原始 Table30，需要重新补齐对应数据和配置。",
-        "",
-        "## 建议填入网站的链接位",
-        "",
-        "- `Inference Code Link`：`https://github.com/dictmap/robochallenge/tree/main`。",
-        "- `Fine-tuning Code Link`：同仓库中的 `scripts/`、`notebooks/`、`reports/`。",
-        "- `Checkpoint Link`：baseline 路线可指向官方 ALOHA baseline checkpoint；LoRA scoped 路线必须先打包为完整可恢复 checkpoint 或提供完整恢复说明。",
         "",
         "## Blocking",
         "",
@@ -283,6 +320,7 @@ def main() -> int:
         "prompt": selected_config.get("prompt", ""),
         "checkpoint": selected_config.get("checkpoint", ""),
         "checkpoint_exists": Path(selected_config.get("checkpoint", "")).exists(),
+        "lora_materialized_checkpoint": "runs/openpi_rtc_lora_materialized_policy_checkpoint",
     }
     required_args = [
         "user_token",
@@ -351,27 +389,43 @@ def main() -> int:
             "policy_smoke_passed": bool(policy_smoke.get("passed") and policy_load.get("passed")),
             "policy_smoke_model_type": policy_load.get("model_type"),
             "direct_demo_checkpoint_ready": materialized_ready,
-            "direct_demo_checkpoint_note_v2": "LoRA checkpoint 已本地物化为 demo.py/create_trained_policy 可读的完整 policy checkpoint；真实网站提交仍需要用户提供 token/submission_id 和可访问 checkpoint link。",
-            "direct_demo_checkpoint_note": "scoped checkpoint 不是完整 checkpoint；demo.py 当前可直接使用的是官方 ALOHA baseline checkpoint。",
+            "direct_demo_checkpoint_note": "LoRA checkpoint 已本地物化为 demo.py/create_trained_policy 可读的完整 policy checkpoint；真实网站提交仍需要用户提供 token/submission_id 和可访问 checkpoint link。",
         },
         "outputs": {
             "report": str(args.report_path.relative_to(ROOT)),
             "manifest": str(args.manifest_path.relative_to(ROOT)),
             "runner": str(args.runner_path.relative_to(ROOT)),
+            "lora_runner": str(args.lora_runner_path.relative_to(ROOT)),
             "readme": str(args.readme_path.relative_to(ROOT)),
         },
+        "runner_audit": {},
         "blocking": [
             "需要用户提供真实 ROBOCHALLENGE_USER_TOKEN。",
             "需要用户提供真实 ROBOCHALLENGE_SUBMISSION_ID。",
             "需要确认本次要提交的是 Table30v2 ALOHA 还是原始 Table30；当前可运行链路是 Table30v2 ALOHA。",
-            "若要提交 LoRA scoped 路线，还需要把 scoped params 打包成 demo.py 可直接恢复的完整 policy 入口。",
+            "若要提交 LoRA 版本，还需要把本地 12GB+ checkpoint 放到网站可访问的 checkpoint link。",
         ],
     }
 
-    status["model_restore_materials"]["direct_demo_checkpoint_note"] = status["model_restore_materials"][
-        "direct_demo_checkpoint_note_v2"
-    ]
-    status["blocking"][-1] = "若要提交 LoRA 版本，还需要把本地 12GB+ checkpoint 放到网站可访问的 checkpoint link。"
+    args.status_path.parent.mkdir(parents=True, exist_ok=True)
+    args.manifest_path.parent.mkdir(parents=True, exist_ok=True)
+    write_runner(args.runner_path, selected_target, "官方 baseline checkpoint", selected_target["checkpoint"])
+    write_runner(
+        args.lora_runner_path,
+        selected_target,
+        "LoRA 完整物化 checkpoint",
+        selected_target["lora_materialized_checkpoint"],
+    )
+    write_readme(
+        args.readme_path,
+        args.manifest_path.relative_to(ROOT).as_posix(),
+        args.runner_path.relative_to(ROOT).as_posix(),
+        args.lora_runner_path.relative_to(ROOT).as_posix(),
+    )
+    status["runner_audit"] = {
+        "baseline": audit_runner_file(args.runner_path, selected_target["checkpoint"]),
+        "lora": audit_runner_file(args.lora_runner_path, selected_target["lora_materialized_checkpoint"]),
+    }
 
     status["passed"] = all(
         [
@@ -392,17 +446,23 @@ def main() -> int:
             status["model_restore_materials"]["materialize_passed"],
             status["model_restore_materials"]["policy_smoke_passed"],
             status["model_restore_materials"]["direct_demo_checkpoint_ready"],
+            status["runner_audit"]["baseline"]["exists"],
+            status["runner_audit"]["baseline"]["mentions_user_token"],
+            status["runner_audit"]["baseline"]["mentions_submission_id"],
+            status["runner_audit"]["baseline"]["mentions_expected_checkpoint"],
+            not status["runner_audit"]["baseline"]["contains_plaintext_secret_pattern"],
+            status["runner_audit"]["baseline"]["bash_n"]["passed"],
+            status["runner_audit"]["baseline"]["no_credentials_failfast"]["passed"],
+            status["runner_audit"]["lora"]["exists"],
+            status["runner_audit"]["lora"]["mentions_user_token"],
+            status["runner_audit"]["lora"]["mentions_submission_id"],
+            status["runner_audit"]["lora"]["mentions_expected_checkpoint"],
+            not status["runner_audit"]["lora"]["contains_plaintext_secret_pattern"],
+            status["runner_audit"]["lora"]["bash_n"]["passed"],
+            status["runner_audit"]["lora"]["no_credentials_failfast"]["passed"],
         ]
     )
 
-    args.status_path.parent.mkdir(parents=True, exist_ok=True)
-    args.manifest_path.parent.mkdir(parents=True, exist_ok=True)
-    write_runner(args.runner_path, selected_target)
-    write_readme(
-        args.readme_path,
-        args.manifest_path.relative_to(ROOT).as_posix(),
-        args.runner_path.relative_to(ROOT).as_posix(),
-    )
     args.manifest_path.write_text(
         json.dumps(build_manifest(status), ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",

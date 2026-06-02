@@ -7,7 +7,8 @@
     "task_name": "pack_the_toothbrush_holder",
     "prompt": "Put the toothbrush and toothpaste into the toiletries case in sequence, close the case, and then place it into the basket.",
     "checkpoint": "/home/yjl/yjl/RoboChallenge/checkpoints/table30v2_multitask_baseline_aloha",
-    "checkpoint_exists": true
+    "checkpoint_exists": true,
+    "lora_materialized_checkpoint": "runs/openpi_rtc_lora_materialized_policy_checkpoint"
   },
   "entrypoint_audit": {
     "demo_py_exists": true,
@@ -52,14 +53,56 @@
     "policy_smoke_passed": true,
     "policy_smoke_model_type": "Pi0",
     "direct_demo_checkpoint_ready": true,
-    "direct_demo_checkpoint_note_v2": "LoRA checkpoint 已本地物化为 demo.py/create_trained_policy 可读的完整 policy checkpoint；真实网站提交仍需要用户提供 token/submission_id 和可访问 checkpoint link。",
     "direct_demo_checkpoint_note": "LoRA checkpoint 已本地物化为 demo.py/create_trained_policy 可读的完整 policy checkpoint；真实网站提交仍需要用户提供 token/submission_id 和可访问 checkpoint link。"
   },
   "outputs": {
     "report": "reports/robochallenge_submission_package_checklist.md",
     "manifest": "submission/submission_manifest_template.json",
     "runner": "submission/run_table30v2_aloha_demo_template.sh",
+    "lora_runner": "submission/run_table30v2_aloha_lora_demo_template.sh",
     "readme": "submission/README.md"
+  },
+  "runner_audit": {
+    "baseline": {
+      "path": "submission/run_table30v2_aloha_demo_template.sh",
+      "exists": true,
+      "mentions_user_token": true,
+      "mentions_submission_id": true,
+      "mentions_expected_checkpoint": true,
+      "contains_plaintext_secret_pattern": false,
+      "bash_n": {
+        "returncode": 0,
+        "passed": true,
+        "stdout": "",
+        "stderr": ""
+      },
+      "no_credentials_failfast": {
+        "returncode": 1,
+        "passed": true,
+        "stdout": "",
+        "stderr": "/home/yjl/robochallenge/repo/submission/run_table30v2_aloha_demo_template.sh: line 6: ROBOCHALLENGE_USER_TOKEN: 请先 export ROBOCHALLENGE_USER_TOKEN"
+      }
+    },
+    "lora": {
+      "path": "submission/run_table30v2_aloha_lora_demo_template.sh",
+      "exists": true,
+      "mentions_user_token": true,
+      "mentions_submission_id": true,
+      "mentions_expected_checkpoint": true,
+      "contains_plaintext_secret_pattern": false,
+      "bash_n": {
+        "returncode": 0,
+        "passed": true,
+        "stdout": "",
+        "stderr": ""
+      },
+      "no_credentials_failfast": {
+        "returncode": 1,
+        "passed": true,
+        "stdout": "",
+        "stderr": "/home/yjl/robochallenge/repo/submission/run_table30v2_aloha_lora_demo_template.sh: line 6: ROBOCHALLENGE_USER_TOKEN: 请先 export ROBOCHALLENGE_USER_TOKEN"
+      }
+    }
   },
   "blocking": [
     "需要用户提供真实 ROBOCHALLENGE_USER_TOKEN。",

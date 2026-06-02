@@ -566,3 +566,32 @@
 
 - P0：准备 LoRA checkpoint 的上传/链接方案，或在用户给出凭据后用官方 baseline/LoRA 本地 checkpoint 分别跑真实提交入口。
 - P1：补一个不联网的 `demo.py --checkpoint runs/openpi_rtc_lora_materialized_policy_checkpoint` 参数模板，避免提交时手工改路径。
+
+## 2026-06-02 第二十轮：LoRA 提交 runner 模板与审计闭环
+
+### 已完成
+
+- 扩展 `scripts/audit_robochallenge_submission_package.py`，同时生成 baseline runner 和 LoRA runner。
+- 新增 `submission/run_table30v2_aloha_lora_demo_template.sh`，默认 checkpoint 为 `runs/openpi_rtc_lora_materialized_policy_checkpoint`。
+- 提交包审计新增两类检查：`bash -n` 语法检查、无凭据 fail-fast 检查；不会在缺少 `ROBOCHALLENGE_USER_TOKEN` 时误连真实平台。
+- 更新 `submission/submission_manifest_template.json`，记录 baseline 与 LoRA 两个 runner 模板。
+- 更新 `scripts/validate_repro_workspace.py`，把 LoRA runner、manifest 双 runner 字段、无明文 secret 检查纳入最低交接验证。
+- 中文 Notebook 新增第 23 节，记录 LoRA runner 的生成、审计和验证命令。
+
+### 验证结果
+
+- baseline runner：通过 `bash -n`，无凭据运行会立即要求 `ROBOCHALLENGE_USER_TOKEN`。
+- LoRA runner：通过 `bash -n`，无凭据运行会立即要求 `ROBOCHALLENGE_USER_TOKEN`。
+- LoRA runner 默认路径包含 `runs/openpi_rtc_lora_materialized_policy_checkpoint`，不写入明文 token、submission_id 或外部密钥。
+- 远端 `python3 scripts/validate_repro_workspace.py` 需要在同步并重跑提交包审计后验证。
+
+### 当前边界
+
+- LoRA checkpoint 本地可被 policy 加载，但还没有上传成 RoboChallenge 网站可访问的 checkpoint link。
+- 真实提交仍需要用户提供 `ROBOCHALLENGE_USER_TOKEN` 和 `ROBOCHALLENGE_SUBMISSION_ID`。
+- 当前可运行链路仍是 Table30v2 ALOHA；如果目标切回原始 Table30，需要另补数据和配置入口。
+
+### 下一步
+
+- P0：同步到 Linux 后重跑提交包审计、workspace validator、notebook preflight 和 secret scan，并提交推送。
+- P1：用户提供凭据和 checkpoint link 后，再运行 baseline/LoRA runner 进入真实评测入口。

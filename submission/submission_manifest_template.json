@@ -12,8 +12,12 @@
   "required_runtime_inputs": {
     "ROBOCHALLENGE_USER_TOKEN": "用户登录 RoboChallenge 后提供；不能写入仓库。",
     "ROBOCHALLENGE_SUBMISSION_ID": "在 My Submission/Detail 页面获得；不能伪造。",
-    "ROBOCHALLENGE_CHECKPOINT": "默认使用本机已验证 ALOHA baseline checkpoint，可按需覆盖。",
+    "ROBOCHALLENGE_CHECKPOINT": "baseline runner 默认使用官方 ALOHA checkpoint；LoRA runner 默认使用本地物化 checkpoint，可按需覆盖。",
     "ROBOCHALLENGE_PROMPT": "默认使用当前任务 prompt，可按当前 run prompt 覆盖。"
+  },
+  "runner_templates": {
+    "baseline": "submission/run_table30v2_aloha_demo_template.sh",
+    "lora_materialized": "submission/run_table30v2_aloha_lora_demo_template.sh"
   },
   "current_verified_entrypoint": {
     "demo_py_exists": true,
@@ -52,7 +56,6 @@
     "policy_smoke_passed": true,
     "policy_smoke_model_type": "Pi0",
     "direct_demo_checkpoint_ready": true,
-    "direct_demo_checkpoint_note_v2": "LoRA checkpoint 已本地物化为 demo.py/create_trained_policy 可读的完整 policy checkpoint；真实网站提交仍需要用户提供 token/submission_id 和可访问 checkpoint link。",
     "direct_demo_checkpoint_note": "LoRA checkpoint 已本地物化为 demo.py/create_trained_policy 可读的完整 policy checkpoint；真实网站提交仍需要用户提供 token/submission_id 和可访问 checkpoint link。"
   },
   "evidence_files": {
@@ -63,9 +66,9 @@
     "notebook": "notebooks/robochallenge_pi05_submit_cn.ipynb"
   },
   "links_to_fill_before_web_submission": {
-    "checkpoint_link": "需要填真实可访问 checkpoint 链接；baseline 可指向 Hugging Face 官方模型，LoRA scoped 需要先打包完整恢复流程。",
+    "checkpoint_link": "需要填真实可访问 checkpoint 链接；baseline 可指向官方模型，LoRA 版本需要先上传本地物化 checkpoint。",
     "inference_code_link": "建议填 GitHub 仓库链接：https://github.com/dictmap/robochallenge/tree/main",
-    "fine_tuning_code_link": "建议填同仓库脚本和报告；若提交 LoRA 版本，需补完整训练/恢复脚本入口。"
+    "fine_tuning_code_link": "建议填同仓库脚本、Notebook 和报告；LoRA 训练/恢复/物化证据已在仓库内记录。"
   },
   "blocking": [
     "需要用户提供真实 ROBOCHALLENGE_USER_TOKEN。",

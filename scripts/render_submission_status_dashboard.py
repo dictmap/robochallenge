@@ -33,6 +33,7 @@ SOURCE_FILES = {
     "baseline_submission_quickstart": RUNS_DIR / "baseline_submission_quickstart.json",
     "baseline_dry_run_gate": RUNS_DIR / "baseline_dry_run_gate.json",
     "baseline_credential_hygiene": RUNS_DIR / "baseline_credential_hygiene.json",
+    "placeholder_credentials": RUNS_DIR / "placeholder_credential_rejection.json",
     "baseline_local_env_smoke": RUNS_DIR / "baseline_local_env_smoke.json",
     "baseline_final_handoff": RUNS_DIR / "baseline_final_handoff_packet.json",
     "baseline_final_handoff_rehearsal": RUNS_DIR / "baseline_final_handoff_rehearsal.json",
@@ -100,6 +101,7 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
     baseline_quickstart = data["baseline_submission_quickstart"]
     baseline_dry_run_gate = data["baseline_dry_run_gate"]
     baseline_credential_hygiene = data["baseline_credential_hygiene"]
+    placeholder_credentials = data["placeholder_credentials"]
     baseline_local_env_smoke = data["baseline_local_env_smoke"]
     baseline_final_handoff = data["baseline_final_handoff"]
     baseline_final_handoff_rehearsal = data["baseline_final_handoff_rehearsal"]
@@ -176,6 +178,18 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
         and baseline_credential_hygiene.get("local_env_gitignored") is True
         and baseline_credential_hygiene.get("local_env_tracked") is False
         and baseline_credential_hygiene.get("local_env_content_read") is False
+    )
+    placeholder_credentials_ready = bool(
+        placeholder_credentials.get("passed")
+        and placeholder_credentials.get("baseline_placeholder_rejected") is True
+        and placeholder_credentials.get("lora_placeholder_rejected") is True
+        and placeholder_credentials.get("baseline_stops_before_dry_run") is True
+        and placeholder_credentials.get("lora_stops_before_dry_run") is True
+        and placeholder_credentials.get("baseline_real_runner_not_started") is True
+        and placeholder_credentials.get("lora_real_runner_not_started") is True
+        and placeholder_credentials.get("placeholder_values_recorded") is False
+        and not any(placeholder_credentials.get("leak_flags", {}).values())
+        and not any(placeholder_credentials.get("contact_flags", {}).values())
     )
     baseline_local_env_smoke_ready = bool(
         baseline_local_env_smoke.get("passed")
@@ -390,6 +404,13 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
             "reports/baseline_credential_hygiene.md",
         ),
         card(
+            "占位符凭据拒绝",
+            "done" if placeholder_credentials_ready else "watch",
+            f"{placeholder_credentials.get('case_count', 0)} 个场景",
+            "token 和 submission id 的占位符会在 baseline/LoRA wrapper 的 dry-run 与真实 runner 前被拒绝。",
+            "reports/placeholder_credential_rejection.md",
+        ),
+        card(
             "Baseline local env smoke",
             "done" if baseline_local_env_smoke_ready else "watch",
             "synthetic 已跑通",
@@ -467,6 +488,7 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
     baseline_quickstart = data["baseline_submission_quickstart"]
     baseline_dry_run_gate = data["baseline_dry_run_gate"]
     baseline_credential_hygiene = data["baseline_credential_hygiene"]
+    placeholder_credentials = data["placeholder_credentials"]
     baseline_local_env_smoke = data["baseline_local_env_smoke"]
     baseline_final_handoff = data["baseline_final_handoff"]
     baseline_final_handoff_rehearsal = data["baseline_final_handoff_rehearsal"]
@@ -548,6 +570,23 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
             "local_env_content_read"
         )
         is False,
+        "placeholder_credential_rejection_passed": placeholder_credentials.get("passed") is True,
+        "placeholder_credential_rejection_case_count": placeholder_credentials.get("case_count"),
+        "placeholder_baseline_rejected_before_dry_run": placeholder_credentials.get("baseline_placeholder_rejected")
+        is True
+        and placeholder_credentials.get("baseline_stops_before_dry_run") is True,
+        "placeholder_lora_rejected_before_dry_run": placeholder_credentials.get("lora_placeholder_rejected")
+        is True
+        and placeholder_credentials.get("lora_stops_before_dry_run") is True,
+        "placeholder_baseline_real_runner_not_started": placeholder_credentials.get(
+            "baseline_real_runner_not_started"
+        )
+        is True,
+        "placeholder_lora_real_runner_not_started": placeholder_credentials.get("lora_real_runner_not_started")
+        is True,
+        "placeholder_values_not_recorded": placeholder_credentials.get("placeholder_values_recorded") is False,
+        "placeholder_credentials_no_contact": not any(placeholder_credentials.get("contact_flags", {}).values()),
+        "placeholder_credentials_no_leak": not any(placeholder_credentials.get("leak_flags", {}).values()),
         "baseline_local_env_smoke_passed": baseline_local_env_smoke.get("passed") is True,
         "baseline_local_env_smoke_synthetic_values_not_recorded": baseline_local_env_smoke.get(
             "synthetic_values_recorded"

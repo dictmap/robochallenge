@@ -1980,3 +1980,30 @@
 
 - P0：提交并推送本轮中文 UTF-8 与乱码哨兵审计。
 - P1：继续补凭据到位后的只读/脱敏检查证据；真实 runner 仍不得在没有用户明确授权时执行。
+
+## 2026-06-03 第七十轮：占位符凭据拒绝审计
+
+### 已完成
+
+- 新增 `scripts/audit_placeholder_credential_rejection.py`，分别验证 baseline 与 LoRA wrapper 中 `ROBOCHALLENGE_USER_TOKEN` 和 `ROBOCHALLENGE_SUBMISSION_ID` 的占位符会在 dry-run 前被拒绝。
+- 新增机器可读产物 `runs/placeholder_credential_rejection.json` 和中文报告 `reports/placeholder_credential_rejection.md`。
+- 更新 `scripts/audit_submission_preflight_bundle.py`、`scripts/audit_submission_artifact_manifest.py`、`scripts/render_submission_status_dashboard.py` 和 `scripts/validate_repro_workspace.py`，把占位符拒绝证据接入 preflight、manifest、GUI 和总验证。
+- GUI dashboard 新增 `占位符凭据拒绝` 卡片，当前总计 `source_count=28`、`card_count=28`、`done_count=23`、`blocked_count=4`、`watch_count=1`。
+
+### 验证结果
+
+- Linux 端 `python3 scripts/audit_placeholder_credential_rejection.py` 已通过：4 个场景均 `returncode=64`，baseline/LoRA 的 token 与 submission id 占位符均被拒绝。
+- 所有占位符场景均 `dry_run_called=false`、`robot_type_aloha=false`、`stops_before_dry_run=true`、`real_runner_started=false`、`printed_protected_values=false`。
+- Linux 端 `python3 scripts/audit_plaintext_secrets.py`、`python3 scripts/audit_submission_preflight_bundle.py`、`python3 scripts/audit_submission_artifact_manifest.py`、`python3 scripts/render_submission_status_dashboard.py` 和 `python3 scripts/validate_repro_workspace.py` 均已通过。
+- 本轮没有读取真实 token、submission id 或 checkpoint link，没有连接 RoboChallenge 平台，没有上传 checkpoint，没有生成 checkpoint tar，也没有启动真实 runner。
+
+### 当前边界
+
+- 本审计只验证占位符和固定假值的 fail-fast 行为；真实 token/submission id 的平台有效性仍必须等用户提供凭据并明确授权后才能验证。
+- baseline 官方路线仍等待用户确认提交对象、提供 `ROBOCHALLENGE_USER_TOKEN`、提供 `ROBOCHALLENGE_SUBMISSION_ID`、设置 `ROBOCHALLENGE_SUBMISSION_VARIANT=baseline`，以及真实 runner 明确授权。
+- LoRA/web checkpoint 路线仍额外等待 checkpoint 归档/上传授权和真实 checkpoint link；这条路线不影响 baseline 官方最短路线。
+
+### 下一步
+
+- P0：提交并推送本轮占位符凭据拒绝审计。
+- P1：继续补凭据到位后的只读预检与脱敏演练；真实 runner 仍不得在没有用户明确授权时执行。

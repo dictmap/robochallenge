@@ -64,6 +64,7 @@ REQUIRED_ARTIFACTS = [
     "reports/baseline_submission_quickstart.md",
     "reports/baseline_dry_run_gate.md",
     "reports/baseline_credential_hygiene.md",
+    "reports/placeholder_credential_rejection.md",
     "reports/baseline_local_env_smoke.md",
     "reports/baseline_final_handoff_packet.md",
     "reports/baseline_final_handoff_rehearsal.md",
@@ -79,6 +80,7 @@ REQUIRED_ARTIFACTS = [
     "scripts/render_baseline_submission_quickstart.py",
     "scripts/render_baseline_dry_run_gate.py",
     "scripts/render_baseline_credential_hygiene.py",
+    "scripts/audit_placeholder_credential_rejection.py",
     "scripts/render_baseline_local_env_smoke.py",
     "scripts/render_baseline_final_handoff_packet.py",
     "scripts/render_baseline_final_handoff_rehearsal.py",
@@ -195,6 +197,7 @@ def build_status() -> dict[str, Any]:
     baseline_quickstart = read_json(RUNS_DIR / "baseline_submission_quickstart.json")
     baseline_dry_run_gate = read_json(RUNS_DIR / "baseline_dry_run_gate.json")
     baseline_credential_hygiene = read_json(RUNS_DIR / "baseline_credential_hygiene.json")
+    placeholder_credential_rejection = read_json(RUNS_DIR / "placeholder_credential_rejection.json")
     baseline_local_env_smoke = read_json(RUNS_DIR / "baseline_local_env_smoke.json")
     baseline_final_handoff = read_json(RUNS_DIR / "baseline_final_handoff_packet.json")
     baseline_final_handoff_rehearsal = read_json(RUNS_DIR / "baseline_final_handoff_rehearsal.json")
@@ -297,6 +300,28 @@ def build_status() -> dict[str, Any]:
         is False,
         "baseline_credential_hygiene_no_link": baseline_credential_hygiene.get("requires_checkpoint_link")
         is False,
+        "placeholder_credential_rejection_passed": placeholder_credential_rejection.get("passed") is True,
+        "placeholder_credential_rejection_case_count": placeholder_credential_rejection.get("case_count") == 4,
+        "placeholder_baseline_rejected_before_dry_run": placeholder_credential_rejection.get(
+            "baseline_placeholder_rejected"
+        )
+        is True
+        and placeholder_credential_rejection.get("baseline_stops_before_dry_run") is True,
+        "placeholder_lora_rejected_before_dry_run": placeholder_credential_rejection.get(
+            "lora_placeholder_rejected"
+        )
+        is True
+        and placeholder_credential_rejection.get("lora_stops_before_dry_run") is True,
+        "placeholder_baseline_real_runner_not_started": placeholder_credential_rejection.get(
+            "baseline_real_runner_not_started"
+        )
+        is True,
+        "placeholder_lora_real_runner_not_started": placeholder_credential_rejection.get(
+            "lora_real_runner_not_started"
+        )
+        is True,
+        "placeholder_values_not_recorded": placeholder_credential_rejection.get("placeholder_values_recorded")
+        is False,
         "baseline_local_env_smoke_passed": baseline_local_env_smoke.get("passed") is True,
         "baseline_local_env_smoke_synthetic_values_not_recorded": baseline_local_env_smoke.get(
             "synthetic_values_recorded"
@@ -394,6 +419,7 @@ def build_status() -> dict[str, Any]:
                 baseline_quickstart,
                 baseline_dry_run_gate,
                 baseline_credential_hygiene,
+                placeholder_credential_rejection,
                 baseline_local_env_smoke,
                 baseline_final_handoff,
                 baseline_final_handoff_rehearsal,
@@ -417,6 +443,7 @@ def build_status() -> dict[str, Any]:
         or bool(baseline_quickstart.get("link_values_printed"))
         or bool(baseline_dry_run_gate.get("link_values_printed"))
         or bool(baseline_credential_hygiene.get("link_values_printed"))
+        or bool(placeholder_credential_rejection.get("link_values_printed"))
         or bool(baseline_local_env_smoke.get("link_values_printed"))
         or bool(baseline_final_handoff.get("link_values_printed"))
         or bool(baseline_final_handoff_rehearsal.get("link_values_printed"))
@@ -432,6 +459,7 @@ def build_status() -> dict[str, Any]:
         or bool(baseline_quickstart.get("secret_values_printed"))
         or bool(baseline_dry_run_gate.get("secret_values_printed"))
         or bool(baseline_credential_hygiene.get("secret_values_printed"))
+        or bool(placeholder_credential_rejection.get("secret_values_printed"))
         or bool(baseline_local_env_smoke.get("secret_values_printed"))
         or bool(baseline_final_handoff.get("secret_values_printed"))
         or bool(baseline_final_handoff_rehearsal.get("secret_values_printed"))
@@ -457,6 +485,7 @@ def build_status() -> dict[str, Any]:
                 baseline_quickstart,
                 baseline_dry_run_gate,
                 baseline_credential_hygiene,
+                placeholder_credential_rejection,
                 baseline_local_env_smoke,
                 baseline_final_handoff,
                 baseline_final_handoff_rehearsal,
@@ -485,6 +514,7 @@ def build_status() -> dict[str, Any]:
                 baseline_quickstart,
                 baseline_dry_run_gate,
                 baseline_credential_hygiene,
+                placeholder_credential_rejection,
                 baseline_local_env_smoke,
                 baseline_final_handoff,
                 baseline_final_handoff_rehearsal,

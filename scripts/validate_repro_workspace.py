@@ -67,6 +67,7 @@ REQUIRED = [
     "reports/baseline_submission_quickstart.md",
     "reports/baseline_dry_run_gate.md",
     "reports/baseline_credential_hygiene.md",
+    "reports/placeholder_credential_rejection.md",
     "reports/baseline_local_env_smoke.md",
     "reports/baseline_final_handoff_packet.md",
     "reports/baseline_final_handoff_rehearsal.md",
@@ -124,6 +125,7 @@ REQUIRED = [
     "runs/baseline_submission_quickstart.json",
     "runs/baseline_dry_run_gate.json",
     "runs/baseline_credential_hygiene.json",
+    "runs/placeholder_credential_rejection.json",
     "runs/baseline_local_env_smoke.json",
     "runs/baseline_final_handoff_packet.json",
     "runs/baseline_final_handoff_rehearsal.json",
@@ -182,6 +184,7 @@ REQUIRED = [
     "scripts/render_baseline_submission_quickstart.py",
     "scripts/render_baseline_dry_run_gate.py",
     "scripts/render_baseline_credential_hygiene.py",
+    "scripts/audit_placeholder_credential_rejection.py",
     "scripts/render_baseline_local_env_smoke.py",
     "scripts/render_baseline_final_handoff_packet.py",
     "scripts/render_baseline_final_handoff_rehearsal.py",
@@ -938,6 +941,15 @@ def main() -> int:
             dashboard.get("baseline_credential_hygiene_local_env_gitignored") is True,
             dashboard.get("baseline_credential_hygiene_local_env_not_tracked") is True,
             dashboard.get("baseline_credential_hygiene_does_not_read_local_env") is True,
+            dashboard.get("placeholder_credential_rejection_passed") is True,
+            dashboard.get("placeholder_credential_rejection_case_count") == 4,
+            dashboard.get("placeholder_baseline_rejected_before_dry_run") is True,
+            dashboard.get("placeholder_lora_rejected_before_dry_run") is True,
+            dashboard.get("placeholder_baseline_real_runner_not_started") is True,
+            dashboard.get("placeholder_lora_real_runner_not_started") is True,
+            dashboard.get("placeholder_values_not_recorded") is True,
+            dashboard.get("placeholder_credentials_no_contact") is True,
+            dashboard.get("placeholder_credentials_no_leak") is True,
             dashboard.get("baseline_local_env_smoke_passed") is True,
             dashboard.get("baseline_local_env_smoke_synthetic_values_not_recorded") is True,
             dashboard.get("baseline_local_env_smoke_temp_env_removed") is True,
@@ -1020,6 +1032,7 @@ def main() -> int:
             "Baseline 最短路径" in dashboard_titles,
             "Baseline dry-run gate" in dashboard_titles,
             "Baseline 凭据卫生" in dashboard_titles,
+            "占位符凭据拒绝" in dashboard_titles,
             "Baseline local env smoke" in dashboard_titles,
             "Baseline final handoff" in dashboard_titles,
             "Baseline handoff rehearsal" in dashboard_titles,
@@ -1816,6 +1829,49 @@ def main() -> int:
     ):
         print("baseline 凭据卫生证据包审计未通过")
         return 1
+    placeholder_rejection = json.loads(
+        (ROOT / "runs/placeholder_credential_rejection.json").read_text(encoding="utf-8")
+    )
+    placeholder_evidence = placeholder_rejection.get("evidence", {})
+    placeholder_leaks = placeholder_rejection.get("leak_flags", {})
+    placeholder_contacts = placeholder_rejection.get("contact_flags", {})
+    placeholder_cases = placeholder_rejection.get("cases", [])
+    if not all(
+        [
+            placeholder_rejection.get("kind") == "placeholder_credential_rejection",
+            placeholder_rejection.get("passed"),
+            placeholder_rejection.get("recommended_route") == "baseline_official_aloha",
+            placeholder_rejection.get("case_count") == 4,
+            len(placeholder_cases) == 4,
+            all(item.get("returncode") == 64 for item in placeholder_cases),
+            all(item.get("placeholder_rejected") is True for item in placeholder_cases),
+            all(item.get("expected_field_rejected") is True for item in placeholder_cases),
+            all(item.get("stops_before_dry_run") is True for item in placeholder_cases),
+            all(item.get("dry_run_called") is False for item in placeholder_cases),
+            all(item.get("robot_type_aloha") is False for item in placeholder_cases),
+            all(item.get("real_runner_started") is False for item in placeholder_cases),
+            all(item.get("printed_protected_values") is False for item in placeholder_cases),
+            placeholder_rejection.get("baseline_placeholder_rejected") is True,
+            placeholder_rejection.get("lora_placeholder_rejected") is True,
+            placeholder_rejection.get("baseline_stops_before_dry_run") is True,
+            placeholder_rejection.get("lora_stops_before_dry_run") is True,
+            placeholder_rejection.get("baseline_real_runner_not_started") is True,
+            placeholder_rejection.get("lora_real_runner_not_started") is True,
+            placeholder_rejection.get("placeholder_values_recorded") is False,
+            placeholder_rejection.get("safe_values_recorded") is False,
+            all(placeholder_evidence.values()),
+            not any(placeholder_leaks.values()),
+            not any(placeholder_contacts.values()),
+            placeholder_rejection.get("platform_contacted") is False,
+            placeholder_rejection.get("uploads_performed") is False,
+            placeholder_rejection.get("credentials_read") is False,
+            placeholder_rejection.get("credentials_printed") is False,
+            placeholder_rejection.get("link_values_printed") is False,
+            placeholder_rejection.get("secret_values_printed") is False,
+        ]
+    ):
+        print("占位符凭据拒绝审计未通过")
+        return 1
     baseline_local_env_smoke = json.loads((ROOT / "runs/baseline_local_env_smoke.json").read_text(encoding="utf-8"))
     local_env_smoke_evidence = baseline_local_env_smoke.get("evidence", {})
     local_env_smoke_leaks = baseline_local_env_smoke.get("leak_flags", {})
@@ -2098,6 +2154,7 @@ def main() -> int:
         "baseline_submission_quickstart",
         "baseline_dry_run_gate",
         "baseline_credential_hygiene",
+        "placeholder_credential_rejection",
         "baseline_local_env_smoke",
         "baseline_final_handoff_packet",
         "baseline_final_handoff_rehearsal",
@@ -2124,6 +2181,12 @@ def main() -> int:
             preflight.get("baseline_credential_hygiene_passed") is True,
             preflight.get("baseline_credential_hygiene_local_env_gitignored") is True,
             preflight.get("baseline_credential_hygiene_local_env_content_read") is False,
+            preflight.get("placeholder_credential_rejection_passed") is True,
+            preflight.get("placeholder_baseline_rejected_before_dry_run") is True,
+            preflight.get("placeholder_lora_rejected_before_dry_run") is True,
+            preflight.get("placeholder_baseline_real_runner_not_started") is True,
+            preflight.get("placeholder_lora_real_runner_not_started") is True,
+            preflight.get("placeholder_values_not_recorded") is True,
             preflight.get("baseline_local_env_smoke_passed") is True,
             preflight.get("baseline_local_env_smoke_authorized_preflight_variant_baseline") is True,
             preflight.get("baseline_local_env_smoke_ready_runner_stops_before_real_runner") is True,
@@ -2406,6 +2469,7 @@ def main() -> int:
     print("网页表单字段包审计已通过")
     print("提交路线拆分包审计已通过")
     print("baseline 最短提交路径包审计已通过")
+    print("占位符凭据拒绝审计已通过")
     print("路线感知阻塞摘要审计已通过")
     print("提交准备材料 manifest 审计已通过")
     print("真实提交前预检汇总已通过")

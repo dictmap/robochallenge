@@ -1,0 +1,209 @@
+{
+  "config_name": "cvpr_multitask_aloha_rtc",
+  "baseline": "/home/yjl/yjl/RoboChallenge/baseline_pi05_multitask",
+  "passed": true,
+  "direct_demo_checkpoint_ready": true,
+  "model": {
+    "paligemma_variant": "gemma_2b_lora",
+    "action_expert_variant": "gemma_300m_lora",
+    "pi05": true,
+    "ema_decay": null,
+    "expected_leaf_count": 73,
+    "trainable_filter_key_count": 53
+  },
+  "layout": {
+    "asset_id": "cvpr_multitask_aloha",
+    "use_quantile_norm": true,
+    "pi05_base_params": {
+      "path": "/home/yjl/.cache/openpi/openpi-assets/checkpoints/pi05_base",
+      "exists": true,
+      "params_dir_exists": true,
+      "params_metadata_exists": true,
+      "params_manifest_exists": true,
+      "params_array_metadata_exists": true,
+      "params_file_count": 20,
+      "checkpoint_metadata_exists": false,
+      "assets_dir_exists": true,
+      "asset_id": "cvpr_multitask_aloha",
+      "asset_norm_stats": "/home/yjl/.cache/openpi/openpi-assets/checkpoints/pi05_base/assets/cvpr_multitask_aloha/norm_stats.json",
+      "asset_norm_stats_exists": false
+    },
+    "official_aloha_checkpoint": {
+      "path": "/home/yjl/yjl/RoboChallenge/checkpoints/table30v2_multitask_baseline_aloha",
+      "exists": true,
+      "params_dir_exists": true,
+      "params_metadata_exists": true,
+      "params_manifest_exists": true,
+      "params_array_metadata_exists": true,
+      "params_file_count": 30,
+      "checkpoint_metadata_exists": true,
+      "assets_dir_exists": true,
+      "asset_id": "cvpr_multitask_aloha",
+      "asset_norm_stats": "/home/yjl/yjl/RoboChallenge/checkpoints/table30v2_multitask_baseline_aloha/assets/cvpr_multitask_aloha/norm_stats.json",
+      "asset_norm_stats_exists": true
+    },
+    "target_checkpoint": {
+      "path": "runs/openpi_rtc_lora_materialized_policy_checkpoint",
+      "safe_target_under_runs": true,
+      "git_ignore": {
+        "path": "runs/openpi_rtc_lora_materialized_policy_checkpoint/params/_METADATA",
+        "ignored": true,
+        "stdout": ".gitignore:20:runs/*checkpoint*/\truns/openpi_rtc_lora_materialized_policy_checkpoint/params/_METADATA",
+        "stderr": "",
+        "checkpoint_dir": "/home/yjl/robochallenge/repo/runs/openpi_rtc_lora_materialized_policy_checkpoint"
+      }
+    }
+  },
+  "scoped_checkpoint": {
+    "path": "runs/openpi_rtc_lora_grad_checkpoint/trainable_params_step1.npz",
+    "exists": true,
+    "leaf_count": 53,
+    "dtype_counts": {
+      "|V2": 31,
+      "float32": 22
+    },
+    "sample_leaves": [
+      {
+        "path": "PaliGemma/img/Transformer/encoder_norm/bias",
+        "shape": [
+          1152
+        ],
+        "dtype": "|V2"
+      },
+      {
+        "path": "PaliGemma/img/Transformer/encoder_norm/scale",
+        "shape": [
+          1152
+        ],
+        "dtype": "|V2"
+      },
+      {
+        "path": "PaliGemma/img/Transformer/encoderblock/LayerNorm_0/bias",
+        "shape": [
+          27,
+          1152
+        ],
+        "dtype": "|V2"
+      },
+      {
+        "path": "PaliGemma/img/Transformer/encoderblock/LayerNorm_0/scale",
+        "shape": [
+          27,
+          1152
+        ],
+        "dtype": "|V2"
+      },
+      {
+        "path": "PaliGemma/img/Transformer/encoderblock/LayerNorm_1/bias",
+        "shape": [
+          27,
+          1152
+        ],
+        "dtype": "|V2"
+      },
+      {
+        "path": "PaliGemma/img/Transformer/encoderblock/LayerNorm_1/scale",
+        "shape": [
+          27,
+          1152
+        ],
+        "dtype": "|V2"
+      },
+      {
+        "path": "PaliGemma/img/Transformer/encoderblock/MlpBlock_0/Dense_0/bias",
+        "shape": [
+          27,
+          4304
+        ],
+        "dtype": "|V2"
+      },
+      {
+        "path": "PaliGemma/img/Transformer/encoderblock/MlpBlock_0/Dense_0/kernel",
+        "shape": [
+          27,
+          1152,
+          4304
+        ],
+        "dtype": "|V2"
+      },
+      {
+        "path": "PaliGemma/img/Transformer/encoderblock/MlpBlock_0/Dense_1/bias",
+        "shape": [
+          27,
+          1152
+        ],
+        "dtype": "|V2"
+      },
+      {
+        "path": "PaliGemma/img/Transformer/encoderblock/MlpBlock_0/Dense_1/kernel",
+        "shape": [
+          27,
+          4304,
+          1152
+        ],
+        "dtype": "|V2"
+      },
+      {
+        "path": "PaliGemma/img/Transformer/encoderblock/MultiHeadDotProductAttention_0/key/bias",
+        "shape": [
+          27,
+          16,
+          72
+        ],
+        "dtype": "|V2"
+      },
+      {
+        "path": "PaliGemma/img/Transformer/encoderblock/MultiHeadDotProductAttention_0/key/kernel",
+        "shape": [
+          27,
+          1152,
+          16,
+          72
+        ],
+        "dtype": "|V2"
+      }
+    ],
+    "metadata_path": "runs/openpi_rtc_lora_grad_checkpoint/metadata.json",
+    "metadata_exists": true,
+    "metadata_kind": "scoped_trainable_checkpoint",
+    "metadata_scope": "cfg.trainable_filter"
+  },
+  "restore_audit": {
+    "passed": true,
+    "checkpoint_key_count": 53,
+    "trainable_filter_key_count": 53,
+    "placeholder_after_count": 0,
+    "tree_check_passed": true,
+    "state_replace_passed": true
+  },
+  "tiny_save_smoke": {
+    "attempted": true,
+    "smoke_dir": "runs/openpi_rtc_lora_checkpoint_layout_smoke",
+    "params_dir": "runs/openpi_rtc_lora_checkpoint_layout_smoke/params",
+    "passed": true,
+    "error": null,
+    "restored_shape": [
+      2,
+      3
+    ],
+    "restored_dtype": "float32",
+    "restored_sum": 15.0,
+    "metadata_exists": true,
+    "manifest_exists": true,
+    "array_metadata_exists": false
+  },
+  "materialize": {
+    "attempted": true,
+    "target_dir": "runs/openpi_rtc_lora_materialized_policy_checkpoint",
+    "safe_target_under_runs": true,
+    "passed": true,
+    "error": null,
+    "seconds": 16.42,
+    "params_metadata_exists": true,
+    "params_manifest_exists": true,
+    "asset_norm_stats_exists": true,
+    "restored_leaf_count": 73,
+    "restored_tree_check_passed": true,
+    "state_replace_passed": true
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "config_name": "cvpr_multitask_aloha_rtc",
+  "checkpoint_dir": "runs/openpi_rtc_lora_materialized_policy_checkpoint",
+  "asset_id": "cvpr_multitask_aloha",
+  "model": {
+    "paligemma_variant": "gemma_2b_lora",
+    "action_expert_variant": "gemma_300m_lora",
+    "pi05": true
+  },
+  "checkpoint_layout": {
+    "checkpoint_dir": "runs/openpi_rtc_lora_materialized_policy_checkpoint",
+    "exists": true,
+    "params_metadata_exists": true,
+    "params_checkpoint_metadata_exists": true,
+    "params_manifest_exists": true,
+    "asset_norm_stats_exists": true
+  },
+  "policy_load_smoke": {
+    "passed": true,
+    "seconds": 4.641,
+    "policy_type": "Policy",
+    "model_type": "Pi0",
+    "is_pytorch_model": false,
+    "metadata_keys": [],
+    "sample_kwargs_keys": []
+  },
+  "passed": true
+}

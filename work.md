@@ -538,3 +538,31 @@
 
 - P0：在用户确认允许写出大文件后，运行 `--materialize --force` 生成完整 LoRA 推理 checkpoint，并用 `create_trained_policy` 做恢复 smoke。
 - P1：如果不走 LoRA 物化路线，继续使用官方 Table30v2 ALOHA baseline checkpoint 作为当前可运行提交模板。
+## 2026-06-02 第十九轮：LoRA 完整 checkpoint 物化与 policy 加载 smoke
+
+### 已完成
+
+- 运行 `scripts/audit_openpi_rtc_lora_inference_checkpoint_layout.py --materialize --force`，把 `pi05_base + LoRA scoped trainable params` 物化为完整推理 checkpoint。
+- 完整 checkpoint 目录：`runs/openpi_rtc_lora_materialized_policy_checkpoint`，远端大小约 `12G`，仍被 `.gitignore` 的 `runs/*checkpoint*/` 排除。
+- 新增 `scripts/smoke_openpi_rtc_materialized_policy.py`，用 `openpi_rtc.policies.policy_config.create_trained_policy` 直接加载完整物化 checkpoint。
+- 更新提交包审计：`direct_demo_checkpoint_ready=true`，但真实网站提交仍需要 token/submission_id 和可访问 checkpoint link。
+- 生成 `reports/openpi_rtc_lora_inference_checkpoint_materialize.md`、`runs/openpi_rtc_lora_inference_checkpoint_materialize_status.json`、`reports/openpi_rtc_lora_materialized_policy_smoke.md` 和 `runs/openpi_rtc_lora_materialized_policy_smoke_status.json`。
+
+### 验证结果
+
+- checkpoint 物化：`passed=true`，`direct_demo_checkpoint_ready=true`。
+- 物化耗时：约 `20.842` 秒。
+- 物化后恢复 leaf：`73`。
+- `assets/cvpr_multitask_aloha/norm_stats.json` 存在。
+- `create_trained_policy` smoke：`passed=true`，policy 类型 `Policy`，模型类型 `Pi0`，加载耗时约 `4.831` 秒。
+
+### 当前边界
+
+- 本地 LoRA checkpoint 已经可以被 `create_trained_policy` 加载，但还没有上传为 RoboChallenge 网站可访问的 checkpoint link。
+- 真实提交仍需要用户提供 `ROBOCHALLENGE_USER_TOKEN` 和 `ROBOCHALLENGE_SUBMISSION_ID`。
+- 当前可运行链路仍是 Table30v2 ALOHA；如果目标切回原始 Table30，需要另补数据和配置入口。
+
+### 下一步
+
+- P0：准备 LoRA checkpoint 的上传/链接方案，或在用户给出凭据后用官方 baseline/LoRA 本地 checkpoint 分别跑真实提交入口。
+- P1：补一个不联网的 `demo.py --checkpoint runs/openpi_rtc_lora_materialized_policy_checkpoint` 参数模板，避免提交时手工改路径。

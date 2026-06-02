@@ -116,3 +116,9 @@
 1. 如果允许写出大文件，运行 `--materialize --force` 生成完整 LoRA 推理 checkpoint，并用 `create_trained_policy` 做加载 smoke。
 2. 如果暂不写大文件，继续以官方 Table30v2 ALOHA baseline checkpoint 作为当前可运行提交模板。
 3. 真实 RoboChallenge 提交仍等待 `ROBOCHALLENGE_USER_TOKEN` 和 `ROBOCHALLENGE_SUBMISSION_ID`。
+## 2026-06-02 LoRA 完整 checkpoint 物化更新
+
+- 已在 Linux 远端生成完整 LoRA 推理 checkpoint：`runs/openpi_rtc_lora_materialized_policy_checkpoint`，大小约 `12G`，该目录被 `.gitignore` 排除。
+- 物化状态：`runs/openpi_rtc_lora_inference_checkpoint_materialize_status.json`，`passed=true`，`direct_demo_checkpoint_ready=true`。
+- `create_trained_policy` 加载 smoke：`runs/openpi_rtc_lora_materialized_policy_smoke_status.json`，`passed=true`，policy 类型 `Policy`，模型类型 `Pi0`。
+- 提交包审计已更新：LoRA checkpoint 本地已可被 `demo.py/create_trained_policy` 消费；真实网站提交仍需要 `ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID` 和可访问的 checkpoint link。

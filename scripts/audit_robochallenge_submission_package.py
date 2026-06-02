@@ -186,6 +186,50 @@ def write_report(status: dict[str, Any], report_path: Path) -> None:
         "",
         f"- 审计状态：`passed={status['passed']}`。",
         f"- 当前可运行目标：`Table30v2 / {selected['robot_type']} / {selected['task_name']}`。",
+        "- 官方 Table30v2 ALOHA baseline 仍是最稳的提交模板。",
+        f"- LoRA 完整物化 checkpoint 本地可读：`{restore['direct_demo_checkpoint_ready']}`。",
+        "- 真实提交仍不能伪造 token、submission_id 或 checkpoint link。",
+        "",
+        "## 已准备材料",
+        "",
+        f"- 提交 manifest 模板：`{status['outputs']['manifest']}`。",
+        f"- 启动脚本模板：`{status['outputs']['runner']}`。",
+        f"- submission 目录说明：`{status['outputs']['readme']}`。",
+        f"- `demo.py` 必需参数覆盖：`{entry['required_args_present']}`。",
+        f"- mock 验证：`passed={status['evidence']['mock_smoke_passed']}`。",
+        f"- Table30v2 ALOHA 映射：`ready={status['evidence']['table30v2_mapping_ready']}`。",
+        f"- LoRA restore 审计：`passed={restore['restore_audit_passed']}`，合并后占位 leaf `{restore['placeholder_after_count']}`。",
+        f"- LoRA 完整 checkpoint：`{restore['materialized_checkpoint']}`，本地存在 `{restore['materialized_checkpoint_exists']}`，Git 忽略 `{restore['materialized_checkpoint_git_ignored']}`。",
+        f"- LoRA policy 加载 smoke：`passed={restore['policy_smoke_passed']}`，模型类型 `{restore['policy_smoke_model_type']}`。",
+        "",
+        "## 提交时需要用户提供",
+        "",
+        "- `ROBOCHALLENGE_USER_TOKEN`：用户登录后获得，不能写入仓库。",
+        "- `ROBOCHALLENGE_SUBMISSION_ID`：在网站提交详情页获得，不能伪造。",
+        "- 如果提交 LoRA 版本，还需要把本地 12GB+ checkpoint 放到网站可访问的 checkpoint link。",
+        "- 如果目标切回原始 Table30，需要重新补齐对应数据和配置；当前可运行链路是 Table30v2 ALOHA。",
+        "",
+        "## 建议填入网站的链接位",
+        "",
+        "- `Inference Code Link`：`https://github.com/dictmap/robochallenge/tree/main`。",
+        "- `Fine-tuning Code Link`：同仓库中的 `scripts/`、`notebooks/`、`reports/`。",
+        "- `Checkpoint Link`：baseline 可指向官方 ALOHA checkpoint；LoRA 版本需要上传本地物化 checkpoint 后填可访问链接。",
+        "",
+        "## Blocking",
+        "",
+    ]
+    for item in status["blocking"]:
+        lines.append(f"- {item}")
+    report_path.parent.mkdir(parents=True, exist_ok=True)
+    report_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return
+    lines = [
+        "# RoboChallenge 提交包清单",
+        "",
+        "## 结论",
+        "",
+        f"- 审计状态：`passed={status['passed']}`。",
+        f"- 当前可运行目标：`Table30v2 / {selected['robot_type']} / {selected['task_name']}`。",
         "- 当前最小提交模板走官方 pi0.5 Table30v2 ALOHA baseline；不会伪造网站 token 或 submission_id。",
         "- LoRA scoped checkpoint 已完成恢复/合并审计，但仍不是完整 policy checkpoint，不能单独给 `demo.py --checkpoint` 使用。",
         "",
@@ -228,6 +272,8 @@ def main() -> int:
     mock_smoke = read_json(RUNS_DIR / "policy_smoke_aloha_status.json", {})
     restore = read_json(RUNS_DIR / "openpi_rtc_lora_checkpoint_restore_audit.json", {})
     lora_grad = read_json(RUNS_DIR / "openpi_rtc_lora_numeric_grad_reduced_status.json", {})
+    materialize = read_json(RUNS_DIR / "openpi_rtc_lora_inference_checkpoint_materialize_status.json", {})
+    policy_smoke = read_json(RUNS_DIR / "openpi_rtc_lora_materialized_policy_smoke_status.json", {})
 
     selected_target = {
         "benchmark": "Table30v2",
@@ -252,7 +298,18 @@ def main() -> int:
     required_args_present = {name: has_arg(demo_source, name) for name in required_args}
     scoped_npz = ROOT / "runs/openpi_rtc_lora_grad_checkpoint/trainable_params_step1.npz"
     checkpoint_ignore = git_check_ignore(scoped_npz)
+    materialized_checkpoint = ROOT / "runs/openpi_rtc_lora_materialized_policy_checkpoint"
+    materialized_checkpoint_ignore = git_check_ignore(materialized_checkpoint / "params/_METADATA")
     merge = restore.get("merge_audit", {})
+    materialize_result = materialize.get("materialize", {})
+    policy_load = policy_smoke.get("policy_load_smoke", {})
+    materialized_ready = bool(
+        materialize.get("passed")
+        and materialize.get("direct_demo_checkpoint_ready")
+        and materialize_result.get("passed")
+        and policy_smoke.get("passed")
+        and policy_load.get("passed")
+    )
 
     status: dict[str, Any] = {
         "passed": False,
@@ -286,7 +343,15 @@ def main() -> int:
             "trainable_filter_key_count": merge.get("trainable_filter_key_count"),
             "placeholder_after_count": merge.get("placeholder_after_count"),
             "lora_grad_passed": bool(lora_grad.get("passed")),
-            "direct_demo_checkpoint_ready": False,
+            "materialized_checkpoint": "runs/openpi_rtc_lora_materialized_policy_checkpoint",
+            "materialized_checkpoint_exists": materialized_checkpoint.exists(),
+            "materialized_checkpoint_git_ignored": materialized_checkpoint_ignore["ignored"],
+            "materialize_passed": bool(materialize.get("passed") and materialize_result.get("passed")),
+            "materialized_restored_leaf_count": materialize_result.get("restored_leaf_count"),
+            "policy_smoke_passed": bool(policy_smoke.get("passed") and policy_load.get("passed")),
+            "policy_smoke_model_type": policy_load.get("model_type"),
+            "direct_demo_checkpoint_ready": materialized_ready,
+            "direct_demo_checkpoint_note_v2": "LoRA checkpoint 已本地物化为 demo.py/create_trained_policy 可读的完整 policy checkpoint；真实网站提交仍需要用户提供 token/submission_id 和可访问 checkpoint link。",
             "direct_demo_checkpoint_note": "scoped checkpoint 不是完整 checkpoint；demo.py 当前可直接使用的是官方 ALOHA baseline checkpoint。",
         },
         "outputs": {
@@ -303,6 +368,11 @@ def main() -> int:
         ],
     }
 
+    status["model_restore_materials"]["direct_demo_checkpoint_note"] = status["model_restore_materials"][
+        "direct_demo_checkpoint_note_v2"
+    ]
+    status["blocking"][-1] = "若要提交 LoRA 版本，还需要把本地 12GB+ checkpoint 放到网站可访问的 checkpoint link。"
+
     status["passed"] = all(
         [
             status["entrypoint_audit"]["demo_py_exists"],
@@ -317,6 +387,11 @@ def main() -> int:
             status["model_restore_materials"]["scoped_checkpoint_git_ignored"],
             status["model_restore_materials"]["restore_audit_passed"],
             status["model_restore_materials"]["placeholder_after_count"] == 0,
+            status["model_restore_materials"]["materialized_checkpoint_exists"],
+            status["model_restore_materials"]["materialized_checkpoint_git_ignored"],
+            status["model_restore_materials"]["materialize_passed"],
+            status["model_restore_materials"]["policy_smoke_passed"],
+            status["model_restore_materials"]["direct_demo_checkpoint_ready"],
         ]
     )
 

@@ -36,6 +36,8 @@ REQUIRED = [
     "reports/openpi_rtc_lora_numeric_grad_reduced.md",
     "reports/openpi_rtc_lora_checkpoint_restore_audit.md",
     "reports/openpi_rtc_lora_inference_checkpoint_layout.md",
+    "reports/openpi_rtc_lora_inference_checkpoint_materialize.md",
+    "reports/openpi_rtc_lora_materialized_policy_smoke.md",
     "reports/robochallenge_submission_package_checklist.md",
     "runs/pi05_base_probe_status.json",
     "runs/pi06_pi07_public_audit.json",
@@ -55,6 +57,8 @@ REQUIRED = [
     "runs/openpi_rtc_lora_numeric_grad_reduced_status.json",
     "runs/openpi_rtc_lora_checkpoint_restore_audit.json",
     "runs/openpi_rtc_lora_inference_checkpoint_layout_audit.json",
+    "runs/openpi_rtc_lora_inference_checkpoint_materialize_status.json",
+    "runs/openpi_rtc_lora_materialized_policy_smoke_status.json",
     "runs/robochallenge_submission_package_audit.json",
     "submission/README.md",
     "submission/submission_manifest_template.json",
@@ -69,6 +73,7 @@ REQUIRED = [
     "scripts/audit_openpi_rtc_lora_path.py",
     "scripts/audit_openpi_rtc_lora_checkpoint_restore.py",
     "scripts/audit_openpi_rtc_lora_inference_checkpoint_layout.py",
+    "scripts/smoke_openpi_rtc_materialized_policy.py",
     "scripts/audit_robochallenge_submission_package.py",
 ]
 
@@ -445,6 +450,54 @@ def main() -> int:
     ):
         print("openpi_rtc LoRA 推理 checkpoint 物化布局审计未通过")
         return 1
+    lora_materialize = json.loads(
+        (ROOT / "runs/openpi_rtc_lora_inference_checkpoint_materialize_status.json").read_text(encoding="utf-8")
+    )
+    lora_materialize_result = lora_materialize.get("materialize", {})
+    lora_materialize_target = lora_materialize.get("layout", {}).get("target_checkpoint", {})
+    if not all(
+        [
+            lora_materialize.get("passed"),
+            lora_materialize.get("direct_demo_checkpoint_ready") is True,
+            lora_materialize.get("model", {}).get("paligemma_variant") == "gemma_2b_lora",
+            lora_materialize.get("model", {}).get("action_expert_variant") == "gemma_300m_lora",
+            lora_materialize.get("model", {}).get("pi05") is True,
+            lora_materialize_target.get("git_ignore", {}).get("ignored"),
+            lora_materialize_result.get("attempted"),
+            lora_materialize_result.get("passed"),
+            lora_materialize_result.get("safe_target_under_runs"),
+            lora_materialize_result.get("asset_norm_stats_exists"),
+            lora_materialize_result.get("restored_leaf_count") == 73,
+            lora_materialize_result.get("restored_tree_check_passed"),
+            lora_materialize_result.get("state_replace_passed"),
+        ]
+    ):
+        print("openpi_rtc LoRA 完整推理 checkpoint 物化未通过")
+        return 1
+    lora_policy_smoke = json.loads(
+        (ROOT / "runs/openpi_rtc_lora_materialized_policy_smoke_status.json").read_text(encoding="utf-8")
+    )
+    lora_policy_layout = lora_policy_smoke.get("checkpoint_layout", {})
+    lora_policy_load = lora_policy_smoke.get("policy_load_smoke", {})
+    if not all(
+        [
+            lora_policy_smoke.get("passed"),
+            lora_policy_smoke.get("checkpoint_dir") == "runs/openpi_rtc_lora_materialized_policy_checkpoint",
+            lora_policy_smoke.get("asset_id") == "cvpr_multitask_aloha",
+            lora_policy_smoke.get("model", {}).get("paligemma_variant") == "gemma_2b_lora",
+            lora_policy_smoke.get("model", {}).get("action_expert_variant") == "gemma_300m_lora",
+            lora_policy_smoke.get("model", {}).get("pi05") is True,
+            lora_policy_layout.get("params_metadata_exists"),
+            lora_policy_layout.get("params_manifest_exists"),
+            lora_policy_layout.get("asset_norm_stats_exists"),
+            lora_policy_load.get("passed"),
+            lora_policy_load.get("policy_type") == "Policy",
+            lora_policy_load.get("model_type") == "Pi0",
+            lora_policy_load.get("is_pytorch_model") is False,
+        ]
+    ):
+        print("openpi_rtc LoRA 完整物化 policy 加载 smoke 未通过")
+        return 1
     if not all(
         [
             lora_grad.get("mode") == "lora_grad",
@@ -503,7 +556,13 @@ def main() -> int:
             submission_restore.get("scoped_checkpoint_git_ignored"),
             submission_restore.get("restore_audit_passed"),
             submission_restore.get("placeholder_after_count") == 0,
-            submission_restore.get("direct_demo_checkpoint_ready") is False,
+            submission_restore.get("materialized_checkpoint_exists"),
+            submission_restore.get("materialized_checkpoint_git_ignored"),
+            submission_restore.get("materialize_passed"),
+            submission_restore.get("materialized_restored_leaf_count") == 73,
+            submission_restore.get("policy_smoke_passed"),
+            submission_restore.get("policy_smoke_model_type") == "Pi0",
+            submission_restore.get("direct_demo_checkpoint_ready") is True,
             submission_outputs.get("manifest") == "submission/submission_manifest_template.json",
             submission_outputs.get("runner") == "submission/run_table30v2_aloha_demo_template.sh",
             submission_manifest.get("status") == "template_pending_credentials",
@@ -533,6 +592,8 @@ def main() -> int:
     print("openpi_rtc LoRA scoped checkpoint restore/merge audit 已通过")
     print("RoboChallenge submission package checklist/template audit 已通过")
     print("openpi_rtc LoRA 推理 checkpoint 物化布局审计已通过")
+    print("openpi_rtc LoRA 完整推理 checkpoint 物化已通过")
+    print("openpi_rtc LoRA 完整物化 policy 加载 smoke 已通过")
     return 0
 
 

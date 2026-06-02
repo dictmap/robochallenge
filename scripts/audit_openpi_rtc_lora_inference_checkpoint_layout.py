@@ -329,6 +329,12 @@ def write_report(status: dict[str, Any], report_path: Path) -> None:
     layout = status["layout"]
     target = layout["target_checkpoint"]
     materialize = status["materialize"]
+    if materialize.get("attempted") and materialize.get("passed"):
+        materialize_summary = "本次已显式写出完整 12GB+ checkpoint，并完成恢复 smoke。"
+        materialize_next = "如需重建完整 checkpoint，可重新运行 `python3 scripts/audit_openpi_rtc_lora_inference_checkpoint_layout.py --materialize --force`。"
+    else:
+        materialize_summary = "当前默认只完成目录形态、源材料和 tiny Orbax 写入/读取 smoke；没有自动写出 12GB+ 完整权重目录。"
+        materialize_next = "如需物化完整 checkpoint，需要显式运行 `python3 scripts/audit_openpi_rtc_lora_inference_checkpoint_layout.py --materialize --force`。"
     lines = [
         "# openpi_rtc LoRA 推理 checkpoint 物化审计",
         "",
@@ -336,8 +342,8 @@ def write_report(status: dict[str, Any], report_path: Path) -> None:
         "",
         f"- 审计状态：`passed={status['passed']}`。",
         f"- 当前是否已有 `demo.py --checkpoint` 可直接消费的 LoRA 完整 checkpoint：`{status['direct_demo_checkpoint_ready']}`。",
-        f"- 当前默认只完成目录形态、源材料和 tiny Orbax 写入/读取 smoke；没有自动写出 12GB+ 完整权重目录。",
-        f"- 如需物化完整 checkpoint，需要显式运行 `python3 scripts/audit_openpi_rtc_lora_inference_checkpoint_layout.py --materialize --force`。",
+        f"- {materialize_summary}",
+        f"- {materialize_next}",
         "",
         "## 已确认的推理 checkpoint 目录形态",
         "",

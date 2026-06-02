@@ -44,8 +44,16 @@
     "trainable_filter_key_count": 53,
     "placeholder_after_count": 0,
     "lora_grad_passed": true,
-    "direct_demo_checkpoint_ready": false,
-    "direct_demo_checkpoint_note": "scoped checkpoint 不是完整 checkpoint；demo.py 当前可直接使用的是官方 ALOHA baseline checkpoint。"
+    "materialized_checkpoint": "runs/openpi_rtc_lora_materialized_policy_checkpoint",
+    "materialized_checkpoint_exists": true,
+    "materialized_checkpoint_git_ignored": true,
+    "materialize_passed": true,
+    "materialized_restored_leaf_count": 73,
+    "policy_smoke_passed": true,
+    "policy_smoke_model_type": "Pi0",
+    "direct_demo_checkpoint_ready": true,
+    "direct_demo_checkpoint_note_v2": "LoRA checkpoint 已本地物化为 demo.py/create_trained_policy 可读的完整 policy checkpoint；真实网站提交仍需要用户提供 token/submission_id 和可访问 checkpoint link。",
+    "direct_demo_checkpoint_note": "LoRA checkpoint 已本地物化为 demo.py/create_trained_policy 可读的完整 policy checkpoint；真实网站提交仍需要用户提供 token/submission_id 和可访问 checkpoint link。"
   },
   "evidence_files": {
     "mock_smoke": "runs/policy_smoke_aloha_status.json",
@@ -63,6 +71,6 @@
     "需要用户提供真实 ROBOCHALLENGE_USER_TOKEN。",
     "需要用户提供真实 ROBOCHALLENGE_SUBMISSION_ID。",
     "需要确认本次要提交的是 Table30v2 ALOHA 还是原始 Table30；当前可运行链路是 Table30v2 ALOHA。",
-    "若要提交 LoRA scoped 路线，还需要把 scoped params 打包成 demo.py 可直接恢复的完整 policy 入口。"
+    "若要提交 LoRA 版本，还需要把本地 12GB+ checkpoint 放到网站可访问的 checkpoint link。"
   ]
 }

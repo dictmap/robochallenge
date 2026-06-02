@@ -2,6 +2,7 @@
 
 ## 结论
 
+- 审计时间：`2026-06-02T20:40:29.655802Z`。
 - 目前没有找到可直接复现的公开 `pi0.6` 或 `pi0.7` OpenPI checkpoint/config。
 - 本地 OpenPI 仓库没有 `pi06/pi07/pi0.6/pi0.7` 训练或推理配置命中。
 - `openpi-assets` 公共 bucket 常见 `pi06/pi07` 前缀对象数均为 0。
@@ -14,6 +15,9 @@
 - 命中数：`0`。
 
 ## 公共 GCS checkpoint 前缀
+
+- 检查前缀数：`10`。
+- 公开 checkpoint 是否命中：`False`。
 
 | prefix | object_count |
 | --- | ---: |
@@ -41,3 +45,8 @@
 - 当前可执行路线仍是：`pi05_base` -> Table30/Table30v2 数据适配 -> 任务 finetune/eval -> 官方提交入口。
 - `pi*0.6` 可借鉴 RECAP 思路做后续优化，但需要奖励/成功标签、失败轨迹、干预数据或离线 RL 实现；不是一键换 checkpoint。
 - `pi0.7` 可借鉴 steerable prompt、subtask、visual subgoal 和 metadata conditioning 思路；没有公开权重时不能声称复现模型本体。
+
+## 边界
+
+- 本审计只访问公开 OpenPI/GCS 资料，不接触 RoboChallenge 提交平台。
+- 本审计不读取 token、submission id 或 checkpoint link，不上传、不下载 checkpoint 权重。

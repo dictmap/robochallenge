@@ -217,6 +217,33 @@ def main() -> int:
     if pi06_pi07_status.get("public_checkpoint_found"):
         print("pi0.6/pi0.7 发现公开 checkpoint，请更新复现路线")
         return 1
+    if not all(
+        [
+            pi06_pi07_status.get("kind") == "pi06_pi07_public_release_audit",
+            pi06_pi07_status.get("passed") is True,
+            isinstance(pi06_pi07_status.get("checked_at_utc"), str),
+            pi06_pi07_status.get("checked_at_utc", "").endswith("Z"),
+            pi06_pi07_status.get("official_source_count", 0) >= 5,
+            pi06_pi07_status.get("gcs_prefix_count") == len(pi06_pi07_status.get("gcs_prefixes", [])),
+            pi06_pi07_status.get("gcs_prefix_count", 0) >= 10,
+            pi06_pi07_status.get("gcs_all_zero") is True,
+            all(item.get("object_count") == 0 for item in pi06_pi07_status.get("gcs_prefixes", [])),
+            pi06_pi07_status.get("openpi_scan", {}).get("scanned_files", 0) > 0,
+            pi06_pi07_status.get("openpi_target_match_count")
+            == len(pi06_pi07_status.get("openpi_scan", {}).get("matches", [])),
+            pi06_pi07_status.get("openpi_target_match_count") == 0,
+            pi06_pi07_status.get("public_sources_contacted") is True,
+            pi06_pi07_status.get("platform_contacted") is False,
+            pi06_pi07_status.get("robochallenge_platform_contacted") is False,
+            pi06_pi07_status.get("uploads_performed") is False,
+            pi06_pi07_status.get("credentials_read") is False,
+            pi06_pi07_status.get("credentials_printed") is False,
+            pi06_pi07_status.get("link_values_printed") is False,
+            pi06_pi07_status.get("secret_values_printed") is False,
+        ]
+    ):
+        print("pi0.6/pi0.7 公开 checkpoint 审计元数据或边界校验未通过")
+        return 1
     mapping_status = json.loads((ROOT / "runs/table30v2_aloha_mapping_audit.json").read_text(encoding="utf-8"))
     if not mapping_status.get("ready_for_dry_run_converter"):
         print("Table30v2 ALOHA 映射尚未满足 dry-run converter 条件")

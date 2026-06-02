@@ -1,4 +1,7 @@
 {
+  "kind": "pi06_pi07_public_release_audit",
+  "checked_at_utc": "2026-06-02T20:40:29.655802Z",
+  "passed": true,
   "official_sources": [
     {
       "name": "Physical-Intelligence/openpi",
@@ -26,11 +29,13 @@
       "note": "社区讨论 pi0.6 star 是否可从 pi0.5 checkpoint 实现的公开 issue。"
     }
   ],
+  "official_source_count": 5,
   "openpi_scan": {
     "root": "/home/yjl/robochallenge/openpi",
     "scanned_files": 113,
     "matches": []
   },
+  "openpi_target_match_count": 0,
   "gcs_prefixes": [
     {
       "prefix": "checkpoints/pi06",
@@ -83,5 +88,15 @@
       "sample": []
     }
   ],
-  "public_checkpoint_found": false
+  "gcs_prefix_count": 10,
+  "gcs_all_zero": true,
+  "public_checkpoint_found": false,
+  "public_sources_contacted": true,
+  "platform_contacted": false,
+  "robochallenge_platform_contacted": false,
+  "uploads_performed": false,
+  "credentials_read": false,
+  "credentials_printed": false,
+  "link_values_printed": false,
+  "secret_values_printed": false
 }

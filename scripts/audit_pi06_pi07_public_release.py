@@ -9,6 +9,7 @@ from pathlib import Path
 import re
 import urllib.parse
 import urllib.request
+from datetime import datetime, timezone
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -121,6 +122,7 @@ def write_report(status: dict) -> None:
         "",
         "## 结论",
         "",
+        f"- 审计时间：`{status['checked_at_utc']}`。",
         "- 目前没有找到可直接复现的公开 `pi0.6` 或 `pi0.7` OpenPI checkpoint/config。",
         "- 本地 OpenPI 仓库没有 `pi06/pi07/pi0.6/pi0.7` 训练或推理配置命中。",
         "- `openpi-assets` 公共 bucket 常见 `pi06/pi07` 前缀对象数均为 0。",
@@ -133,6 +135,9 @@ def write_report(status: dict) -> None:
         f"- 命中数：`{len(status['openpi_scan']['matches'])}`。",
         "",
         "## 公共 GCS checkpoint 前缀",
+        "",
+        f"- 检查前缀数：`{status['gcs_prefix_count']}`。",
+        f"- 公开 checkpoint 是否命中：`{status['public_checkpoint_found']}`。",
         "",
         "| prefix | object_count |",
         "| --- | ---: |",
@@ -150,6 +155,11 @@ def write_report(status: dict) -> None:
             "- 当前可执行路线仍是：`pi05_base` -> Table30/Table30v2 数据适配 -> 任务 finetune/eval -> 官方提交入口。",
             "- `pi*0.6` 可借鉴 RECAP 思路做后续优化，但需要奖励/成功标签、失败轨迹、干预数据或离线 RL 实现；不是一键换 checkpoint。",
             "- `pi0.7` 可借鉴 steerable prompt、subtask、visual subgoal 和 metadata conditioning 思路；没有公开权重时不能声称复现模型本体。",
+            "",
+            "## 边界",
+            "",
+            "- 本审计只访问公开 OpenPI/GCS 资料，不接触 RoboChallenge 提交平台。",
+            "- 本审计不读取 token、submission id 或 checkpoint link，不上传、不下载 checkpoint 权重。",
             "",
         ]
     )
@@ -172,16 +182,35 @@ def main() -> int:
             )
         except Exception as exc:  # noqa: BLE001 - status should preserve external errors.
             gcs_results.append({"prefix": prefix, "error": f"{type(exc).__name__}: {exc}", "object_count": None})
+    public_checkpoint_found = any((item.get("object_count") or 0) > 0 for item in gcs_results)
+    openpi_scan = scan_openpi()
+    gcs_all_zero = all(item.get("object_count") == 0 for item in gcs_results)
+    openpi_match_count = len(openpi_scan["matches"])
     status = {
+        "kind": "pi06_pi07_public_release_audit",
+        "checked_at_utc": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+        "passed": (not public_checkpoint_found) and gcs_all_zero and openpi_match_count == 0,
         "official_sources": OFFICIAL_SOURCES,
-        "openpi_scan": scan_openpi(),
+        "official_source_count": len(OFFICIAL_SOURCES),
+        "openpi_scan": openpi_scan,
+        "openpi_target_match_count": openpi_match_count,
         "gcs_prefixes": gcs_results,
-        "public_checkpoint_found": any((item.get("object_count") or 0) > 0 for item in gcs_results),
+        "gcs_prefix_count": len(gcs_results),
+        "gcs_all_zero": gcs_all_zero,
+        "public_checkpoint_found": public_checkpoint_found,
+        "public_sources_contacted": True,
+        "platform_contacted": False,
+        "robochallenge_platform_contacted": False,
+        "uploads_performed": False,
+        "credentials_read": False,
+        "credentials_printed": False,
+        "link_values_printed": False,
+        "secret_values_printed": False,
     }
     STATUS_PATH.write_text(json.dumps(status, ensure_ascii=False, indent=2), encoding="utf-8")
     write_report(status)
     print(json.dumps(status, ensure_ascii=False, indent=2))
-    return 1 if status["public_checkpoint_found"] else 0
+    return 0 if status["passed"] else 1
 
 
 if __name__ == "__main__":

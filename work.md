@@ -1875,3 +1875,30 @@
 
 - P0：同步本轮 rehearsal 产物、GUI 截图和工作记录，提交并推送。
 - P1：用户提供 token/submission id 且明确授权后，先按 rehearsal 已验证的前三条 no-contact 命令跑 baseline 授权预检；第四条真实 runner 强确认命令必须继续等待用户明确允许真实提交。
+
+## 2026-06-03 第六十六轮：pi0.6 / pi0.7 公开复现性审计元数据加固
+
+### 已完成
+
+- 更新 `scripts/audit_pi06_pi07_public_release.py`，给 pi0.6/pi0.7 公开复现性审计补齐 `kind`、`passed`、`checked_at_utc`、`gcs_prefix_count`、`official_source_count`、`openpi_target_match_count` 和 no-contact/no-secret 边界字段。
+- 更新 `reports/pi06_pi07_public_release_audit.md`，在报告中写入审计时间、GCS 前缀数量、公开 checkpoint 命中状态和边界说明。
+- 更新 `scripts/validate_repro_workspace.py`，把 pi0.6/pi0.7 的元数据、时间戳、公开 GCS 前缀全 0、本地 OpenPI 扫描无命中、未接触 RoboChallenge 平台、未上传、未读取凭据等条件纳入硬性校验。
+- 重新生成 `runs/pi06_pi07_public_audit.json`、`reports/pi06_pi07_public_release_audit.md`、`runs/submission_artifact_manifest.json`、`reports/submission_artifact_manifest.md` 和 `reports/submission_status_dashboard.html`。
+
+### 验证结果
+
+- Linux 端 `python3 scripts/audit_pi06_pi07_public_release.py` 已通过：`checked_at_utc=2026-06-02T20:40:29.655802Z`、`passed=true`、`public_checkpoint_found=false`、`gcs_prefix_count=10`、`gcs_all_zero=true`。
+- 本地 OpenPI 扫描结果：`scanned_files=113`、`openpi_target_match_count=0`，没有发现 `pi06/pi07/pi0.6/pi0.7` 可直接复现配置。
+- 公开 `openpi-assets` bucket 的 10 个常见 pi0.6/pi0.7 前缀对象数仍全部为 0。
+- Linux 端 `audit_plaintext_secrets.py`、`audit_submission_artifact_manifest.py`、`render_submission_status_dashboard.py`、`validate_repro_workspace.py` 和 `git diff --check` 均通过。
+- 本轮只访问公开 OpenPI/GCS 资料；没有连接 RoboChallenge 提交平台，没有读取真实 token/submission id/checkpoint link，没有上传或下载 checkpoint 权重。
+
+### 当前边界
+
+- pi0.6/pi0.7 仍只能作为论文/博客层面的方法参考；没有公开 checkpoint 时，不能声称复现模型本体。
+- 比赛提交的可执行主线仍是 pi0.5 基模与官方 Table30v2 ALOHA baseline；真实提交继续等待用户凭据和授权。
+
+### 下一步
+
+- P0：提交并推送本轮 pi0.6/pi0.7 公开复现性审计元数据加固。
+- P1：继续围绕 baseline 凭据到位后的授权预检链做防误操作证据；真实 runner 仍不得在没有用户明确授权时执行。

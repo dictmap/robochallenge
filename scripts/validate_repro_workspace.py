@@ -70,6 +70,7 @@ REQUIRED = [
     "reports/local_env_permission_contract.md",
     "reports/local_env_runtime_permission_gate.md",
     "reports/placeholder_credential_rejection.md",
+    "reports/credential_whitespace_guard.md",
     "reports/synthetic_dry_run_redaction.md",
     "reports/shell_xtrace_secret_guard.md",
     "reports/baseline_local_env_smoke.md",
@@ -132,6 +133,7 @@ REQUIRED = [
     "runs/local_env_permission_contract.json",
     "runs/local_env_runtime_permission_gate.json",
     "runs/placeholder_credential_rejection.json",
+    "runs/credential_whitespace_guard.json",
     "runs/synthetic_dry_run_redaction.json",
     "runs/shell_xtrace_secret_guard.json",
     "runs/baseline_local_env_smoke.json",
@@ -195,6 +197,7 @@ REQUIRED = [
     "scripts/audit_local_env_permission_contract.py",
     "scripts/audit_local_env_runtime_permission_gate.py",
     "scripts/audit_placeholder_credential_rejection.py",
+    "scripts/audit_credential_whitespace_guard.py",
     "scripts/audit_synthetic_dry_run_redaction.py",
     "scripts/audit_shell_xtrace_secret_guard.py",
     "scripts/render_baseline_local_env_smoke.py",
@@ -979,6 +982,14 @@ def main() -> int:
             dashboard.get("placeholder_values_not_recorded") is True,
             dashboard.get("placeholder_credentials_no_contact") is True,
             dashboard.get("placeholder_credentials_no_leak") is True,
+            dashboard.get("credential_whitespace_guard_passed") is True,
+            dashboard.get("credential_whitespace_case_count") == 6,
+            dashboard.get("credential_whitespace_bad_rejected") is True,
+            dashboard.get("credential_whitespace_clean_dry_run_passed") is True,
+            dashboard.get("credential_whitespace_real_runner_not_started") is True,
+            dashboard.get("credential_whitespace_values_not_recorded") is True,
+            dashboard.get("credential_whitespace_no_contact") is True,
+            dashboard.get("credential_whitespace_no_leak") is True,
             dashboard.get("synthetic_dry_run_redaction_passed") is True,
             dashboard.get("synthetic_dry_run_redaction_case_count") == 2,
             dashboard.get("synthetic_dry_run_baseline_passed") is True,
@@ -2013,6 +2024,57 @@ def main() -> int:
     ):
         print("占位符凭据拒绝审计未通过")
         return 1
+    credential_whitespace = json.loads(
+        (ROOT / "runs/credential_whitespace_guard.json").read_text(encoding="utf-8")
+    )
+    credential_whitespace_evidence = credential_whitespace.get("evidence", {})
+    credential_whitespace_leaks = credential_whitespace.get("leak_flags", {})
+    credential_whitespace_contacts = credential_whitespace.get("contact_flags", {})
+    credential_whitespace_cases = {item.get("name"): item for item in credential_whitespace.get("cases", [])}
+    bad_whitespace_cases = [
+        item
+        for item in credential_whitespace_cases.values()
+        if item.get("name") not in {"baseline_clean_credentials", "lora_clean_credentials"}
+    ]
+    clean_whitespace_cases = [
+        credential_whitespace_cases.get("baseline_clean_credentials", {}),
+        credential_whitespace_cases.get("lora_clean_credentials", {}),
+    ]
+    if not all(
+        [
+            credential_whitespace.get("kind") == "credential_whitespace_guard",
+            credential_whitespace.get("passed"),
+            credential_whitespace.get("recommended_route") == "baseline_official_aloha",
+            credential_whitespace.get("case_count") == 6,
+            credential_whitespace.get("bad_case_count") == 4,
+            credential_whitespace.get("good_case_count") == 2,
+            len(credential_whitespace_cases) == 6,
+            credential_whitespace.get("bad_credentials_rejected") is True,
+            credential_whitespace.get("clean_credentials_dry_run_passed") is True,
+            credential_whitespace.get("real_runner_started") is False,
+            credential_whitespace.get("synthetic_values_recorded") is False,
+            all(item.get("returncode") == 66 for item in bad_whitespace_cases),
+            all(item.get("whitespace_rejected") is True for item in bad_whitespace_cases),
+            all(item.get("dry_run_called") is False for item in bad_whitespace_cases),
+            all(item.get("printed_protected_values") is False for item in bad_whitespace_cases),
+            all(item.get("returncode") == 0 for item in clean_whitespace_cases),
+            all(item.get("clean_dry_run_passed") is True for item in clean_whitespace_cases),
+            all(item.get("dry_run_called") is True for item in clean_whitespace_cases),
+            all(item.get("printed_protected_values") is False for item in clean_whitespace_cases),
+            all(item.get("real_runner_started") is False for item in credential_whitespace_cases.values()),
+            all(credential_whitespace_evidence.values()),
+            not any(credential_whitespace_leaks.values()),
+            not any(credential_whitespace_contacts.values()),
+            credential_whitespace.get("platform_contacted") is False,
+            credential_whitespace.get("uploads_performed") is False,
+            credential_whitespace.get("credentials_read") is False,
+            credential_whitespace.get("credentials_printed") is False,
+            credential_whitespace.get("link_values_printed") is False,
+            credential_whitespace.get("secret_values_printed") is False,
+        ]
+    ):
+        print("凭据空白字符 gate 审计未通过")
+        return 1
     synthetic_dry_run = json.loads((ROOT / "runs/synthetic_dry_run_redaction.json").read_text(encoding="utf-8"))
     synthetic_dry_run_evidence = synthetic_dry_run.get("evidence", {})
     synthetic_dry_run_leaks = synthetic_dry_run.get("leak_flags", {})
@@ -2380,6 +2442,7 @@ def main() -> int:
         "local_env_permission_contract",
         "local_env_runtime_permission_gate",
         "placeholder_credential_rejection",
+        "credential_whitespace_guard",
         "synthetic_dry_run_redaction",
         "shell_xtrace_secret_guard",
         "baseline_local_env_smoke",
@@ -2427,6 +2490,11 @@ def main() -> int:
             preflight.get("placeholder_baseline_real_runner_not_started") is True,
             preflight.get("placeholder_lora_real_runner_not_started") is True,
             preflight.get("placeholder_values_not_recorded") is True,
+            preflight.get("credential_whitespace_guard_passed") is True,
+            preflight.get("credential_whitespace_bad_rejected") is True,
+            preflight.get("credential_whitespace_clean_dry_run_passed") is True,
+            preflight.get("credential_whitespace_real_runner_not_started") is True,
+            preflight.get("credential_whitespace_values_not_recorded") is True,
             preflight.get("synthetic_dry_run_redaction_passed") is True,
             preflight.get("synthetic_dry_run_baseline_passed") is True,
             preflight.get("synthetic_dry_run_lora_passed") is True,

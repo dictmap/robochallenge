@@ -18,8 +18,21 @@ reject_placeholder() {
   esac
 }
 
+reject_unsafe_credential() {
+  local name="$1"
+  local value="$2"
+  case "$value" in
+    *[[:space:]]*)
+      echo "$name 包含空白字符，请重新粘贴真实值，不要带空格、tab 或换行。" >&2
+      exit 66
+      ;;
+  esac
+}
+
 reject_placeholder ROBOCHALLENGE_USER_TOKEN "$ROBOCHALLENGE_USER_TOKEN"
 reject_placeholder ROBOCHALLENGE_SUBMISSION_ID "$ROBOCHALLENGE_SUBMISSION_ID"
+reject_unsafe_credential ROBOCHALLENGE_USER_TOKEN "$ROBOCHALLENGE_USER_TOKEN"
+reject_unsafe_credential ROBOCHALLENGE_SUBMISSION_ID "$ROBOCHALLENGE_SUBMISSION_ID"
 
 cd "$(dirname "$0")/.."
 

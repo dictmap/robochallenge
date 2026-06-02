@@ -7,6 +7,7 @@ import argparse
 import json
 import os
 from pathlib import Path
+import re
 import subprocess
 import sys
 import tempfile
@@ -22,6 +23,7 @@ DEFAULT_REPORT = REPORTS_DIR / "local_env_runtime_permission_gate.md"
 SYNTHETIC_TOKEN = "synthetic_runtime_gate_token_0001"
 SYNTHETIC_SUBMISSION_ID = "synthetic_runtime_gate_submission_0001"
 REDACTION = "[REDACTED_SYNTHETIC_VALUE]"
+TEMP_ENV_DIR_RE = re.compile(r"/tmp/robochallenge-runtime-env-gate-[A-Za-z0-9_-]+")
 
 CASES = [
     {
@@ -76,6 +78,7 @@ def redact(text: str) -> str:
     redacted = text
     for value in [SYNTHETIC_TOKEN, SYNTHETIC_SUBMISSION_ID]:
         redacted = redacted.replace(value, REDACTION)
+    redacted = TEMP_ENV_DIR_RE.sub("/tmp/robochallenge-runtime-env-gate-<case>", redacted)
     return redacted
 
 

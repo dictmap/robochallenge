@@ -36,6 +36,7 @@ SOURCE_FILES = {
     "local_env_permission": RUNS_DIR / "local_env_permission_contract.json",
     "local_env_runtime_permission": RUNS_DIR / "local_env_runtime_permission_gate.json",
     "placeholder_credentials": RUNS_DIR / "placeholder_credential_rejection.json",
+    "credential_whitespace_guard": RUNS_DIR / "credential_whitespace_guard.json",
     "synthetic_dry_run_redaction": RUNS_DIR / "synthetic_dry_run_redaction.json",
     "shell_xtrace_secret_guard": RUNS_DIR / "shell_xtrace_secret_guard.json",
     "baseline_local_env_smoke": RUNS_DIR / "baseline_local_env_smoke.json",
@@ -108,6 +109,7 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
     local_env_permission = data["local_env_permission"]
     local_env_runtime_permission = data["local_env_runtime_permission"]
     placeholder_credentials = data["placeholder_credentials"]
+    credential_whitespace_guard = data["credential_whitespace_guard"]
     synthetic_dry_run = data["synthetic_dry_run_redaction"]
     shell_xtrace = data["shell_xtrace_secret_guard"]
     baseline_local_env_smoke = data["baseline_local_env_smoke"]
@@ -221,6 +223,17 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
         and placeholder_credentials.get("placeholder_values_recorded") is False
         and not any(placeholder_credentials.get("leak_flags", {}).values())
         and not any(placeholder_credentials.get("contact_flags", {}).values())
+    )
+    credential_whitespace_ready = bool(
+        credential_whitespace_guard.get("passed")
+        and credential_whitespace_guard.get("bad_credentials_rejected") is True
+        and credential_whitespace_guard.get("clean_credentials_dry_run_passed") is True
+        and credential_whitespace_guard.get("real_runner_started") is False
+        and credential_whitespace_guard.get("synthetic_values_recorded") is False
+        and credential_whitespace_guard.get("evidence", {}).get("bad_credentials_stop_before_dry_run") is True
+        and credential_whitespace_guard.get("evidence", {}).get("all_cases_no_protected_values") is True
+        and not any(credential_whitespace_guard.get("leak_flags", {}).values())
+        and not any(credential_whitespace_guard.get("contact_flags", {}).values())
     )
     synthetic_dry_run_ready = bool(
         synthetic_dry_run.get("passed")
@@ -480,6 +493,13 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
             "reports/placeholder_credential_rejection.md",
         ),
         card(
+            "凭据空白字符 gate",
+            "done" if credential_whitespace_ready else "watch",
+            f"{credential_whitespace_guard.get('case_count', 0)} 个场景",
+            "token/submission id 带空格、tab 或换行时会在 dry-run 前被拒绝；干净 synthetic 值仍可走 dry-run 且只输出长度。",
+            "reports/credential_whitespace_guard.md",
+        ),
+        card(
             "Synthetic dry-run 脱敏",
             "done" if synthetic_dry_run_ready else "watch",
             f"{synthetic_dry_run.get('case_count', 0)} 个场景",
@@ -574,6 +594,7 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
     local_env_permission = data["local_env_permission"]
     local_env_runtime_permission = data["local_env_runtime_permission"]
     placeholder_credentials = data["placeholder_credentials"]
+    credential_whitespace_guard = data["credential_whitespace_guard"]
     synthetic_dry_run = data["synthetic_dry_run_redaction"]
     shell_xtrace = data["shell_xtrace_secret_guard"]
     baseline_local_env_smoke = data["baseline_local_env_smoke"]
@@ -710,6 +731,21 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
         "placeholder_values_not_recorded": placeholder_credentials.get("placeholder_values_recorded") is False,
         "placeholder_credentials_no_contact": not any(placeholder_credentials.get("contact_flags", {}).values()),
         "placeholder_credentials_no_leak": not any(placeholder_credentials.get("leak_flags", {}).values()),
+        "credential_whitespace_guard_passed": credential_whitespace_guard.get("passed") is True,
+        "credential_whitespace_case_count": credential_whitespace_guard.get("case_count"),
+        "credential_whitespace_bad_rejected": credential_whitespace_guard.get("bad_credentials_rejected") is True,
+        "credential_whitespace_clean_dry_run_passed": credential_whitespace_guard.get(
+            "clean_credentials_dry_run_passed"
+        )
+        is True,
+        "credential_whitespace_real_runner_not_started": credential_whitespace_guard.get("real_runner_started")
+        is False,
+        "credential_whitespace_values_not_recorded": credential_whitespace_guard.get("synthetic_values_recorded")
+        is False,
+        "credential_whitespace_no_contact": not any(
+            credential_whitespace_guard.get("contact_flags", {}).values()
+        ),
+        "credential_whitespace_no_leak": not any(credential_whitespace_guard.get("leak_flags", {}).values()),
         "synthetic_dry_run_redaction_passed": synthetic_dry_run.get("passed") is True,
         "synthetic_dry_run_redaction_case_count": synthetic_dry_run.get("case_count"),
         "synthetic_dry_run_baseline_passed": synthetic_dry_run.get("baseline_dry_run_passed") is True,

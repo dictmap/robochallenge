@@ -13,7 +13,7 @@
 - baseline 是否需要 checkpoint link：`False`。
 - baseline 是否需要 checkpoint upload：`False`。
 - 中文 UTF-8 产物审计：`True`。
-- 中文 UTF-8 扫描文件数：`144`。
+- 中文 UTF-8 扫描文件数：`146`。
 - 中文 UTF-8 解码错误数：`0`。
 - 中文乱码哨兵命中数：`0`。
 - baseline dry-run gate：`True`。
@@ -40,6 +40,10 @@
 - baseline 占位符是否未启动真实 runner：`True`。
 - LoRA 占位符是否未启动真实 runner：`True`。
 - 是否未记录占位符明文：`True`。
+- 凭据空白字符 gate：`True`。
+- 空白字符坏输入是否被拒绝：`True`。
+- 干净凭据 dry-run 是否通过：`True`。
+- 空白字符 gate 是否未启动真实 runner：`True`。
 - synthetic dry-run 脱敏：`True`。
 - baseline synthetic dry-run 是否通过：`True`。
 - LoRA synthetic dry-run 是否通过：`True`。
@@ -112,6 +116,7 @@
 - `local_env_permission_contract`：returncode=`0`，passed=`True`。
 - `local_env_runtime_permission_gate`：returncode=`0`，passed=`True`。
 - `placeholder_credential_rejection`：returncode=`0`，passed=`True`。
+- `credential_whitespace_guard`：returncode=`0`，passed=`True`。
 - `synthetic_dry_run_redaction`：returncode=`0`，passed=`True`。
 - `shell_xtrace_secret_guard`：returncode=`0`，passed=`True`。
 - `baseline_local_env_smoke`：returncode=`0`，passed=`True`。

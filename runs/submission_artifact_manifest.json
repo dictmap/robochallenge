@@ -7,7 +7,7 @@
   "credentials_printed": false,
   "link_values_printed": false,
   "secret_values_printed": false,
-  "artifact_count": 79,
+  "artifact_count": 81,
   "artifacts": [
     {
       "path": "README.md",
@@ -20,8 +20,8 @@
       "path": "work.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 171583,
-      "sha256": "c4d55857e248e5c71ee9de45103f060bcca441e68ec1da5085373aacbfa5e93a"
+      "size_bytes": 175057,
+      "sha256": "6245a9fcae4b7b1c5807dc9482969c87247905807da4e38363b2c8c23417d90e"
     },
     {
       "path": "notebooks/robochallenge_pi05_submit_cn.ipynb",
@@ -69,15 +69,15 @@
       "path": "submission/run_table30v2_aloha_demo_template.sh",
       "exists": true,
       "tracked": true,
-      "size_bytes": 1784,
-      "sha256": "8651fd06faae55eb81d2f9ac465108968454fa845e1b416a6d5b96687426a6cf"
+      "size_bytes": 2189,
+      "sha256": "8d70811d4f615c03ef13a2df6bf2bc2c62adce42d41b99535783cbf9fa637de6"
     },
     {
       "path": "submission/run_table30v2_aloha_lora_demo_template.sh",
       "exists": true,
       "tracked": true,
-      "size_bytes": 1763,
-      "sha256": "5bb84a825fd14ca68954ac6eefff22614c2fd3ea46b8fba17624dd32c1b2ea2e"
+      "size_bytes": 2168,
+      "sha256": "01a0f5560d0f6feaf0976cf43e7f74a8c3baa8bf96c4d3b0386139e12e921879"
     },
     {
       "path": "submission/run_authorized_preflight_template.sh",
@@ -252,7 +252,7 @@
       "exists": true,
       "tracked": true,
       "size_bytes": 1045,
-      "sha256": "11b83668ff0c9093e598100ff289a9fbfc1f8cfb1894b1a915a42265cf9f1169"
+      "sha256": "c00bc888da8fafd821caaad70a3ab99e4f20537bd2e7d8482022894b50fa045a"
     },
     {
       "path": "reports/authorized_preflight_template_audit.md",
@@ -334,7 +334,7 @@
     {
       "path": "reports/local_env_runtime_permission_gate.md",
       "exists": true,
-      "tracked": false,
+      "tracked": true,
       "size_bytes": 2094,
       "sha256": "be51af38aef32cf48a7088c1533a356b27e1f4039e7f146e535d3954f767b609"
     },
@@ -344,6 +344,13 @@
       "tracked": true,
       "size_bytes": 2010,
       "sha256": "3733566538647d603e1c44f62e4aca95fe00d80398f82a3065a902dfe3819ebd"
+    },
+    {
+      "path": "reports/credential_whitespace_guard.md",
+      "exists": true,
+      "tracked": false,
+      "size_bytes": 2435,
+      "sha256": "7b6c49d3735b68b652d9930f8c5b5fa4e9b33a8cf4a230214076b8ed3a390130"
     },
     {
       "path": "reports/synthetic_dry_run_redaction.md",
@@ -405,22 +412,22 @@
       "path": "reports/submission_preflight_bundle.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 7340,
-      "sha256": "38a40ec92d9a8a57bf2f03cc93cb03d176193a020222421d93ce9a073f0cb93d"
+      "size_bytes": 7606,
+      "sha256": "13052e31aafe340c80aec3c51e82a77790a8768257f4db9779c494448c60fa88"
     },
     {
       "path": "reports/plaintext_secret_scan.md",
       "exists": true,
       "tracked": true,
       "size_bytes": 610,
-      "sha256": "ce3c32f86cbce1eb1f7e61f1d4f956d607231886bced293d403a40b1e6151068"
+      "sha256": "5d86077802c072839f81ed00745a8ead38d9b7ff9bdd710e03e8746fb7a673b9"
     },
     {
       "path": "reports/submission_status_dashboard.html",
       "exists": true,
       "tracked": true,
-      "size_bytes": 19984,
-      "sha256": "e48dd4b0fc16b9881db5968f1c9771b7a3cd3a2e6681225dabf9f52c252f7b8e"
+      "size_bytes": 20491,
+      "sha256": "ee0e2ffc45964143d6f8debc8b121d0d3177b339ccf2e336c08c900c5bbf998d"
     },
     {
       "path": "scripts/render_next_user_action_packet.py",
@@ -474,9 +481,9 @@
     {
       "path": "scripts/audit_local_env_runtime_permission_gate.py",
       "exists": true,
-      "tracked": false,
-      "size_bytes": 13183,
-      "sha256": "80700dfe69f2787522eb14429d486f95ac0cb687e52b17ddc4a076e6b4317a95"
+      "tracked": true,
+      "size_bytes": 13368,
+      "sha256": "a59bbe0108e47989c88a4a14f1935c003681bb19628220f00abc1db88baf462e"
     },
     {
       "path": "scripts/audit_placeholder_credential_rejection.py",
@@ -484,6 +491,13 @@
       "tracked": true,
       "size_bytes": 10472,
       "sha256": "d0364e21d3ff09c7a92540ded8bc740d5d8eee5685f05d7bec5f13e89c29773c"
+    },
+    {
+      "path": "scripts/audit_credential_whitespace_guard.py",
+      "exists": true,
+      "tracked": false,
+      "size_bytes": 10941,
+      "sha256": "4d04568f724f036a830a7650eec5f310be5c015aa17b56aadb9a330491194bf9"
     },
     {
       "path": "scripts/audit_synthetic_dry_run_redaction.py",
@@ -684,6 +698,11 @@
     "placeholder_baseline_real_runner_not_started": true,
     "placeholder_lora_real_runner_not_started": true,
     "placeholder_values_not_recorded": true,
+    "credential_whitespace_guard_passed": true,
+    "credential_whitespace_bad_rejected": true,
+    "credential_whitespace_clean_dry_run_passed": true,
+    "credential_whitespace_real_runner_not_started": true,
+    "credential_whitespace_values_not_recorded": true,
     "synthetic_dry_run_redaction_passed": true,
     "synthetic_dry_run_case_count": true,
     "synthetic_dry_run_baseline_passed": true,

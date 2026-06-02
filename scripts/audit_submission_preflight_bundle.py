@@ -43,6 +43,7 @@ SUBCOMMANDS = [
     ("local_env_permission_contract", "scripts/audit_local_env_permission_contract.py"),
     ("local_env_runtime_permission_gate", "scripts/audit_local_env_runtime_permission_gate.py"),
     ("placeholder_credential_rejection", "scripts/audit_placeholder_credential_rejection.py"),
+    ("credential_whitespace_guard", "scripts/audit_credential_whitespace_guard.py"),
     ("synthetic_dry_run_redaction", "scripts/audit_synthetic_dry_run_redaction.py"),
     ("shell_xtrace_secret_guard", "scripts/audit_shell_xtrace_secret_guard.py"),
     ("baseline_local_env_smoke", "scripts/render_baseline_local_env_smoke.py"),
@@ -117,6 +118,7 @@ def build_status() -> dict[str, Any]:
     local_env_permission = read_json(RUNS_DIR / "local_env_permission_contract.json")
     local_env_runtime_permission = read_json(RUNS_DIR / "local_env_runtime_permission_gate.json")
     placeholder_credential_rejection = read_json(RUNS_DIR / "placeholder_credential_rejection.json")
+    credential_whitespace_guard = read_json(RUNS_DIR / "credential_whitespace_guard.json")
     synthetic_dry_run_redaction = read_json(RUNS_DIR / "synthetic_dry_run_redaction.json")
     shell_xtrace_secret_guard = read_json(RUNS_DIR / "shell_xtrace_secret_guard.json")
     baseline_local_env_smoke = read_json(RUNS_DIR / "baseline_local_env_smoke.json")
@@ -151,6 +153,7 @@ def build_status() -> dict[str, Any]:
                 local_env_permission,
                 local_env_runtime_permission,
                 placeholder_credential_rejection,
+                credential_whitespace_guard,
                 synthetic_dry_run_redaction,
                 shell_xtrace_secret_guard,
                 baseline_local_env_smoke,
@@ -179,6 +182,7 @@ def build_status() -> dict[str, Any]:
         or bool(local_env_permission.get("link_values_printed"))
         or bool(local_env_runtime_permission.get("link_values_printed"))
         or bool(placeholder_credential_rejection.get("link_values_printed"))
+        or bool(credential_whitespace_guard.get("link_values_printed"))
         or bool(synthetic_dry_run_redaction.get("link_values_printed"))
         or bool(shell_xtrace_secret_guard.get("link_values_printed"))
         or bool(baseline_local_env_smoke.get("link_values_printed"))
@@ -204,6 +208,7 @@ def build_status() -> dict[str, Any]:
         or bool(local_env_permission.get("secret_values_printed"))
         or bool(local_env_runtime_permission.get("secret_values_printed"))
         or bool(placeholder_credential_rejection.get("secret_values_printed"))
+        or bool(credential_whitespace_guard.get("secret_values_printed"))
         or bool(synthetic_dry_run_redaction.get("secret_values_printed"))
         or bool(shell_xtrace_secret_guard.get("secret_values_printed"))
         or bool(baseline_local_env_smoke.get("secret_values_printed"))
@@ -238,6 +243,7 @@ def build_status() -> dict[str, Any]:
                 local_env_permission,
                 local_env_runtime_permission,
                 placeholder_credential_rejection,
+                credential_whitespace_guard,
                 synthetic_dry_run_redaction,
                 shell_xtrace_secret_guard,
                 baseline_local_env_smoke,
@@ -272,6 +278,7 @@ def build_status() -> dict[str, Any]:
                 local_env_permission,
                 local_env_runtime_permission,
                 placeholder_credential_rejection,
+                credential_whitespace_guard,
                 synthetic_dry_run_redaction,
                 shell_xtrace_secret_guard,
                 baseline_local_env_smoke,
@@ -388,6 +395,16 @@ def build_status() -> dict[str, Any]:
         )
         is True,
         "placeholder_values_not_recorded": placeholder_credential_rejection.get("placeholder_values_recorded")
+        is False,
+        "credential_whitespace_guard_passed": credential_whitespace_guard.get("passed") is True,
+        "credential_whitespace_bad_rejected": credential_whitespace_guard.get("bad_credentials_rejected") is True,
+        "credential_whitespace_clean_dry_run_passed": credential_whitespace_guard.get(
+            "clean_credentials_dry_run_passed"
+        )
+        is True,
+        "credential_whitespace_real_runner_not_started": credential_whitespace_guard.get("real_runner_started")
+        is False,
+        "credential_whitespace_values_not_recorded": credential_whitespace_guard.get("synthetic_values_recorded")
         is False,
         "synthetic_dry_run_redaction_passed": synthetic_dry_run_redaction.get("passed") is True,
         "synthetic_dry_run_baseline_passed": synthetic_dry_run_redaction.get("baseline_dry_run_passed") is True,
@@ -541,6 +558,10 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         f"- baseline 占位符是否未启动真实 runner：`{status['placeholder_baseline_real_runner_not_started']}`。",
         f"- LoRA 占位符是否未启动真实 runner：`{status['placeholder_lora_real_runner_not_started']}`。",
         f"- 是否未记录占位符明文：`{status['placeholder_values_not_recorded']}`。",
+        f"- 凭据空白字符 gate：`{status['credential_whitespace_guard_passed']}`。",
+        f"- 空白字符坏输入是否被拒绝：`{status['credential_whitespace_bad_rejected']}`。",
+        f"- 干净凭据 dry-run 是否通过：`{status['credential_whitespace_clean_dry_run_passed']}`。",
+        f"- 空白字符 gate 是否未启动真实 runner：`{status['credential_whitespace_real_runner_not_started']}`。",
         f"- synthetic dry-run 脱敏：`{status['synthetic_dry_run_redaction_passed']}`。",
         f"- baseline synthetic dry-run 是否通过：`{status['synthetic_dry_run_baseline_passed']}`。",
         f"- LoRA synthetic dry-run 是否通过：`{status['synthetic_dry_run_lora_passed']}`。",

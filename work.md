@@ -2124,3 +2124,35 @@
 
 - P0：提交并推送本轮 local env runtime 权限 gate 审计。
 - P1：凭据到位后先运行 baseline 授权前只读预检与 dry-run gate；真实 runner 仍必须等待用户明确授权。
+
+## 2026-06-03 第七十五轮：凭据空白字符 gate 审计
+
+### 已完成
+
+- 更新 `submission/run_table30v2_aloha_demo_template.sh` 与 `submission/run_table30v2_aloha_lora_demo_template.sh`，在占位符拒绝后新增 `reject_unsafe_credential`，拒绝 token/submission id 中的空格、tab 或换行。
+- 新增 `scripts/audit_credential_whitespace_guard.py`，覆盖 baseline 与 LoRA wrapper 的 6 个场景：4 个空白字符错误场景、2 个干净 synthetic dry-run 场景。
+- 新增机器可读产物 `runs/credential_whitespace_guard.json` 和中文报告 `reports/credential_whitespace_guard.md`。
+- 已接入 `scripts/audit_submission_preflight_bundle.py`、`scripts/audit_submission_artifact_manifest.py`、`scripts/render_submission_status_dashboard.py` 和 `scripts/validate_repro_workspace.py`。
+- 顺手稳定 `scripts/audit_local_env_runtime_permission_gate.py` 的 stdout/stderr 尾部记录，把临时目录名归一化，避免后续 full validation 因随机 `/tmp/robochallenge-runtime-env-gate-*` 路径产生无意义 diff。
+- GUI dashboard 新增 `凭据空白字符 gate` 卡片，当前总计 `source_count=33`、`card_count=33`、`done_count=28`、`blocked_count=4`、`watch_count=1`。
+
+### 验证结果
+
+- Linux 端 `python3 scripts/audit_credential_whitespace_guard.py` 已通过：`case_count=6`、`bad_case_count=4`、`good_case_count=2`、`bad_credentials_rejected=true`、`clean_credentials_dry_run_passed=true`、`real_runner_started=false`。
+- 4 个错误场景均在 dry-run 前退出 `66`：baseline token 前导空格、baseline submission id 结尾空格、LoRA token tab、LoRA submission id 换行。
+- 2 个干净 synthetic 场景均 `returncode=0`，只输出长度字段和 `robot_type=aloha`，不打印 synthetic token/submission id 明文。
+- Linux 端完整链路 `audit_chinese_utf8_artifacts.py`、`audit_plaintext_secrets.py`、`audit_submission_preflight_bundle.py`、`audit_submission_artifact_manifest.py`、`render_submission_status_dashboard.py`、`validate_repro_workspace.py` 和 `git diff --check` 均已通过。
+- Linux 端 `runs/local_env_runtime_permission_gate.json` 已重新生成，bad-permission 提示中的临时路径稳定为 `/tmp/robochallenge-runtime-env-gate-<case>/robochallenge_env.local.sh`。
+- 明文凭据扫描仍为 `hit_count=0`；中文 UTF-8 审计为 `scanned_file_count=146`、`decode_error_count=0`、`bad_marker_hit_count=0`。
+- 本轮没有读取真实 token、submission id、checkpoint link 或真实 local env 内容；没有连接 RoboChallenge 平台，没有上传 checkpoint，没有生成 checkpoint tar，也没有启动真实 runner。
+
+### 当前边界
+
+- 本轮只防止复制粘贴凭据时混入空白字符；真实 token/submission id 的平台有效性仍必须等待用户提供凭据并明确授权后才能验证。
+- baseline 官方路线仍只等待：提交对象确认、`ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline`、`ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION`。
+- LoRA/web checkpoint 路线仍单独等待 checkpoint 归档、上传授权和真实可访问 checkpoint link；这不是 baseline 官方 ALOHA 最短路线的前置条件。
+
+### 下一步
+
+- P0：提交并推送本轮凭据空白字符 gate 审计。
+- P1：凭据到位后先运行 baseline 授权前只读预检与 dry-run gate；真实 runner 仍必须等待用户明确授权。

@@ -1,7 +1,7 @@
 {
   "kind": "chinese_utf8_artifact_audit",
   "passed": true,
-  "scanned_file_count": 144,
+  "scanned_file_count": 146,
   "decode_error_count": 0,
   "bad_marker_hit_file_count": 0,
   "bad_marker_hit_count": 0,
@@ -247,6 +247,14 @@
       "bad_marker_hits": []
     },
     {
+      "path": "reports/local_env_runtime_permission_gate.md",
+      "size_bytes": 2094,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
       "path": "reports/lora_checkpoint_export_readiness.md",
       "size_bytes": 3002,
       "utf8_decode_ok": true,
@@ -464,7 +472,7 @@
     },
     {
       "path": "reports/submission_artifact_manifest.md",
-      "size_bytes": 21881,
+      "size_bytes": 22507,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -496,7 +504,7 @@
     },
     {
       "path": "reports/submission_preflight_bundle.md",
-      "size_bytes": 7340,
+      "size_bytes": 7606,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -504,7 +512,7 @@
     },
     {
       "path": "reports/submission_status_dashboard.html",
-      "size_bytes": 19984,
+      "size_bytes": 20491,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -665,14 +673,6 @@
     {
       "path": "runs/checkpoint_archive_plan.json",
       "size_bytes": 1728,
-      "utf8_decode_ok": true,
-      "decode_error": "",
-      "bad_marker_count": 0,
-      "bad_marker_hits": []
-    },
-    {
-      "path": "runs/checkpoint_link_download_verification.json",
-      "size_bytes": 2050,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,

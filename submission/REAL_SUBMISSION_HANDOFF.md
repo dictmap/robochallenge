@@ -17,6 +17,7 @@
 
 ```bash
 python3 scripts/audit_authorized_submission_sequence.py
+python3 scripts/audit_submission_blockers_summary.py
 ```
 
 先在 Linux 仓库根目录执行：

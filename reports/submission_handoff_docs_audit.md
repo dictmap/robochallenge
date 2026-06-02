@@ -28,6 +28,7 @@
 - `scripts/audit_checkpoint_link_download_verification.py`：`True`。
 - `scripts/audit_submission_env_template.py`：`True`。
 - `scripts/audit_submission_artifact_manifest.py`：`True`。
+- `scripts/audit_submission_blockers_summary.py`：`True`。
 - `scripts/audit_real_submission_readiness.py`：`True`。
 - `scripts/audit_submission_preflight_bundle.py`：`True`。
 
@@ -38,6 +39,7 @@
 - `checkpoint_link_download_verify`：`True`。
 - `submission_env_template`：`True`。
 - `submission_artifact_manifest`：`True`。
+- `submission_blockers_summary`：`True`。
 - `submission_preflight_bundle`：`True`。
 - `authorized_submission_sequence`：`True`。
 - `readiness_gate`：`True`。

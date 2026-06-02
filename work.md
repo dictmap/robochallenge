@@ -1156,3 +1156,31 @@
 ### 下一步
 
 - P0：提交并推送本轮 runner dry-run 脱敏产物。
+
+## 2026-06-02 第四十一轮：真实提交阻塞项摘要审计
+
+### 已完成
+
+- 新增 `scripts/audit_submission_blockers_summary.py`，汇总 readiness、checkpoint link、上传通道、manifest、preflight、提交包和明文凭据扫描结果。
+- 新增机器可读产物 `runs/submission_blockers_summary.json` 和中文报告 `reports/submission_blockers_summary.md`。
+- Notebook `notebooks/robochallenge_pi05_submit_cn.ipynb` 新增第 40 节，Jupyter 内可直接复跑阻塞项摘要审计。
+- `submission/REAL_SUBMISSION_HANDOFF.md` 和 `submission/AUTHORIZED_SUBMISSION_SEQUENCE.md` 已加入阻塞项摘要命令。
+- `scripts/audit_submission_handoff_docs.py`、`scripts/audit_authorized_submission_sequence.py` 和 `scripts/validate_repro_workspace.py` 已纳入该摘要审计。
+
+### 验证结果
+
+- Linux 端 `python3 scripts/audit_submission_blockers_summary.py` 已通过：`passed=true`，`go_no_go=blocked`，`ready_for_real_submission=false`，`blocking_count=11`。
+- 阻塞摘要确认未连接平台、未上传、未读取凭据、未打印 token/submission id/checkpoint link 明文。
+- Linux 端 Notebook preflight 已通过；第 40 节可执行。现存 nbformat `MissingIDFieldWarning` 来自历史 cell，不影响执行。
+- Linux 端 `python3 scripts/validate_repro_workspace.py` 已通过，并新增输出“真实提交阻塞项摘要已通过”。
+- Linux 端 `git diff --check` 和 UTF-8/乱码哨兵检查已通过。
+
+### 当前边界
+
+- 本轮只补齐真实提交前的阻塞项证据汇总，不生成 tar、不上传 checkpoint、不连接 RoboChallenge 平台、不伪造 token 或 submission id。
+- 当前真实提交仍缺 `ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、真实可访问 checkpoint link，以及用户对 12GB+ checkpoint 归档/上传的明确授权。
+
+### 下一步
+
+- P0：提交并推送本轮阻塞项摘要审计产物。
+- P1：用户提供真实凭据和 checkpoint link 后，先运行 `python3 scripts/audit_real_submission_readiness.py`，再决定是否进入真实 runner。

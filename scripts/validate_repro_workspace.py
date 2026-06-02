@@ -53,6 +53,7 @@ REQUIRED = [
     "reports/submission_preflight_bundle.md",
     "reports/submission_env_template_audit.md",
     "reports/submission_artifact_manifest.md",
+    "reports/submission_blockers_summary.md",
     "reports/plaintext_secret_scan.md",
     "reports/robochallenge_submission_package_checklist.md",
     "runs/pi05_base_probe_status.json",
@@ -90,6 +91,7 @@ REQUIRED = [
     "runs/submission_preflight_bundle.json",
     "runs/submission_env_template_audit.json",
     "runs/submission_artifact_manifest.json",
+    "runs/submission_blockers_summary.json",
     "runs/plaintext_secret_scan.json",
     "runs/robochallenge_submission_package_audit.json",
     "submission/README.md",
@@ -125,6 +127,7 @@ REQUIRED = [
     "scripts/audit_submission_preflight_bundle.py",
     "scripts/audit_submission_env_template.py",
     "scripts/audit_submission_artifact_manifest.py",
+    "scripts/audit_submission_blockers_summary.py",
     "scripts/audit_plaintext_secrets.py",
     "scripts/audit_robochallenge_submission_package.py",
 ]
@@ -1010,6 +1013,39 @@ def main() -> int:
     ):
         print("真实提交前预检汇总未通过")
         return 1
+    blockers_summary = json.loads((ROOT / "runs/submission_blockers_summary.json").read_text(encoding="utf-8"))
+    blocker_state = blockers_summary.get("current_state", {})
+    blocker_local_ready = blockers_summary.get("local_ready", {})
+    blocker_leaks = blockers_summary.get("leak_flags", {})
+    blocker_contacts = blockers_summary.get("contact_flags", {})
+    required_input_ids = {item.get("id") for item in blockers_summary.get("required_user_inputs", [])}
+    if not all(
+        [
+            blockers_summary.get("kind") == "submission_blockers_summary",
+            blockers_summary.get("passed"),
+            blockers_summary.get("platform_contacted") is False,
+            blockers_summary.get("uploads_performed") is False,
+            blockers_summary.get("credentials_read") is False,
+            blockers_summary.get("credentials_printed") is False,
+            blockers_summary.get("link_values_printed") is False,
+            blockers_summary.get("secret_values_printed") is False,
+            blocker_state.get("go_no_go") == "blocked",
+            blocker_state.get("ready_for_real_submission") is False,
+            blocker_state.get("web_form_ready") is False,
+            blocker_state.get("link_shape_ready") is False,
+            blocker_state.get("download_verified") is False,
+            all(blocker_local_ready.values()),
+            {"ROBOCHALLENGE_USER_TOKEN", "ROBOCHALLENGE_SUBMISSION_ID", "ROBOCHALLENGE_CHECKPOINT_LINK"}.issubset(
+                required_input_ids
+            ),
+            blockers_summary.get("blocking_count", 0) >= 4,
+            not any(blocker_leaks.values()),
+            not any(blocker_contacts.values()),
+            blockers_summary.get("next_command_after_user_inputs") == "python3 scripts/audit_real_submission_readiness.py",
+        ]
+    ):
+        print("真实提交阻塞项摘要未通过")
+        return 1
     secret_scan = json.loads((ROOT / "runs/plaintext_secret_scan.json").read_text(encoding="utf-8"))
     if not all(
         [
@@ -1182,6 +1218,7 @@ def main() -> int:
     print("真实提交环境变量模板审计已通过")
     print("提交准备材料 manifest 审计已通过")
     print("真实提交前预检汇总已通过")
+    print("真实提交阻塞项摘要已通过")
     print("明文凭据扫描已通过")
     return 0
 

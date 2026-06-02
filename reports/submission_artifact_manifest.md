@@ -14,11 +14,11 @@
 ## 材料清单
 
 - `README.md`：exists=`True`，tracked=`True`，size=`18481`，sha256=`b75c47a50df3af20c4ba3eb4e2c3a3aede49504420432120c940d8ae7950659b`。
-- `work.md`：exists=`True`，tracked=`True`，size=`76566`，sha256=`255c0cdf3aa261b99592a57032d0f8e881943dec2205b983288db94bed72900a`。
-- `notebooks/robochallenge_pi05_submit_cn.ipynb`：exists=`True`，tracked=`True`，size=`75042`，sha256=`87476a8ecad9ce66f61263a2b9124dabc4532b261a75c7f39c7978f14c137ecd`。
+- `work.md`：exists=`True`，tracked=`True`，size=`78645`，sha256=`6ee6c2b7ad5cc8dd85974675803bd250020d3c98063064bea9da6468c3e95ba9`。
+- `notebooks/robochallenge_pi05_submit_cn.ipynb`：exists=`True`，tracked=`True`，size=`77356`，sha256=`6caee497ba7e225fe6747e78fbe605db2d3b3275209920c8ddd3e977fa82e44a`。
 - `submission/README.md`：exists=`True`，tracked=`True`，size=`1515`，sha256=`2cde21317add90ad127853e652fc1c54ed023b638a250453d8584df1a44e9bb1`。
-- `submission/REAL_SUBMISSION_HANDOFF.md`：exists=`True`，tracked=`True`，size=`5622`，sha256=`4cc672cba61b986c716a0a1ea9f1d994a10086bc114032ced8443c0b53296afb`。
-- `submission/AUTHORIZED_SUBMISSION_SEQUENCE.md`：exists=`True`，tracked=`True`，size=`3692`，sha256=`b9e1836e133feec14688ca1e4f593ece132a15c4f001ba37a7f0ba0c8c997224`。
+- `submission/REAL_SUBMISSION_HANDOFF.md`：exists=`True`，tracked=`True`，size=`5675`，sha256=`672f835262f629c35db065adebfde643a8bc22e677fdecf245f1252f745cebf3`。
+- `submission/AUTHORIZED_SUBMISSION_SEQUENCE.md`：exists=`True`，tracked=`True`，size=`3766`，sha256=`05b1420587fb2129065d77578b9b77f1bc24c879296fd0efb36b8745af16ac62`。
 - `submission/robochallenge_env_template.sh`：exists=`True`，tracked=`True`，size=`838`，sha256=`612cbff35b9376312619409a560641bb803f8e140aa05a34f356da1207c93144`。
 - `submission/submission_manifest_template.json`：exists=`True`，tracked=`True`，size=`4182`，sha256=`89ff0fcc8e130546e373a757f3192cc737063822c9040dba316006869a41c9ec`。
 - `submission/run_table30v2_aloha_demo_template.sh`：exists=`True`，tracked=`True`，size=`1777`，sha256=`05fd025a768fee996413976aef865c1da343a88d5c788aa53cb03e8d922e8afa`。
@@ -40,10 +40,10 @@
 - `reports/real_submission_readiness.md`：exists=`True`，tracked=`True`，size=`1306`，sha256=`fac759b5bd681903dae8c9f672998797b35430b4b37c3d61baf146903aa92d11`。
 - `reports/real_submission_readiness_scenarios.md`：exists=`True`，tracked=`True`，size=`1152`，sha256=`682ba066efc018aaeee94e4064afdbed25a4bab356fedf55ba6562b9889ffb0a`。
 - `reports/submission_env_template_audit.md`：exists=`True`，tracked=`True`，size=`1006`，sha256=`aff3ab4d14b54dd1a593360171a5c2ab531fca797dfeb9a2fd91a5ab4f7ff1c0`。
-- `reports/submission_handoff_docs_audit.md`：exists=`True`，tracked=`True`，size=`2955`，sha256=`bb33d6beb459a8f56b2c9b100e12fe2d38be430f3c1fcb194d91548cb0218006`。
-- `reports/authorized_submission_sequence_audit.md`：exists=`True`，tracked=`True`，size=`2511`，sha256=`cb95968878f39231dcd7cc28c50520b3cf8517fd223c63ab83e6167addbd2fba`。
+- `reports/submission_handoff_docs_audit.md`：exists=`True`，tracked=`True`，size=`3060`，sha256=`889eb8eae02c21707fe482a58c5ea6c0cf215b746edc640e22710910d0f71952`。
+- `reports/authorized_submission_sequence_audit.md`：exists=`True`，tracked=`True`，size=`2715`，sha256=`5010e018bd6f3c3a8076f4ff99e1d2d74e0c928a3082877ebe664744a9c0d5e8`。
 - `reports/submission_preflight_bundle.md`：exists=`True`，tracked=`True`，size=`1668`，sha256=`684c9ada674cc2eeee73884d972ec8023e690ba83844d569158c1ad385ed5bff`。
-- `reports/plaintext_secret_scan.md`：exists=`True`，tracked=`True`，size=`610`，sha256=`054f745aca70774118e1e79edf30733a5b8c437b1ec934cd6424a2f3e8cea2a8`。
+- `reports/plaintext_secret_scan.md`：exists=`True`，tracked=`True`，size=`610`，sha256=`bfefc2566d96736e348108f9c58dcdee35d9df04fb6fa12b77b658126a52c79c`。
 - `reports/submission_status_dashboard.html`：exists=`True`，tracked=`True`，size=`9467`，sha256=`163316d3dc44d94f2453902457eb48e784f8f25dfd192951618404578d8d91cc`。
 
 ## 本地凭据与大文件忽略检查

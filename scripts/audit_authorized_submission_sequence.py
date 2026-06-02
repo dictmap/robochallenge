@@ -28,6 +28,7 @@ REQUIRED_COMMANDS = [
     "source submission/robochallenge_env.local.sh",
     "python3 scripts/audit_checkpoint_link_intake.py",
     "python3 scripts/audit_real_submission_readiness.py",
+    "python3 scripts/audit_submission_blockers_summary.py",
     "python3 scripts/create_checkpoint_archive.py --execute --confirm-create-large-archive",
     "ROBOCHALLENGE_DRY_RUN=1 bash submission/run_table30v2_aloha_lora_demo_template.sh",
     "bash submission/run_table30v2_aloha_lora_demo_template.sh",
@@ -132,6 +133,7 @@ def build_status(doc_path: Path) -> dict[str, Any]:
     env_template = read_json(RUNS_DIR / "submission_env_template_audit.json")
     artifact_manifest = read_json(RUNS_DIR / "submission_artifact_manifest.json")
     readiness = read_json(RUNS_DIR / "real_submission_readiness.json")
+    blockers_summary = read_json(RUNS_DIR / "submission_blockers_summary.json")
     plaintext_scan = read_json(RUNS_DIR / "plaintext_secret_scan.json")
     handoff = read_json(RUNS_DIR / "submission_handoff_docs_audit.json")
 
@@ -149,6 +151,10 @@ def build_status(doc_path: Path) -> dict[str, Any]:
         "artifact_manifest_no_forbidden_tracked": artifact_manifest.get("forbidden_tracked_paths") == [],
         "readiness_gate_passed": readiness.get("passed") is True,
         "readiness_currently_blocked": readiness.get("ready_for_real_submission") is False,
+        "blockers_summary_passed": blockers_summary.get("passed") is True,
+        "blockers_summary_go_no_go_blocked": blockers_summary.get("current_state", {}).get("go_no_go") == "blocked",
+        "blockers_summary_ready_false": blockers_summary.get("current_state", {}).get("ready_for_real_submission")
+        is False,
         "plaintext_scan_passed": plaintext_scan.get("passed") is True,
         "plaintext_hit_count_zero": plaintext_scan.get("hit_count") == 0,
         "handoff_docs_passed": handoff.get("passed") is True,
@@ -171,6 +177,12 @@ def build_status(doc_path: Path) -> dict[str, Any]:
             artifact_manifest.get("link_values_printed") is False,
             artifact_manifest.get("secret_values_printed") is False,
             readiness.get("platform_contacted") is False,
+            blockers_summary.get("platform_contacted") is False,
+            blockers_summary.get("uploads_performed") is False,
+            blockers_summary.get("credentials_read") is False,
+            blockers_summary.get("credentials_printed") is False,
+            blockers_summary.get("link_values_printed") is False,
+            blockers_summary.get("secret_values_printed") is False,
             handoff.get("platform_contacted") is False,
         ]
     )

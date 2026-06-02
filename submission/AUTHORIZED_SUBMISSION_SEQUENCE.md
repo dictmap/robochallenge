@@ -12,9 +12,10 @@ python3 scripts/audit_submission_artifact_manifest.py
 python3 scripts/create_checkpoint_archive.py
 python3 scripts/audit_checkpoint_link_intake.py
 python3 scripts/audit_real_submission_readiness.py
+python3 scripts/audit_submission_blockers_summary.py
 ```
 
-预期状态：在没有真实凭据和 checkpoint link 时，`ready_for_real_submission=false`，`link_shape_ready=false`，并且所有审计都不得打印凭据或链接明文。
+预期状态：在没有真实凭据和 checkpoint link 时，`go_no_go=blocked`，`ready_for_real_submission=false`，`link_shape_ready=false`，并且所有审计都不得打印凭据或链接明文。
 
 ## 1. 用户授权后生成本地归档
 

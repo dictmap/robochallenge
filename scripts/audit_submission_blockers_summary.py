@@ -80,6 +80,7 @@ def build_status() -> dict[str, Any]:
     authorized_execution = read_json(RUNS_DIR / "authorized_execution_checklist.json")
     artifact_manifest = read_json(RUNS_DIR / "submission_artifact_manifest.json")
     package = read_json(RUNS_DIR / "robochallenge_submission_package_audit.json")
+    route_aware_blockers = read_json(RUNS_DIR / "route_aware_submission_blockers.json")
     secret_scan = read_json(RUNS_DIR / "plaintext_secret_scan.json")
 
     blocking = unique(
@@ -100,6 +101,7 @@ def build_status() -> dict[str, Any]:
         "ready_real_runner_template_ready": ready_real_runner.get("passed") is True,
         "authorized_checkpoint_archive_template_ready": authorized_archive.get("passed") is True,
         "authorized_execution_checklist_ready": authorized_execution.get("passed") is True,
+        "route_aware_submission_blockers_ready": route_aware_blockers.get("passed") is True,
         "upload_channels_audited": upload_channels.get("passed") is True,
         "preflight_bundle_ready": preflight.get("passed") is True,
         "secret_scan_clean": secret_scan.get("passed") is True and secret_scan.get("hit_count") == 0,
@@ -111,7 +113,8 @@ def build_status() -> dict[str, Any]:
         or bool(jupyter_authorized.get("credentials_printed"))
         or bool(ready_real_runner.get("credentials_printed"))
         or bool(authorized_archive.get("credentials_printed"))
-        or bool(authorized_execution.get("credentials_printed")),
+        or bool(authorized_execution.get("credentials_printed"))
+        or bool(route_aware_blockers.get("credentials_printed")),
         "link_values_printed": bool(preflight.get("leak_flags", {}).get("link_values_printed"))
         or bool(link_intake.get("link_values_printed"))
         or bool(link_download.get("link_value_printed"))
@@ -119,14 +122,16 @@ def build_status() -> dict[str, Any]:
         or bool(jupyter_authorized.get("link_values_printed"))
         or bool(ready_real_runner.get("link_values_printed"))
         or bool(authorized_archive.get("link_values_printed"))
-        or bool(authorized_execution.get("link_values_printed")),
+        or bool(authorized_execution.get("link_values_printed"))
+        or bool(route_aware_blockers.get("link_values_printed")),
         "secret_values_printed": bool(preflight.get("leak_flags", {}).get("secret_values_printed"))
         or bool(secret_scan.get("secret_values_printed"))
         or bool(jupyter_input.get("secret_values_printed"))
         or bool(jupyter_authorized.get("secret_values_printed"))
         or bool(ready_real_runner.get("secret_values_printed"))
         or bool(authorized_archive.get("secret_values_printed"))
-        or bool(authorized_execution.get("secret_values_printed")),
+        or bool(authorized_execution.get("secret_values_printed"))
+        or bool(route_aware_blockers.get("secret_values_printed")),
     }
     contact_flags = {
         "platform_contacted": bool(preflight.get("contact_flags", {}).get("platform_contacted"))
@@ -135,14 +140,16 @@ def build_status() -> dict[str, Any]:
         or bool(jupyter_authorized.get("platform_contacted"))
         or bool(ready_real_runner.get("platform_contacted"))
         or bool(authorized_archive.get("platform_contacted"))
-        or bool(authorized_execution.get("platform_contacted")),
+        or bool(authorized_execution.get("platform_contacted"))
+        or bool(route_aware_blockers.get("platform_contacted")),
         "uploads_performed": bool(preflight.get("contact_flags", {}).get("uploads_performed"))
         or bool(upload_channels.get("uploads_performed"))
         or bool(jupyter_input.get("uploads_performed"))
         or bool(jupyter_authorized.get("uploads_performed"))
         or bool(ready_real_runner.get("uploads_performed"))
         or bool(authorized_archive.get("uploads_performed"))
-        or bool(authorized_execution.get("uploads_performed")),
+        or bool(authorized_execution.get("uploads_performed"))
+        or bool(route_aware_blockers.get("uploads_performed")),
         "download_host_contacted": bool(preflight.get("contact_flags", {}).get("download_host_contacted"))
         or bool(link_download.get("verification", {}).get("download_host_contacted")),
     }
@@ -175,6 +182,15 @@ def build_status() -> dict[str, Any]:
         "current_state": current_state,
         "local_ready": local_ready,
         "required_user_inputs": REQUIRED_USER_INPUTS,
+        "recommended_route": route_aware_blockers.get("recommended_route"),
+        "baseline_required_user_inputs": route_aware_blockers.get("baseline_required_ids", []),
+        "baseline_current_blocking": route_aware_blockers.get("baseline_current_blocking", []),
+        "baseline_requires_checkpoint_link": route_aware_blockers.get("baseline_requires_checkpoint_link"),
+        "baseline_requires_checkpoint_upload": route_aware_blockers.get("baseline_requires_checkpoint_upload"),
+        "lora_web_required_user_inputs": route_aware_blockers.get("lora_web_required_ids", []),
+        "lora_web_current_blocking": route_aware_blockers.get("lora_web_current_blocking", []),
+        "lora_web_requires_checkpoint_link": route_aware_blockers.get("lora_web_requires_checkpoint_link"),
+        "lora_web_requires_checkpoint_upload": route_aware_blockers.get("lora_web_requires_checkpoint_upload"),
         "blocking": blocking,
         "blocking_count": len(blocking),
         "leak_flags": leak_flags,
@@ -196,6 +212,11 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         f"- checkpoint link 形态就绪：`{status['current_state']['link_shape_ready']}`。",
         f"- 下载已验证：`{status['current_state']['download_verified']}`。",
         f"- 阻塞项数量：`{status['blocking_count']}`。",
+        f"- 推荐路线：`{status['recommended_route']}`。",
+        f"- baseline 是否需要 checkpoint link：`{status['baseline_requires_checkpoint_link']}`。",
+        f"- baseline 是否需要 checkpoint upload：`{status['baseline_requires_checkpoint_upload']}`。",
+        f"- LoRA/web 是否需要 checkpoint link：`{status['lora_web_requires_checkpoint_link']}`。",
+        f"- LoRA/web 是否需要 checkpoint upload：`{status['lora_web_requires_checkpoint_upload']}`。",
         f"- 是否连接平台：`{status['platform_contacted']}`。",
         f"- 是否上传：`{status['uploads_performed']}`。",
         f"- 是否读取真实凭据：`{status['credentials_read']}`。",
@@ -205,6 +226,12 @@ def write_report(status: dict[str, Any], path: Path) -> None:
     ]
     for key, value in status["local_ready"].items():
         lines.append(f"- `{key}`：`{value}`。")
+    lines.extend(["", "## Baseline 最短路线当前只差", ""])
+    for item in status["baseline_current_blocking"]:
+        lines.append(f"- `{item}`")
+    lines.extend(["", "## LoRA / 网页 checkpoint 路线当前只差", ""])
+    for item in status["lora_web_current_blocking"]:
+        lines.append(f"- `{item}`")
     lines.extend(["", "## 需要用户提供或授权", ""])
     for item in status["required_user_inputs"]:
         lines.append(f"- `{item['id']}`：{item['source']}")

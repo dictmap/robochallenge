@@ -9,6 +9,11 @@
 - checkpoint link 形态就绪：`False`。
 - 下载已验证：`False`。
 - 阻塞项数量：`11`。
+- 推荐路线：`baseline_official_aloha`。
+- baseline 是否需要 checkpoint link：`False`。
+- baseline 是否需要 checkpoint upload：`False`。
+- LoRA/web 是否需要 checkpoint link：`True`。
+- LoRA/web 是否需要 checkpoint upload：`True`。
 - 是否连接平台：`False`。
 - 是否上传：`False`。
 - 是否读取真实凭据：`False`。
@@ -25,9 +30,28 @@
 - `ready_real_runner_template_ready`：`True`。
 - `authorized_checkpoint_archive_template_ready`：`True`。
 - `authorized_execution_checklist_ready`：`True`。
+- `route_aware_submission_blockers_ready`：`True`。
 - `upload_channels_audited`：`True`。
 - `preflight_bundle_ready`：`True`。
 - `secret_scan_clean`：`True`。
+
+## Baseline 最短路线当前只差
+
+- `SUBMISSION_TARGET_CONFIRMATION`
+- `ROBOCHALLENGE_USER_TOKEN`
+- `ROBOCHALLENGE_SUBMISSION_ID`
+- `ROBOCHALLENGE_SUBMISSION_VARIANT=baseline`
+- `ROBOCHALLENGE_REAL_RUN_CONFIRM`
+
+## LoRA / 网页 checkpoint 路线当前只差
+
+- `SUBMISSION_TARGET_CONFIRMATION`
+- `ROBOCHALLENGE_USER_TOKEN`
+- `ROBOCHALLENGE_SUBMISSION_ID`
+- `ROBOCHALLENGE_SUBMISSION_VARIANT=lora`
+- `CHECKPOINT_ARCHIVE_AUTHORIZATION`
+- `ROBOCHALLENGE_CHECKPOINT_LINK`
+- `ROBOCHALLENGE_REAL_RUN_CONFIRM`
 
 ## 需要用户提供或授权
 

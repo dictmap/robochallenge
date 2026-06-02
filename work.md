@@ -1542,3 +1542,31 @@
 
 - P0：同步到 Linux 端并复跑完整 no-contact 审计链；通过后提交推送。
 - P1：如果用户提供 token/submission id，先用 baseline quickstart 的第 2/3 步做授权预检和 dry-run gate，不进入 LoRA 上传流程。
+## 2026-06-03 第五十五轮：路线感知阻塞摘要与 GUI 卡片
+
+### 已完成
+
+- 新增 `scripts/render_route_aware_submission_blockers.py`，把 baseline 官方 ALOHA 最短路线和 LoRA/web checkpoint 路线的阻塞项拆开输出。
+- 新增机器可读产物 `runs/route_aware_submission_blockers.json` 和中文报告 `reports/route_aware_submission_blockers.md`。
+- 明确 baseline 路线当前只差 5 项：提交对象确认、`ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline`、真实 runner 强确认；不需要 checkpoint link，不需要 checkpoint upload，不需要归档授权。
+- 明确 LoRA/web checkpoint 路线仍需要 checkpoint 归档授权、上传和真实 `ROBOCHALLENGE_CHECKPOINT_LINK`。
+- 更新 `scripts/audit_submission_preflight_bundle.py`、`scripts/audit_submission_artifact_manifest.py`、`scripts/audit_submission_blockers_summary.py`、`scripts/render_submission_status_dashboard.py` 和 `scripts/validate_repro_workspace.py`，把路线感知摘要纳入预检、manifest、阻塞摘要、GUI 和总体验证。
+- GUI 面板新增“路线感知阻塞”卡片，并把底部“当前阻塞”切换为 baseline 最短路线阻塞，避免把 LoRA/web 的 checkpoint link 误读为 baseline 前置条件。
+
+### 验证结果
+
+- Linux 端 `python3 -m py_compile` 已通过，覆盖新增脚本和所有改动脚本。
+- Linux 端 `python3 scripts/render_route_aware_submission_blockers.py` 已通过：`passed=true`，`recommended_route=baseline_official_aloha`，`baseline_requires_checkpoint_link=false`，`baseline_requires_checkpoint_upload=false`，`lora_web_requires_checkpoint_link=true`，`lora_web_requires_checkpoint_upload=true`。
+- Linux 端完整 no-contact 链已通过：动作包、网页字段包、路线拆分包、baseline quickstart、路线感知阻塞摘要、阻塞摘要、manifest、preflight、GUI、总体验证和 `git diff --check` 均通过。
+- GUI 状态 JSON 已升级为 `source_count=20`、`card_count=20`、`done_count=15`，底部 baseline 当前阻塞列表不含 `ROBOCHALLENGE_CHECKPOINT_LINK`。
+- 本轮没有读取真实 token、submission id 或 checkpoint link，没有接触 RoboChallenge 平台，没有上传 checkpoint，没有生成 checkpoint tar，也没有启动真实 runner。
+
+### 当前边界
+
+- baseline 官方路线离真实 runner 只剩用户侧输入和强确认：提交对象确认、`ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline`、`ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION`。
+- LoRA/web checkpoint 路线仍需额外的归档/上传授权和真实可访问 checkpoint link。
+
+### 下一步
+
+- P0：提交并推送本轮 route-aware 阻塞摘要、GUI 卡片、manifest 和验证链更新。
+- P1：用户拿到 token/submission id 后，先按 baseline quickstart 跑授权预检和 dry-run gate，不进入 LoRA 上传流程。

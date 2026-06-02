@@ -63,6 +63,7 @@ REQUIRED = [
     "reports/web_form_field_packet.md",
     "reports/submission_variant_route_packet.md",
     "reports/baseline_submission_quickstart.md",
+    "reports/route_aware_submission_blockers.md",
     "reports/submission_artifact_manifest.md",
     "reports/submission_blockers_summary.md",
     "reports/plaintext_secret_scan.md",
@@ -112,6 +113,7 @@ REQUIRED = [
     "runs/web_form_field_packet.json",
     "runs/submission_variant_route_packet.json",
     "runs/baseline_submission_quickstart.json",
+    "runs/route_aware_submission_blockers.json",
     "runs/submission_artifact_manifest.json",
     "runs/submission_blockers_summary.json",
     "runs/plaintext_secret_scan.json",
@@ -162,6 +164,7 @@ REQUIRED = [
     "scripts/render_web_form_field_packet.py",
     "scripts/render_submission_variant_route_packet.py",
     "scripts/render_baseline_submission_quickstart.py",
+    "scripts/render_route_aware_submission_blockers.py",
     "scripts/audit_submission_artifact_manifest.py",
     "scripts/audit_submission_blockers_summary.py",
     "scripts/audit_plaintext_secrets.py",
@@ -841,9 +844,9 @@ def main() -> int:
             "<html lang=\"zh-CN\">" in dashboard_html_text,
             "RoboChallenge pi0.5 提交状态面板" in dashboard_html_text,
             "当前阻塞" in dashboard_html_text,
-            dashboard.get("source_count") >= 19,
-            dashboard.get("card_count") >= 19,
-            dashboard.get("done_count", 0) >= 14,
+            dashboard.get("source_count") >= 20,
+            dashboard.get("card_count") >= 20,
+            dashboard.get("done_count", 0) >= 15,
             dashboard.get("blocked_count", 0) >= 4,
             dashboard.get("ready_for_real_submission") is False,
             dashboard.get("web_form_ready") is False,
@@ -871,6 +874,13 @@ def main() -> int:
             dashboard.get("baseline_submission_quickstart_passed") is True,
             dashboard.get("baseline_submission_quickstart_no_upload") is True,
             dashboard.get("baseline_submission_quickstart_no_link") is True,
+            dashboard.get("route_aware_submission_blockers_passed") is True,
+            dashboard.get("route_aware_recommended_route") == "baseline_official_aloha",
+            dashboard.get("route_aware_baseline_no_upload") is True,
+            dashboard.get("route_aware_baseline_no_link") is True,
+            dashboard.get("route_aware_lora_web_needs_upload") is True,
+            dashboard.get("route_aware_lora_web_needs_link") is True,
+            dashboard.get("route_aware_baseline_blocking_count", 0) >= 5,
             dashboard.get("jupyter_input_template_passed") is True,
             dashboard.get("jupyter_input_default_off") is True,
             dashboard.get("jupyter_local_env_ignored") is True,
@@ -884,6 +894,7 @@ def main() -> int:
             dashboard.get("secret_values_printed") is False,
             dashboard.get("critical_order_passed"),
             len(dashboard.get("blocking", [])) >= 3,
+            "ROBOCHALLENGE_CHECKPOINT_LINK" not in set(dashboard.get("blocking", [])),
             "pi0.5 基模" in dashboard_titles,
             "Table30v2 ALOHA" in dashboard_titles,
             "归档强确认入口" in dashboard_titles,
@@ -892,6 +903,7 @@ def main() -> int:
             "网页表单字段" in dashboard_titles,
             "提交路线拆分" in dashboard_titles,
             "Baseline 最短路径" in dashboard_titles,
+            "路线感知阻塞" in dashboard_titles,
             "Jupyter 安全填空" in dashboard_titles,
             "Jupyter 授权预检" in dashboard_titles,
             "真实提交 gate" in dashboard_titles,
@@ -1449,6 +1461,54 @@ def main() -> int:
     ):
         print("baseline 最短提交路径包审计未通过")
         return 1
+    route_aware_blockers = json.loads((ROOT / "runs/route_aware_submission_blockers.json").read_text(encoding="utf-8"))
+    route_aware_evidence = route_aware_blockers.get("evidence", {})
+    route_aware_leaks = route_aware_blockers.get("leak_flags", {})
+    route_aware_contacts = route_aware_blockers.get("contact_flags", {})
+    route_aware_baseline_ids = set(route_aware_blockers.get("baseline_current_blocking", []))
+    route_aware_lora_ids = set(route_aware_blockers.get("lora_web_current_blocking", []))
+    if not all(
+        [
+            route_aware_blockers.get("kind") == "route_aware_submission_blockers",
+            route_aware_blockers.get("passed"),
+            route_aware_blockers.get("recommended_route") == "baseline_official_aloha",
+            route_aware_blockers.get("baseline_requires_checkpoint_upload") is False,
+            route_aware_blockers.get("baseline_requires_checkpoint_link") is False,
+            route_aware_blockers.get("baseline_requires_archive_authorization") is False,
+            route_aware_blockers.get("lora_web_requires_checkpoint_upload") is True,
+            route_aware_blockers.get("lora_web_requires_checkpoint_link") is True,
+            route_aware_blockers.get("lora_web_requires_archive_authorization") is True,
+            "ROBOCHALLENGE_CHECKPOINT_LINK" not in route_aware_baseline_ids,
+            "CHECKPOINT_ARCHIVE_AUTHORIZATION" not in route_aware_baseline_ids,
+            {
+                "SUBMISSION_TARGET_CONFIRMATION",
+                "ROBOCHALLENGE_USER_TOKEN",
+                "ROBOCHALLENGE_SUBMISSION_ID",
+                "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline",
+                "ROBOCHALLENGE_REAL_RUN_CONFIRM",
+            }.issubset(route_aware_baseline_ids),
+            {
+                "SUBMISSION_TARGET_CONFIRMATION",
+                "ROBOCHALLENGE_USER_TOKEN",
+                "ROBOCHALLENGE_SUBMISSION_ID",
+                "ROBOCHALLENGE_SUBMISSION_VARIANT=lora",
+                "CHECKPOINT_ARCHIVE_AUTHORIZATION",
+                "ROBOCHALLENGE_CHECKPOINT_LINK",
+                "ROBOCHALLENGE_REAL_RUN_CONFIRM",
+            }.issubset(route_aware_lora_ids),
+            all(route_aware_evidence.values()),
+            not any(route_aware_leaks.values()),
+            not any(route_aware_contacts.values()),
+            route_aware_blockers.get("platform_contacted") is False,
+            route_aware_blockers.get("uploads_performed") is False,
+            route_aware_blockers.get("credentials_read") is False,
+            route_aware_blockers.get("credentials_printed") is False,
+            route_aware_blockers.get("link_values_printed") is False,
+            route_aware_blockers.get("secret_values_printed") is False,
+        ]
+    ):
+        print("路线感知阻塞摘要审计未通过")
+        return 1
     artifact_manifest = json.loads((ROOT / "runs/submission_artifact_manifest.json").read_text(encoding="utf-8"))
     artifact_inputs = artifact_manifest.get("inputs", {})
     artifact_leaks = artifact_manifest.get("leak_flags", {})
@@ -1501,6 +1561,7 @@ def main() -> int:
         "web_form_field_packet",
         "submission_variant_route_packet",
         "baseline_submission_quickstart",
+        "route_aware_submission_blockers",
         "submission_artifact_manifest",
     }
     if not all(
@@ -1535,6 +1596,8 @@ def main() -> int:
     blocker_leaks = blockers_summary.get("leak_flags", {})
     blocker_contacts = blockers_summary.get("contact_flags", {})
     required_input_ids = {item.get("id") for item in blockers_summary.get("required_user_inputs", [])}
+    blocker_baseline_ids = set(blockers_summary.get("baseline_current_blocking", []))
+    blocker_lora_web_ids = set(blockers_summary.get("lora_web_current_blocking", []))
     if not all(
         [
             blockers_summary.get("kind") == "submission_blockers_summary",
@@ -1551,6 +1614,28 @@ def main() -> int:
             blocker_state.get("link_shape_ready") is False,
             blocker_state.get("download_verified") is False,
             all(blocker_local_ready.values()),
+            blockers_summary.get("recommended_route") == "baseline_official_aloha",
+            blockers_summary.get("baseline_requires_checkpoint_link") is False,
+            blockers_summary.get("baseline_requires_checkpoint_upload") is False,
+            blockers_summary.get("lora_web_requires_checkpoint_link") is True,
+            blockers_summary.get("lora_web_requires_checkpoint_upload") is True,
+            "ROBOCHALLENGE_CHECKPOINT_LINK" not in blocker_baseline_ids,
+            {
+                "SUBMISSION_TARGET_CONFIRMATION",
+                "ROBOCHALLENGE_USER_TOKEN",
+                "ROBOCHALLENGE_SUBMISSION_ID",
+                "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline",
+                "ROBOCHALLENGE_REAL_RUN_CONFIRM",
+            }.issubset(blocker_baseline_ids),
+            {
+                "SUBMISSION_TARGET_CONFIRMATION",
+                "ROBOCHALLENGE_USER_TOKEN",
+                "ROBOCHALLENGE_SUBMISSION_ID",
+                "ROBOCHALLENGE_SUBMISSION_VARIANT=lora",
+                "CHECKPOINT_ARCHIVE_AUTHORIZATION",
+                "ROBOCHALLENGE_CHECKPOINT_LINK",
+                "ROBOCHALLENGE_REAL_RUN_CONFIRM",
+            }.issubset(blocker_lora_web_ids),
             {"ROBOCHALLENGE_USER_TOKEN", "ROBOCHALLENGE_SUBMISSION_ID", "ROBOCHALLENGE_CHECKPOINT_LINK"}.issubset(
                 required_input_ids
             ),
@@ -1743,6 +1828,7 @@ def main() -> int:
     print("网页表单字段包审计已通过")
     print("提交路线拆分包审计已通过")
     print("baseline 最短提交路径包审计已通过")
+    print("路线感知阻塞摘要审计已通过")
     print("提交准备材料 manifest 审计已通过")
     print("真实提交前预检汇总已通过")
     print("真实提交阻塞项摘要已通过")

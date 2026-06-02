@@ -25,6 +25,7 @@
     "ready_real_runner_template_ready": true,
     "authorized_checkpoint_archive_template_ready": true,
     "authorized_execution_checklist_ready": true,
+    "route_aware_submission_blockers_ready": true,
     "upload_channels_audited": true,
     "preflight_bundle_ready": true,
     "secret_scan_clean": true
@@ -51,6 +52,43 @@
       "source": "由用户授权上传后得到；只做脱敏形态检查，默认不联网验证。"
     }
   ],
+  "recommended_route": "baseline_official_aloha",
+  "baseline_required_user_inputs": [
+    "SUBMISSION_TARGET_CONFIRMATION",
+    "ROBOCHALLENGE_USER_TOKEN",
+    "ROBOCHALLENGE_SUBMISSION_ID",
+    "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline",
+    "ROBOCHALLENGE_REAL_RUN_CONFIRM"
+  ],
+  "baseline_current_blocking": [
+    "SUBMISSION_TARGET_CONFIRMATION",
+    "ROBOCHALLENGE_USER_TOKEN",
+    "ROBOCHALLENGE_SUBMISSION_ID",
+    "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline",
+    "ROBOCHALLENGE_REAL_RUN_CONFIRM"
+  ],
+  "baseline_requires_checkpoint_link": false,
+  "baseline_requires_checkpoint_upload": false,
+  "lora_web_required_user_inputs": [
+    "SUBMISSION_TARGET_CONFIRMATION",
+    "ROBOCHALLENGE_USER_TOKEN",
+    "ROBOCHALLENGE_SUBMISSION_ID",
+    "ROBOCHALLENGE_SUBMISSION_VARIANT=lora",
+    "CHECKPOINT_ARCHIVE_AUTHORIZATION",
+    "ROBOCHALLENGE_CHECKPOINT_LINK",
+    "ROBOCHALLENGE_REAL_RUN_CONFIRM"
+  ],
+  "lora_web_current_blocking": [
+    "SUBMISSION_TARGET_CONFIRMATION",
+    "ROBOCHALLENGE_USER_TOKEN",
+    "ROBOCHALLENGE_SUBMISSION_ID",
+    "ROBOCHALLENGE_SUBMISSION_VARIANT=lora",
+    "CHECKPOINT_ARCHIVE_AUTHORIZATION",
+    "ROBOCHALLENGE_CHECKPOINT_LINK",
+    "ROBOCHALLENGE_REAL_RUN_CONFIRM"
+  ],
+  "lora_web_requires_checkpoint_link": true,
+  "lora_web_requires_checkpoint_upload": true,
   "blocking": [
     "缺少 ROBOCHALLENGE_USER_TOKEN。",
     "缺少 ROBOCHALLENGE_SUBMISSION_ID。",

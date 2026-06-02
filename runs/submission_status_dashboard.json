@@ -2,9 +2,9 @@
   "kind": "submission_status_dashboard",
   "passed": true,
   "html_path": "reports/submission_status_dashboard.html",
-  "source_count": 19,
-  "card_count": 19,
-  "done_count": 14,
+  "source_count": 20,
+  "card_count": 20,
+  "done_count": 15,
   "blocked_count": 4,
   "watch_count": 1,
   "ready_for_real_submission": false,
@@ -33,6 +33,13 @@
   "baseline_submission_quickstart_passed": true,
   "baseline_submission_quickstart_no_upload": true,
   "baseline_submission_quickstart_no_link": true,
+  "route_aware_submission_blockers_passed": true,
+  "route_aware_recommended_route": "baseline_official_aloha",
+  "route_aware_baseline_no_upload": true,
+  "route_aware_baseline_no_link": true,
+  "route_aware_lora_web_needs_upload": true,
+  "route_aware_lora_web_needs_link": true,
+  "route_aware_baseline_blocking_count": 5,
   "jupyter_input_template_passed": true,
   "jupyter_input_default_off": true,
   "jupyter_local_env_ignored": true,
@@ -46,10 +53,11 @@
   "secret_values_printed": false,
   "critical_order_passed": true,
   "blocking": [
-    "缺少 ROBOCHALLENGE_USER_TOKEN。",
-    "缺少 ROBOCHALLENGE_SUBMISSION_ID。",
-    "缺少真实可访问 checkpoint link；可使用 ROBOCHALLENGE_CHECKPOINT_LINK 或 ROBOCHALLENGE_LORA_CHECKPOINT_LINK 记录。",
-    "尚未执行 checkpoint 上传，本地 tar 文件也未生成。"
+    "SUBMISSION_TARGET_CONFIRMATION",
+    "ROBOCHALLENGE_USER_TOKEN",
+    "ROBOCHALLENGE_SUBMISSION_ID",
+    "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline",
+    "ROBOCHALLENGE_REAL_RUN_CONFIRM"
   ],
   "cards": [
     {
@@ -179,6 +187,14 @@
       "value": "无 link 前置",
       "detail": "token 和 submission id 到位后先跑 baseline 授权预检；缺真实确认短语时只到 dry-run，不启动 runner。",
       "report": "reports/baseline_submission_quickstart.md"
+    },
+    {
+      "title": "路线感知阻塞",
+      "state": "done",
+      "state_label": "已完成",
+      "value": "baseline 不等 link",
+      "detail": "底部当前阻塞按 baseline 最短路线显示；LoRA/web checkpoint 的上传和 link 阻塞单独保留。",
+      "report": "reports/route_aware_submission_blockers.md"
     },
     {
       "title": "Jupyter 安全填空",

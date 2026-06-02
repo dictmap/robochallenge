@@ -31,6 +31,7 @@ SOURCE_FILES = {
     "web_form_field_packet": RUNS_DIR / "web_form_field_packet.json",
     "submission_variant_route_packet": RUNS_DIR / "submission_variant_route_packet.json",
     "baseline_submission_quickstart": RUNS_DIR / "baseline_submission_quickstart.json",
+    "route_aware_submission_blockers": RUNS_DIR / "route_aware_submission_blockers.json",
     "jupyter_input": RUNS_DIR / "jupyter_input_template_audit.json",
     "jupyter_authorized": RUNS_DIR / "jupyter_authorized_preflight_template_audit.json",
     "link_intake": RUNS_DIR / "checkpoint_link_intake.json",
@@ -90,6 +91,7 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
     web_form_packet = data["web_form_field_packet"]
     route_packet = data["submission_variant_route_packet"]
     baseline_quickstart = data["baseline_submission_quickstart"]
+    route_aware_blockers = data["route_aware_submission_blockers"]
     jupyter_input = data["jupyter_input"]
     jupyter_authorized = data["jupyter_authorized"]
     link_intake = data["link_intake"]
@@ -139,6 +141,14 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
         and baseline_quickstart.get("recommended_route") == "baseline_official_aloha"
         and baseline_quickstart.get("requires_checkpoint_upload") is False
         and baseline_quickstart.get("requires_checkpoint_link") is False
+    )
+    route_aware_blockers_ready = bool(
+        route_aware_blockers.get("passed")
+        and route_aware_blockers.get("recommended_route") == "baseline_official_aloha"
+        and route_aware_blockers.get("baseline_requires_checkpoint_upload") is False
+        and route_aware_blockers.get("baseline_requires_checkpoint_link") is False
+        and route_aware_blockers.get("lora_web_requires_checkpoint_upload") is True
+        and route_aware_blockers.get("lora_web_requires_checkpoint_link") is True
     )
     jupyter_input_ready = bool(
         jupyter_input.get("passed")
@@ -273,6 +283,13 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
             "reports/baseline_submission_quickstart.md",
         ),
         card(
+            "路线感知阻塞",
+            "done" if route_aware_blockers_ready else "watch",
+            "baseline 不等 link",
+            "底部当前阻塞按 baseline 最短路线显示；LoRA/web checkpoint 的上传和 link 阻塞单独保留。",
+            "reports/route_aware_submission_blockers.md",
+        ),
+        card(
             "Jupyter 安全填空",
             "done" if jupyter_input_ready else "watch",
             "local env 入口",
@@ -306,6 +323,7 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
     web_form_packet = data["web_form_field_packet"]
     route_packet = data["submission_variant_route_packet"]
     baseline_quickstart = data["baseline_submission_quickstart"]
+    route_aware_blockers = data["route_aware_submission_blockers"]
     jupyter_input = data["jupyter_input"]
     jupyter_authorized = data["jupyter_authorized"]
     sequence = data["authorized_sequence"]
@@ -351,6 +369,13 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
         "baseline_submission_quickstart_passed": baseline_quickstart.get("passed") is True,
         "baseline_submission_quickstart_no_upload": baseline_quickstart.get("requires_checkpoint_upload") is False,
         "baseline_submission_quickstart_no_link": baseline_quickstart.get("requires_checkpoint_link") is False,
+        "route_aware_submission_blockers_passed": route_aware_blockers.get("passed") is True,
+        "route_aware_recommended_route": route_aware_blockers.get("recommended_route"),
+        "route_aware_baseline_no_upload": route_aware_blockers.get("baseline_requires_checkpoint_upload") is False,
+        "route_aware_baseline_no_link": route_aware_blockers.get("baseline_requires_checkpoint_link") is False,
+        "route_aware_lora_web_needs_upload": route_aware_blockers.get("lora_web_requires_checkpoint_upload") is True,
+        "route_aware_lora_web_needs_link": route_aware_blockers.get("lora_web_requires_checkpoint_link") is True,
+        "route_aware_baseline_blocking_count": len(route_aware_blockers.get("baseline_current_blocking", [])),
         "jupyter_input_template_passed": jupyter_input.get("passed") is True,
         "jupyter_input_default_off": jupyter_input.get("run_flag_default_false") is True,
         "jupyter_local_env_ignored": jupyter_input.get("local_env_ignored", {}).get("ignored") is True,
@@ -363,7 +388,7 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
         "link_values_printed": False,
         "secret_values_printed": plaintext.get("secret_values_printed"),
         "critical_order_passed": sequence.get("commands", {}).get("critical_order_passed"),
-        "blocking": readiness.get("blocking", []),
+        "blocking": route_aware_blockers.get("baseline_current_blocking") or readiness.get("blocking", []),
         "cards": cards,
     }
 

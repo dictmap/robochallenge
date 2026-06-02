@@ -9,6 +9,11 @@
 - baseline runner 就绪：`False`。
 - LoRA runner 就绪：`False`。
 - checkpoint link 形态就绪：`False`。
+- 推荐提交路线：`baseline_official_aloha`。
+- baseline 是否需要 checkpoint link：`False`。
+- baseline 是否需要 checkpoint upload：`False`。
+- LoRA/web 是否需要 checkpoint link：`True`。
+- LoRA/web 是否需要 checkpoint upload：`True`。
 - 下载已验证：`False`。
 - secret scan 命中数：`0`。
 
@@ -40,7 +45,26 @@
 - `web_form_field_packet`：returncode=`0`，passed=`True`。
 - `submission_variant_route_packet`：returncode=`0`，passed=`True`。
 - `baseline_submission_quickstart`：returncode=`0`，passed=`True`。
+- `route_aware_submission_blockers`：returncode=`0`，passed=`True`。
 - `submission_artifact_manifest`：returncode=`0`，passed=`True`。
+
+## Baseline 最短路线当前只差
+
+- `SUBMISSION_TARGET_CONFIRMATION`
+- `ROBOCHALLENGE_USER_TOKEN`
+- `ROBOCHALLENGE_SUBMISSION_ID`
+- `ROBOCHALLENGE_SUBMISSION_VARIANT=baseline`
+- `ROBOCHALLENGE_REAL_RUN_CONFIRM`
+
+## LoRA / 网页 checkpoint 路线当前只差
+
+- `SUBMISSION_TARGET_CONFIRMATION`
+- `ROBOCHALLENGE_USER_TOKEN`
+- `ROBOCHALLENGE_SUBMISSION_ID`
+- `ROBOCHALLENGE_SUBMISSION_VARIANT=lora`
+- `CHECKPOINT_ARCHIVE_AUTHORIZATION`
+- `ROBOCHALLENGE_CHECKPOINT_LINK`
+- `ROBOCHALLENGE_REAL_RUN_CONFIRM`
 
 ## Blocking
 

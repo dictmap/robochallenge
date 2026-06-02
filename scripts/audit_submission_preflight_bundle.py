@@ -36,6 +36,7 @@ SUBCOMMANDS = [
     ("web_form_field_packet", "scripts/render_web_form_field_packet.py"),
     ("submission_variant_route_packet", "scripts/render_submission_variant_route_packet.py"),
     ("baseline_submission_quickstart", "scripts/render_baseline_submission_quickstart.py"),
+    ("route_aware_submission_blockers", "scripts/render_route_aware_submission_blockers.py"),
     ("submission_artifact_manifest", "scripts/audit_submission_artifact_manifest.py"),
 ]
 
@@ -97,6 +98,7 @@ def build_status() -> dict[str, Any]:
     web_form_packet = read_json(RUNS_DIR / "web_form_field_packet.json")
     route_packet = read_json(RUNS_DIR / "submission_variant_route_packet.json")
     baseline_quickstart = read_json(RUNS_DIR / "baseline_submission_quickstart.json")
+    route_aware_blockers = read_json(RUNS_DIR / "route_aware_submission_blockers.json")
 
     leak_flags = {
         "credentials_printed": any(
@@ -118,6 +120,7 @@ def build_status() -> dict[str, Any]:
                 web_form_packet,
                 route_packet,
                 baseline_quickstart,
+                route_aware_blockers,
             ]
         ),
         "link_values_printed": bool(link_intake.get("link_values_printed"))
@@ -132,7 +135,8 @@ def build_status() -> dict[str, Any]:
         or bool(action_packet.get("link_values_printed"))
         or bool(web_form_packet.get("link_values_printed"))
         or bool(route_packet.get("link_values_printed"))
-        or bool(baseline_quickstart.get("link_values_printed")),
+        or bool(baseline_quickstart.get("link_values_printed"))
+        or bool(route_aware_blockers.get("link_values_printed")),
         "secret_values_printed": bool(secret_scan.get("secret_values_printed"))
         or bool(artifact_manifest.get("secret_values_printed"))
         or bool(notebook_structure.get("secret_values_printed"))
@@ -144,7 +148,8 @@ def build_status() -> dict[str, Any]:
         or bool(action_packet.get("secret_values_printed"))
         or bool(web_form_packet.get("secret_values_printed"))
         or bool(route_packet.get("secret_values_printed"))
-        or bool(baseline_quickstart.get("secret_values_printed")),
+        or bool(baseline_quickstart.get("secret_values_printed"))
+        or bool(route_aware_blockers.get("secret_values_printed")),
     }
     contact_flags = {
         "platform_contacted": any(
@@ -166,6 +171,7 @@ def build_status() -> dict[str, Any]:
                 web_form_packet,
                 route_packet,
                 baseline_quickstart,
+                route_aware_blockers,
             ]
         ),
         "uploads_performed": any(
@@ -187,6 +193,7 @@ def build_status() -> dict[str, Any]:
                 web_form_packet,
                 route_packet,
                 baseline_quickstart,
+                route_aware_blockers,
             ]
             for key in ["uploads_performed", "upload_performed"]
         ),
@@ -217,6 +224,13 @@ def build_status() -> dict[str, Any]:
         "verify_download_requested": link_download.get("verify_download_requested"),
         "download_verified": link_download.get("verification", {}).get("download_verified"),
         "link_shape_ready": link_intake.get("current_env", {}).get("link_shape_ready"),
+        "recommended_route": route_aware_blockers.get("recommended_route"),
+        "baseline_requires_checkpoint_link": route_aware_blockers.get("baseline_requires_checkpoint_link"),
+        "baseline_requires_checkpoint_upload": route_aware_blockers.get("baseline_requires_checkpoint_upload"),
+        "lora_web_requires_checkpoint_link": route_aware_blockers.get("lora_web_requires_checkpoint_link"),
+        "lora_web_requires_checkpoint_upload": route_aware_blockers.get("lora_web_requires_checkpoint_upload"),
+        "baseline_current_blocking": route_aware_blockers.get("baseline_current_blocking", []),
+        "lora_web_current_blocking": route_aware_blockers.get("lora_web_current_blocking", []),
         "secret_scan_hit_count": secret_scan.get("hit_count"),
         "secret_scan_scanned_files": secret_scan.get("scanned_files"),
         "subcommands": subcommands,
@@ -239,6 +253,11 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         f"- baseline runner 就绪：`{status['local_baseline_runner_ready']}`。",
         f"- LoRA runner 就绪：`{status['local_lora_runner_ready']}`。",
         f"- checkpoint link 形态就绪：`{status['link_shape_ready']}`。",
+        f"- 推荐提交路线：`{status['recommended_route']}`。",
+        f"- baseline 是否需要 checkpoint link：`{status['baseline_requires_checkpoint_link']}`。",
+        f"- baseline 是否需要 checkpoint upload：`{status['baseline_requires_checkpoint_upload']}`。",
+        f"- LoRA/web 是否需要 checkpoint link：`{status['lora_web_requires_checkpoint_link']}`。",
+        f"- LoRA/web 是否需要 checkpoint upload：`{status['lora_web_requires_checkpoint_upload']}`。",
         f"- 下载已验证：`{status['download_verified']}`。",
         f"- secret scan 命中数：`{status['secret_scan_hit_count']}`。",
         "",
@@ -256,6 +275,12 @@ def write_report(status: dict[str, Any], path: Path) -> None:
     ]
     for name, item in status["subcommands"].items():
         lines.append(f"- `{name}`：returncode=`{item['returncode']}`，passed=`{item['passed']}`。")
+    lines.extend(["", "## Baseline 最短路线当前只差", ""])
+    for item in status["baseline_current_blocking"]:
+        lines.append(f"- `{item}`")
+    lines.extend(["", "## LoRA / 网页 checkpoint 路线当前只差", ""])
+    for item in status["lora_web_current_blocking"]:
+        lines.append(f"- `{item}`")
     lines.extend(["", "## Blocking", ""])
     for item in status["blocking"]:
         lines.append(f"- {item}")

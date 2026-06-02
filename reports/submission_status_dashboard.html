@@ -105,10 +105,10 @@
         <h1>RoboChallenge pi0.5 提交状态面板</h1>
         <p class="sub">静态 GUI 汇总当前复现、LoRA checkpoint、上传/link/readiness 阻塞和授权后执行顺序。面板由 JSON 审计结果生成，不读取或显示真实凭据。</p>
       </div>
-      <div class="stamp">生成时间<br>2026-06-02 17:49:14 UTC</div>
+      <div class="stamp">生成时间<br>2026-06-02 18:15:10 UTC</div>
     </header>
     <section class="summary">
-      <div class="metric"><b>14</b><span>已完成项</span></div>
+      <div class="metric"><b>15</b><span>已完成项</span></div>
       <div class="metric"><b>4</b><span>待授权项</span></div>
       <div class="metric"><b>否</b><span>真实提交就绪</span></div>
       <div class="metric"><b>否</b><span>checkpoint link 就绪</span></div>
@@ -279,6 +279,16 @@
             <article class="card done">
               <div class="card-top">
                 <span class="state">已完成</span>
+                <a href="../reports/route_aware_submission_blockers.md">报告</a>
+              </div>
+              <h2>路线感知阻塞</h2>
+              <p class="value">baseline 不等 link</p>
+              <p>底部当前阻塞按 baseline 最短路线显示；LoRA/web checkpoint 的上传和 link 阻塞单独保留。</p>
+            </article>
+
+            <article class="card done">
+              <div class="card-top">
+                <span class="state">已完成</span>
                 <a href="../reports/jupyter_input_template_audit.md">报告</a>
               </div>
               <h2>Jupyter 安全填空</h2>
@@ -309,7 +319,7 @@
     </section>
     <section class="blockers">
       <h2>当前阻塞</h2>
-      <ul><li>缺少 ROBOCHALLENGE_USER_TOKEN。</li><li>缺少 ROBOCHALLENGE_SUBMISSION_ID。</li><li>缺少真实可访问 checkpoint link；可使用 ROBOCHALLENGE_CHECKPOINT_LINK 或 ROBOCHALLENGE_LORA_CHECKPOINT_LINK 记录。</li><li>尚未执行 checkpoint 上传，本地 tar 文件也未生成。</li></ul>
+      <ul><li>SUBMISSION_TARGET_CONFIRMATION</li><li>ROBOCHALLENGE_USER_TOKEN</li><li>ROBOCHALLENGE_SUBMISSION_ID</li><li>ROBOCHALLENGE_SUBMISSION_VARIANT=baseline</li><li>ROBOCHALLENGE_REAL_RUN_CONFIRM</li></ul>
     </section>
   </main>
 </body>

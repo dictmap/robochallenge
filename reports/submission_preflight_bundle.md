@@ -21,6 +21,10 @@
 - synthetic local env smoke：`True`。
 - synthetic 授权预检是否走 baseline：`True`。
 - synthetic ready runner 是否停在真实 runner 前：`True`。
+- baseline final handoff：`True`。
+- final handoff 命令数：`4`。
+- final handoff no-contact 命令数：`3`。
+- final handoff 真实 runner 是否需要强确认：`True`。
 - LoRA/web 是否需要 checkpoint link：`True`。
 - LoRA/web 是否需要 checkpoint upload：`True`。
 - 下载已验证：`False`。
@@ -57,6 +61,7 @@
 - `baseline_dry_run_gate`：returncode=`0`，passed=`True`。
 - `baseline_credential_hygiene`：returncode=`0`，passed=`True`。
 - `baseline_local_env_smoke`：returncode=`0`，passed=`True`。
+- `baseline_final_handoff_packet`：returncode=`0`，passed=`True`。
 - `submission_handoff_docs`：returncode=`0`，passed=`True`。
 - `submission_artifact_manifest`：returncode=`0`，passed=`True`。
 

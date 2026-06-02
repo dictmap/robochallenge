@@ -105,10 +105,10 @@
         <h1>RoboChallenge pi0.5 提交状态面板</h1>
         <p class="sub">静态 GUI 汇总当前复现、LoRA checkpoint、上传/link/readiness 阻塞和授权后执行顺序。面板由 JSON 审计结果生成，不读取或显示真实凭据。</p>
       </div>
-      <div class="stamp">生成时间<br>2026-06-02 19:46:24 UTC</div>
+      <div class="stamp">生成时间<br>2026-06-02 20:00:50 UTC</div>
     </header>
     <section class="summary">
-      <div class="metric"><b>18</b><span>已完成项</span></div>
+      <div class="metric"><b>19</b><span>已完成项</span></div>
       <div class="metric"><b>4</b><span>待授权项</span></div>
       <div class="metric"><b>否</b><span>真实提交就绪</span></div>
       <div class="metric"><b>否</b><span>checkpoint link 就绪</span></div>
@@ -304,6 +304,16 @@
               <h2>Baseline local env smoke</h2>
               <p class="value">synthetic 已跑通</p>
               <p>临时 fake local env 已验证授权预检会按 baseline 读取，ready runner 缺强确认时仍停在真实 runner 前。</p>
+            </article>
+
+            <article class="card done">
+              <div class="card-top">
+                <span class="state">已完成</span>
+                <a href="../reports/baseline_final_handoff_packet.md">报告</a>
+              </div>
+              <h2>Baseline final handoff</h2>
+              <p class="value">凭据后执行</p>
+              <p>最终交接包把凭据卫生、授权前只读预检、dry-run gate 和真实 runner 强确认命令按顺序固化。</p>
             </article>
 
             <article class="card done">

@@ -34,6 +34,7 @@ SOURCE_FILES = {
     "baseline_dry_run_gate": RUNS_DIR / "baseline_dry_run_gate.json",
     "baseline_credential_hygiene": RUNS_DIR / "baseline_credential_hygiene.json",
     "baseline_local_env_smoke": RUNS_DIR / "baseline_local_env_smoke.json",
+    "baseline_final_handoff": RUNS_DIR / "baseline_final_handoff_packet.json",
     "route_aware_submission_blockers": RUNS_DIR / "route_aware_submission_blockers.json",
     "jupyter_input": RUNS_DIR / "jupyter_input_template_audit.json",
     "jupyter_authorized": RUNS_DIR / "jupyter_authorized_preflight_template_audit.json",
@@ -97,6 +98,7 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
     baseline_dry_run_gate = data["baseline_dry_run_gate"]
     baseline_credential_hygiene = data["baseline_credential_hygiene"]
     baseline_local_env_smoke = data["baseline_local_env_smoke"]
+    baseline_final_handoff = data["baseline_final_handoff"]
     route_aware_blockers = data["route_aware_submission_blockers"]
     jupyter_input = data["jupyter_input"]
     jupyter_authorized = data["jupyter_authorized"]
@@ -175,6 +177,16 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
         and baseline_local_env_smoke.get("synthetic_env_file_removed_after_run") is True
         and baseline_local_env_smoke.get("authorized_preflight", {}).get("variant_baseline") is True
         and baseline_local_env_smoke.get("ready_runner", {}).get("stops_before_real_runner") is True
+    )
+    baseline_final_handoff_ready = bool(
+        baseline_final_handoff.get("passed")
+        and baseline_final_handoff.get("recommended_route") == "baseline_official_aloha"
+        and baseline_final_handoff.get("requires_checkpoint_upload") is False
+        and baseline_final_handoff.get("requires_checkpoint_link") is False
+        and baseline_final_handoff.get("local_env_content_read") is False
+        and baseline_final_handoff.get("command_count") == 4
+        and baseline_final_handoff.get("no_contact_command_count") == 3
+        and baseline_final_handoff.get("real_runner_requires_confirmation") is True
     )
     route_aware_blockers_ready = bool(
         route_aware_blockers.get("passed")
@@ -344,6 +356,13 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
             "reports/baseline_local_env_smoke.md",
         ),
         card(
+            "Baseline final handoff",
+            "done" if baseline_final_handoff_ready else "watch",
+            "凭据后执行",
+            "最终交接包把凭据卫生、授权前只读预检、dry-run gate 和真实 runner 强确认命令按顺序固化。",
+            "reports/baseline_final_handoff_packet.md",
+        ),
+        card(
             "路线感知阻塞",
             "done" if route_aware_blockers_ready else "watch",
             "baseline 不等 link",
@@ -387,6 +406,7 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
     baseline_dry_run_gate = data["baseline_dry_run_gate"]
     baseline_credential_hygiene = data["baseline_credential_hygiene"]
     baseline_local_env_smoke = data["baseline_local_env_smoke"]
+    baseline_final_handoff = data["baseline_final_handoff"]
     route_aware_blockers = data["route_aware_submission_blockers"]
     jupyter_input = data["jupyter_input"]
     jupyter_authorized = data["jupyter_authorized"]
@@ -474,6 +494,20 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
             "stops_before_real_runner"
         )
         is True,
+        "baseline_final_handoff_passed": baseline_final_handoff.get("passed") is True,
+        "baseline_final_handoff_no_upload": baseline_final_handoff.get("requires_checkpoint_upload") is False,
+        "baseline_final_handoff_no_link": baseline_final_handoff.get("requires_checkpoint_link") is False,
+        "baseline_final_handoff_no_archive_authorization": baseline_final_handoff.get(
+            "requires_checkpoint_archive_authorization"
+        )
+        is False,
+        "baseline_final_handoff_command_count": baseline_final_handoff.get("command_count"),
+        "baseline_final_handoff_no_contact_command_count": baseline_final_handoff.get("no_contact_command_count"),
+        "baseline_final_handoff_real_runner_requires_confirmation": baseline_final_handoff.get(
+            "real_runner_requires_confirmation"
+        )
+        is True,
+        "baseline_final_handoff_does_not_read_local_env": baseline_final_handoff.get("local_env_content_read") is False,
         "route_aware_submission_blockers_passed": route_aware_blockers.get("passed") is True,
         "route_aware_recommended_route": route_aware_blockers.get("recommended_route"),
         "route_aware_baseline_no_upload": route_aware_blockers.get("baseline_requires_checkpoint_upload") is False,

@@ -1,0 +1,119 @@
+{
+  "kind": "baseline_final_handoff_packet",
+  "passed": true,
+  "recommended_route": "baseline_official_aloha",
+  "recommended_local_env": "submission/robochallenge_env.local.sh",
+  "local_env_content_read": false,
+  "requires_checkpoint_upload": false,
+  "requires_checkpoint_link": false,
+  "requires_checkpoint_archive_authorization": false,
+  "baseline_current_blocking": [
+    "ROBOCHALLENGE_REAL_RUN_CONFIRM",
+    "ROBOCHALLENGE_SUBMISSION_ID",
+    "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline",
+    "ROBOCHALLENGE_USER_TOKEN",
+    "SUBMISSION_TARGET_CONFIRMATION"
+  ],
+  "lora_only_ids": [
+    "CHECKPOINT_ARCHIVE_AUTHORIZATION",
+    "ROBOCHALLENGE_CHECKPOINT_LINK"
+  ],
+  "commands": [
+    {
+      "step": 1,
+      "name": "凭据卫生检查",
+      "command": "python3 scripts/render_baseline_credential_hygiene.py",
+      "no_contact": true,
+      "requires_user_credentials": false,
+      "starts_real_runner": false
+    },
+    {
+      "step": 2,
+      "name": "baseline 授权前只读预检",
+      "command": "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_authorized_preflight_template.sh",
+      "no_contact": true,
+      "requires_user_credentials": true,
+      "starts_real_runner": false
+    },
+    {
+      "step": 3,
+      "name": "baseline dry-run gate",
+      "command": "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_ready_real_submission_template.sh",
+      "no_contact": true,
+      "requires_user_credentials": true,
+      "starts_real_runner": false
+    },
+    {
+      "step": 4,
+      "name": "真实 runner 强确认入口",
+      "command": "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION bash submission/run_ready_real_submission_template.sh",
+      "no_contact": false,
+      "requires_user_credentials": true,
+      "requires_real_run_confirmation": true,
+      "starts_real_runner": true
+    }
+  ],
+  "command_count": 4,
+  "no_contact_command_count": 3,
+  "real_runner_command": "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION bash submission/run_ready_real_submission_template.sh",
+  "real_runner_requires_confirmation": true,
+  "real_runner_command_starts_platform_submission": true,
+  "evidence": {
+    "route_packet_passed": true,
+    "route_packet_recommends_baseline": true,
+    "quickstart_passed": true,
+    "quickstart_command_2_exact": true,
+    "quickstart_command_3_exact": true,
+    "quickstart_command_4_exact": true,
+    "dry_run_gate_passed": true,
+    "dry_run_gate_command_exact": true,
+    "dry_run_gate_real_command_exact": true,
+    "dry_run_gate_stops_before_real_runner": true,
+    "credential_hygiene_passed": true,
+    "credential_hygiene_local_env_gitignored": true,
+    "credential_hygiene_local_env_not_tracked": true,
+    "credential_hygiene_does_not_read_local_env": true,
+    "local_env_smoke_passed": true,
+    "local_env_smoke_values_not_recorded": true,
+    "local_env_smoke_temp_env_removed": true,
+    "local_env_smoke_authorized_preflight_baseline": true,
+    "local_env_smoke_ready_runner_stops": true,
+    "authorized_execution_passed": true,
+    "authorized_execution_required_ids_complete": true,
+    "action_packet_passed": true,
+    "action_packet_required_ids_complete": true,
+    "route_aware_passed": true,
+    "route_aware_recommends_baseline": true,
+    "route_aware_baseline_no_checkpoint_upload": true,
+    "route_aware_baseline_no_checkpoint_link": true,
+    "route_aware_baseline_blocking_exact": true,
+    "route_aware_baseline_no_lora_ids": true,
+    "route_aware_lora_keeps_checkpoint_requirements": true,
+    "credential_hygiene_required_ids_complete": true,
+    "dry_run_gate_required_ids_complete": true,
+    "secret_scan_clean": true,
+    "handoff_command_count": true,
+    "handoff_command_order_exact": true,
+    "handoff_first_three_no_contact": true,
+    "handoff_real_runner_requires_confirmation": true
+  },
+  "leak_flags": {
+    "credentials_printed": false,
+    "link_values_printed": false,
+    "secret_values_printed": false
+  },
+  "contact_flags": {
+    "platform_contacted": false,
+    "uploads_performed": false,
+    "download_host_contacted": false
+  },
+  "platform_contacted": false,
+  "uploads_performed": false,
+  "credentials_read": false,
+  "credentials_printed": false,
+  "link_values_printed": false,
+  "secret_values_printed": false,
+  "blocking": [
+    "baseline 最终交接包已固化；拿到用户凭据后先跑前三个 no-contact 步骤，只有用户明确授权时才运行第四个真实 runner 强确认命令。"
+  ]
+}

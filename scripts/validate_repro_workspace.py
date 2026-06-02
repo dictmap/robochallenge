@@ -66,6 +66,7 @@ REQUIRED = [
     "reports/baseline_dry_run_gate.md",
     "reports/baseline_credential_hygiene.md",
     "reports/baseline_local_env_smoke.md",
+    "reports/baseline_final_handoff_packet.md",
     "reports/route_aware_submission_blockers.md",
     "reports/submission_artifact_manifest.md",
     "reports/submission_blockers_summary.md",
@@ -119,6 +120,7 @@ REQUIRED = [
     "runs/baseline_dry_run_gate.json",
     "runs/baseline_credential_hygiene.json",
     "runs/baseline_local_env_smoke.json",
+    "runs/baseline_final_handoff_packet.json",
     "runs/route_aware_submission_blockers.json",
     "runs/submission_artifact_manifest.json",
     "runs/submission_blockers_summary.json",
@@ -173,6 +175,7 @@ REQUIRED = [
     "scripts/render_baseline_dry_run_gate.py",
     "scripts/render_baseline_credential_hygiene.py",
     "scripts/render_baseline_local_env_smoke.py",
+    "scripts/render_baseline_final_handoff_packet.py",
     "scripts/render_route_aware_submission_blockers.py",
     "scripts/audit_submission_artifact_manifest.py",
     "scripts/audit_submission_blockers_summary.py",
@@ -903,6 +906,14 @@ def main() -> int:
             dashboard.get("baseline_local_env_smoke_temp_env_removed") is True,
             dashboard.get("baseline_local_env_smoke_authorized_preflight_baseline") is True,
             dashboard.get("baseline_local_env_smoke_ready_runner_stops") is True,
+            dashboard.get("baseline_final_handoff_passed") is True,
+            dashboard.get("baseline_final_handoff_no_upload") is True,
+            dashboard.get("baseline_final_handoff_no_link") is True,
+            dashboard.get("baseline_final_handoff_no_archive_authorization") is True,
+            dashboard.get("baseline_final_handoff_command_count") == 4,
+            dashboard.get("baseline_final_handoff_no_contact_command_count") == 3,
+            dashboard.get("baseline_final_handoff_real_runner_requires_confirmation") is True,
+            dashboard.get("baseline_final_handoff_does_not_read_local_env") is True,
             dashboard.get("route_aware_submission_blockers_passed") is True,
             dashboard.get("route_aware_recommended_route") == "baseline_official_aloha",
             dashboard.get("route_aware_baseline_no_upload") is True,
@@ -1710,6 +1721,70 @@ def main() -> int:
     ):
         print("baseline synthetic local env smoke 审计未通过")
         return 1
+    baseline_final_handoff = json.loads((ROOT / "runs/baseline_final_handoff_packet.json").read_text(encoding="utf-8"))
+    final_handoff_evidence = baseline_final_handoff.get("evidence", {})
+    final_handoff_leaks = baseline_final_handoff.get("leak_flags", {})
+    final_handoff_contacts = baseline_final_handoff.get("contact_flags", {})
+    final_handoff_blocking_ids = set(baseline_final_handoff.get("baseline_current_blocking", []))
+    final_handoff_commands = baseline_final_handoff.get("commands", [])
+    final_handoff_command_strings = [item.get("command") for item in final_handoff_commands]
+    final_handoff_real_command = final_handoff_commands[3] if len(final_handoff_commands) > 3 else {}
+    if not all(
+        [
+            baseline_final_handoff.get("kind") == "baseline_final_handoff_packet",
+            baseline_final_handoff.get("passed"),
+            baseline_final_handoff.get("recommended_route") == "baseline_official_aloha",
+            baseline_final_handoff.get("recommended_local_env") == "submission/robochallenge_env.local.sh",
+            baseline_final_handoff.get("local_env_content_read") is False,
+            baseline_final_handoff.get("requires_checkpoint_upload") is False,
+            baseline_final_handoff.get("requires_checkpoint_link") is False,
+            baseline_final_handoff.get("requires_checkpoint_archive_authorization") is False,
+            baseline_final_handoff.get("command_count") == 4,
+            baseline_final_handoff.get("no_contact_command_count") == 3,
+            baseline_final_handoff.get("real_runner_requires_confirmation") is True,
+            baseline_final_handoff.get("real_runner_command")
+            == (
+                "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline "
+                "ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION "
+                "bash submission/run_ready_real_submission_template.sh"
+            ),
+            final_handoff_command_strings
+            == [
+                "python3 scripts/render_baseline_credential_hygiene.py",
+                "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_authorized_preflight_template.sh",
+                "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_ready_real_submission_template.sh",
+                (
+                    "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline "
+                    "ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION "
+                    "bash submission/run_ready_real_submission_template.sh"
+                ),
+            ],
+            all(item.get("no_contact") is True for item in final_handoff_commands[:3]),
+            final_handoff_real_command.get("requires_real_run_confirmation") is True,
+            final_handoff_real_command.get("starts_real_runner") is True,
+            {
+                "SUBMISSION_TARGET_CONFIRMATION",
+                "ROBOCHALLENGE_USER_TOKEN",
+                "ROBOCHALLENGE_SUBMISSION_ID",
+                "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline",
+                "ROBOCHALLENGE_REAL_RUN_CONFIRM",
+            }
+            == final_handoff_blocking_ids,
+            "CHECKPOINT_ARCHIVE_AUTHORIZATION" not in final_handoff_blocking_ids,
+            "ROBOCHALLENGE_CHECKPOINT_LINK" not in final_handoff_blocking_ids,
+            all(final_handoff_evidence.values()),
+            not any(final_handoff_leaks.values()),
+            not any(final_handoff_contacts.values()),
+            baseline_final_handoff.get("platform_contacted") is False,
+            baseline_final_handoff.get("uploads_performed") is False,
+            baseline_final_handoff.get("credentials_read") is False,
+            baseline_final_handoff.get("credentials_printed") is False,
+            baseline_final_handoff.get("link_values_printed") is False,
+            baseline_final_handoff.get("secret_values_printed") is False,
+        ]
+    ):
+        print("baseline final handoff 证据包审计未通过")
+        return 1
     route_aware_blockers = json.loads((ROOT / "runs/route_aware_submission_blockers.json").read_text(encoding="utf-8"))
     route_aware_evidence = route_aware_blockers.get("evidence", {})
     route_aware_leaks = route_aware_blockers.get("leak_flags", {})
@@ -1813,6 +1888,7 @@ def main() -> int:
         "baseline_dry_run_gate",
         "baseline_credential_hygiene",
         "baseline_local_env_smoke",
+        "baseline_final_handoff_packet",
         "route_aware_submission_blockers",
         "submission_artifact_manifest",
     }
@@ -1838,6 +1914,13 @@ def main() -> int:
             preflight.get("baseline_local_env_smoke_passed") is True,
             preflight.get("baseline_local_env_smoke_authorized_preflight_variant_baseline") is True,
             preflight.get("baseline_local_env_smoke_ready_runner_stops_before_real_runner") is True,
+            preflight.get("baseline_final_handoff_passed") is True,
+            preflight.get("baseline_final_handoff_command_count") == 4,
+            preflight.get("baseline_final_handoff_no_contact_command_count") == 3,
+            preflight.get("baseline_final_handoff_real_runner_requires_confirmation") is True,
+            preflight.get("baseline_final_handoff_no_upload") is True,
+            preflight.get("baseline_final_handoff_no_link") is True,
+            preflight.get("baseline_final_handoff_does_not_read_local_env") is True,
             preflight.get("secret_scan_hit_count") == 0,
             set(preflight_subcommands) == expected_preflight_subcommands,
             all(item.get("returncode") == 0 and item.get("passed") for item in preflight_subcommands.values()),

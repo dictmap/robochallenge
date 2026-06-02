@@ -63,6 +63,7 @@ REQUIRED_ARTIFACTS = [
     "reports/baseline_dry_run_gate.md",
     "reports/baseline_credential_hygiene.md",
     "reports/baseline_local_env_smoke.md",
+    "reports/baseline_final_handoff_packet.md",
     "reports/route_aware_submission_blockers.md",
     "reports/submission_handoff_docs_audit.md",
     "reports/authorized_submission_sequence_audit.md",
@@ -76,6 +77,7 @@ REQUIRED_ARTIFACTS = [
     "scripts/render_baseline_dry_run_gate.py",
     "scripts/render_baseline_credential_hygiene.py",
     "scripts/render_baseline_local_env_smoke.py",
+    "scripts/render_baseline_final_handoff_packet.py",
     "scripts/render_route_aware_submission_blockers.py",
     "scripts/audit_jupyter_input_template.py",
     "scripts/audit_jupyter_authorized_preflight_template.py",
@@ -186,6 +188,7 @@ def build_status() -> dict[str, Any]:
     baseline_dry_run_gate = read_json(RUNS_DIR / "baseline_dry_run_gate.json")
     baseline_credential_hygiene = read_json(RUNS_DIR / "baseline_credential_hygiene.json")
     baseline_local_env_smoke = read_json(RUNS_DIR / "baseline_local_env_smoke.json")
+    baseline_final_handoff = read_json(RUNS_DIR / "baseline_final_handoff_packet.json")
     route_aware_blockers = read_json(RUNS_DIR / "route_aware_submission_blockers.json")
     readiness = read_json(RUNS_DIR / "real_submission_readiness.json")
     env_template = read_json(RUNS_DIR / "submission_env_template_audit.json")
@@ -281,6 +284,22 @@ def build_status() -> dict[str, Any]:
             "stops_before_real_runner"
         )
         is True,
+        "baseline_final_handoff_passed": baseline_final_handoff.get("passed") is True,
+        "baseline_final_handoff_no_upload": baseline_final_handoff.get("requires_checkpoint_upload") is False,
+        "baseline_final_handoff_no_link": baseline_final_handoff.get("requires_checkpoint_link") is False,
+        "baseline_final_handoff_no_archive_authorization": baseline_final_handoff.get(
+            "requires_checkpoint_archive_authorization"
+        )
+        is False,
+        "baseline_final_handoff_command_count": baseline_final_handoff.get("command_count") == 4,
+        "baseline_final_handoff_no_contact_command_count": baseline_final_handoff.get("no_contact_command_count")
+        == 3,
+        "baseline_final_handoff_real_runner_requires_confirmation": baseline_final_handoff.get(
+            "real_runner_requires_confirmation"
+        )
+        is True,
+        "baseline_final_handoff_does_not_read_local_env": baseline_final_handoff.get("local_env_content_read")
+        is False,
         "route_aware_submission_blockers_passed": route_aware_blockers.get("passed") is True,
         "route_aware_recommended_baseline": route_aware_blockers.get("recommended_route") == "baseline_official_aloha",
         "route_aware_baseline_no_upload": route_aware_blockers.get("baseline_requires_checkpoint_upload") is False,
@@ -311,6 +330,7 @@ def build_status() -> dict[str, Any]:
                 baseline_dry_run_gate,
                 baseline_credential_hygiene,
                 baseline_local_env_smoke,
+                baseline_final_handoff,
                 route_aware_blockers,
                 readiness,
                 env_template,
@@ -330,6 +350,7 @@ def build_status() -> dict[str, Any]:
         or bool(baseline_dry_run_gate.get("link_values_printed"))
         or bool(baseline_credential_hygiene.get("link_values_printed"))
         or bool(baseline_local_env_smoke.get("link_values_printed"))
+        or bool(baseline_final_handoff.get("link_values_printed"))
         or bool(route_aware_blockers.get("link_values_printed")),
         "secret_values_printed": bool(secret_scan.get("secret_values_printed"))
         or bool(jupyter_input.get("secret_values_printed"))
@@ -341,6 +362,7 @@ def build_status() -> dict[str, Any]:
         or bool(baseline_dry_run_gate.get("secret_values_printed"))
         or bool(baseline_credential_hygiene.get("secret_values_printed"))
         or bool(baseline_local_env_smoke.get("secret_values_printed"))
+        or bool(baseline_final_handoff.get("secret_values_printed"))
         or bool(route_aware_blockers.get("secret_values_printed")),
     }
     contact_flags = {
@@ -362,6 +384,7 @@ def build_status() -> dict[str, Any]:
                 baseline_dry_run_gate,
                 baseline_credential_hygiene,
                 baseline_local_env_smoke,
+                baseline_final_handoff,
                 route_aware_blockers,
                 readiness,
                 env_template,
@@ -386,6 +409,7 @@ def build_status() -> dict[str, Any]:
                 baseline_dry_run_gate,
                 baseline_credential_hygiene,
                 baseline_local_env_smoke,
+                baseline_final_handoff,
                 route_aware_blockers,
                 readiness,
                 env_template,

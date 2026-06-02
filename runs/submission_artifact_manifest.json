@@ -7,7 +7,7 @@
   "credentials_printed": false,
   "link_values_printed": false,
   "secret_values_printed": false,
-  "artifact_count": 61,
+  "artifact_count": 63,
   "artifacts": [
     {
       "path": "README.md",
@@ -313,9 +313,16 @@
     {
       "path": "reports/baseline_local_env_smoke.md",
       "exists": true,
-      "tracked": false,
+      "tracked": true,
       "size_bytes": 1768,
       "sha256": "37c6404e6600e154be1129ca7ec367496360dbceb31edcdb7a83611cf2c3b18e"
+    },
+    {
+      "path": "reports/baseline_final_handoff_packet.md",
+      "exists": true,
+      "tracked": false,
+      "size_bytes": 4232,
+      "sha256": "ad27bae6de1e649403f0e8207ca6b7f404d1dac5f7100a1f0cbc5940610639e8"
     },
     {
       "path": "reports/route_aware_submission_blockers.md",
@@ -342,22 +349,22 @@
       "path": "reports/submission_preflight_bundle.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 4190,
-      "sha256": "de9b6e471e905c4d881d94c70dd5ea80d19735c4383521c1f0c6c8c7f6acb543"
+      "size_bytes": 4442,
+      "sha256": "0fddab2bd76084c686935162abf5665f75468b51fb34a2c41c90dd01c0c1149e"
     },
     {
       "path": "reports/plaintext_secret_scan.md",
       "exists": true,
       "tracked": true,
       "size_bytes": 610,
-      "sha256": "bc70625450b3c0556483c0f484965e57e5b67d239b5a1c37c88d3455337134e9"
+      "sha256": "56707ad6f383a154e021b9323260813031394fee9865284b2faff6d52ab31a86"
     },
     {
       "path": "reports/submission_status_dashboard.html",
       "exists": true,
       "tracked": true,
       "size_bytes": 15483,
-      "sha256": "986cd62a894735d741077ee198963c7ee02fe530bffb18f656f32f786e492f3d"
+      "sha256": "52bfeb60e071ce65d7cc36bdefad9e057bcaa0cd5fda67a26430cd0bbc5be0c5"
     },
     {
       "path": "scripts/render_next_user_action_packet.py",
@@ -404,9 +411,16 @@
     {
       "path": "scripts/render_baseline_local_env_smoke.py",
       "exists": true,
-      "tracked": false,
+      "tracked": true,
       "size_bytes": 11051,
       "sha256": "3b1cc69874d0658e6f5f214230ba7d796b607b47f0720904f08e0def5013642c"
+    },
+    {
+      "path": "scripts/render_baseline_final_handoff_packet.py",
+      "exists": true,
+      "tracked": false,
+      "size_bytes": 15256,
+      "sha256": "8310edbdbe66e0bf12e18c6ab75cb75bf26addc9eb6e0d8ca50f9f490030428e"
     },
     {
       "path": "scripts/render_route_aware_submission_blockers.py",
@@ -532,6 +546,14 @@
     "baseline_local_env_smoke_temp_env_removed": true,
     "baseline_local_env_smoke_authorized_preflight_baseline": true,
     "baseline_local_env_smoke_ready_runner_stops": true,
+    "baseline_final_handoff_passed": true,
+    "baseline_final_handoff_no_upload": true,
+    "baseline_final_handoff_no_link": true,
+    "baseline_final_handoff_no_archive_authorization": true,
+    "baseline_final_handoff_command_count": true,
+    "baseline_final_handoff_no_contact_command_count": true,
+    "baseline_final_handoff_real_runner_requires_confirmation": true,
+    "baseline_final_handoff_does_not_read_local_env": true,
     "route_aware_submission_blockers_passed": true,
     "route_aware_recommended_baseline": true,
     "route_aware_baseline_no_upload": true,

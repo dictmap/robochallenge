@@ -39,6 +39,7 @@ SUBCOMMANDS = [
     ("baseline_dry_run_gate", "scripts/render_baseline_dry_run_gate.py"),
     ("baseline_credential_hygiene", "scripts/render_baseline_credential_hygiene.py"),
     ("baseline_local_env_smoke", "scripts/render_baseline_local_env_smoke.py"),
+    ("baseline_final_handoff_packet", "scripts/render_baseline_final_handoff_packet.py"),
     ("submission_handoff_docs", "scripts/audit_submission_handoff_docs.py"),
     ("submission_artifact_manifest", "scripts/audit_submission_artifact_manifest.py"),
 ]
@@ -104,6 +105,7 @@ def build_status() -> dict[str, Any]:
     baseline_dry_run_gate = read_json(RUNS_DIR / "baseline_dry_run_gate.json")
     baseline_credential_hygiene = read_json(RUNS_DIR / "baseline_credential_hygiene.json")
     baseline_local_env_smoke = read_json(RUNS_DIR / "baseline_local_env_smoke.json")
+    baseline_final_handoff = read_json(RUNS_DIR / "baseline_final_handoff_packet.json")
     route_aware_blockers = read_json(RUNS_DIR / "route_aware_submission_blockers.json")
 
     leak_flags = {
@@ -129,6 +131,7 @@ def build_status() -> dict[str, Any]:
                 baseline_dry_run_gate,
                 baseline_credential_hygiene,
                 baseline_local_env_smoke,
+                baseline_final_handoff,
                 route_aware_blockers,
             ]
         ),
@@ -148,6 +151,7 @@ def build_status() -> dict[str, Any]:
         or bool(baseline_dry_run_gate.get("link_values_printed"))
         or bool(baseline_credential_hygiene.get("link_values_printed"))
         or bool(baseline_local_env_smoke.get("link_values_printed"))
+        or bool(baseline_final_handoff.get("link_values_printed"))
         or bool(route_aware_blockers.get("link_values_printed")),
         "secret_values_printed": bool(secret_scan.get("secret_values_printed"))
         or bool(artifact_manifest.get("secret_values_printed"))
@@ -164,6 +168,7 @@ def build_status() -> dict[str, Any]:
         or bool(baseline_dry_run_gate.get("secret_values_printed"))
         or bool(baseline_credential_hygiene.get("secret_values_printed"))
         or bool(baseline_local_env_smoke.get("secret_values_printed"))
+        or bool(baseline_final_handoff.get("secret_values_printed"))
         or bool(route_aware_blockers.get("secret_values_printed")),
     }
     contact_flags = {
@@ -189,6 +194,7 @@ def build_status() -> dict[str, Any]:
                 baseline_dry_run_gate,
                 baseline_credential_hygiene,
                 baseline_local_env_smoke,
+                baseline_final_handoff,
                 route_aware_blockers,
             ]
         ),
@@ -214,6 +220,7 @@ def build_status() -> dict[str, Any]:
                 baseline_dry_run_gate,
                 baseline_credential_hygiene,
                 baseline_local_env_smoke,
+                baseline_final_handoff,
                 route_aware_blockers,
             ]
             for key in ["uploads_performed", "upload_performed"]
@@ -271,6 +278,16 @@ def build_status() -> dict[str, Any]:
             "ready_runner", {}
         ).get("stops_before_real_runner")
         is True,
+        "baseline_final_handoff_passed": baseline_final_handoff.get("passed") is True,
+        "baseline_final_handoff_command_count": baseline_final_handoff.get("command_count"),
+        "baseline_final_handoff_no_contact_command_count": baseline_final_handoff.get("no_contact_command_count"),
+        "baseline_final_handoff_real_runner_requires_confirmation": baseline_final_handoff.get(
+            "real_runner_requires_confirmation"
+        )
+        is True,
+        "baseline_final_handoff_no_upload": baseline_final_handoff.get("requires_checkpoint_upload") is False,
+        "baseline_final_handoff_no_link": baseline_final_handoff.get("requires_checkpoint_link") is False,
+        "baseline_final_handoff_does_not_read_local_env": baseline_final_handoff.get("local_env_content_read") is False,
         "lora_web_requires_checkpoint_link": route_aware_blockers.get("lora_web_requires_checkpoint_link"),
         "lora_web_requires_checkpoint_upload": route_aware_blockers.get("lora_web_requires_checkpoint_upload"),
         "baseline_current_blocking": route_aware_blockers.get("baseline_current_blocking", []),
@@ -310,6 +327,10 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         f"- synthetic local env smoke：`{status['baseline_local_env_smoke_passed']}`。",
         f"- synthetic 授权预检是否走 baseline：`{status['baseline_local_env_smoke_authorized_preflight_variant_baseline']}`。",
         f"- synthetic ready runner 是否停在真实 runner 前：`{status['baseline_local_env_smoke_ready_runner_stops_before_real_runner']}`。",
+        f"- baseline final handoff：`{status['baseline_final_handoff_passed']}`。",
+        f"- final handoff 命令数：`{status['baseline_final_handoff_command_count']}`。",
+        f"- final handoff no-contact 命令数：`{status['baseline_final_handoff_no_contact_command_count']}`。",
+        f"- final handoff 真实 runner 是否需要强确认：`{status['baseline_final_handoff_real_runner_requires_confirmation']}`。",
         f"- LoRA/web 是否需要 checkpoint link：`{status['lora_web_requires_checkpoint_link']}`。",
         f"- LoRA/web 是否需要 checkpoint upload：`{status['lora_web_requires_checkpoint_upload']}`。",
         f"- 下载已验证：`{status['download_verified']}`。",

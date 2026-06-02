@@ -1776,3 +1776,38 @@
 
 - P0：提交并推送本轮 authorized preflight local env 读取顺序修复、synthetic local env smoke、GUI 卡片、manifest 和验证链更新。
 - P1：用户拿到 token/submission id 后，可直接把它们写入 `submission/robochallenge_env.local.sh`，再跑 baseline local env smoke、授权预检和 dry-run gate。
+
+## 2026-06-03 第六十三轮：baseline final handoff packet
+
+### 已完成
+
+- 新增 `scripts/render_baseline_final_handoff_packet.py`，把 baseline 凭据后执行顺序固化为最终交接证据包。
+- 新增 `runs/baseline_final_handoff_packet.json` 和中文报告 `reports/baseline_final_handoff_packet.md`。
+- final handoff 明确 4 条命令顺序：
+  1. `python3 scripts/render_baseline_credential_hygiene.py`
+  2. `ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_authorized_preflight_template.sh`
+  3. `ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_ready_real_submission_template.sh`
+  4. `ROBOCHALLENGE_SUBMISSION_VARIANT=baseline ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION bash submission/run_ready_real_submission_template.sh`
+- 前三条命令被标记为 no-contact；第四条只作为真实 runner 强确认入口保留，不会在本轮执行。
+- 交接包硬性检查 baseline 当前只差 5 项：`SUBMISSION_TARGET_CONFIRMATION`、`ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline`、`ROBOCHALLENGE_REAL_RUN_CONFIRM`。
+- 交接包硬性检查 baseline 不需要 `ROBOCHALLENGE_CHECKPOINT_LINK`、`CHECKPOINT_ARCHIVE_AUTHORIZATION`、checkpoint upload 或 checkpoint 归档授权；这些仍只属于 LoRA/web checkpoint 路线。
+- 更新 `scripts/audit_submission_preflight_bundle.py`、`scripts/audit_submission_artifact_manifest.py`、`scripts/render_submission_status_dashboard.py` 和 `scripts/validate_repro_workspace.py`，把 final handoff 纳入 preflight、manifest、GUI 和总验证。
+
+### 验证结果
+
+- Linux 端 `python3 -m py_compile` 已通过，覆盖新增脚本和所有改动脚本。
+- Linux 端 `python3 scripts/render_baseline_final_handoff_packet.py` 已通过：`passed=true`，`command_count=4`，`no_contact_command_count=3`，`real_runner_requires_confirmation=true`，`local_env_content_read=false`。
+- Linux 端完整 no-contact 链已通过：明文凭据扫描、preflight bundle、blockers summary、artifact manifest、GUI dashboard、总体验证和 `git diff --check` 均通过。
+- `runs/submission_preflight_bundle.json` 现在包含 `baseline_final_handoff_passed=true`、`baseline_final_handoff_command_count=4`、`baseline_final_handoff_no_contact_command_count=3`、`baseline_final_handoff_real_runner_requires_confirmation=true`。
+- GUI dashboard 升级为 `source_count=24`、`card_count=24`、`done_count=19`、`blocked_count=4`，新增 “Baseline final handoff” 卡片。
+- 本轮没有读取真实 token、submission id 或 checkpoint link，没有读取 local env 内容，没有连接 RoboChallenge 平台，没有上传 checkpoint，没有生成 checkpoint tar，也没有启动真实 runner。
+
+### 当前边界
+
+- baseline 官方路线仍只等待：提交对象确认、`ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline`、真实 runner 强确认。
+- LoRA/web checkpoint 路线仍单独等待归档/上传授权和真实 checkpoint link。
+
+### 下一步
+
+- P0：提交并推送本轮 baseline final handoff 证据包、GUI 卡片、manifest 和验证链更新。
+- P1：用户提供 token/submission id 并明确授权后，先跑 final handoff 的前三条 no-contact 命令；第四条真实 runner 强确认命令只能在用户明确允许真实提交时执行。

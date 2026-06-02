@@ -1902,3 +1902,28 @@
 
 - P0：提交并推送本轮 pi0.6/pi0.7 公开复现性审计元数据加固。
 - P1：继续围绕 baseline 凭据到位后的授权预检链做防误操作证据；真实 runner 仍不得在没有用户明确授权时执行。
+
+## 2026-06-03 第六十七轮：真实 runner 错误确认短语防护
+
+### 已完成
+
+- 更新 `scripts/audit_ready_real_runner_template.py`，新增 `synthetic_wrong_confirm_smoke`，验证 `ROBOCHALLENGE_REAL_RUN_CONFIRM` 存在但写错时仍不会启动真实 runner。
+- 更新 `scripts/render_baseline_dry_run_gate.py`，把错误确认短语防护接入 baseline dry-run gate 证据包。
+- 更新 `scripts/audit_submission_preflight_bundle.py`、`scripts/audit_submission_artifact_manifest.py`、`scripts/render_submission_status_dashboard.py` 和 `scripts/validate_repro_workspace.py`，把 `baseline_dry_run_gate_wrong_confirm_stops_before_real_runner` 纳入 preflight、manifest、GUI 和总验证。
+
+### 验证结果
+
+- Linux 端 `python3 scripts/audit_ready_real_runner_template.py` 已通过：`synthetic_wrong_confirm_smoke.returncode=1`、`variant=baseline`、`dry_run_called=true`、`confirmation_present=true`、`missing_confirmation=true`、`stops_before_real_runner=true`、`real_runner_started=false`。
+- Linux 端 `python3 scripts/render_baseline_dry_run_gate.py` 已通过：`stops_before_real_runner_with_wrong_confirmation=true`。
+- 完整 no-contact 链已通过：明文凭据扫描、preflight bundle、artifact manifest、GUI dashboard、总验证和 `git diff --check` 均通过。
+- 本轮没有读取真实 token、submission id 或 checkpoint link，没有连接 RoboChallenge 平台，没有上传 checkpoint，没有生成 checkpoint tar，也没有启动真实 runner。
+
+### 当前边界
+
+- 只有精确设置 `ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION` 才可能越过真实 runner gate；缺少确认或确认短语写错都会停在 runner 前。
+- baseline 官方路线仍等待用户凭据、提交对象确认、`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline` 和真实 runner 明确授权。
+
+### 下一步
+
+- P0：提交并推送本轮错误确认短语防护证据。
+- P1：继续围绕 baseline 凭据到位后的授权预检链做防误操作证据；真实 runner 仍不得在没有用户明确授权时执行。

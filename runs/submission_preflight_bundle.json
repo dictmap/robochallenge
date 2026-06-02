@@ -15,6 +15,7 @@
   "baseline_dry_run_gate_passed": true,
   "baseline_dry_run_gate_command": "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_ready_real_submission_template.sh",
   "baseline_dry_run_gate_stops_before_real_runner": true,
+  "baseline_dry_run_gate_wrong_confirm_stops_before_real_runner": true,
   "baseline_credential_hygiene_passed": true,
   "baseline_credential_hygiene_local_env_gitignored": true,
   "baseline_credential_hygiene_local_env_content_read": false,
@@ -127,7 +128,7 @@
       "script": "scripts/audit_ready_real_runner_template.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": "-runner] set ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION only after user authorizes platform submission\\n[ready-real-runner] stop before real runner\\n\",\n    \"stderr_tail\": \"\",\n    \"variant\": \"baseline\",\n    \"printed_protected_values\": false,\n    \"leaked_value_count\": 0,\n    \"ready_false\": false,\n    \"dry_run_called\": true,\n    \"missing_confirmation\": true,\n    \"stops_before_real_runner\": true,\n    \"real_runner_started\": false,\n    \"demo_mentioned\": false,\n    \"passed\": true\n  },\n  \"clean_state_restore\": {\n    \"passed\": true,\n    \"commands\": [\n      {\n        \"command\": \"python3 scripts/audit_checkpoint_link_intake.py\",\n        \"returncode\": 0\n      },\n      {\n        \"command\": \"python3 scripts/audit_checkpoint_link_download_verification.py\",\n        \"returncode\": 0\n      },\n      {\n        \"command\": \"python3 scripts/audit_real_submission_readiness.py\",\n        \"returncode\": 0\n      }\n    ]\n  },\n  \"blocking\": [\n    \"强确认真实 runner 模板已通过；没有确认短语时不会启动真实 runner。\"\n  ]\n}\n",
+      "stdout_tail": "M=RUN_REAL_ROBOCHALLENGE_SUBMISSION only after user authorizes platform submission\\n[ready-real-runner] stop before real runner\\n\",\n    \"stderr_tail\": \"\",\n    \"variant\": \"baseline\",\n    \"printed_protected_values\": false,\n    \"leaked_value_count\": 0,\n    \"ready_false\": false,\n    \"dry_run_called\": true,\n    \"missing_confirmation\": true,\n    \"confirmation_present\": true,\n    \"stops_before_real_runner\": true,\n    \"real_runner_started\": false,\n    \"demo_mentioned\": false,\n    \"passed\": true\n  },\n  \"clean_state_restore\": {\n    \"passed\": true,\n    \"commands\": [\n      {\n        \"command\": \"python3 scripts/audit_checkpoint_link_intake.py\",\n        \"returncode\": 0\n      },\n      {\n        \"command\": \"python3 scripts/audit_checkpoint_link_download_verification.py\",\n        \"returncode\": 0\n      },\n      {\n        \"command\": \"python3 scripts/audit_real_submission_readiness.py\",\n        \"returncode\": 0\n      }\n    ]\n  },\n  \"blocking\": [\n    \"强确认真实 runner 模板已通过；没有确认短语或确认短语写错时都不会启动真实 runner。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "authorized_checkpoint_archive_template": {

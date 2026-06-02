@@ -20,8 +20,8 @@
       "path": "work.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 147904,
-      "sha256": "009d18b2380a437ac902f84805b6d14d0c1865fcd2eee4afa6812ee254a471fe"
+      "size_bytes": 150278,
+      "sha256": "0d279d031bda69d5eb4015a2154b9293903eee4c6c899ed23aac3b2de406ce9a"
     },
     {
       "path": "notebooks/robochallenge_pi05_submit_cn.ipynb",
@@ -258,8 +258,8 @@
       "path": "reports/ready_real_runner_template_audit.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 1633,
-      "sha256": "4f7358ce93690dfffee7b00d8a3858fecab511d2f31ca56ef3706a578141989f"
+      "size_bytes": 1828,
+      "sha256": "7868b274a308fb457489b08cc428c7dadb0932e593a8a343b0f08c051e984b7d"
     },
     {
       "path": "reports/authorized_checkpoint_archive_template_audit.md",
@@ -307,8 +307,8 @@
       "path": "reports/baseline_dry_run_gate.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 3101,
-      "sha256": "9d2e72789e35ddad973557575f18bdb01ceb63c4ef0f028e14268350cbe3347b"
+      "size_bytes": 3423,
+      "sha256": "da820fa172f87fc8623ff893be6bbf42de669ba7c8ec43aff81f248d41a34456"
     },
     {
       "path": "reports/baseline_credential_hygiene.md",
@@ -378,7 +378,7 @@
       "exists": true,
       "tracked": true,
       "size_bytes": 17001,
-      "sha256": "abdf2123bfc8afcceff748980b82e978d33e38af81ef8468c33a5720f2b21ef0"
+      "sha256": "1ed28a18f35f0902231d703b06ed8335d2a7c10edb2241c93ac2f85372f36f94"
     },
     {
       "path": "scripts/render_next_user_action_packet.py",
@@ -412,8 +412,8 @@
       "path": "scripts/render_baseline_dry_run_gate.py",
       "exists": true,
       "tracked": true,
-      "size_bytes": 12204,
-      "sha256": "75f77f3d3ff205f23ac805e3ad6d65ce2f7a56021f0cbc0590c782122833a933"
+      "size_bytes": 13078,
+      "sha256": "258ce14655ffe3dced8fbcd376210eba8325b29b12fcb6f1cf8674beb2d38f55"
     },
     {
       "path": "scripts/render_baseline_credential_hygiene.py",
@@ -569,6 +569,7 @@
     "baseline_dry_run_gate_no_link": true,
     "baseline_dry_run_gate_command_exact": true,
     "baseline_dry_run_gate_stops_before_real_runner": true,
+    "baseline_dry_run_gate_wrong_confirm_stops_before_real_runner": true,
     "baseline_credential_hygiene_passed": true,
     "baseline_credential_hygiene_local_env_gitignored": true,
     "baseline_credential_hygiene_local_env_not_tracked": true,

@@ -42,6 +42,7 @@
   "baseline_dry_run_gate_no_upload": true,
   "baseline_dry_run_gate_no_link": true,
   "baseline_dry_run_gate_stops_before_real_runner": true,
+  "baseline_dry_run_gate_wrong_confirm_stops_before_real_runner": true,
   "baseline_dry_run_gate_command": "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_ready_real_submission_template.sh",
   "baseline_credential_hygiene_passed": true,
   "baseline_credential_hygiene_local_env_gitignored": true,

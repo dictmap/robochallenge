@@ -7,6 +7,7 @@
 - baseline 是否需要 checkpoint upload：`False`。
 - baseline 是否需要 checkpoint link：`False`。
 - 无真实确认短语时是否停在 runner 前：`True`。
+- 错误确认短语时是否停在 runner 前：`True`。
 
 ## 拿到 token / submission id 后先跑
 
@@ -49,6 +50,11 @@
 - `synthetic_stops_before_real_runner`：`True`。
 - `synthetic_real_runner_not_started`：`True`。
 - `synthetic_no_protected_values_printed`：`True`。
+- `wrong_confirm_dry_run_called`：`True`。
+- `wrong_confirm_confirmation_present`：`True`。
+- `wrong_confirm_stops_before_real_runner`：`True`。
+- `wrong_confirm_real_runner_not_started`：`True`。
+- `wrong_confirm_no_protected_values_printed`：`True`。
 - `authorized_execution_passed`：`True`。
 - `authorized_execution_baseline_required_ids`：`True`。
 - `authorized_execution_baseline_no_lora_ids`：`True`。

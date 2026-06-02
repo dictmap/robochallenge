@@ -20,6 +20,7 @@ TEMPLATE = ROOT / "submission" / "run_ready_real_submission_template.sh"
 DEFAULT_STATUS = RUNS_DIR / "ready_real_runner_template_audit.json"
 DEFAULT_REPORT = REPORTS_DIR / "ready_real_runner_template_audit.md"
 CONFIRM_PHRASE = "RUN_REAL_ROBOCHALLENGE_SUBMISSION"
+WRONG_CONFIRM_PHRASE = "RUN_REAL_ROBOCHALLENGE_SUBMISSION_WRONG"
 SYNTHETIC_TOKEN = "audit-token-shape-only"
 SYNTHETIC_SUBMISSION_ID = "audit-submission-shape-only"
 
@@ -137,6 +138,7 @@ def run_template(extra_env: dict[str, str]) -> dict[str, Any]:
         "ready_false": "ready_for_real_submission=false" in combined,
         "dry_run_called": "dry_run=true" in combined,
         "missing_confirmation": "missing explicit real-run confirmation" in combined,
+        "confirmation_present": "confirmation_present=true" in combined,
         "stops_before_real_runner": "stop before real runner" in combined,
         "real_runner_started": "confirmation accepted; starting real runner" in combined,
         "demo_mentioned": "demo.py" in combined,
@@ -192,6 +194,15 @@ def build_status() -> dict[str, Any]:
             "ROBOCHALLENGE_SUBMISSION_ID": SYNTHETIC_SUBMISSION_ID,
         }
     )
+    synthetic_wrong_confirm = run_template(
+        {
+            "ROBOCHALLENGE_ENV_FILE": str(ROOT / "submission" / "__missing_env_for_real_runner_audit__.sh"),
+            "ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD": "0",
+            "ROBOCHALLENGE_USER_TOKEN": SYNTHETIC_TOKEN,
+            "ROBOCHALLENGE_SUBMISSION_ID": SYNTHETIC_SUBMISSION_ID,
+            "ROBOCHALLENGE_REAL_RUN_CONFIRM": WRONG_CONFIRM_PHRASE,
+        }
+    )
     restore = restore_clean_submission_state()
 
     no_credentials["passed"] = all(
@@ -209,11 +220,25 @@ def build_status() -> dict[str, Any]:
             synthetic_no_confirm["returncode"] != 0,
             synthetic_no_confirm["variant"] == "baseline",
             synthetic_no_confirm["dry_run_called"],
+            not synthetic_no_confirm["confirmation_present"],
             synthetic_no_confirm["missing_confirmation"],
             synthetic_no_confirm["stops_before_real_runner"],
             not synthetic_no_confirm["real_runner_started"],
             not synthetic_no_confirm["demo_mentioned"],
             not synthetic_no_confirm["printed_protected_values"],
+        ]
+    )
+    synthetic_wrong_confirm["passed"] = all(
+        [
+            synthetic_wrong_confirm["returncode"] != 0,
+            synthetic_wrong_confirm["variant"] == "baseline",
+            synthetic_wrong_confirm["dry_run_called"],
+            synthetic_wrong_confirm["confirmation_present"],
+            synthetic_wrong_confirm["missing_confirmation"],
+            synthetic_wrong_confirm["stops_before_real_runner"],
+            not synthetic_wrong_confirm["real_runner_started"],
+            not synthetic_wrong_confirm["demo_mentioned"],
+            not synthetic_wrong_confirm["printed_protected_values"],
         ]
     )
 
@@ -226,6 +251,7 @@ def build_status() -> dict[str, Any]:
         and not secret_hits
         and no_credentials["passed"]
         and synthetic_no_confirm["passed"]
+        and synthetic_wrong_confirm["passed"]
         and restore["passed"]
     )
     return {
@@ -239,6 +265,7 @@ def build_status() -> dict[str, Any]:
         "secret_values_printed": False,
         "template_path": "submission/run_ready_real_submission_template.sh",
         "confirmation_phrase": CONFIRM_PHRASE,
+        "wrong_confirmation_phrase": WRONG_CONFIRM_PHRASE,
         "default_variant": "baseline" if REQUIRED_FRAGMENTS["default_variant_baseline"] in text else "",
         "bash_n": bash_n,
         "required_fragments": required,
@@ -246,9 +273,10 @@ def build_status() -> dict[str, Any]:
         "secret_patterns_found": secret_hits,
         "no_credentials_smoke": no_credentials,
         "synthetic_no_confirm_smoke": synthetic_no_confirm,
+        "synthetic_wrong_confirm_smoke": synthetic_wrong_confirm,
         "clean_state_restore": restore,
         "blocking": [
-            "强确认真实 runner 模板已通过；没有确认短语时不会启动真实 runner。"
+            "强确认真实 runner 模板已通过；没有确认短语或确认短语写错时都不会启动真实 runner。"
             if passed
             else "强确认真实 runner 模板仍存在阻塞，请查看 JSON 字段。"
         ],
@@ -265,6 +293,7 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         f"- 模板路径：`{status['template_path']}`。",
         f"- 默认提交路线：`{status['default_variant']}`。",
         f"- 确认短语：`{status['confirmation_phrase']}`。",
+        f"- 错误确认短语 smoke：`{status['synthetic_wrong_confirm_smoke']['passed']}`。",
         f"- bash 语法检查：`{status['bash_n']['passed']}`。",
         f"- 无凭据 smoke：`{status['no_credentials_smoke']['passed']}`。",
         f"- synthetic 无确认 smoke：`{status['synthetic_no_confirm_smoke']['passed']}`。",
@@ -287,6 +316,12 @@ def write_report(status: dict[str, Any], path: Path) -> None:
     lines.append(f"- synthetic 默认路线：`{status['synthetic_no_confirm_smoke']['variant']}`。")
     lines.append(f"- synthetic 是否因缺少确认停止：`{status['synthetic_no_confirm_smoke']['missing_confirmation']}`。")
     lines.append(f"- synthetic 是否启动真实 runner：`{status['synthetic_no_confirm_smoke']['real_runner_started']}`。")
+    lines.append(
+        f"- synthetic 错误确认是否仍停在真实 runner 前：`{status['synthetic_wrong_confirm_smoke']['stops_before_real_runner']}`。"
+    )
+    lines.append(
+        f"- synthetic 错误确认是否启动真实 runner：`{status['synthetic_wrong_confirm_smoke']['real_runner_started']}`。"
+    )
     lines.append(f"- clean state restore：`{status['clean_state_restore']['passed']}`。")
     lines.extend(["", "## Blocking", ""])
     for item in status["blocking"]:

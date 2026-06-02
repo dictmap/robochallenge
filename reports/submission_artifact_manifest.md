@@ -14,7 +14,7 @@
 ## 材料清单
 
 - `README.md`：exists=`True`，tracked=`True`，size=`19168`，sha256=`58dff8b9599520d8de819ab2dd636d7e1d46962e276499858d6f51f4151f620c`。
-- `work.md`：exists=`True`，tracked=`True`，size=`147904`，sha256=`009d18b2380a437ac902f84805b6d14d0c1865fcd2eee4afa6812ee254a471fe`。
+- `work.md`：exists=`True`，tracked=`True`，size=`150278`，sha256=`0d279d031bda69d5eb4015a2154b9293903eee4c6c899ed23aac3b2de406ce9a`。
 - `notebooks/robochallenge_pi05_submit_cn.ipynb`：exists=`True`，tracked=`True`，size=`97941`，sha256=`3063649288beb3fb268eeaa30964120cbd090119580c74134dcfba6739b26609`。
 - `submission/README.md`：exists=`True`，tracked=`True`，size=`1736`，sha256=`1e56978190bcd369dce7fab828d6d7125b6777e62e7a4f6a78cb914c9ea5535b`。
 - `submission/REAL_SUBMISSION_HANDOFF.md`：exists=`True`，tracked=`True`，size=`9131`，sha256=`1e77c1e65175f5ad5996d7b4b6950ffa838c6cd34d025ee13a5738a48a2b8f93`。
@@ -48,14 +48,14 @@
 - `reports/jupyter_authorized_preflight_template_audit.md`：exists=`True`，tracked=`True`，size=`3025`，sha256=`7c7745d3fc347c80a5854ac005260f3f7770efdfe97bc37f0753ebfecaf7b68b`。
 - `reports/jupyter_final_handoff_template_audit.md`：exists=`True`，tracked=`True`，size=`3099`，sha256=`7c9a4011772d6e2a7bd83cf223f0577b03d4742deb637dd968330ad6fd9685e4`。
 - `reports/authorized_preflight_template_audit.md`：exists=`True`，tracked=`True`，size=`1337`，sha256=`8bcada942bd335593bd72a50030ca58a84b54ad68959fc8758ac55248a5b4350`。
-- `reports/ready_real_runner_template_audit.md`：exists=`True`，tracked=`True`，size=`1633`，sha256=`4f7358ce93690dfffee7b00d8a3858fecab511d2f31ca56ef3706a578141989f`。
+- `reports/ready_real_runner_template_audit.md`：exists=`True`，tracked=`True`，size=`1828`，sha256=`7868b274a308fb457489b08cc428c7dadb0932e593a8a343b0f08c051e984b7d`。
 - `reports/authorized_checkpoint_archive_template_audit.md`：exists=`True`，tracked=`True`，size=`2030`，sha256=`0a02a63659e96376720e1c11c78ab6bd7a5b4118c13a93c99155fbd2dd5d6bbe`。
 - `reports/authorized_execution_checklist.md`：exists=`True`，tracked=`True`，size=`5960`，sha256=`947c9938cda815b6f2c1952de8dd10de2fa1c7dfa26137792a439948abb1abd0`。
 - `reports/next_user_action_packet.md`：exists=`True`，tracked=`True`，size=`6629`，sha256=`d9f24c4356ecd1fe97d6c320f1662ec9ac8d3ac09c4713073f7b558d3c46c04f`。
 - `reports/web_form_field_packet.md`：exists=`True`，tracked=`True`，size=`3609`，sha256=`ef7a9f53388bf14839fc62d300dba96e957f3c0d7352979123403616be51ecbe`。
 - `reports/submission_variant_route_packet.md`：exists=`True`，tracked=`True`，size=`3186`，sha256=`fa7e12529fc7a0dd8b17cae5234103c39af969bf5f20509e21e9a4c674bcb3f3`。
 - `reports/baseline_submission_quickstart.md`：exists=`True`，tracked=`True`，size=`2755`，sha256=`370c7ccde88a66311e864349ed648756db11cb52c87336aa5b4b313c53af3671`。
-- `reports/baseline_dry_run_gate.md`：exists=`True`，tracked=`True`，size=`3101`，sha256=`9d2e72789e35ddad973557575f18bdb01ceb63c4ef0f028e14268350cbe3347b`。
+- `reports/baseline_dry_run_gate.md`：exists=`True`，tracked=`True`，size=`3423`，sha256=`da820fa172f87fc8623ff893be6bbf42de669ba7c8ec43aff81f248d41a34456`。
 - `reports/baseline_credential_hygiene.md`：exists=`True`，tracked=`True`，size=`2313`，sha256=`76ee43531cb291c5c3f0e319aaa439f7ea4651388af0223e9ce6a8e938a0d673`。
 - `reports/baseline_local_env_smoke.md`：exists=`True`，tracked=`True`，size=`1768`，sha256=`37c6404e6600e154be1129ca7ec367496360dbceb31edcdb7a83611cf2c3b18e`。
 - `reports/baseline_final_handoff_packet.md`：exists=`True`，tracked=`True`，size=`4232`，sha256=`ad27bae6de1e649403f0e8207ca6b7f404d1dac5f7100a1f0cbc5940610639e8`。
@@ -65,12 +65,12 @@
 - `reports/authorized_submission_sequence_audit.md`：exists=`True`，tracked=`True`，size=`5771`，sha256=`2c373b72177573448649a3c29568c6eb61c8eb1b68b6c6e4cd602836845e39cc`。
 - `reports/submission_preflight_bundle.md`：exists=`True`，tracked=`True`，size=`4893`，sha256=`11f3c9a6c88aa60427aca609fd3e9e66d2dcd77c94dbea13d48e3619eb296f6f`。
 - `reports/plaintext_secret_scan.md`：exists=`True`，tracked=`True`，size=`610`，sha256=`34ef383fd052aab7fa379fad4830576b3ee1e877f35cdaf7c6b392ba2b784177`。
-- `reports/submission_status_dashboard.html`：exists=`True`，tracked=`True`，size=`17001`，sha256=`abdf2123bfc8afcceff748980b82e978d33e38af81ef8468c33a5720f2b21ef0`。
+- `reports/submission_status_dashboard.html`：exists=`True`，tracked=`True`，size=`17001`，sha256=`1ed28a18f35f0902231d703b06ed8335d2a7c10edb2241c93ac2f85372f36f94`。
 - `scripts/render_next_user_action_packet.py`：exists=`True`，tracked=`True`，size=`17070`，sha256=`bb27664b00e92d96955e6ae878a4c5faf7493c1e8fa0229f1cf5e186feca7490`。
 - `scripts/render_web_form_field_packet.py`：exists=`True`，tracked=`True`，size=`11389`，sha256=`308afc6bd0b412bbed8c4c2f4188666050449fa3d5ed3580559422fdcff37b34`。
 - `scripts/render_submission_variant_route_packet.py`：exists=`True`，tracked=`True`，size=`14345`，sha256=`208f35442ab2425bc937267ff6ea8909aab0330460c38547038fd41345773b2b`。
 - `scripts/render_baseline_submission_quickstart.py`：exists=`True`，tracked=`True`，size=`9973`，sha256=`a6dd12fde694bb1d688bef942533a6d08a781112c19c59afe2d851a00600c634`。
-- `scripts/render_baseline_dry_run_gate.py`：exists=`True`，tracked=`True`，size=`12204`，sha256=`75f77f3d3ff205f23ac805e3ad6d65ce2f7a56021f0cbc0590c782122833a933`。
+- `scripts/render_baseline_dry_run_gate.py`：exists=`True`，tracked=`True`，size=`13078`，sha256=`258ce14655ffe3dced8fbcd376210eba8325b29b12fcb6f1cf8674beb2d38f55`。
 - `scripts/render_baseline_credential_hygiene.py`：exists=`True`，tracked=`True`，size=`11177`，sha256=`91a8ccbf133f4854092b47a8290a9213a2eb79fa31f43cc0c377d70771e95528`。
 - `scripts/render_baseline_local_env_smoke.py`：exists=`True`，tracked=`True`，size=`11051`，sha256=`3b1cc69874d0658e6f5f214230ba7d796b607b47f0720904f08e0def5013642c`。
 - `scripts/render_baseline_final_handoff_packet.py`：exists=`True`，tracked=`True`，size=`15256`，sha256=`8310edbdbe66e0bf12e18c6ab75cb75bf26addc9eb6e0d8ca50f9f490030428e`。
@@ -142,6 +142,7 @@
 - `baseline_dry_run_gate_no_link`：`True`。
 - `baseline_dry_run_gate_command_exact`：`True`。
 - `baseline_dry_run_gate_stops_before_real_runner`：`True`。
+- `baseline_dry_run_gate_wrong_confirm_stops_before_real_runner`：`True`。
 - `baseline_credential_hygiene_passed`：`True`。
 - `baseline_credential_hygiene_local_env_gitignored`：`True`。
 - `baseline_credential_hygiene_local_env_not_tracked`：`True`。

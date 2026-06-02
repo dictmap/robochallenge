@@ -166,6 +166,7 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
         and baseline_dry_run_gate.get("requires_checkpoint_upload") is False
         and baseline_dry_run_gate.get("requires_checkpoint_link") is False
         and baseline_dry_run_gate.get("stops_before_real_runner_without_confirmation") is True
+        and baseline_dry_run_gate.get("stops_before_real_runner_with_wrong_confirmation") is True
     )
     baseline_credential_hygiene_ready = bool(
         baseline_credential_hygiene.get("passed")
@@ -505,6 +506,10 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
         "baseline_dry_run_gate_no_link": baseline_dry_run_gate.get("requires_checkpoint_link") is False,
         "baseline_dry_run_gate_stops_before_real_runner": baseline_dry_run_gate.get(
             "stops_before_real_runner_without_confirmation"
+        )
+        is True,
+        "baseline_dry_run_gate_wrong_confirm_stops_before_real_runner": baseline_dry_run_gate.get(
+            "stops_before_real_runner_with_wrong_confirmation"
         )
         is True,
         "baseline_dry_run_gate_command": baseline_dry_run_gate.get("dry_run_gate_command"),

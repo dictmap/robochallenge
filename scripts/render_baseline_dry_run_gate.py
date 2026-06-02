@@ -81,6 +81,7 @@ def build_status() -> dict[str, Any]:
 
     quickstart_commands = quickstart.get("commands", [])
     synthetic = ready_runner.get("synthetic_no_confirm_smoke", {})
+    wrong_confirm = ready_runner.get("synthetic_wrong_confirm_smoke", {})
     baseline_decision_ids = ids(authorized_execution.get("required_user_decisions", []))
     action_decision_ids = ids(action_packet.get("required_user_decisions", []))
     route_aware_baseline_ids = ids(route_aware.get("baseline_current_blocking", []))
@@ -107,6 +108,11 @@ def build_status() -> dict[str, Any]:
         "synthetic_stops_before_real_runner": synthetic.get("stops_before_real_runner") is True,
         "synthetic_real_runner_not_started": synthetic.get("real_runner_started") is False,
         "synthetic_no_protected_values_printed": synthetic.get("printed_protected_values") is False,
+        "wrong_confirm_dry_run_called": wrong_confirm.get("dry_run_called") is True,
+        "wrong_confirm_confirmation_present": wrong_confirm.get("confirmation_present") is True,
+        "wrong_confirm_stops_before_real_runner": wrong_confirm.get("stops_before_real_runner") is True,
+        "wrong_confirm_real_runner_not_started": wrong_confirm.get("real_runner_started") is False,
+        "wrong_confirm_no_protected_values_printed": wrong_confirm.get("printed_protected_values") is False,
         "authorized_execution_passed": authorized_execution.get("passed") is True,
         "authorized_execution_baseline_required_ids": BASELINE_REQUIRED_IDS.issubset(baseline_decision_ids),
         "authorized_execution_baseline_no_lora_ids": not bool(BASELINE_REQUIRED_IDS & LORA_ONLY_IDS)
@@ -176,6 +182,8 @@ def build_status() -> dict[str, Any]:
         "first_real_runner_wrapper_command": DRY_RUN_GATE_COMMAND,
         "stops_before_real_runner_without_confirmation": synthetic.get("stops_before_real_runner") is True
         and synthetic.get("real_runner_started") is False,
+        "stops_before_real_runner_with_wrong_confirmation": wrong_confirm.get("stops_before_real_runner") is True
+        and wrong_confirm.get("real_runner_started") is False,
         "baseline_required_ids": sorted(BASELINE_REQUIRED_IDS),
         "lora_only_ids": sorted(LORA_ONLY_IDS),
         "evidence": evidence,
@@ -202,6 +210,7 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         f"- baseline 是否需要 checkpoint upload：`{status['requires_checkpoint_upload']}`。",
         f"- baseline 是否需要 checkpoint link：`{status['requires_checkpoint_link']}`。",
         f"- 无真实确认短语时是否停在 runner 前：`{status['stops_before_real_runner_without_confirmation']}`。",
+        f"- 错误确认短语时是否停在 runner 前：`{status['stops_before_real_runner_with_wrong_confirmation']}`。",
         "",
         "## 拿到 token / submission id 后先跑",
         "",

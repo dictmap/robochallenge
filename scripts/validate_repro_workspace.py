@@ -928,6 +928,7 @@ def main() -> int:
             dashboard.get("baseline_dry_run_gate_no_upload") is True,
             dashboard.get("baseline_dry_run_gate_no_link") is True,
             dashboard.get("baseline_dry_run_gate_stops_before_real_runner") is True,
+            dashboard.get("baseline_dry_run_gate_wrong_confirm_stops_before_real_runner") is True,
             dashboard.get("baseline_dry_run_gate_command")
             == "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_ready_real_submission_template.sh",
             dashboard.get("baseline_credential_hygiene_passed") is True,
@@ -1332,6 +1333,7 @@ def main() -> int:
     ready_real_runner = json.loads((ROOT / "runs/ready_real_runner_template_audit.json").read_text(encoding="utf-8"))
     ready_real_no_credentials = ready_real_runner.get("no_credentials_smoke", {})
     ready_real_no_confirm = ready_real_runner.get("synthetic_no_confirm_smoke", {})
+    ready_real_wrong_confirm = ready_real_runner.get("synthetic_wrong_confirm_smoke", {})
     if not all(
         [
             ready_real_runner.get("kind") == "ready_real_runner_template_audit",
@@ -1344,6 +1346,7 @@ def main() -> int:
             ready_real_runner.get("secret_values_printed") is False,
             ready_real_runner.get("template_path") == "submission/run_ready_real_submission_template.sh",
             ready_real_runner.get("confirmation_phrase") == "RUN_REAL_ROBOCHALLENGE_SUBMISSION",
+            ready_real_runner.get("wrong_confirmation_phrase") == "RUN_REAL_ROBOCHALLENGE_SUBMISSION_WRONG",
             ready_real_runner.get("default_variant") == "baseline",
             ready_real_runner.get("bash_n", {}).get("passed"),
             all(ready_real_runner.get("required_fragments", {}).values()),
@@ -1356,9 +1359,17 @@ def main() -> int:
             ready_real_no_confirm.get("passed"),
             ready_real_no_confirm.get("variant") == "baseline",
             ready_real_no_confirm.get("dry_run_called"),
+            ready_real_no_confirm.get("confirmation_present") is False,
             ready_real_no_confirm.get("missing_confirmation"),
             ready_real_no_confirm.get("stops_before_real_runner"),
             not ready_real_no_confirm.get("real_runner_started"),
+            ready_real_wrong_confirm.get("passed"),
+            ready_real_wrong_confirm.get("variant") == "baseline",
+            ready_real_wrong_confirm.get("dry_run_called"),
+            ready_real_wrong_confirm.get("confirmation_present") is True,
+            ready_real_wrong_confirm.get("missing_confirmation"),
+            ready_real_wrong_confirm.get("stops_before_real_runner"),
+            not ready_real_wrong_confirm.get("real_runner_started"),
             ready_real_runner.get("clean_state_restore", {}).get("passed"),
         ]
     ):
@@ -1698,6 +1709,7 @@ def main() -> int:
             baseline_dry_run_gate.get("first_real_runner_wrapper_command")
             == "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_ready_real_submission_template.sh",
             baseline_dry_run_gate.get("stops_before_real_runner_without_confirmation") is True,
+            baseline_dry_run_gate.get("stops_before_real_runner_with_wrong_confirmation") is True,
             {
                 "SUBMISSION_TARGET_CONFIRMATION",
                 "ROBOCHALLENGE_USER_TOKEN",
@@ -2062,6 +2074,7 @@ def main() -> int:
             preflight.get("baseline_dry_run_gate_command")
             == "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_ready_real_submission_template.sh",
             preflight.get("baseline_dry_run_gate_stops_before_real_runner") is True,
+            preflight.get("baseline_dry_run_gate_wrong_confirm_stops_before_real_runner") is True,
             preflight.get("baseline_credential_hygiene_passed") is True,
             preflight.get("baseline_credential_hygiene_local_env_gitignored") is True,
             preflight.get("baseline_credential_hygiene_local_env_content_read") is False,

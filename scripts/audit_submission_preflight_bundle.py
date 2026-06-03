@@ -23,6 +23,7 @@ SUBCOMMANDS = [
     ("checkpoint_link_download_verification", "scripts/audit_checkpoint_link_download_verification.py"),
     ("submission_env_template", "scripts/audit_submission_env_template.py"),
     ("notebook_structure", "scripts/audit_notebook_structure.py"),
+    ("notebook_dashboard_gui_section", "scripts/audit_notebook_dashboard_gui_section.py"),
     ("pi05_aloha_baseline_execution_packet", "scripts/audit_pi05_aloha_baseline_execution_packet.py"),
     ("jupyter_input_template", "scripts/audit_jupyter_input_template.py"),
     ("jupyter_authorized_preflight_template", "scripts/audit_jupyter_authorized_preflight_template.py"),
@@ -113,6 +114,7 @@ def build_status() -> dict[str, Any]:
     link_download = read_json(RUNS_DIR / "checkpoint_link_download_verification.json")
     artifact_manifest = read_json(RUNS_DIR / "submission_artifact_manifest.json")
     notebook_structure = read_json(RUNS_DIR / "notebook_structure_audit.json")
+    notebook_dashboard_gui = read_json(RUNS_DIR / "notebook_dashboard_gui_section_audit.json")
     pi05_aloha_execution = read_json(RUNS_DIR / "pi05_aloha_baseline_execution_packet.json")
     jupyter_input = read_json(RUNS_DIR / "jupyter_input_template_audit.json")
     jupyter_authorized = read_json(RUNS_DIR / "jupyter_authorized_preflight_template_audit.json")
@@ -158,6 +160,7 @@ def build_status() -> dict[str, Any]:
                 link_download,
                 artifact_manifest,
                 notebook_structure,
+                notebook_dashboard_gui,
                 pi05_aloha_execution,
                 jupyter_input,
                 jupyter_authorized,
@@ -200,6 +203,7 @@ def build_status() -> dict[str, Any]:
         or bool(link_download.get("link_value_printed"))
         or bool(artifact_manifest.get("link_values_printed"))
         or bool(notebook_structure.get("link_values_printed"))
+        or bool(notebook_dashboard_gui.get("link_values_printed"))
         or bool(pi05_aloha_execution.get("link_values_printed"))
         or bool(jupyter_input.get("link_values_printed"))
         or bool(jupyter_authorized.get("link_values_printed"))
@@ -236,6 +240,7 @@ def build_status() -> dict[str, Any]:
         "secret_values_printed": bool(secret_scan.get("secret_values_printed"))
         or bool(artifact_manifest.get("secret_values_printed"))
         or bool(notebook_structure.get("secret_values_printed"))
+        or bool(notebook_dashboard_gui.get("secret_values_printed"))
         or bool(pi05_aloha_execution.get("secret_values_printed"))
         or bool(jupyter_input.get("secret_values_printed"))
         or bool(jupyter_authorized.get("secret_values_printed"))
@@ -278,6 +283,7 @@ def build_status() -> dict[str, Any]:
                 link_download,
                 artifact_manifest,
                 notebook_structure,
+                notebook_dashboard_gui,
                 pi05_aloha_execution,
                 jupyter_input,
                 jupyter_authorized,
@@ -323,6 +329,7 @@ def build_status() -> dict[str, Any]:
                 link_download,
                 artifact_manifest,
                 notebook_structure,
+                notebook_dashboard_gui,
                 pi05_aloha_execution,
                 jupyter_input,
                 jupyter_authorized,
@@ -469,6 +476,23 @@ def build_status() -> dict[str, Any]:
         is False,
         "submission_variant_target_confirmation_value": route_packet.get("target_confirmation_value"),
         "submission_variant_baseline_blocking": route_packet.get("baseline_current_blocking", []),
+        "notebook_dashboard_gui_section_passed": notebook_dashboard_gui.get("passed") is True,
+        "notebook_dashboard_gui_section_displays_screenshot": notebook_dashboard_gui.get(
+            "semantic_checks", {}
+        ).get("displays_screenshot_inline")
+        is True,
+        "notebook_dashboard_gui_section_no_real_runner": notebook_dashboard_gui.get("semantic_checks", {}).get(
+            "does_not_call_real_runner"
+        )
+        is True,
+        "notebook_dashboard_gui_section_no_local_env": notebook_dashboard_gui.get("semantic_checks", {}).get(
+            "does_not_read_local_env"
+        )
+        is True,
+        "notebook_dashboard_gui_section_screenshot_exists": notebook_dashboard_gui.get("packet_checks", {}).get(
+            "screenshot_file_exists"
+        )
+        is True,
         "jupyter_input_target_confirmation_value": jupyter_input.get("target_confirmation_value"),
         "jupyter_input_target_confirmation_manual_input": jupyter_input.get(
             "target_confirmation_manual_input_required"
@@ -803,6 +827,10 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         f"- 错误确认值是否停在预检前：`{status['submission_target_confirmation_gate_bad_stop_before_preflight']}`。",
         f"- 正确确认值是否被接受：`{status['submission_target_confirmation_gate_correct_accepted']}`。",
         f"- 确认 gate 是否未启动真实 runner：`{status['submission_target_confirmation_gate_real_runner_not_started']}`。",
+        f"- Jupyter 第 47 节 GUI 截图语义审计：`{status['notebook_dashboard_gui_section_passed']}`。",
+        f"- Jupyter 第 47 节是否内联显示截图：`{status['notebook_dashboard_gui_section_displays_screenshot']}`。",
+        f"- Jupyter 第 47 节是否不读 local env：`{status['notebook_dashboard_gui_section_no_local_env']}`。",
+        f"- Jupyter 第 47 节是否不调用真实 runner：`{status['notebook_dashboard_gui_section_no_real_runner']}`。",
         f"- Jupyter 第 44 节确认值：`{status['jupyter_input_target_confirmation_value']}`。",
         f"- Jupyter 第 44 节是否要求手动输入确认：`{status['jupyter_input_target_confirmation_manual_input']}`。",
         f"- Jupyter 第 44 节是否精确匹配确认：`{status['jupyter_input_target_confirmation_exact_match']}`。",

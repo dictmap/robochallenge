@@ -31,6 +31,10 @@
 - 错误确认值是否停在预检前：`True`。
 - 正确确认值是否被接受：`True`。
 - 确认 gate 是否未启动真实 runner：`True`。
+- Jupyter 第 47 节 GUI 截图语义审计：`True`。
+- Jupyter 第 47 节是否内联显示截图：`True`。
+- Jupyter 第 47 节是否不读 local env：`True`。
+- Jupyter 第 47 节是否不调用真实 runner：`True`。
 - Jupyter 第 44 节确认值：`CONFIRM_TABLE30V2_ALOHA_BASELINE`。
 - Jupyter 第 44 节是否要求手动输入确认：`True`。
 - Jupyter 第 44 节是否精确匹配确认：`True`。
@@ -62,7 +66,7 @@
 - baseline 是否需要 checkpoint link：`False`。
 - baseline 是否需要 checkpoint upload：`False`。
 - 中文 UTF-8 产物审计：`True`。
-- 中文 UTF-8 扫描文件数：`170`。
+- 中文 UTF-8 扫描文件数：`172`。
 - 中文 UTF-8 解码错误数：`0`。
 - 中文乱码哨兵命中数：`0`。
 - baseline dry-run gate：`True`。
@@ -163,6 +167,7 @@
 - `checkpoint_link_download_verification`：returncode=`0`，passed=`True`。
 - `submission_env_template`：returncode=`0`，passed=`True`。
 - `notebook_structure`：returncode=`0`，passed=`True`。
+- `notebook_dashboard_gui_section`：returncode=`0`，passed=`True`。
 - `pi05_aloha_baseline_execution_packet`：returncode=`0`，passed=`True`。
 - `jupyter_input_template`：returncode=`0`，passed=`True`。
 - `jupyter_authorized_preflight_template`：returncode=`0`，passed=`True`。

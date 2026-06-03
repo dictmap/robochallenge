@@ -50,6 +50,7 @@ REQUIRED_ARTIFACTS = [
     "reports/real_submission_readiness_scenarios.md",
     "reports/submission_env_template_audit.md",
     "reports/notebook_structure_audit.md",
+    "reports/notebook_dashboard_gui_section_audit.md",
     "reports/jupyter_input_template_audit.md",
     "reports/jupyter_authorized_preflight_template_audit.md",
     "reports/jupyter_final_handoff_template_audit.md",
@@ -115,6 +116,7 @@ REQUIRED_ARTIFACTS = [
     "scripts/audit_submission_target_confirmation_gate.py",
     "scripts/audit_submission_dashboard_links.py",
     "scripts/audit_jupyter_input_template.py",
+    "scripts/audit_notebook_dashboard_gui_section.py",
     "scripts/audit_jupyter_authorized_preflight_template.py",
     "scripts/audit_jupyter_final_handoff_template.py",
     "scripts/audit_historical_notebook_checkpoint_outputs.py",
@@ -217,6 +219,7 @@ def build_status() -> dict[str, Any]:
     preflight = read_json(RUNS_DIR / "submission_preflight_bundle.json")
     pi05_aloha_execution = read_json(RUNS_DIR / "pi05_aloha_baseline_execution_packet.json")
     notebook_structure = read_json(RUNS_DIR / "notebook_structure_audit.json")
+    notebook_dashboard_gui = read_json(RUNS_DIR / "notebook_dashboard_gui_section_audit.json")
     jupyter_input = read_json(RUNS_DIR / "jupyter_input_template_audit.json")
     jupyter_authorized = read_json(RUNS_DIR / "jupyter_authorized_preflight_template_audit.json")
     jupyter_final_handoff = read_json(RUNS_DIR / "jupyter_final_handoff_template_audit.json")
@@ -274,6 +277,23 @@ def build_status() -> dict[str, Any]:
         "pi05_aloha_execution_no_contact": not any(pi05_aloha_execution.get("contact_flags", {}).values()),
         "pi05_aloha_execution_no_leak": not any(pi05_aloha_execution.get("leak_flags", {}).values()),
         "notebook_structure_passed": notebook_structure.get("passed") is True,
+        "notebook_dashboard_gui_section_passed": notebook_dashboard_gui.get("passed") is True,
+        "notebook_dashboard_gui_section_displays_screenshot": notebook_dashboard_gui.get(
+            "semantic_checks", {}
+        ).get("displays_screenshot_inline")
+        is True,
+        "notebook_dashboard_gui_section_no_real_runner": notebook_dashboard_gui.get("semantic_checks", {}).get(
+            "does_not_call_real_runner"
+        )
+        is True,
+        "notebook_dashboard_gui_section_no_local_env": notebook_dashboard_gui.get("semantic_checks", {}).get(
+            "does_not_read_local_env"
+        )
+        is True,
+        "notebook_dashboard_gui_section_screenshot_exists": notebook_dashboard_gui.get("packet_checks", {}).get(
+            "screenshot_file_exists"
+        )
+        is True,
         "jupyter_input_template_passed": jupyter_input.get("passed") is True,
         "jupyter_input_recommended_baseline": jupyter_input.get("recommended_route") == "baseline_official_aloha",
         "jupyter_input_baseline_no_upload": jupyter_input.get("baseline_requires_checkpoint_upload") is False,
@@ -737,6 +757,7 @@ def build_status() -> dict[str, Any]:
                 preflight,
                 pi05_aloha_execution,
                 notebook_structure,
+                notebook_dashboard_gui,
                 jupyter_input,
                 jupyter_authorized,
                 jupyter_final_handoff,
@@ -775,6 +796,7 @@ def build_status() -> dict[str, Any]:
         ),
         "link_values_printed": bool(preflight.get("leak_flags", {}).get("link_values_printed"))
         or bool(pi05_aloha_execution.get("link_values_printed"))
+        or bool(notebook_dashboard_gui.get("link_values_printed"))
         or bool(jupyter_input.get("link_values_printed"))
         or bool(jupyter_authorized.get("link_values_printed"))
         or bool(jupyter_final_handoff.get("link_values_printed"))
@@ -809,6 +831,7 @@ def build_status() -> dict[str, Any]:
         or bool(dashboard_gui_access.get("link_values_printed")),
         "secret_values_printed": bool(secret_scan.get("secret_values_printed"))
         or bool(pi05_aloha_execution.get("secret_values_printed"))
+        or bool(notebook_dashboard_gui.get("secret_values_printed"))
         or bool(jupyter_input.get("secret_values_printed"))
         or bool(jupyter_authorized.get("secret_values_printed"))
         or bool(jupyter_final_handoff.get("secret_values_printed"))
@@ -845,6 +868,7 @@ def build_status() -> dict[str, Any]:
                 preflight,
                 pi05_aloha_execution,
                 notebook_structure,
+                notebook_dashboard_gui,
                 jupyter_input,
                 jupyter_authorized,
                 jupyter_final_handoff,
@@ -888,6 +912,7 @@ def build_status() -> dict[str, Any]:
                 preflight,
                 pi05_aloha_execution,
                 notebook_structure,
+                notebook_dashboard_gui,
                 jupyter_input,
                 jupyter_authorized,
                 jupyter_final_handoff,

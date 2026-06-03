@@ -1,7 +1,7 @@
 {
   "kind": "chinese_utf8_artifact_audit",
   "passed": true,
-  "scanned_file_count": 170,
+  "scanned_file_count": 172,
   "decode_error_count": 0,
   "bad_marker_hit_file_count": 0,
   "bad_marker_hit_count": 0,
@@ -319,6 +319,14 @@
       "bad_marker_hits": []
     },
     {
+      "path": "reports/notebook_dashboard_gui_section_audit.md",
+      "size_bytes": 2388,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
       "path": "reports/notebook_structure_audit.md",
       "size_bytes": 2369,
       "utf8_decode_ok": true,
@@ -536,7 +544,7 @@
     },
     {
       "path": "reports/submission_artifact_manifest.md",
-      "size_bytes": 32059,
+      "size_bytes": 32724,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -576,7 +584,7 @@
     },
     {
       "path": "reports/submission_preflight_bundle.md",
-      "size_bytes": 12411,
+      "size_bytes": 12711,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -665,14 +673,6 @@
     {
       "path": "reports/table30v2_aloha_short_lerobot_cli.md",
       "size_bytes": 916,
-      "utf8_decode_ok": true,
-      "decode_error": "",
-      "bad_marker_count": 0,
-      "bad_marker_hits": []
-    },
-    {
-      "path": "reports/web_form_field_packet.md",
-      "size_bytes": 6265,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,

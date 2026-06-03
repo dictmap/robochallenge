@@ -2718,3 +2718,27 @@
 ### 下一步
 - P0：提交并推送本轮 Jupyter GUI 首屏截图入口补齐。
 - P1：继续把“授权后只读预检 -> final handoff -> 真实 runner 强确认”这条链路保持在 Jupyter 和 shell 双入口一致状态；真实 runner 仍等待用户明确授权。
+
+## 2026-06-03 第九十九轮：Jupyter GUI 截图章节语义审计闭环
+
+### 已完成
+- 新增 `scripts/audit_notebook_dashboard_gui_section.py`，对 Notebook 第 47 节做语义级静态审计，不再只依赖 marker 是否出现。
+- 新增产物 `runs/notebook_dashboard_gui_section_audit.json` 与 `reports/notebook_dashboard_gui_section_audit.md`。
+- 审计项覆盖：默认运行 `RUN_DASHBOARD_GUI_SCREENSHOT_PACKET = True`、调用 `scripts/render_dashboard_gui_access_packet.py`、读取 `runs/dashboard_gui_access_packet.json`、断言截图存在且大于 10KB、Jupyter 内联显示 `reports/submission_status_dashboard_browser.png`。
+- 同步更新 `scripts/audit_submission_artifact_manifest.py`、`scripts/audit_submission_preflight_bundle.py` 和 `scripts/validate_repro_workspace.py`，把第 47 节语义审计纳入 manifest、总预检和 workspace validator。
+
+### 验证结果
+- Linux 端完整 no-contact 链路已通过：`py_compile`、`audit_notebook_dashboard_gui_section.py`、`audit_submission_artifact_manifest.py`、`audit_submission_preflight_bundle.py`、`validate_repro_workspace.py`、`audit_chinese_utf8_artifacts.py`、`audit_plaintext_secrets.py` 和 `git diff --check`。
+- `runs/notebook_dashboard_gui_section_audit.json` 实测 `passed=true`、`section_index=95`、`code_cell_id=dashboard-gui-screenshot-code`。
+- 语义检查实测 `displays_screenshot_inline=true`、`does_not_read_local_env=true`、`does_not_call_real_runner=true`。
+- GUI 截图包联动检查实测 `gui_packet_passed=true`、`gui_packet_screenshot_created=true`、`screenshot_file_exists=true`、`packet_no_platform_contact=true`。
+- 中文 UTF-8 审计实测 `passed=true`、`decode_error_count=0`、`bad_marker_hit_count=0`；明文凭据扫描实测 `passed=true`、`hit_count=0`。
+
+### 当前边界
+- 本轮只做 Notebook/脚本/报告的只读语义审计，没有读取真实 token、submission id、checkpoint link 或真实 local env 内容。
+- 没有连接 RoboChallenge 平台，没有上传 checkpoint，没有生成 checkpoint tar，也没有启动真实 runner。
+- baseline 官方 ALOHA 路线仍阻塞在目标确认、token、submission id、`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline` 和真实 runner 强确认。
+
+### 下一步
+- P0：提交并推送本轮 Jupyter GUI 截图章节语义审计闭环。
+- P1：继续保持 baseline 官方 ALOHA 路线优先；用户授权和凭据到位后，先跑只读预检，再进入真实 runner 强确认。

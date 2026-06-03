@@ -3,7 +3,7 @@
 ## 结论
 
 - 审计状态：`passed=True`。
-- 材料数量：`104`。
+- 材料数量：`106`。
 - 缺失材料数量：`0`。
 - 禁止跟踪路径数量：`0`。
 - 是否连接平台：`False`。
@@ -14,7 +14,7 @@
 ## 材料清单
 
 - `README.md`：exists=`True`，tracked=`True`，size=`19168`，sha256=`58dff8b9599520d8de819ab2dd636d7e1d46962e276499858d6f51f4151f620c`。
-- `work.md`：exists=`True`，tracked=`True`，size=`239071`，sha256=`46e6dd0661f355d242392114e89718fb67480669d2fd086090ef4239a84e3285`。
+- `work.md`：exists=`True`，tracked=`True`，size=`241571`，sha256=`7aca43256fe6eb3f52502d974f7d9a32a47c2ecabc60049019ab9d1d382e80d7`。
 - `notebooks/robochallenge_pi05_submit_cn.ipynb`：exists=`True`，tracked=`True`，size=`101630`，sha256=`b57f3b8aec83262cb0c7de87388d1bc757210775913588f64c18e976fea9a41c`。
 - `submission/README.md`：exists=`True`，tracked=`True`，size=`1966`，sha256=`9661c643ac3a13348b1cdd49a90a200ed9238d063960a4d9c3edad41f7464251`。
 - `submission/REAL_SUBMISSION_HANDOFF.md`：exists=`True`，tracked=`True`，size=`9545`，sha256=`834d5199a5334444b016a352c4698284d9060131ba7794ec5c079514780b0744`。
@@ -44,11 +44,12 @@
 - `reports/real_submission_readiness_scenarios.md`：exists=`True`，tracked=`True`，size=`1152`，sha256=`682ba066efc018aaeee94e4064afdbed25a4bab356fedf55ba6562b9889ffb0a`。
 - `reports/submission_env_template_audit.md`：exists=`True`，tracked=`True`，size=`1217`，sha256=`f4c3d723fbee3fea46fddb13a9c9fe2f155e3778b986d9905453e0944c50bfa9`。
 - `reports/notebook_structure_audit.md`：exists=`True`，tracked=`True`，size=`2369`，sha256=`9b38af8208c734a636d0a2781e74f95cfeb1414899bfc7a27efab94c9b7e99e4`。
+- `reports/notebook_dashboard_gui_section_audit.md`：exists=`True`，tracked=`True`，size=`2388`，sha256=`4059990e57de9ecc52c2e1c33c47c211689a1a7d4aaf4ae519d6669ed4d3683d`。
 - `reports/jupyter_input_template_audit.md`：exists=`True`，tracked=`True`，size=`4120`，sha256=`907e8f31eaafe212836830d6ba8d70cd9f173386efd0cd57068996cff999e739`。
 - `reports/jupyter_authorized_preflight_template_audit.md`：exists=`True`，tracked=`True`，size=`3025`，sha256=`7c7745d3fc347c80a5854ac005260f3f7770efdfe97bc37f0753ebfecaf7b68b`。
 - `reports/jupyter_final_handoff_template_audit.md`：exists=`True`，tracked=`True`，size=`3099`，sha256=`7c9a4011772d6e2a7bd83cf223f0577b03d4742deb637dd968330ad6fd9685e4`。
 - `reports/historical_notebook_checkpoint_outputs.md`：exists=`True`，tracked=`True`，size=`2659`，sha256=`56531c38088e20392687aae92b9607dc00657ce818f2ad54cefabe5555534a64`。
-- `reports/chinese_utf8_artifact_audit.md`：exists=`True`，tracked=`True`，size=`1045`，sha256=`0e58b465c8886bdff0d7252c74338b436cd4a4c79868af4633d35d36be51e1e3`。
+- `reports/chinese_utf8_artifact_audit.md`：exists=`True`，tracked=`True`，size=`1045`，sha256=`f1f136a542c1ead05b6bd1bd1913f83ab73e2400271a3a688623297c2ef27299`。
 - `reports/authorized_preflight_template_audit.md`：exists=`True`，tracked=`True`，size=`1426`，sha256=`7ecb501d2ba85af6e6a7ae109acf9a144a7fb559bf7b2e1a02dcdfa9171bdd26`。
 - `reports/ready_real_runner_template_audit.md`：exists=`True`，tracked=`True`，size=`1916`，sha256=`59b7118168ac5b97be9cc64e9dd015ac8c1df2d81368834828eaa229ceeda059`。
 - `reports/authorized_checkpoint_archive_template_audit.md`：exists=`True`，tracked=`True`，size=`2030`，sha256=`0a02a63659e96376720e1c11c78ab6bd7a5b4118c13a93c99155fbd2dd5d6bbe`。
@@ -78,8 +79,8 @@
 - `reports/submission_target_confirmation_gate.md`：exists=`True`，tracked=`True`，size=`3289`，sha256=`5d57fb9f0e82473a8edfd7d316d56ca8d115ae8239ba8a452e885fd7cf974dce`。
 - `reports/submission_handoff_docs_audit.md`：exists=`True`，tracked=`True`，size=`6003`，sha256=`13b9fda20546fa88ae7a6ab30f6f9534614dacfb859eb99e631fb5c2408d369d`。
 - `reports/authorized_submission_sequence_audit.md`：exists=`True`，tracked=`True`，size=`5913`，sha256=`1eb54851a38aa01e3fb79d51c180b443a91a130ee45c4adc11c1278493b3ca72`。
-- `reports/submission_preflight_bundle.md`：exists=`True`，tracked=`True`，size=`12411`，sha256=`c440c824b67cdb70b29d0e63dcc99e9d8890f36d7a3942fe2aa127e54e02c2be`。
-- `reports/plaintext_secret_scan.md`：exists=`True`，tracked=`True`，size=`689`，sha256=`1eda9fc7082a2cfc52dd199afe7d33dd643e59c1e2efbb8100a20c5ee6be1674`。
+- `reports/submission_preflight_bundle.md`：exists=`True`，tracked=`True`，size=`12711`，sha256=`524c0438ec5e66eff042c8a841723edd1c85c6320b578e82639c957795a7774c`。
+- `reports/plaintext_secret_scan.md`：exists=`True`，tracked=`True`，size=`689`，sha256=`b64cf036419dacb260c0d426ef34c647d61f83952b760069d5e7a05ce50f5b4f`。
 - `reports/submission_status_dashboard.html`：exists=`True`，tracked=`True`，size=`24659`，sha256=`602dacdc51dd57b552e141b217127ec17d66056810e65216a7baa13206d5c2cb`。
 - `reports/submission_dashboard_links_audit.md`：exists=`True`，tracked=`True`，size=`1113`，sha256=`c6ca0e24d99c8e3f3087a59baa0e3ea522bf6caa50618d941607cd553bca5180`。
 - `reports/dashboard_http_static_preview.md`：exists=`True`，tracked=`True`，size=`1793`，sha256=`458045051e1bcb9b20d0510026c69a7e91a93c7459a40870cf7e55e8bfd383c4`。
@@ -109,6 +110,7 @@
 - `scripts/audit_submission_target_confirmation_gate.py`：exists=`True`，tracked=`True`，size=`13859`，sha256=`a8b50cf21734d59601bc22f6b646da2cfe998532abe114b83f44e9367ed2f3d5`。
 - `scripts/audit_submission_dashboard_links.py`：exists=`True`，tracked=`True`，size=`7499`，sha256=`54e470ff286844d75e5e5377333e83f7ccfeff9939ab87314512a030e806cc98`。
 - `scripts/audit_jupyter_input_template.py`：exists=`True`，tracked=`True`，size=`16242`，sha256=`48115b8ede3ee2ffb479bbe9f10acd9621686e356adf80331c9a94cd985f692c`。
+- `scripts/audit_notebook_dashboard_gui_section.py`：exists=`True`，tracked=`True`，size=`12433`，sha256=`889b374fef97496cf1ef3e9d091f3f3267db37b9decfda11da665cfbd599c0a2`。
 - `scripts/audit_jupyter_authorized_preflight_template.py`：exists=`True`，tracked=`True`，size=`12746`，sha256=`71a1ae721f3712bb2c0a4ec2b7ee7ec0f7f44c50425fffdd4c3f5148330a4d8c`。
 - `scripts/audit_jupyter_final_handoff_template.py`：exists=`True`，tracked=`True`，size=`14047`，sha256=`db2056c05bec5a59ede9c37e52fc43efe5a878202cff3716bab40bd303f2f72d`。
 - `scripts/audit_historical_notebook_checkpoint_outputs.py`：exists=`True`，tracked=`True`，size=`8810`，sha256=`8757520ae782636586f99799c02e64febbdf3b0753e01fb91d41120407ad1f37`。
@@ -144,6 +146,11 @@
 - `pi05_aloha_execution_no_contact`：`True`。
 - `pi05_aloha_execution_no_leak`：`True`。
 - `notebook_structure_passed`：`True`。
+- `notebook_dashboard_gui_section_passed`：`True`。
+- `notebook_dashboard_gui_section_displays_screenshot`：`True`。
+- `notebook_dashboard_gui_section_no_real_runner`：`True`。
+- `notebook_dashboard_gui_section_no_local_env`：`True`。
+- `notebook_dashboard_gui_section_screenshot_exists`：`True`。
 - `jupyter_input_template_passed`：`True`。
 - `jupyter_input_recommended_baseline`：`True`。
 - `jupyter_input_baseline_no_upload`：`True`。

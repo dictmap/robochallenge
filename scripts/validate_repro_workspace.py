@@ -58,6 +58,7 @@ REQUIRED = [
     "reports/submission_preflight_bundle.md",
     "reports/submission_env_template_audit.md",
     "reports/notebook_structure_audit.md",
+    "reports/notebook_dashboard_gui_section_audit.md",
     "reports/jupyter_input_template_audit.md",
     "reports/jupyter_authorized_preflight_template_audit.md",
     "reports/jupyter_final_handoff_template_audit.md",
@@ -132,6 +133,7 @@ REQUIRED = [
     "runs/submission_preflight_bundle.json",
     "runs/submission_env_template_audit.json",
     "runs/notebook_structure_audit.json",
+    "runs/notebook_dashboard_gui_section_audit.json",
     "runs/jupyter_input_template_audit.json",
     "runs/jupyter_authorized_preflight_template_audit.json",
     "runs/jupyter_final_handoff_template_audit.json",
@@ -207,6 +209,7 @@ REQUIRED = [
     "scripts/audit_submission_preflight_bundle.py",
     "scripts/audit_submission_env_template.py",
     "scripts/audit_notebook_structure.py",
+    "scripts/audit_notebook_dashboard_gui_section.py",
     "scripts/audit_jupyter_input_template.py",
     "scripts/audit_jupyter_authorized_preflight_template.py",
     "scripts/audit_jupyter_final_handoff_template.py",
@@ -1547,6 +1550,41 @@ def main() -> int:
         ]
     ):
         print("Notebook 结构与编码审计未通过")
+        return 1
+    notebook_dashboard_gui = json.loads(
+        (ROOT / "runs/notebook_dashboard_gui_section_audit.json").read_text(encoding="utf-8")
+    )
+    notebook_dashboard_gui_semantic = notebook_dashboard_gui.get("semantic_checks", {})
+    notebook_dashboard_gui_packet = notebook_dashboard_gui.get("packet_checks", {})
+    if not all(
+        [
+            notebook_dashboard_gui.get("kind") == "notebook_dashboard_gui_section_audit",
+            notebook_dashboard_gui.get("passed"),
+            notebook_dashboard_gui.get("platform_contacted") is False,
+            notebook_dashboard_gui.get("uploads_performed") is False,
+            notebook_dashboard_gui.get("credentials_read") is False,
+            notebook_dashboard_gui.get("credentials_printed") is False,
+            notebook_dashboard_gui.get("link_values_printed") is False,
+            notebook_dashboard_gui.get("secret_values_printed") is False,
+            notebook_dashboard_gui.get("notebook_path") == "notebooks/robochallenge_pi05_submit_cn.ipynb",
+            notebook_dashboard_gui.get("section_marker") == "第 47 节：GUI 首屏截图证据",
+            notebook_dashboard_gui.get("section_index") == 95,
+            notebook_dashboard_gui.get("run_flag") == "RUN_DASHBOARD_GUI_SCREENSHOT_PACKET",
+            notebook_dashboard_gui.get("run_flag_default_true") is True,
+            notebook_dashboard_gui.get("code_cell_clean") is True,
+            notebook_dashboard_gui.get("code_cell_id") == "dashboard-gui-screenshot-code",
+            notebook_dashboard_gui.get("gui_packet_script") == "scripts/render_dashboard_gui_access_packet.py",
+            notebook_dashboard_gui.get("gui_packet_status") == "runs/dashboard_gui_access_packet.json",
+            notebook_dashboard_gui.get("screenshot_path") == "reports/submission_status_dashboard_browser.png",
+            all(notebook_dashboard_gui.get("required_fragments", {}).values()),
+            not any(notebook_dashboard_gui.get("forbidden_fragments", {}).values()),
+            all(notebook_dashboard_gui_semantic.values()),
+            all(notebook_dashboard_gui_packet.values()),
+            notebook_dashboard_gui.get("secret_pattern_hits") == [],
+            notebook_dashboard_gui.get("whole_notebook_secret_pattern_hits") == [],
+        ]
+    ):
+        print("Notebook GUI 首屏截图章节语义审计未通过")
         return 1
     jupyter_input = json.loads((ROOT / "runs/jupyter_input_template_audit.json").read_text(encoding="utf-8"))
     jupyter_required = jupyter_input.get("required_fragments", {})
@@ -3070,6 +3108,7 @@ def main() -> int:
         "checkpoint_link_download_verification",
         "submission_env_template",
         "notebook_structure",
+        "notebook_dashboard_gui_section",
         "pi05_aloha_baseline_execution_packet",
         "jupyter_input_template",
         "jupyter_authorized_preflight_template",
@@ -3148,6 +3187,11 @@ def main() -> int:
             preflight.get("submission_target_confirmation_gate_real_runner_not_started") is True,
             preflight.get("submission_variant_target_confirmation_value") == "CONFIRM_TABLE30V2_ALOHA_BASELINE",
             "SUBMISSION_TARGET_CONFIRMATION" in set(preflight.get("submission_variant_baseline_blocking", [])),
+            preflight.get("notebook_dashboard_gui_section_passed") is True,
+            preflight.get("notebook_dashboard_gui_section_displays_screenshot") is True,
+            preflight.get("notebook_dashboard_gui_section_no_real_runner") is True,
+            preflight.get("notebook_dashboard_gui_section_no_local_env") is True,
+            preflight.get("notebook_dashboard_gui_section_screenshot_exists") is True,
             preflight.get("jupyter_input_target_confirmation_value") == "CONFIRM_TABLE30V2_ALOHA_BASELINE",
             preflight.get("jupyter_input_target_confirmation_manual_input") is True,
             preflight.get("jupyter_input_target_confirmation_exact_match") is True,
@@ -3553,6 +3597,7 @@ def main() -> int:
     print("真实提交交接文档审计已通过")
     print("真实提交环境变量模板审计已通过")
     print("Notebook 结构与编码审计已通过")
+    print("Notebook GUI 首屏截图章节语义审计已通过")
     print("Jupyter 安全填空本地 env 入口审计已通过")
     print("授权后 Jupyter 预检入口审计已通过")
     print("中文 UTF-8 与乱码哨兵审计已通过")

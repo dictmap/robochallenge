@@ -6,16 +6,22 @@
   "web_form_ready": false,
   "web_form_recommended_route": "baseline_official_aloha",
   "web_form_recommended_route_ready": false,
-  "web_form_recommended_route_required_field_count": 10,
+  "web_form_recommended_route_required_field_count": 11,
   "web_form_recommended_route_ready_field_count": 7,
-  "web_form_recommended_route_missing_field_count": 3,
+  "web_form_recommended_route_missing_field_count": 4,
   "web_form_baseline_excludes_checkpoint_link": true,
   "web_form_baseline_excludes_checkpoint_archive": true,
   "web_form_recommended_route_blocking_names": [
     "RoboChallenge User Token",
     "RoboChallenge Submission ID",
+    "Submission Target Confirmation",
     "Submission Variant"
   ],
+  "web_form_target_confirmation_value": "CONFIRM_TABLE30V2_ALOHA_BASELINE",
+  "web_form_target_user_confirmed": false,
+  "web_form_target_confirmation_field_present": true,
+  "web_form_target_confirmation_required": true,
+  "web_form_target_confirmation_ready": false,
   "local_baseline_runner_ready": false,
   "local_lora_runner_ready": false,
   "verify_download_requested": false,
@@ -35,6 +41,14 @@
   "submission_target_confirmation_gate_bad_stop_before_preflight": true,
   "submission_target_confirmation_gate_correct_accepted": true,
   "submission_target_confirmation_gate_real_runner_not_started": true,
+  "submission_variant_target_confirmation_value": "CONFIRM_TABLE30V2_ALOHA_BASELINE",
+  "submission_variant_baseline_blocking": [
+    "SUBMISSION_TARGET_CONFIRMATION",
+    "ROBOCHALLENGE_USER_TOKEN",
+    "ROBOCHALLENGE_SUBMISSION_ID",
+    "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline",
+    "ROBOCHALLENGE_REAL_RUN_CONFIRM"
+  ],
   "jupyter_input_target_confirmation_value": "CONFIRM_TABLE30V2_ALOHA_BASELINE",
   "jupyter_input_target_confirmation_manual_input": true,
   "jupyter_input_target_confirmation_exact_match": true,
@@ -252,7 +266,7 @@
       "script": "scripts/render_submission_variant_route_packet.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": "oint_link_present\": false\n      },\n      \"note\": \"本地 LoRA 物化 checkpoint 已能被 policy 加载；如果作为网页可访问 checkpoint 提交，仍需要用户授权归档/上传并回填真实 HTTPS checkpoint link。\"\n    }\n  ],\n  \"evidence\": {\n    \"package_audit_passed\": true,\n    \"readiness_gate_passed\": true,\n    \"baseline_local_route_ready_without_credentials\": true,\n    \"baseline_does_not_need_upload_or_link\": true,\n    \"lora_local_checkpoint_ready\": true,\n    \"lora_public_link_still_needs_upload\": true,\n    \"secret_scan_clean\": true\n  },\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false\n  },\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"提交路线已拆分；默认建议先走官方 ALOHA baseline 本地 runner 路线。\"\n  ]\n}\n",
+      "stdout_tail": "\n  \"evidence\": {\n    \"package_audit_passed\": true,\n    \"readiness_gate_passed\": true,\n    \"baseline_local_route_ready_without_credentials\": true,\n    \"baseline_does_not_need_upload_or_link\": true,\n    \"baseline_blocking_has_target_confirmation\": true,\n    \"target_confirmation_value_exact\": true,\n    \"baseline_note_mentions_target_confirmation_value\": true,\n    \"lora_local_checkpoint_ready\": true,\n    \"lora_public_link_still_needs_upload\": true,\n    \"secret_scan_clean\": true\n  },\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false\n  },\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"提交路线已拆分；默认建议先走官方 ALOHA baseline 本地 runner 路线。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "baseline_submission_quickstart": {
@@ -294,7 +308,7 @@
       "script": "scripts/render_web_form_field_packet.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": "sed\": true,\n    \"link_download_default_no_contact\": true,\n    \"upload_channels_audited\": true,\n    \"action_packet_passed\": true,\n    \"recommended_route_is_baseline\": true,\n    \"baseline_route_excludes_checkpoint_link\": true,\n    \"baseline_route_excludes_checkpoint_archive\": true,\n    \"secret_scan_clean\": true\n  },\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false\n  },\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"字段 `Checkpoint Link` 仍未就绪：需要用户授权上传后填入真实可访问 HTTPS 链接；当前不打印链接明文。\",\n    \"字段 `RoboChallenge User Token` 仍未就绪：只能写入本地 env 或 shell，不能写入 tracked 文件。\",\n    \"字段 `RoboChallenge Submission ID` 仍未就绪：必须来自 RoboChallenge 页面，不能伪造。\"\n  ]\n}\n",
+      "stdout_tail": "arget_confirmation_field_blocks_baseline_until_user_confirmed\": true,\n    \"secret_scan_clean\": true\n  },\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false\n  },\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"字段 `Checkpoint Link` 仍未就绪：需要用户授权上传后填入真实可访问 HTTPS 链接；当前不打印链接明文。\",\n    \"字段 `RoboChallenge User Token` 仍未就绪：只能写入本地 env 或 shell，不能写入 tracked 文件。\",\n    \"字段 `RoboChallenge Submission ID` 仍未就绪：必须来自 RoboChallenge 页面，不能伪造。\",\n    \"字段 `Submission Target Confirmation` 仍未就绪：需要用户确认 Table30v2 / aloha / pack_the_toothbrush_holder，并在 local env 中精确写入该确认值。\",\n    \"字段 `Submission Variant` 仍未就绪：需要用户确认提交官方 ALOHA baseline 还是 LoRA 物化 checkpoint。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "route_aware_submission_blockers": {

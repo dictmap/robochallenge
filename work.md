@@ -2405,3 +2405,26 @@
 ### 下一步
 - P0：提交并推送本轮提交交接文档目标确认一致性审计。
 - P1：用户明确确认目标并提供 token/submission id 后，先跑 Jupyter 第 44/45 节或 shell baseline 授权预检与 dry-run gate；真实 runner 仍必须等待用户明确授权。
+## 2026-06-03 第八十六轮：网页表单与 GUI 目标确认字段闭环
+
+### 已完成
+- 更新 `scripts/render_web_form_field_packet.py`，新增网页表单字段 `Submission Target Confirmation`，固定推荐值为 `CONFIRM_TABLE30V2_ALOHA_BASELINE`，但保持 `ready=false`，因为必须由用户手动确认。
+- 网页表单推荐 baseline 路线从 `10` 个必填、`3` 个待补，更新为 `11` 个必填、`4` 个待补：目标确认、token、submission id、variant=baseline。
+- 更新 `scripts/render_submission_variant_route_packet.py`，让 baseline 路线说明明确写出 `ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION=CONFIRM_TABLE30V2_ALOHA_BASELINE`，并输出 `baseline_current_blocking`。
+- 更新 GUI dashboard、preflight bundle、artifact manifest 和总 validator，新增 web form 目标确认字段、推荐路线阻塞、route packet 目标确认值的机器断言。
+- 清理 dashboard 旧口径：不再出现 “baseline 仍缺 token...” 或 “baseline 表单先补 token...” 这类漏掉目标确认的文案。
+
+### 验证结果
+- Linux 端最终 no-contact 链路已通过：`py_compile`、`audit_chinese_utf8_artifacts.py`、`audit_plaintext_secrets.py`、`render_web_form_field_packet.py`、`render_submission_variant_route_packet.py`、`audit_submission_preflight_bundle.py`、`audit_submission_artifact_manifest.py`、`render_submission_status_dashboard.py`、`validate_repro_workspace.py`、`git diff --check`。
+- `runs/web_form_field_packet.json`：`passed=true`，`field_count=13`，推荐路线 `required=11`、`ready=7`、`missing=4`，`recommended_route_blocking_names` 包含 `Submission Target Confirmation`。
+- `runs/submission_status_dashboard.json`：`passed=true`，`web_form_target_confirmation_value=CONFIRM_TABLE30V2_ALOHA_BASELINE`，`web_form_target_user_confirmed=false`，`web_form_target_confirmation_required=true`，`web_form_target_confirmation_ready=false`。
+- 旧口径搜索已清空：`baseline 仍缺 token`、`baseline 表单先补 token`、`仍需要用户 token、submission id、提交对象确认`、`token、submission id 和 variant` 均无命中。
+
+### 当前边界
+- 本轮没有读取真实 token、submission id、checkpoint link 或真实 local env 内容。
+- 没有连接 RoboChallenge 平台，没有上传 checkpoint，没有生成 checkpoint tar，也没有启动真实 runner。
+- baseline 推荐路线的 Web 表单和 GUI 现在都把目标确认作为用户待补项；当前仍没有替用户确认目标。
+
+### 下一步
+- P0：提交并推送本轮网页表单与 GUI 目标确认字段闭环。
+- P1：继续检查剩余报告中 “真实提交仍需要用户凭据/submission id” 这类较泛文案，决定是否也要升级为 5 项阻塞口径。

@@ -17,7 +17,7 @@
 - 本地 runner 是否需要 checkpoint upload：`False`。
 - 本地 runner 是否需要 checkpoint link：`False`。
 - 生成公网 checkpoint link 是否仍需上传：`False`。
-- 说明：本地 runner 路线使用 Linux 上已存在的官方 ALOHA checkpoint，不需要先生成 LoRA tar，也不需要 checkpoint link。仍需要用户 token、submission id、提交对象确认和真实 runner 强确认。
+- 说明：本地 runner 路线使用 Linux 上已存在的官方 ALOHA checkpoint，不需要先生成 LoRA tar，也不需要 checkpoint link。仍需要用户手动设置 ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION=CONFIRM_TABLE30V2_ALOHA_BASELINE、token、submission id、variant=baseline 和真实 runner 强确认。
 - 当前阻塞：
   - `SUBMISSION_TARGET_CONFIRMATION`
   - `ROBOCHALLENGE_USER_TOKEN`
@@ -76,6 +76,9 @@
 - `readiness_gate_passed`：`True`。
 - `baseline_local_route_ready_without_credentials`：`True`。
 - `baseline_does_not_need_upload_or_link`：`True`。
+- `baseline_blocking_has_target_confirmation`：`True`。
+- `target_confirmation_value_exact`：`True`。
+- `baseline_note_mentions_target_confirmation_value`：`True`。
 - `lora_local_checkpoint_ready`：`True`。
 - `lora_public_link_still_needs_upload`：`True`。
 - `secret_scan_clean`：`True`。

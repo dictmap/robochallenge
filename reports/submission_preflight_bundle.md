@@ -7,9 +7,12 @@
 - 真实提交就绪：`False`。
 - Web 表单就绪：`False`。
 - Web 表单推荐路线：`baseline_official_aloha`。
-- Web 表单推荐路线必填字段：`10`，已就绪 `7`，待补 `3`。
+- Web 表单推荐路线必填字段：`11`，已就绪 `7`，待补 `4`。
 - baseline Web 表单是否排除 checkpoint link：`True`。
 - baseline Web 表单是否排除 checkpoint archive/upload：`True`。
+- Web 表单目标确认值：`CONFIRM_TABLE30V2_ALOHA_BASELINE`。
+- Web 表单目标确认是否已由用户确认：`False`。
+- Web 表单目标确认字段是否必填：`True`。
 - baseline runner 就绪：`False`。
 - LoRA runner 就绪：`False`。
 - checkpoint link 形态就绪：`False`。

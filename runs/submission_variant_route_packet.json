@@ -2,6 +2,14 @@
   "kind": "submission_variant_route_packet",
   "passed": true,
   "recommended_default": "baseline_official_aloha",
+  "target_confirmation_value": "CONFIRM_TABLE30V2_ALOHA_BASELINE",
+  "baseline_current_blocking": [
+    "SUBMISSION_TARGET_CONFIRMATION",
+    "ROBOCHALLENGE_USER_TOKEN",
+    "ROBOCHALLENGE_SUBMISSION_ID",
+    "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline",
+    "ROBOCHALLENGE_REAL_RUN_CONFIRM"
+  ],
   "route_count": 2,
   "routes": [
     {
@@ -28,7 +36,7 @@
         "token_present": false,
         "submission_id_present": false
       },
-      "note": "本地 runner 路线使用 Linux 上已存在的官方 ALOHA checkpoint，不需要先生成 LoRA tar，也不需要 checkpoint link。仍需要用户 token、submission id、提交对象确认和真实 runner 强确认。"
+      "note": "本地 runner 路线使用 Linux 上已存在的官方 ALOHA checkpoint，不需要先生成 LoRA tar，也不需要 checkpoint link。仍需要用户手动设置 ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION=CONFIRM_TABLE30V2_ALOHA_BASELINE、token、submission id、variant=baseline 和真实 runner 强确认。"
     },
     {
       "id": "lora_materialized",
@@ -67,6 +75,9 @@
     "readiness_gate_passed": true,
     "baseline_local_route_ready_without_credentials": true,
     "baseline_does_not_need_upload_or_link": true,
+    "baseline_blocking_has_target_confirmation": true,
+    "target_confirmation_value_exact": true,
+    "baseline_note_mentions_target_confirmation_value": true,
     "lora_local_checkpoint_ready": true,
     "lora_public_link_still_needs_upload": true,
     "secret_scan_clean": true

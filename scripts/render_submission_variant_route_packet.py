@@ -15,7 +15,7 @@ REPORTS_DIR = ROOT / "reports"
 RUNS_DIR = ROOT / "runs"
 DEFAULT_STATUS = RUNS_DIR / "submission_variant_route_packet.json"
 DEFAULT_REPORT = REPORTS_DIR / "submission_variant_route_packet.md"
-
+TARGET_CONFIRMATION_VALUE = "CONFIRM_TABLE30V2_ALOHA_BASELINE"
 
 LORA_BLOCKING_IDS = [
     "SUBMISSION_TARGET_CONFIRMATION",
@@ -166,7 +166,9 @@ def build_status() -> dict[str, Any]:
         },
         note=(
             "本地 runner 路线使用 Linux 上已存在的官方 ALOHA checkpoint，"
-            "不需要先生成 LoRA tar，也不需要 checkpoint link。仍需要用户 token、submission id、提交对象确认和真实 runner 强确认。"
+            "不需要先生成 LoRA tar，也不需要 checkpoint link。仍需要用户手动设置 "
+            f"ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION={TARGET_CONFIRMATION_VALUE}、"
+            "token、submission id、variant=baseline 和真实 runner 强确认。"
         ),
     )
     lora_route = route(
@@ -218,6 +220,10 @@ def build_status() -> dict[str, Any]:
         "baseline_local_route_ready_without_credentials": baseline_route["local_runner_ready_without_credentials"],
         "baseline_does_not_need_upload_or_link": not baseline_route["requires_checkpoint_upload"]
         and not baseline_route["requires_checkpoint_link_for_local_runner"],
+        "baseline_blocking_has_target_confirmation": "SUBMISSION_TARGET_CONFIRMATION"
+        in baseline_route["current_blocking"],
+        "target_confirmation_value_exact": TARGET_CONFIRMATION_VALUE == "CONFIRM_TABLE30V2_ALOHA_BASELINE",
+        "baseline_note_mentions_target_confirmation_value": TARGET_CONFIRMATION_VALUE in baseline_route["note"],
         "lora_local_checkpoint_ready": lora_route["local_checkpoint_ready"],
         "lora_public_link_still_needs_upload": lora_route["requires_checkpoint_upload_for_public_link"],
         "secret_scan_clean": secret_scan.get("passed") is True and secret_scan.get("hit_count") == 0,
@@ -246,6 +252,8 @@ def build_status() -> dict[str, Any]:
         "kind": "submission_variant_route_packet",
         "passed": passed,
         "recommended_default": "baseline_official_aloha",
+        "target_confirmation_value": TARGET_CONFIRMATION_VALUE,
+        "baseline_current_blocking": baseline_route["current_blocking"],
         "route_count": len(routes),
         "routes": routes,
         "evidence": evidence,

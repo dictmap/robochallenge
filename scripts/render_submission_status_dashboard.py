@@ -170,13 +170,18 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
     )
     web_form_packet_ready = bool(
         web_form_packet.get("passed")
-        and web_form_packet.get("field_count", 0) >= 10
+        and web_form_packet.get("field_count", 0) >= 13
         and web_form_packet.get("web_form_ready") is False
         and web_form_packet.get("recommended_route") == "baseline_official_aloha"
         and web_form_packet.get("baseline_route_excludes_checkpoint_link") is True
         and web_form_packet.get("baseline_route_excludes_checkpoint_archive") is True
+        and web_form_packet.get("target_confirmation_value") == "CONFIRM_TABLE30V2_ALOHA_BASELINE"
+        and web_form_packet.get("target_user_confirmed") is False
+        and web_form_packet.get("target_confirmation_field_required_for_recommended_route") is True
+        and web_form_packet.get("target_confirmation_field_ready_for_recommended_route") is False
         and "Checkpoint Link" not in set(web_form_packet.get("recommended_route_blocking_names", []))
         and "Checkpoint Upload / Archive" not in set(web_form_packet.get("recommended_route_blocking_names", []))
+        and "Submission Target Confirmation" in set(web_form_packet.get("recommended_route_blocking_names", []))
     )
     target_confirmation_ready = bool(
         target_confirmation.get("passed")
@@ -485,7 +490,7 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
             "真实提交 gate",
             "blocked" if not ready_for_real else "done",
             "ready=false" if not ready_for_real else "ready=true",
-            "baseline 仍缺 token、submission id、variant=baseline 和真实 runner 强确认；checkpoint link 只属于 LoRA/web 分支。",
+            "baseline 仍缺目标确认、token、submission id、variant=baseline 和真实 runner 强确认；checkpoint link 只属于 LoRA/web 分支。",
             "reports/real_submission_readiness.md",
         ),
         card(
@@ -526,7 +531,7 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
                 f"推荐 {web_form_packet.get('recommended_route_ready_field_count', 0)}/"
                 f"{web_form_packet.get('recommended_route_required_field_count', 0)} 必填"
             ),
-            "baseline 表单先补 token、submission id 和 variant；checkpoint link 只在选择 LoRA/web checkpoint 路线时补齐。",
+            "baseline 表单先补目标确认、token、submission id、variant=baseline；checkpoint link 只在选择 LoRA/web checkpoint 路线时补齐。",
             "reports/web_form_field_packet.md",
         ),
         card(
@@ -767,6 +772,18 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
         )
         is True,
         "web_form_recommended_route_blocking_names": web_form_packet.get("recommended_route_blocking_names", []),
+        "web_form_target_confirmation_value": web_form_packet.get("target_confirmation_value"),
+        "web_form_target_user_confirmed": web_form_packet.get("target_user_confirmed"),
+        "web_form_target_confirmation_field_present": web_form_packet.get("target_confirmation_field_present")
+        is True,
+        "web_form_target_confirmation_required": web_form_packet.get(
+            "target_confirmation_field_required_for_recommended_route"
+        )
+        is True,
+        "web_form_target_confirmation_ready": web_form_packet.get(
+            "target_confirmation_field_ready_for_recommended_route"
+        )
+        is True,
         "submission_target_confirmation_packet_passed": target_confirmation.get("passed") is True,
         "submission_target_confirmation_value": target_confirmation.get("recommended_confirmation_value"),
         "submission_target_user_confirmed": target_confirmation.get("target_user_confirmed"),
@@ -802,6 +819,8 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
         ),
         "submission_variant_route_packet_passed": route_packet.get("passed") is True,
         "submission_variant_recommended_default": route_packet.get("recommended_default"),
+        "submission_variant_target_confirmation_value": route_packet.get("target_confirmation_value"),
+        "submission_variant_baseline_blocking": route_packet.get("baseline_current_blocking", []),
         "submission_variant_route_count": route_packet.get("route_count"),
         "baseline_submission_quickstart_passed": baseline_quickstart.get("passed") is True,
         "baseline_submission_quickstart_target_confirmation_value": baseline_quickstart.get(

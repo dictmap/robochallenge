@@ -318,6 +318,21 @@ def build_status() -> dict[str, Any]:
         not in web_form_route_blocking_names,
         "web_form_field_packet_route_blocking_no_checkpoint_archive": "Checkpoint Upload / Archive"
         not in web_form_route_blocking_names,
+        "web_form_field_packet_target_confirmation_value_exact": web_form_packet.get("target_confirmation_value")
+        == "CONFIRM_TABLE30V2_ALOHA_BASELINE",
+        "web_form_field_packet_target_not_user_confirmed": web_form_packet.get("target_user_confirmed") is False,
+        "web_form_field_packet_target_field_present": web_form_packet.get("target_confirmation_field_present")
+        is True,
+        "web_form_field_packet_target_required_for_baseline": web_form_packet.get(
+            "target_confirmation_field_required_for_recommended_route"
+        )
+        is True,
+        "web_form_field_packet_target_blocks_until_user_confirmed": web_form_packet.get(
+            "target_confirmation_field_ready_for_recommended_route"
+        )
+        is False,
+        "web_form_field_packet_route_blocking_has_target_confirmation": "Submission Target Confirmation"
+        in web_form_route_blocking_names,
         "submission_target_confirmation_packet_passed": target_confirmation.get("passed") is True,
         "submission_target_confirmation_recommended_baseline": target_confirmation.get("recommended_route")
         == "baseline_official_aloha",
@@ -354,6 +369,12 @@ def build_status() -> dict[str, Any]:
         "submission_variant_route_packet_baseline_default": route_packet.get("recommended_default")
         == "baseline_official_aloha",
         "submission_variant_route_packet_has_two_routes": route_packet.get("route_count") == 2,
+        "submission_variant_route_packet_target_confirmation_value_exact": route_packet.get(
+            "target_confirmation_value"
+        )
+        == "CONFIRM_TABLE30V2_ALOHA_BASELINE",
+        "submission_variant_route_packet_baseline_blocking_has_target_confirmation": "SUBMISSION_TARGET_CONFIRMATION"
+        in set(route_packet.get("baseline_current_blocking", [])),
         "baseline_submission_quickstart_passed": baseline_quickstart.get("passed") is True,
         "baseline_submission_quickstart_target_confirmation_value_exact": baseline_quickstart.get(
             "target_confirmation_value"

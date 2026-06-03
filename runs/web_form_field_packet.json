@@ -3,23 +3,30 @@
   "passed": true,
   "web_form_ready": false,
   "ready_field_count": 7,
-  "missing_field_count": 5,
-  "field_count": 12,
+  "missing_field_count": 6,
+  "field_count": 13,
   "recommended_route": "baseline_official_aloha",
   "recommended_route_ready": false,
-  "recommended_route_required_field_count": 10,
+  "recommended_route_required_field_count": 11,
   "recommended_route_ready_field_count": 7,
-  "recommended_route_missing_field_count": 3,
+  "recommended_route_missing_field_count": 4,
   "recommended_route_blocking": [
     "推荐路线字段 `RoboChallenge User Token` 仍未就绪：只能写入本地 env 或 shell，不能写入 tracked 文件。",
     "推荐路线字段 `RoboChallenge Submission ID` 仍未就绪：必须来自 RoboChallenge 页面，不能伪造。",
+    "推荐路线字段 `Submission Target Confirmation` 仍未就绪：需要用户确认 Table30v2 / aloha / pack_the_toothbrush_holder，并在 local env 中精确写入该确认值。",
     "推荐路线字段 `Submission Variant` 仍未就绪：需要用户确认提交官方 ALOHA baseline 还是 LoRA 物化 checkpoint。"
   ],
   "recommended_route_blocking_names": [
     "RoboChallenge User Token",
     "RoboChallenge Submission ID",
+    "Submission Target Confirmation",
     "Submission Variant"
   ],
+  "target_confirmation_value": "CONFIRM_TABLE30V2_ALOHA_BASELINE",
+  "target_user_confirmed": false,
+  "target_confirmation_field_present": true,
+  "target_confirmation_field_required_for_recommended_route": true,
+  "target_confirmation_field_ready_for_recommended_route": false,
   "baseline_route_excludes_checkpoint_link": true,
   "baseline_route_excludes_checkpoint_archive": true,
   "fields": [
@@ -114,6 +121,16 @@
       "secret": true
     },
     {
+      "name": "Submission Target Confirmation",
+      "value": "CONFIRM_TABLE30V2_ALOHA_BASELINE",
+      "ready": false,
+      "required_for_recommended_route": true,
+      "ready_for_recommended_route": false,
+      "source": "runs/submission_target_confirmation_packet.json",
+      "note": "需要用户确认 Table30v2 / aloha / pack_the_toothbrush_holder，并在 local env 中精确写入该确认值。",
+      "secret": false
+    },
+    {
       "name": "Submission Variant",
       "value": "baseline 或 lora_materialized",
       "ready": false,
@@ -155,6 +172,11 @@
     "recommended_route_is_baseline": true,
     "baseline_route_excludes_checkpoint_link": true,
     "baseline_route_excludes_checkpoint_archive": true,
+    "target_confirmation_packet_passed": true,
+    "target_confirmation_value_exact": true,
+    "target_confirmation_not_user_confirmed": true,
+    "target_confirmation_field_required_for_baseline": true,
+    "target_confirmation_field_blocks_baseline_until_user_confirmed": true,
     "secret_scan_clean": true
   },
   "leak_flags": {
@@ -176,6 +198,8 @@
   "blocking": [
     "字段 `Checkpoint Link` 仍未就绪：需要用户授权上传后填入真实可访问 HTTPS 链接；当前不打印链接明文。",
     "字段 `RoboChallenge User Token` 仍未就绪：只能写入本地 env 或 shell，不能写入 tracked 文件。",
-    "字段 `RoboChallenge Submission ID` 仍未就绪：必须来自 RoboChallenge 页面，不能伪造。"
+    "字段 `RoboChallenge Submission ID` 仍未就绪：必须来自 RoboChallenge 页面，不能伪造。",
+    "字段 `Submission Target Confirmation` 仍未就绪：需要用户确认 Table30v2 / aloha / pack_the_toothbrush_holder，并在 local env 中精确写入该确认值。",
+    "字段 `Submission Variant` 仍未就绪：需要用户确认提交官方 ALOHA baseline 还是 LoRA 物化 checkpoint。"
   ]
 }

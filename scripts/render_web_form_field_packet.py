@@ -61,6 +61,7 @@ def build_status() -> dict[str, Any]:
     link_download = read_json(RUNS_DIR / "checkpoint_link_download_verification.json")
     upload_channels = read_json(RUNS_DIR / "checkpoint_upload_channels_audit.json")
     action_packet = read_json(RUNS_DIR / "next_user_action_packet.json")
+    target_confirmation = read_json(RUNS_DIR / "submission_target_confirmation_packet.json")
     secret_scan = read_json(RUNS_DIR / "plaintext_secret_scan.json")
     route_packet = read_json(RUNS_DIR / "submission_variant_route_packet.json")
     route_aware_blockers = read_json(RUNS_DIR / "route_aware_submission_blockers.json")
@@ -82,6 +83,10 @@ def build_status() -> dict[str, Any]:
     )
     baseline_route_active = recommended_route == "baseline_official_aloha"
     upload_ready = upload_channels.get("uploads_performed") is True or inputs.get("uploads_performed") is True
+    target_confirmation_value = target_confirmation.get(
+        "recommended_confirmation_value", "CONFIRM_TABLE30V2_ALOHA_BASELINE"
+    )
+    target_user_confirmed = target_confirmation.get("target_user_confirmed") is True
 
     fields = [
         field(
@@ -153,6 +158,13 @@ def build_status() -> dict[str, Any]:
             secret=True,
         ),
         field(
+            "Submission Target Confirmation",
+            target_confirmation_value,
+            target_user_confirmed,
+            "runs/submission_target_confirmation_packet.json",
+            "需要用户确认 Table30v2 / aloha / pack_the_toothbrush_holder，并在 local env 中精确写入该确认值。",
+        ),
+        field(
             "Submission Variant",
             "baseline 或 lora_materialized",
             False,
@@ -190,6 +202,9 @@ def build_status() -> dict[str, Any]:
     ]
     checkpoint_link_field = next((item for item in fields if item["name"] == "Checkpoint Link"), {})
     checkpoint_archive_field = next((item for item in fields if item["name"] == "Checkpoint Upload / Archive"), {})
+    target_confirmation_field = next(
+        (item for item in fields if item["name"] == "Submission Target Confirmation"), {}
+    )
     evidence = {
         "package_audit_passed": package.get("passed") is True,
         "readiness_gate_passed": readiness.get("passed") is True,
@@ -205,28 +220,47 @@ def build_status() -> dict[str, Any]:
         "baseline_route_excludes_checkpoint_archive": bool(
             baseline_route_active and checkpoint_archive_field.get("required_for_recommended_route") is False
         ),
+        "target_confirmation_packet_passed": target_confirmation.get("passed") is True,
+        "target_confirmation_value_exact": target_confirmation_value == "CONFIRM_TABLE30V2_ALOHA_BASELINE",
+        "target_confirmation_not_user_confirmed": target_confirmation.get("target_user_confirmed") is False,
+        "target_confirmation_field_required_for_baseline": bool(
+            baseline_route_active and target_confirmation_field.get("required_for_recommended_route") is True
+        ),
+        "target_confirmation_field_blocks_baseline_until_user_confirmed": bool(
+            baseline_route_active and target_confirmation_field.get("ready_for_recommended_route") is False
+        ),
         "secret_scan_clean": secret_scan.get("passed") is True and secret_scan.get("hit_count") == 0,
     }
     leak_flags = {
         "credentials_printed": any(
             bool(item.get("credentials_printed"))
-            for item in [package, readiness, link_intake, link_download, upload_channels, action_packet, secret_scan]
+            for item in [
+                package,
+                readiness,
+                link_intake,
+                link_download,
+                upload_channels,
+                action_packet,
+                target_confirmation,
+                secret_scan,
+            ]
         ),
         "link_values_printed": any(
             bool(item.get("link_values_printed") or item.get("link_value_printed"))
-            for item in [link_intake, link_download, action_packet, secret_scan]
+            for item in [link_intake, link_download, action_packet, target_confirmation, secret_scan]
         ),
         "secret_values_printed": any(
-            bool(item.get("secret_values_printed")) for item in [action_packet, secret_scan]
+            bool(item.get("secret_values_printed")) for item in [action_packet, target_confirmation, secret_scan]
         ),
     }
     contact_flags = {
         "platform_contacted": any(
-            bool(item.get("platform_contacted")) for item in [readiness, link_intake, link_download, action_packet]
+            bool(item.get("platform_contacted"))
+            for item in [readiness, link_intake, link_download, action_packet, target_confirmation]
         ),
         "uploads_performed": any(
             bool(item.get("uploads_performed") or item.get("upload_performed"))
-            for item in [readiness, link_intake, upload_channels, action_packet]
+            for item in [readiness, link_intake, upload_channels, action_packet, target_confirmation]
         ),
         "download_host_contacted": link_download.get("verification", {}).get("download_host_contacted") is True,
     }
@@ -244,7 +278,14 @@ def build_status() -> dict[str, Any]:
         [
             f"字段 `{item['name']}` 仍未就绪：{item['note']}"
             for item in missing_fields
-            if item["name"] in {"Checkpoint Link", "RoboChallenge User Token", "RoboChallenge Submission ID"}
+            if item["name"]
+            in {
+                "Checkpoint Link",
+                "RoboChallenge User Token",
+                "RoboChallenge Submission ID",
+                "Submission Target Confirmation",
+                "Submission Variant",
+            }
         ]
     )
     if not blocking:
@@ -264,6 +305,17 @@ def build_status() -> dict[str, Any]:
         "recommended_route_missing_field_count": len(recommended_missing_fields),
         "recommended_route_blocking": recommended_route_blocking,
         "recommended_route_blocking_names": [item["name"] for item in recommended_missing_fields],
+        "target_confirmation_value": target_confirmation_value,
+        "target_user_confirmed": target_confirmation.get("target_user_confirmed"),
+        "target_confirmation_field_present": bool(target_confirmation_field),
+        "target_confirmation_field_required_for_recommended_route": target_confirmation_field.get(
+            "required_for_recommended_route"
+        )
+        is True,
+        "target_confirmation_field_ready_for_recommended_route": target_confirmation_field.get(
+            "ready_for_recommended_route"
+        )
+        is True,
         "baseline_route_excludes_checkpoint_link": bool(
             baseline_route_active and checkpoint_link_field.get("required_for_recommended_route") is False
         ),

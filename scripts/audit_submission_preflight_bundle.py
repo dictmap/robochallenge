@@ -357,6 +357,18 @@ def build_status() -> dict[str, Any]:
         )
         is True,
         "web_form_recommended_route_blocking_names": web_form_packet.get("recommended_route_blocking_names", []),
+        "web_form_target_confirmation_value": web_form_packet.get("target_confirmation_value"),
+        "web_form_target_user_confirmed": web_form_packet.get("target_user_confirmed"),
+        "web_form_target_confirmation_field_present": web_form_packet.get("target_confirmation_field_present")
+        is True,
+        "web_form_target_confirmation_required": web_form_packet.get(
+            "target_confirmation_field_required_for_recommended_route"
+        )
+        is True,
+        "web_form_target_confirmation_ready": web_form_packet.get(
+            "target_confirmation_field_ready_for_recommended_route"
+        )
+        is True,
         "local_baseline_runner_ready": readiness.get("local_baseline_runner_ready"),
         "local_lora_runner_ready": readiness.get("local_lora_runner_ready"),
         "verify_download_requested": link_download.get("verify_download_requested"),
@@ -389,6 +401,8 @@ def build_status() -> dict[str, Any]:
             "real_runner_started"
         )
         is False,
+        "submission_variant_target_confirmation_value": route_packet.get("target_confirmation_value"),
+        "submission_variant_baseline_blocking": route_packet.get("baseline_current_blocking", []),
         "jupyter_input_target_confirmation_value": jupyter_input.get("target_confirmation_value"),
         "jupyter_input_target_confirmation_manual_input": jupyter_input.get(
             "target_confirmation_manual_input_required"
@@ -644,6 +658,9 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         f"- Web 表单推荐路线必填字段：`{status['web_form_recommended_route_required_field_count']}`，已就绪 `{status['web_form_recommended_route_ready_field_count']}`，待补 `{status['web_form_recommended_route_missing_field_count']}`。",
         f"- baseline Web 表单是否排除 checkpoint link：`{status['web_form_baseline_excludes_checkpoint_link']}`。",
         f"- baseline Web 表单是否排除 checkpoint archive/upload：`{status['web_form_baseline_excludes_checkpoint_archive']}`。",
+        f"- Web 表单目标确认值：`{status['web_form_target_confirmation_value']}`。",
+        f"- Web 表单目标确认是否已由用户确认：`{status['web_form_target_user_confirmed']}`。",
+        f"- Web 表单目标确认字段是否必填：`{status['web_form_target_confirmation_required']}`。",
         f"- baseline runner 就绪：`{status['local_baseline_runner_ready']}`。",
         f"- LoRA runner 就绪：`{status['local_lora_runner_ready']}`。",
         f"- checkpoint link 形态就绪：`{status['link_shape_ready']}`。",

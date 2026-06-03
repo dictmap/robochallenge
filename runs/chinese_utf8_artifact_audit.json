@@ -1,7 +1,7 @@
 {
   "kind": "chinese_utf8_artifact_audit",
   "passed": true,
-  "scanned_file_count": 172,
+  "scanned_file_count": 174,
   "decode_error_count": 0,
   "bad_marker_hit_file_count": 0,
   "bad_marker_hit_count": 0,
@@ -279,6 +279,14 @@
       "bad_marker_hits": []
     },
     {
+      "path": "reports/key_handoff_report_consistency.md",
+      "size_bytes": 3033,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
       "path": "reports/linux_pi05_baseline_audit.md",
       "size_bytes": 2229,
       "utf8_decode_ok": true,
@@ -544,7 +552,7 @@
     },
     {
       "path": "reports/submission_artifact_manifest.md",
-      "size_bytes": 32724,
+      "size_bytes": 33484,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -584,7 +592,7 @@
     },
     {
       "path": "reports/submission_preflight_bundle.md",
-      "size_bytes": 12711,
+      "size_bytes": 13067,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -665,14 +673,6 @@
     {
       "path": "reports/table30v2_aloha_short_lerobot.md",
       "size_bytes": 897,
-      "utf8_decode_ok": true,
-      "decode_error": "",
-      "bad_marker_count": 0,
-      "bad_marker_hits": []
-    },
-    {
-      "path": "reports/table30v2_aloha_short_lerobot_cli.md",
-      "size_bytes": 916,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,

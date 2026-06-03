@@ -66,9 +66,15 @@
 - baseline 是否需要 checkpoint link：`False`。
 - baseline 是否需要 checkpoint upload：`False`。
 - 中文 UTF-8 产物审计：`True`。
-- 中文 UTF-8 扫描文件数：`172`。
+- 中文 UTF-8 扫描文件数：`174`。
 - 中文 UTF-8 解码错误数：`0`。
 - 中文乱码哨兵命中数：`0`。
+- 关键交接报告一致性审计：`True`。
+- 关键交接报告检查数量：`10`。
+- Markdown/JSON 状态不一致数量：`0`。
+- 缺少审计状态行数量：`0`。
+- 关键交接报告乱码哨兵命中数：`0`。
+- 关键交接报告明文凭据模式命中数：`0`。
 - baseline dry-run gate：`True`。
 - baseline dry-run 命令：`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_ready_real_submission_template.sh`。
 - dry-run 是否停在真实 runner 前：`True`。
@@ -174,6 +180,7 @@
 - `jupyter_final_handoff_template`：returncode=`0`，passed=`True`。
 - `historical_notebook_checkpoint_outputs`：returncode=`0`，passed=`True`。
 - `chinese_utf8_artifacts`：returncode=`0`，passed=`True`。
+- `key_handoff_report_consistency`：returncode=`0`，passed=`True`。
 - `real_submission_readiness`：returncode=`0`，passed=`True`。
 - `authorized_preflight_template`：returncode=`0`，passed=`True`。
 - `ready_real_runner_template`：returncode=`0`，passed=`True`。

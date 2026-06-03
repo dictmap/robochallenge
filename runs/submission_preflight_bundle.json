@@ -119,9 +119,15 @@
   "baseline_requires_checkpoint_link": false,
   "baseline_requires_checkpoint_upload": false,
   "chinese_utf8_artifact_audit_passed": true,
-  "chinese_utf8_artifact_scanned_file_count": 172,
+  "chinese_utf8_artifact_scanned_file_count": 174,
   "chinese_utf8_artifact_decode_error_count": 0,
   "chinese_utf8_artifact_bad_marker_hit_count": 0,
+  "key_handoff_report_consistency_passed": true,
+  "key_handoff_report_consistency_checked_count": 10,
+  "key_handoff_report_consistency_mismatch_count": 0,
+  "key_handoff_report_consistency_missing_status_line_count": 0,
+  "key_handoff_report_consistency_bad_marker_hit_count": 0,
+  "key_handoff_report_consistency_secret_pattern_hit_count": 0,
   "baseline_dry_run_gate_passed": true,
   "baseline_dry_run_gate_command": "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_ready_real_submission_template.sh",
   "baseline_dry_run_gate_stops_before_real_runner": true,
@@ -232,7 +238,7 @@
     "ROBOCHALLENGE_REAL_RUN_CONFIRM"
   ],
   "secret_scan_hit_count": 0,
-  "secret_scan_scanned_files": 271,
+  "secret_scan_scanned_files": 274,
   "subcommands": {
     "checkpoint_link_intake": {
       "script": "scripts/audit_checkpoint_link_intake.py",
@@ -308,7 +314,14 @@
       "script": "scripts/audit_chinese_utf8_artifacts.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": ": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"reports/table30v2_aloha_mapping.md\",\n      \"size_bytes\": 3037,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"reports/table30v2_aloha_short_lerobot.md\",\n      \"size_bytes\": 897,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"reports/table30v2_aloha_short_lerobot_cli.md\",\n      \"size_bytes\": 916,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    }\n  ],\n  \"decode_error_paths\": [],\n  \"bad_marker_hit_paths\": [],\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"中文交接产物 UTF-8 解码与乱码哨兵扫描通过。\"\n  ]\n}\n",
+      "stdout_tail": " \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"reports/table30v2_aloha_dry_run_converter.md\",\n      \"size_bytes\": 1189,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"reports/table30v2_aloha_mapping.md\",\n      \"size_bytes\": 3037,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"reports/table30v2_aloha_short_lerobot.md\",\n      \"size_bytes\": 897,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    }\n  ],\n  \"decode_error_paths\": [],\n  \"bad_marker_hit_paths\": [],\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"中文交接产物 UTF-8 解码与乱码哨兵扫描通过。\"\n  ]\n}\n",
+      "stderr_tail": ""
+    },
+    "key_handoff_report_consistency": {
+      "script": "scripts/audit_key_handoff_report_consistency.py",
+      "returncode": 0,
+      "passed": true,
+      "stdout_tail": "\n      \"bad_marker_count\": 0,\n      \"secret_pattern_hits\": []\n    },\n    {\n      \"name\": \"chinese_utf8_artifacts\",\n      \"json_path\": \"runs/chinese_utf8_artifact_audit.json\",\n      \"report_path\": \"reports/chinese_utf8_artifact_audit.md\",\n      \"json_exists\": true,\n      \"report_exists\": true,\n      \"json_passed\": true,\n      \"markdown_passed\": true,\n      \"markdown_has_status_line\": true,\n      \"status_matches\": true,\n      \"bad_marker_count\": 0,\n      \"secret_pattern_hits\": []\n    },\n    {\n      \"name\": \"plaintext_secret_scan\",\n      \"json_path\": \"runs/plaintext_secret_scan.json\",\n      \"report_path\": \"reports/plaintext_secret_scan.md\",\n      \"json_exists\": true,\n      \"report_exists\": true,\n      \"json_passed\": true,\n      \"markdown_passed\": true,\n      \"markdown_has_status_line\": true,\n      \"status_matches\": true,\n      \"bad_marker_count\": 0,\n      \"secret_pattern_hits\": []\n    }\n  ],\n  \"secret_pattern_hits\": [],\n  \"blocking\": [\n    \"关键交接 Markdown 报告与 JSON 状态一致，未发现本地镜像滞后迹象。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "real_submission_readiness": {
@@ -343,7 +356,7 @@
       "script": "scripts/audit_plaintext_secrets.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": "{\n  \"kind\": \"plaintext_secret_scan\",\n  \"passed\": true,\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"secret_values_printed\": false,\n  \"scan_scope\": \"git tracked files plus unignored untracked files\",\n  \"scanned_files\": 271,\n  \"skipped_binary_files\": 1,\n  \"pattern_count\": 7,\n  \"hit_count\": 0,\n  \"hits\": [],\n  \"blocking\": [\n    \"如发现命中项，先移除明文凭据并轮换对应 token，再重新运行本审计。\",\n    \"本审计不替代真实平台权限检查；baseline 真实提交仍需要用户目标确认、token、submission id、variant=baseline 和真实 runner 强确认。\"\n  ]\n}\n",
+      "stdout_tail": "{\n  \"kind\": \"plaintext_secret_scan\",\n  \"passed\": true,\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"secret_values_printed\": false,\n  \"scan_scope\": \"git tracked files plus unignored untracked files\",\n  \"scanned_files\": 274,\n  \"skipped_binary_files\": 1,\n  \"pattern_count\": 7,\n  \"hit_count\": 0,\n  \"hits\": [],\n  \"blocking\": [\n    \"如发现命中项，先移除明文凭据并轮换对应 token，再重新运行本审计。\",\n    \"本审计不替代真实平台权限检查；baseline 真实提交仍需要用户目标确认、token、submission id、variant=baseline 和真实 runner 强确认。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "submission_variant_route_packet": {

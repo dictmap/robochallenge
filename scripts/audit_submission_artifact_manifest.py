@@ -56,6 +56,7 @@ REQUIRED_ARTIFACTS = [
     "reports/jupyter_final_handoff_template_audit.md",
     "reports/historical_notebook_checkpoint_outputs.md",
     "reports/chinese_utf8_artifact_audit.md",
+    "reports/key_handoff_report_consistency.md",
     "reports/authorized_preflight_template_audit.md",
     "reports/ready_real_runner_template_audit.md",
     "reports/authorized_checkpoint_archive_template_audit.md",
@@ -121,6 +122,7 @@ REQUIRED_ARTIFACTS = [
     "scripts/audit_jupyter_final_handoff_template.py",
     "scripts/audit_historical_notebook_checkpoint_outputs.py",
     "scripts/audit_chinese_utf8_artifacts.py",
+    "scripts/audit_key_handoff_report_consistency.py",
     "scripts/audit_pi05_aloha_baseline_execution_packet.py",
     "scripts/audit_authorized_execution_checklist.py",
     "scripts/audit_dashboard_http_static_preview.py",
@@ -225,6 +227,7 @@ def build_status() -> dict[str, Any]:
     jupyter_final_handoff = read_json(RUNS_DIR / "jupyter_final_handoff_template_audit.json")
     historical_notebook_outputs = read_json(RUNS_DIR / "historical_notebook_checkpoint_outputs.json")
     chinese_utf8 = read_json(RUNS_DIR / "chinese_utf8_artifact_audit.json")
+    key_report_consistency = read_json(RUNS_DIR / "key_handoff_report_consistency.json")
     authorized_preflight = read_json(RUNS_DIR / "authorized_preflight_template_audit.json")
     ready_real_runner = read_json(RUNS_DIR / "ready_real_runner_template_audit.json")
     authorized_archive = read_json(RUNS_DIR / "authorized_checkpoint_archive_template_audit.json")
@@ -353,6 +356,22 @@ def build_status() -> dict[str, Any]:
         "chinese_utf8_artifact_decode_error_count_zero": chinese_utf8.get("decode_error_count") == 0,
         "chinese_utf8_artifact_bad_marker_hit_count_zero": chinese_utf8.get("bad_marker_hit_count") == 0,
         "chinese_utf8_artifact_scanned_file_count": chinese_utf8.get("scanned_file_count", 0) >= 20,
+        "key_handoff_report_consistency_passed": key_report_consistency.get("passed") is True,
+        "key_handoff_report_consistency_checked_count": key_report_consistency.get("checked_report_count", 0)
+        >= 10,
+        "key_handoff_report_consistency_mismatch_count_zero": key_report_consistency.get("mismatch_count") == 0,
+        "key_handoff_report_consistency_missing_status_line_count_zero": key_report_consistency.get(
+            "missing_status_line_count"
+        )
+        == 0,
+        "key_handoff_report_consistency_bad_marker_hit_count_zero": key_report_consistency.get(
+            "bad_marker_hit_count"
+        )
+        == 0,
+        "key_handoff_report_consistency_secret_pattern_hit_count_zero": key_report_consistency.get(
+            "secret_pattern_hit_count"
+        )
+        == 0,
         "authorized_preflight_template_passed": authorized_preflight.get("passed") is True,
         "ready_real_runner_template_passed": ready_real_runner.get("passed") is True,
         "authorized_checkpoint_archive_template_passed": authorized_archive.get("passed") is True,
@@ -762,6 +781,7 @@ def build_status() -> dict[str, Any]:
                 jupyter_authorized,
                 jupyter_final_handoff,
                 chinese_utf8,
+                key_report_consistency,
                 authorized_preflight,
                 ready_real_runner,
                 authorized_archive,
@@ -801,6 +821,7 @@ def build_status() -> dict[str, Any]:
         or bool(jupyter_authorized.get("link_values_printed"))
         or bool(jupyter_final_handoff.get("link_values_printed"))
         or bool(chinese_utf8.get("link_values_printed"))
+        or bool(key_report_consistency.get("link_values_printed"))
         or bool(authorized_preflight.get("link_values_printed"))
         or bool(ready_real_runner.get("link_values_printed"))
         or bool(authorized_archive.get("link_values_printed"))
@@ -836,6 +857,7 @@ def build_status() -> dict[str, Any]:
         or bool(jupyter_authorized.get("secret_values_printed"))
         or bool(jupyter_final_handoff.get("secret_values_printed"))
         or bool(chinese_utf8.get("secret_values_printed"))
+        or bool(key_report_consistency.get("secret_values_printed"))
         or bool(action_packet.get("secret_values_printed"))
         or bool(web_form_packet.get("secret_values_printed"))
         or bool(route_packet.get("secret_values_printed"))
@@ -873,6 +895,7 @@ def build_status() -> dict[str, Any]:
                 jupyter_authorized,
                 jupyter_final_handoff,
                 chinese_utf8,
+                key_report_consistency,
                 authorized_preflight,
                 ready_real_runner,
                 authorized_archive,
@@ -917,6 +940,7 @@ def build_status() -> dict[str, Any]:
                 jupyter_authorized,
                 jupyter_final_handoff,
                 chinese_utf8,
+                key_report_consistency,
                 authorized_preflight,
                 ready_real_runner,
                 authorized_archive,

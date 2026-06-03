@@ -64,6 +64,7 @@ REQUIRED = [
     "reports/jupyter_final_handoff_template_audit.md",
     "reports/historical_notebook_checkpoint_outputs.md",
     "reports/chinese_utf8_artifact_audit.md",
+    "reports/key_handoff_report_consistency.md",
     "reports/authorized_preflight_template_audit.md",
     "reports/ready_real_runner_template_audit.md",
     "reports/authorized_checkpoint_archive_template_audit.md",
@@ -139,6 +140,7 @@ REQUIRED = [
     "runs/jupyter_final_handoff_template_audit.json",
     "runs/historical_notebook_checkpoint_outputs.json",
     "runs/chinese_utf8_artifact_audit.json",
+    "runs/key_handoff_report_consistency.json",
     "runs/authorized_preflight_template_audit.json",
     "runs/ready_real_runner_template_audit.json",
     "runs/authorized_checkpoint_archive_template_audit.json",
@@ -214,6 +216,7 @@ REQUIRED = [
     "scripts/audit_jupyter_authorized_preflight_template.py",
     "scripts/audit_jupyter_final_handoff_template.py",
     "scripts/audit_chinese_utf8_artifacts.py",
+    "scripts/audit_key_handoff_report_consistency.py",
     "scripts/audit_authorized_preflight_template.py",
     "scripts/audit_ready_real_runner_template.py",
     "scripts/audit_authorized_checkpoint_archive_template.py",
@@ -1742,6 +1745,35 @@ def main() -> int:
     ):
         print("中文 UTF-8 与乱码哨兵审计未通过")
         return 1
+    key_report_consistency = json.loads(
+        (ROOT / "runs/key_handoff_report_consistency.json").read_text(encoding="utf-8")
+    )
+    key_report_checks = key_report_consistency.get("checks", [])
+    if not all(
+        [
+            key_report_consistency.get("kind") == "key_handoff_report_consistency",
+            key_report_consistency.get("passed"),
+            key_report_consistency.get("platform_contacted") is False,
+            key_report_consistency.get("uploads_performed") is False,
+            key_report_consistency.get("credentials_read") is False,
+            key_report_consistency.get("credentials_printed") is False,
+            key_report_consistency.get("link_values_printed") is False,
+            key_report_consistency.get("secret_values_printed") is False,
+            key_report_consistency.get("checked_report_count") == 10,
+            key_report_consistency.get("mismatch_count") == 0,
+            key_report_consistency.get("missing_status_line_count") == 0,
+            key_report_consistency.get("bad_marker_hit_count") == 0,
+            key_report_consistency.get("secret_pattern_hit_count") == 0,
+            len(key_report_checks) == 10,
+            all(item.get("json_exists") and item.get("report_exists") for item in key_report_checks),
+            all(item.get("markdown_has_status_line") for item in key_report_checks),
+            all(item.get("status_matches") for item in key_report_checks),
+            all(item.get("bad_marker_count") == 0 for item in key_report_checks),
+            key_report_consistency.get("secret_pattern_hits") == [],
+        ]
+    ):
+        print("关键交接报告一致性审计未通过")
+        return 1
     authorized_preflight = json.loads((ROOT / "runs/authorized_preflight_template_audit.json").read_text(encoding="utf-8"))
     authorized_preflight_smoke = authorized_preflight.get("no_credentials_smoke", {})
     if not all(
@@ -3115,6 +3147,7 @@ def main() -> int:
         "jupyter_final_handoff_template",
         "historical_notebook_checkpoint_outputs",
         "chinese_utf8_artifacts",
+        "key_handoff_report_consistency",
         "real_submission_readiness",
         "authorized_preflight_template",
         "ready_real_runner_template",
@@ -3330,6 +3363,12 @@ def main() -> int:
             preflight.get("chinese_utf8_artifact_scanned_file_count", 0) >= 20,
             preflight.get("chinese_utf8_artifact_decode_error_count") == 0,
             preflight.get("chinese_utf8_artifact_bad_marker_hit_count") == 0,
+            preflight.get("key_handoff_report_consistency_passed") is True,
+            preflight.get("key_handoff_report_consistency_checked_count") == 10,
+            preflight.get("key_handoff_report_consistency_mismatch_count") == 0,
+            preflight.get("key_handoff_report_consistency_missing_status_line_count") == 0,
+            preflight.get("key_handoff_report_consistency_bad_marker_hit_count") == 0,
+            preflight.get("key_handoff_report_consistency_secret_pattern_hit_count") == 0,
             preflight.get("baseline_final_handoff_passed") is True,
             preflight.get("baseline_final_handoff_command_count") == 4,
             preflight.get("baseline_final_handoff_no_contact_command_count") == 3,
@@ -3601,6 +3640,7 @@ def main() -> int:
     print("Jupyter 安全填空本地 env 入口审计已通过")
     print("授权后 Jupyter 预检入口审计已通过")
     print("中文 UTF-8 与乱码哨兵审计已通过")
+    print("关键交接报告一致性审计已通过")
     print("授权后安全预检模板审计已通过")
     print("强确认真实 runner 模板审计已通过")
     print("授权后 checkpoint 归档模板审计已通过")

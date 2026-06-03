@@ -2742,3 +2742,24 @@
 ### 下一步
 - P0：提交并推送本轮 Jupyter GUI 截图章节语义审计闭环。
 - P1：继续保持 baseline 官方 ALOHA 路线优先；用户授权和凭据到位后，先跑只读预检，再进入真实 runner 强确认。
+
+## 2026-06-03 第一百轮：关键交接报告一致性门禁
+
+### 已完成
+- 发现并修正本地镜像中的过期报告显示问题：`baseline_readonly_preflight_entry`、`baseline_submission_quickstart`、`authorized_execution_checklist` 和 checkpoint/runner 相关审计报告已从 Linux canonical 仓库同步回本地。
+- 新增 `scripts/audit_key_handoff_report_consistency.py`，检查关键 Markdown 报告中的 `passed=True/False` 是否与对应 `runs/*.json` 一致。
+- 新增产物 `runs/key_handoff_report_consistency.json` 与 `reports/key_handoff_report_consistency.md`。
+- 已将新审计接入 `scripts/audit_submission_preflight_bundle.py`、`scripts/audit_submission_artifact_manifest.py` 和 `scripts/validate_repro_workspace.py`，以后关键报告状态不一致会直接触发总预检失败。
+
+### 验证结果
+- 本地单脚本 smoke 通过：10 份关键交接报告全部与 JSON 状态一致，`mismatch_count=0`、`missing_status_line_count=0`、`bad_marker_hit_count=0`、`secret_pattern_hit_count=0`。
+- Linux 端完整 no-contact 链路已通过：`py_compile`、`audit_key_handoff_report_consistency.py`、`audit_submission_artifact_manifest.py`、`audit_submission_preflight_bundle.py`、`validate_repro_workspace.py`、`audit_chinese_utf8_artifacts.py`、`audit_plaintext_secrets.py` 和 `git diff --check`。
+- 新审计不读取真实 token、submission id、checkpoint link 或 local env 内容，只检查已生成报告和 JSON 的状态一致性。
+
+### 当前边界
+- 本轮没有连接 RoboChallenge 平台，没有上传 checkpoint，没有生成 checkpoint tar，也没有启动真实 runner。
+- baseline 官方 ALOHA 路线仍阻塞在目标确认、token、submission id、`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline` 和真实 runner 强确认。
+
+### 下一步
+- P0：提交并推送本轮关键交接报告一致性门禁。
+- P1：继续保持 baseline 官方 ALOHA 路线优先；用户授权和凭据到位后，先跑只读预检，再进入真实 runner 强确认。

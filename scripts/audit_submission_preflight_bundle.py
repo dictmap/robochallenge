@@ -30,6 +30,7 @@ SUBCOMMANDS = [
     ("jupyter_final_handoff_template", "scripts/audit_jupyter_final_handoff_template.py"),
     ("historical_notebook_checkpoint_outputs", "scripts/audit_historical_notebook_checkpoint_outputs.py"),
     ("chinese_utf8_artifacts", "scripts/audit_chinese_utf8_artifacts.py"),
+    ("key_handoff_report_consistency", "scripts/audit_key_handoff_report_consistency.py"),
     ("real_submission_readiness", "scripts/audit_real_submission_readiness.py"),
     ("authorized_preflight_template", "scripts/audit_authorized_preflight_template.py"),
     ("ready_real_runner_template", "scripts/audit_ready_real_runner_template.py"),
@@ -121,6 +122,7 @@ def build_status() -> dict[str, Any]:
     jupyter_final_handoff = read_json(RUNS_DIR / "jupyter_final_handoff_template_audit.json")
     historical_notebook_outputs = read_json(RUNS_DIR / "historical_notebook_checkpoint_outputs.json")
     chinese_utf8 = read_json(RUNS_DIR / "chinese_utf8_artifact_audit.json")
+    key_report_consistency = read_json(RUNS_DIR / "key_handoff_report_consistency.json")
     readiness = read_json(RUNS_DIR / "real_submission_readiness.json")
     authorized_preflight = read_json(RUNS_DIR / "authorized_preflight_template_audit.json")
     ready_real_runner = read_json(RUNS_DIR / "ready_real_runner_template_audit.json")
@@ -167,6 +169,7 @@ def build_status() -> dict[str, Any]:
                 jupyter_final_handoff,
                 historical_notebook_outputs,
                 chinese_utf8,
+                key_report_consistency,
                 readiness,
                 authorized_preflight,
                 ready_real_runner,
@@ -210,6 +213,7 @@ def build_status() -> dict[str, Any]:
         or bool(jupyter_final_handoff.get("link_values_printed"))
         or bool(historical_notebook_outputs.get("link_values_printed"))
         or bool(chinese_utf8.get("link_values_printed"))
+        or bool(key_report_consistency.get("link_values_printed"))
         or bool(authorized_preflight.get("link_values_printed"))
         or bool(ready_real_runner.get("link_values_printed"))
         or bool(authorized_archive.get("link_values_printed"))
@@ -247,6 +251,7 @@ def build_status() -> dict[str, Any]:
         or bool(jupyter_final_handoff.get("secret_values_printed"))
         or bool(historical_notebook_outputs.get("secret_values_printed"))
         or bool(chinese_utf8.get("secret_values_printed"))
+        or bool(key_report_consistency.get("secret_values_printed"))
         or bool(authorized_preflight.get("secret_values_printed"))
         or bool(ready_real_runner.get("secret_values_printed"))
         or bool(authorized_archive.get("secret_values_printed"))
@@ -290,6 +295,7 @@ def build_status() -> dict[str, Any]:
                 jupyter_final_handoff,
                 historical_notebook_outputs,
                 chinese_utf8,
+                key_report_consistency,
                 readiness,
                 authorized_preflight,
                 ready_real_runner,
@@ -336,6 +342,7 @@ def build_status() -> dict[str, Any]:
                 jupyter_final_handoff,
                 historical_notebook_outputs,
                 chinese_utf8,
+                key_report_consistency,
                 readiness,
                 authorized_preflight,
                 ready_real_runner,
@@ -567,6 +574,18 @@ def build_status() -> dict[str, Any]:
         "chinese_utf8_artifact_scanned_file_count": chinese_utf8.get("scanned_file_count"),
         "chinese_utf8_artifact_decode_error_count": chinese_utf8.get("decode_error_count"),
         "chinese_utf8_artifact_bad_marker_hit_count": chinese_utf8.get("bad_marker_hit_count"),
+        "key_handoff_report_consistency_passed": key_report_consistency.get("passed") is True,
+        "key_handoff_report_consistency_checked_count": key_report_consistency.get("checked_report_count"),
+        "key_handoff_report_consistency_mismatch_count": key_report_consistency.get("mismatch_count"),
+        "key_handoff_report_consistency_missing_status_line_count": key_report_consistency.get(
+            "missing_status_line_count"
+        ),
+        "key_handoff_report_consistency_bad_marker_hit_count": key_report_consistency.get(
+            "bad_marker_hit_count"
+        ),
+        "key_handoff_report_consistency_secret_pattern_hit_count": key_report_consistency.get(
+            "secret_pattern_hit_count"
+        ),
         "baseline_dry_run_gate_passed": baseline_dry_run_gate.get("passed") is True,
         "baseline_dry_run_gate_command": baseline_dry_run_gate.get("dry_run_gate_command"),
         "baseline_dry_run_gate_stops_before_real_runner": baseline_dry_run_gate.get(
@@ -865,6 +884,12 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         f"- 中文 UTF-8 扫描文件数：`{status['chinese_utf8_artifact_scanned_file_count']}`。",
         f"- 中文 UTF-8 解码错误数：`{status['chinese_utf8_artifact_decode_error_count']}`。",
         f"- 中文乱码哨兵命中数：`{status['chinese_utf8_artifact_bad_marker_hit_count']}`。",
+        f"- 关键交接报告一致性审计：`{status['key_handoff_report_consistency_passed']}`。",
+        f"- 关键交接报告检查数量：`{status['key_handoff_report_consistency_checked_count']}`。",
+        f"- Markdown/JSON 状态不一致数量：`{status['key_handoff_report_consistency_mismatch_count']}`。",
+        f"- 缺少审计状态行数量：`{status['key_handoff_report_consistency_missing_status_line_count']}`。",
+        f"- 关键交接报告乱码哨兵命中数：`{status['key_handoff_report_consistency_bad_marker_hit_count']}`。",
+        f"- 关键交接报告明文凭据模式命中数：`{status['key_handoff_report_consistency_secret_pattern_hit_count']}`。",
         f"- baseline dry-run gate：`{status['baseline_dry_run_gate_passed']}`。",
         f"- baseline dry-run 命令：`{status['baseline_dry_run_gate_command']}`。",
         f"- dry-run 是否停在真实 runner 前：`{status['baseline_dry_run_gate_stops_before_real_runner']}`。",

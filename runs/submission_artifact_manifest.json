@@ -11,7 +11,7 @@
   "pi05_aloha_policy_smoke_inference_count": 162,
   "pi05_aloha_no_contact": true,
   "pi05_aloha_no_leak": true,
-  "artifact_count": 106,
+  "artifact_count": 108,
   "artifacts": [
     {
       "path": "README.md",
@@ -24,8 +24,8 @@
       "path": "work.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 241571,
-      "sha256": "7aca43256fe6eb3f52502d974f7d9a32a47c2ecabc60049019ab9d1d382e80d7"
+      "size_bytes": 243609,
+      "sha256": "36aec55a2df82a0037933e3f079e543352faf2e4bb9bf215b26b72b80a93dbe9"
     },
     {
       "path": "notebooks/robochallenge_pi05_submit_cn.ipynb",
@@ -270,7 +270,14 @@
       "exists": true,
       "tracked": true,
       "size_bytes": 1045,
-      "sha256": "f1f136a542c1ead05b6bd1bd1913f83ab73e2400271a3a688623297c2ef27299"
+      "sha256": "4ae54f0f413ccff89a3e7998bd7f02e435c2a96d86b6acc950cd75e2bb643ac5"
+    },
+    {
+      "path": "reports/key_handoff_report_consistency.md",
+      "exists": true,
+      "tracked": true,
+      "size_bytes": 3033,
+      "sha256": "361cc0d5b2ee5d17754dfe59a3c0ea55db775068bb4d09a2a3bea26ddb7625c8"
     },
     {
       "path": "reports/authorized_preflight_template_audit.md",
@@ -479,15 +486,15 @@
       "path": "reports/submission_preflight_bundle.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 12711,
-      "sha256": "524c0438ec5e66eff042c8a841723edd1c85c6320b578e82639c957795a7774c"
+      "size_bytes": 13067,
+      "sha256": "9f6f5f40e9c7e9667b342c0cfa90de02bca5bd695a0a438836c5cfa197863cb2"
     },
     {
       "path": "reports/plaintext_secret_scan.md",
       "exists": true,
       "tracked": true,
       "size_bytes": 689,
-      "sha256": "b64cf036419dacb260c0d426ef34c647d61f83952b760069d5e7a05ce50f5b4f"
+      "sha256": "b8057d9f82c8bfc34dabac3aa747911626f26d2d57fbbdac6e5de5d1b38eb67d"
     },
     {
       "path": "reports/submission_status_dashboard.html",
@@ -728,6 +735,13 @@
       "sha256": "1d9a1b5dc5e30786081bd7a851bad972fe47c39553b2b78556e78ce0ef9db48d"
     },
     {
+      "path": "scripts/audit_key_handoff_report_consistency.py",
+      "exists": true,
+      "tracked": true,
+      "size_bytes": 8863,
+      "sha256": "f0f4335f38a23d694cfc1268aa4d69fdc17836e62558866d4170878424be13b5"
+    },
+    {
       "path": "scripts/audit_pi05_aloha_baseline_execution_packet.py",
       "exists": true,
       "tracked": true,
@@ -846,6 +860,12 @@
     "chinese_utf8_artifact_decode_error_count_zero": true,
     "chinese_utf8_artifact_bad_marker_hit_count_zero": true,
     "chinese_utf8_artifact_scanned_file_count": true,
+    "key_handoff_report_consistency_passed": true,
+    "key_handoff_report_consistency_checked_count": true,
+    "key_handoff_report_consistency_mismatch_count_zero": true,
+    "key_handoff_report_consistency_missing_status_line_count_zero": true,
+    "key_handoff_report_consistency_bad_marker_hit_count_zero": true,
+    "key_handoff_report_consistency_secret_pattern_hit_count_zero": true,
     "authorized_preflight_template_passed": true,
     "ready_real_runner_template_passed": true,
     "authorized_checkpoint_archive_template_passed": true,

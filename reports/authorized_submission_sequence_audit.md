@@ -39,6 +39,7 @@
 
 ## 环境变量覆盖
 
+- `ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION`：`True`。
 - `ROBOCHALLENGE_USER_TOKEN`：`True`。
 - `ROBOCHALLENGE_SUBMISSION_ID`：`True`。
 - `ROBOCHALLENGE_SUBMISSION_VARIANT`：`True`。
@@ -63,6 +64,7 @@
 - `route_aware_baseline_no_link`：`True`。
 - `baseline_quickstart_first`：`True`。
 - `baseline_local_env_link_optional`：`True`。
+- `target_confirmation_exact_match`：`True`。
 - `lora_web_link_branch`：`True`。
 - `no_auto_without_authorization`：`True`。
 - `no_git_checkpoint`：`True`。
@@ -117,4 +119,4 @@
 
 ## Blocking
 
-- 清单侧无阻塞；baseline 仍需要用户 token、submission id 和真实 runner 强确认，LoRA/web checkpoint 路线额外需要授权上传和真实 checkpoint link。
+- 清单侧无阻塞；baseline 仍需要用户目标确认、token、submission id、variant=baseline 和真实 runner 强确认，LoRA/web checkpoint 路线额外需要授权上传和真实 checkpoint link。

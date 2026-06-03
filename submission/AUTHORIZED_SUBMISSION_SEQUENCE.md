@@ -22,7 +22,7 @@ bash submission/run_authorized_checkpoint_archive_template.sh
 bash submission/run_authorized_preflight_template.sh
 ```
 
-预期状态：在没有真实凭据时，`go_no_go=blocked`，`ready_for_real_submission=false`，并且所有审计都不得打印凭据或链接明文。路线感知摘要必须显示 baseline 当前只差提交对象确认、`ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline` 和真实 runner 强确认；baseline 不需要 checkpoint link。LoRA/web checkpoint 路线仍必须显示需要归档/上传授权和真实 checkpoint link。
+预期状态：在没有真实凭据时，`go_no_go=blocked`，`ready_for_real_submission=false`，并且所有审计都不得打印凭据或链接明文。路线感知摘要必须显示 baseline 当前只差提交对象确认 `ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION=CONFIRM_TABLE30V2_ALOHA_BASELINE`、`ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline` 和真实 runner 强确认；baseline 不需要 checkpoint link。LoRA/web checkpoint 路线仍必须显示需要归档/上传授权和真实 checkpoint link。
 
 ## 1. 选择提交路线
 
@@ -33,7 +33,7 @@ python3 scripts/render_route_aware_submission_blockers.py
 python3 scripts/render_baseline_submission_quickstart.py
 ```
 
-baseline 路线只需要用户确认提交对象、`ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline` 和真实 runner 强确认；不需要生成 tar、不需要上传 checkpoint、不需要 checkpoint link。
+baseline 路线只需要用户确认提交对象并设置 `ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION=CONFIRM_TABLE30V2_ALOHA_BASELINE`、`ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline` 和真实 runner 强确认；不需要生成 tar、不需要上传 checkpoint、不需要 checkpoint link。
 
 只有明确选择 LoRA/web checkpoint 路线时，才继续执行下面的归档、上传和 link 回填步骤。
 
@@ -67,11 +67,11 @@ source submission/robochallenge_env.local.sh
 
 ## 4. 用户填入比赛凭据
 
-真实 token、submission id 和 LoRA/web checkpoint link 只写入 `submission/robochallenge_env.local.sh` 本地副本，不写入 tracked 模板、Git、Notebook、报告或命令历史截图：
+真实 token、submission id、目标确认和 LoRA/web checkpoint link 只写入 `submission/robochallenge_env.local.sh` 本地副本，不写入 tracked 模板、Git、Notebook、报告或命令历史截图：
 
-baseline 本地副本需要填入 `ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID` 和 `ROBOCHALLENGE_SUBMISSION_VARIANT=baseline`；`ROBOCHALLENGE_CHECKPOINT_LINK` 可以留空。LoRA/web checkpoint 路线额外需要填入 `ROBOCHALLENGE_LORA_CHECKPOINT_LINK` 或 `ROBOCHALLENGE_CHECKPOINT_LINK`。tracked 模板中这些字段必须保持 `<真实 user token>`、`<真实 submission id>` 和 `<真实 checkpoint 下载 URL>` 这类占位符。
+baseline 本地副本需要填入 `ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION=CONFIRM_TABLE30V2_ALOHA_BASELINE`、`ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID` 和 `ROBOCHALLENGE_SUBMISSION_VARIANT=baseline`；`ROBOCHALLENGE_CHECKPOINT_LINK` 可以留空。LoRA/web checkpoint 路线额外需要填入 `ROBOCHALLENGE_LORA_CHECKPOINT_LINK` 或 `ROBOCHALLENGE_CHECKPOINT_LINK`。tracked 模板中这些字段必须保持 `<真实 user token>`、`<真实 submission id>` 和 `<真实 checkpoint 下载 URL>` 这类占位符。
 
-Jupyter 路线优先使用 `notebooks/robochallenge_pi05_submit_cn.ipynb`。第 44 节默认 `RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE=False`，只有用户确认填入真实值时才改为 `RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE=True`；该节使用 `getpass` 写入 `submission/robochallenge_env.local.sh`，本地副本已被 Git 忽略。真实值只能进入这个本地副本，不写入 tracked 模板、Git、Notebook、报告或命令历史截图。
+Jupyter 路线优先使用 `notebooks/robochallenge_pi05_submit_cn.ipynb`。第 44 节默认 `RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE=False`，只有用户确认填入真实值和目标确认时才改为 `RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE=True`；该节使用 `getpass` 写入 `submission/robochallenge_env.local.sh`，本地副本已被 Git 忽略。真实值只能进入这个本地副本；`CONFIRM_TABLE30V2_ALOHA_BASELINE` 目标确认也只写入这个本地副本，不写入 tracked 模板、Git、Notebook、报告或命令历史截图。
 
 ```bash
 source submission/robochallenge_env.local.sh
@@ -134,7 +134,7 @@ bash submission/run_table30v2_aloha_demo_template.sh
 
 ## 8. 停止条件
 
-- 如果 baseline 路线的 `python3 scripts/render_route_aware_submission_blockers.py` 仍显示缺少 token、submission id、variant 或真实 runner 强确认，停止。
+- 如果 baseline 路线的 `python3 scripts/render_route_aware_submission_blockers.py` 仍显示缺少目标确认、token、submission id、variant 或真实 runner 强确认，停止。
 - 如果 LoRA/web checkpoint 路线的 `python3 scripts/audit_checkpoint_link_intake.py` 显示 `link_shape_ready=false`，停止。
 - 如果 `python3 scripts/audit_real_submission_readiness.py` 显示 `ready_for_real_submission=false`，停止。
 - 如果 dry-run 泄露凭据、调用 `demo.py` 或未显示预期长度摘要，停止。

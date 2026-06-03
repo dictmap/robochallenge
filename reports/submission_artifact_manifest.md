@@ -16,9 +16,9 @@
 - `README.md`：exists=`True`，tracked=`True`，size=`19168`，sha256=`58dff8b9599520d8de819ab2dd636d7e1d46962e276499858d6f51f4151f620c`。
 - `work.md`：exists=`True`，tracked=`True`，size=`200377`，sha256=`d6c25e66d9545c253e7c8dd3cc6ceb36afc6117903f308cb05e36f1649d6907a`。
 - `notebooks/robochallenge_pi05_submit_cn.ipynb`：exists=`True`，tracked=`True`，size=`98951`，sha256=`aa9c8d8b97f6cb05dce400f0fc1068df7b60ad3719ce8c099abdc354f294d607`。
-- `submission/README.md`：exists=`True`，tracked=`True`，size=`1736`，sha256=`1e56978190bcd369dce7fab828d6d7125b6777e62e7a4f6a78cb914c9ea5535b`。
-- `submission/REAL_SUBMISSION_HANDOFF.md`：exists=`True`，tracked=`True`，size=`9131`，sha256=`1e77c1e65175f5ad5996d7b4b6950ffa838c6cd34d025ee13a5738a48a2b8f93`。
-- `submission/AUTHORIZED_SUBMISSION_SEQUENCE.md`：exists=`True`，tracked=`True`，size=`7672`，sha256=`d3da43198cac005786c90f9e9518116fe2ab4019fbf76a57bde7f47c01275cdb`。
+- `submission/README.md`：exists=`True`，tracked=`True`，size=`1966`，sha256=`9661c643ac3a13348b1cdd49a90a200ed9238d063960a4d9c3edad41f7464251`。
+- `submission/REAL_SUBMISSION_HANDOFF.md`：exists=`True`，tracked=`True`，size=`9545`，sha256=`834d5199a5334444b016a352c4698284d9060131ba7794ec5c079514780b0744`。
+- `submission/AUTHORIZED_SUBMISSION_SEQUENCE.md`：exists=`True`，tracked=`True`，size=`8046`，sha256=`ef96ca10a83f67c9bbcfceb54c7f17469d5371d4ff4598e1ba959e879599aa60`。
 - `submission/robochallenge_env_template.sh`：exists=`True`，tracked=`True`，size=`1255`，sha256=`18edcf0c062e1d8c525cdc84f8e509cd9829324dff65feba5852af991ea4d21d`。
 - `submission/submission_manifest_template.json`：exists=`True`，tracked=`True`，size=`4182`，sha256=`89ff0fcc8e130546e373a757f3192cc737063822c9040dba316006869a41c9ec`。
 - `submission/run_table30v2_aloha_demo_template.sh`：exists=`True`，tracked=`True`，size=`2189`，sha256=`8d70811d4f615c03ef13a2df6bf2bc2c62adce42d41b99535783cbf9fa637de6`。
@@ -72,11 +72,11 @@
 - `reports/route_aware_submission_blockers.md`：exists=`True`，tracked=`True`，size=`3887`，sha256=`cce19852ed4e3facc5c624b6d0660a6db8a162dd9856aec0d39dc3f81e1b5a70`。
 - `reports/submission_target_confirmation_packet.md`：exists=`True`，tracked=`True`，size=`2258`，sha256=`748bc59be2068c5f58da62603539ab4a66092e9b76b01e44e321bf26a325a642`。
 - `reports/submission_target_confirmation_gate.md`：exists=`True`，tracked=`True`，size=`3289`，sha256=`5d57fb9f0e82473a8edfd7d316d56ca8d115ae8239ba8a452e885fd7cf974dce`。
-- `reports/submission_handoff_docs_audit.md`：exists=`True`，tracked=`True`，size=`5768`，sha256=`65fad9790e12b656f34652f15f4016740f9953f9bdd44b2419390358f32dc04c`。
-- `reports/authorized_submission_sequence_audit.md`：exists=`True`，tracked=`True`，size=`5771`，sha256=`2c373b72177573448649a3c29568c6eb61c8eb1b68b6c6e4cd602836845e39cc`。
+- `reports/submission_handoff_docs_audit.md`：exists=`True`，tracked=`True`，size=`6003`，sha256=`13b9fda20546fa88ae7a6ab30f6f9534614dacfb859eb99e631fb5c2408d369d`。
+- `reports/authorized_submission_sequence_audit.md`：exists=`True`，tracked=`True`，size=`5913`，sha256=`1eb54851a38aa01e3fb79d51c180b443a91a130ee45c4adc11c1278493b3ca72`。
 - `reports/submission_preflight_bundle.md`：exists=`True`，tracked=`True`，size=`9924`，sha256=`54b21d928ccaa8210f01df0a7f06f0d6c69645559632c056ca264be95ba4cd7c`。
 - `reports/plaintext_secret_scan.md`：exists=`True`，tracked=`True`，size=`610`，sha256=`237e266a50bb711e45d76dc146175b268116c92ae1201c6e8e1cf5c2e274dfa8`。
-- `reports/submission_status_dashboard.html`：exists=`True`，tracked=`True`，size=`22529`，sha256=`60addcb372d279b9542ed229a5f8179281299b92bae8bc30ff523c5b4045a5d0`。
+- `reports/submission_status_dashboard.html`：exists=`True`，tracked=`True`，size=`22529`，sha256=`dc785636933763b63a2dc6edcb63fe2344f0c84a3cd7b10a9d5d2f679c4c9605`。
 - `scripts/render_next_user_action_packet.py`：exists=`True`，tracked=`True`，size=`19884`，sha256=`4cffc13a8f607b091691318e44211b4f538d7899ba94305ceedac5b63a188b20`。
 - `scripts/render_web_form_field_packet.py`：exists=`True`，tracked=`True`，size=`15558`，sha256=`bb93e4e858a1221289aa72263ba1384af17117ad30100c02d8e91f9aca204ebc`。
 - `scripts/render_submission_variant_route_packet.py`：exists=`True`，tracked=`True`，size=`14345`，sha256=`208f35442ab2425bc937267ff6ea8909aab0330460c38547038fd41345773b2b`。

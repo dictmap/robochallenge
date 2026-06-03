@@ -11,8 +11,10 @@
 
 ## 必需环境变量提及
 
+- `ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION`：`True`。
 - `ROBOCHALLENGE_USER_TOKEN`：`True`。
 - `ROBOCHALLENGE_SUBMISSION_ID`：`True`。
+- `ROBOCHALLENGE_SUBMISSION_VARIANT`：`True`。
 - `ROBOCHALLENGE_LORA_CHECKPOINT_LINK`：`True`。
 
 ## 必需路径提及
@@ -55,6 +57,7 @@
 - `jupyter_input_template`：`True`。
 - `jupyter_authorized_preflight_template`：`True`。
 - `jupyter_input_enable_flag`：`True`。
+- `target_confirmation_value`：`True`。
 - `jupyter_authorized_preflight_enable_flag`：`True`。
 - `authorized_preflight_template`：`True`。
 - `ready_real_runner_template`：`True`。
@@ -89,6 +92,7 @@
 - `says_jupyter_input_default_safe`：`True`。
 - `says_jupyter_preflight_default_safe`：`True`。
 - `says_jupyter_values_stay_local`：`True`。
+- `says_baseline_target_confirmation`：`True`。
 - `says_route_aware_summary_exists`：`True`。
 - `says_baseline_no_checkpoint_link`：`True`。
 - `says_baseline_no_upload_or_archive`：`True`。
@@ -126,4 +130,4 @@
 
 ## Blocking
 
-- 无文档侧阻塞；baseline 仍取决于用户 token、submission id 和真实 runner 强确认，LoRA/web checkpoint 路线额外取决于授权上传和真实 checkpoint link。
+- 无文档侧阻塞；baseline 仍取决于用户目标确认、token、submission id、variant=baseline 和真实 runner 强确认，LoRA/web checkpoint 路线额外取决于授权上传和真实 checkpoint link。

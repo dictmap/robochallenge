@@ -89,6 +89,7 @@
     "critical_order_passed": true
   },
   "env_mentions": {
+    "ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION": true,
     "ROBOCHALLENGE_USER_TOKEN": true,
     "ROBOCHALLENGE_SUBMISSION_ID": true,
     "ROBOCHALLENGE_SUBMISSION_VARIANT": true,
@@ -111,6 +112,7 @@
     "route_aware_baseline_no_link": true,
     "baseline_quickstart_first": true,
     "baseline_local_env_link_optional": true,
+    "target_confirmation_exact_match": true,
     "lora_web_link_branch": true,
     "no_auto_without_authorization": true,
     "no_git_checkpoint": true,
@@ -165,6 +167,6 @@
   "secret_patterns_found": [],
   "no_contact_evidence": true,
   "blocking": [
-    "清单侧无阻塞；baseline 仍需要用户 token、submission id 和真实 runner 强确认，LoRA/web checkpoint 路线额外需要授权上传和真实 checkpoint link。"
+    "清单侧无阻塞；baseline 仍需要用户目标确认、token、submission id、variant=baseline 和真实 runner 强确认，LoRA/web checkpoint 路线额外需要授权上传和真实 checkpoint link。"
   ]
 }

@@ -20,8 +20,10 @@ DEFAULT_REPORT = REPORTS_DIR / "submission_handoff_docs_audit.md"
 
 
 REQUIRED_ENV_KEYS = [
+    "ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION",
     "ROBOCHALLENGE_USER_TOKEN",
     "ROBOCHALLENGE_SUBMISSION_ID",
+    "ROBOCHALLENGE_SUBMISSION_VARIANT",
     "ROBOCHALLENGE_LORA_CHECKPOINT_LINK",
 ]
 
@@ -64,6 +66,7 @@ REQUIRED_COMMAND_FRAGMENTS = {
     "jupyter_input_template": "python3 scripts/audit_jupyter_input_template.py",
     "jupyter_authorized_preflight_template": "python3 scripts/audit_jupyter_authorized_preflight_template.py",
     "jupyter_input_enable_flag": "RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE=True",
+    "target_confirmation_value": "CONFIRM_TABLE30V2_ALOHA_BASELINE",
     "jupyter_authorized_preflight_enable_flag": "RUN_JUPYTER_AUTHORIZED_PREFLIGHT=True",
     "authorized_preflight_template": "python3 scripts/audit_authorized_preflight_template.py",
     "ready_real_runner_template": "python3 scripts/audit_ready_real_runner_template.py",
@@ -172,6 +175,8 @@ def build_status(doc_path: Path) -> dict[str, Any]:
         "says_jupyter_values_stay_local": "Notebook 源码" in text
         and "Notebook 输出" in text
         and "submission/robochallenge_env.local.sh" in text,
+        "says_baseline_target_confirmation": "ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION=CONFIRM_TABLE30V2_ALOHA_BASELINE"
+        in text,
         "says_route_aware_summary_exists": "reports/route_aware_submission_blockers.md" in text,
         "says_baseline_no_checkpoint_link": "baseline 官方路线不需要 checkpoint link" in text,
         "says_baseline_no_upload_or_archive": "checkpoint upload 或归档授权" in text,
@@ -270,7 +275,7 @@ def build_status(doc_path: Path) -> dict[str, Any]:
         blocking.append("授权后 checkpoint 归档模板未证明无确认时会阻断。")
     if blocking == []:
         blocking.append(
-            "无文档侧阻塞；baseline 仍取决于用户 token、submission id 和真实 runner 强确认，"
+            "无文档侧阻塞；baseline 仍取决于用户目标确认、token、submission id、variant=baseline 和真实 runner 强确认，"
             "LoRA/web checkpoint 路线额外取决于授权上传和真实 checkpoint link。"
         )
 

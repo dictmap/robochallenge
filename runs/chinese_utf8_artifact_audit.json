@@ -88,7 +88,7 @@
     },
     {
       "path": "reports/authorized_submission_sequence_audit.md",
-      "size_bytes": 5771,
+      "size_bytes": 5913,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -512,7 +512,7 @@
     },
     {
       "path": "reports/submission_handoff_docs_audit.md",
-      "size_bytes": 5768,
+      "size_bytes": 6003,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -648,7 +648,7 @@
     },
     {
       "path": "runs/authorized_submission_sequence_audit.json",
-      "size_bytes": 9482,
+      "size_bytes": 9618,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,

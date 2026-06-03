@@ -34,22 +34,22 @@
       "path": "submission/README.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 1736,
-      "sha256": "1e56978190bcd369dce7fab828d6d7125b6777e62e7a4f6a78cb914c9ea5535b"
+      "size_bytes": 1966,
+      "sha256": "9661c643ac3a13348b1cdd49a90a200ed9238d063960a4d9c3edad41f7464251"
     },
     {
       "path": "submission/REAL_SUBMISSION_HANDOFF.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 9131,
-      "sha256": "1e77c1e65175f5ad5996d7b4b6950ffa838c6cd34d025ee13a5738a48a2b8f93"
+      "size_bytes": 9545,
+      "sha256": "834d5199a5334444b016a352c4698284d9060131ba7794ec5c079514780b0744"
     },
     {
       "path": "submission/AUTHORIZED_SUBMISSION_SEQUENCE.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 7672,
-      "sha256": "d3da43198cac005786c90f9e9518116fe2ab4019fbf76a57bde7f47c01275cdb"
+      "size_bytes": 8046,
+      "sha256": "ef96ca10a83f67c9bbcfceb54c7f17469d5371d4ff4598e1ba959e879599aa60"
     },
     {
       "path": "submission/robochallenge_env_template.sh",
@@ -426,15 +426,15 @@
       "path": "reports/submission_handoff_docs_audit.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 5768,
-      "sha256": "65fad9790e12b656f34652f15f4016740f9953f9bdd44b2419390358f32dc04c"
+      "size_bytes": 6003,
+      "sha256": "13b9fda20546fa88ae7a6ab30f6f9534614dacfb859eb99e631fb5c2408d369d"
     },
     {
       "path": "reports/authorized_submission_sequence_audit.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 5771,
-      "sha256": "2c373b72177573448649a3c29568c6eb61c8eb1b68b6c6e4cd602836845e39cc"
+      "size_bytes": 5913,
+      "sha256": "1eb54851a38aa01e3fb79d51c180b443a91a130ee45c4adc11c1278493b3ca72"
     },
     {
       "path": "reports/submission_preflight_bundle.md",
@@ -455,7 +455,7 @@
       "exists": true,
       "tracked": true,
       "size_bytes": 22529,
-      "sha256": "60addcb372d279b9542ed229a5f8179281299b92bae8bc30ff523c5b4045a5d0"
+      "sha256": "dc785636933763b63a2dc6edcb63fe2344f0c84a3cd7b10a9d5d2f679c4c9605"
     },
     {
       "path": "scripts/render_next_user_action_packet.py",

@@ -2383,3 +2383,25 @@
 ### 下一步
 - P0：提交并推送本轮 baseline 最短路径目标确认文档闭环。
 - P1：用户明确确认目标并提供 token/submission id 后，先跑 Jupyter 第 44/45 节或 shell baseline 授权预检与 dry-run gate；真实 runner 仍必须等待用户明确授权。
+## 2026-06-03 第八十五轮：提交交接文档目标确认一致性审计
+
+### 已完成
+- 修正 `submission/README.md`、`submission/REAL_SUBMISSION_HANDOFF.md` 和 `submission/AUTHORIZED_SUBMISSION_SEQUENCE.md` 的 baseline 交接口径：真实提交前必须同时具备目标确认 `ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION=CONFIRM_TABLE30V2_ALOHA_BASELINE`、token、submission id、`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline` 和真实 runner 强确认。
+- 更新 `scripts/audit_submission_handoff_docs.py`，把目标确认变量、固定确认值和 `ROBOCHALLENGE_SUBMISSION_VARIANT` 纳入真实提交 handoff 文档审计。
+- 更新 `scripts/audit_authorized_submission_sequence.py`，把 `ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION` 与精确确认值纳入授权提交顺序清单的机器护栏。
+- 重新生成 `reports/submission_handoff_docs_audit.md`、`reports/authorized_submission_sequence_audit.md`、`runs/submission_handoff_docs_audit.json`、`runs/authorized_submission_sequence_audit.json`、preflight bundle、artifact manifest 和 GUI dashboard。
+
+### 验证结果
+- Linux 端最终顺序验证已通过：`py_compile`、`audit_chinese_utf8_artifacts.py`、`audit_plaintext_secrets.py`、`audit_submission_handoff_docs.py`、`audit_authorized_submission_sequence.py`、`audit_submission_preflight_bundle.py`、`audit_submission_artifact_manifest.py`、`render_submission_status_dashboard.py`、`validate_repro_workspace.py` 与 `git diff --check`。
+- `runs/submission_handoff_docs_audit.json`：`passed=true`，blocking 文本已变为“baseline 仍取决于用户目标确认、token、submission id、variant=baseline 和真实 runner 强确认”。
+- `runs/authorized_submission_sequence_audit.json`：`passed=true`，`ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION` 覆盖为 `true`，新增 `target_confirmation_exact_match=true`。
+- 旧口径搜索已清空：不再出现“baseline 仍需要用户 token、submission id 和真实 runner 强确认”或“缺少 token、submission id、variant”这类漏掉目标确认的交接阻塞文案。
+
+### 当前边界
+- 本轮没有读取真实 token、submission id、checkpoint link 或真实 local env 内容。
+- 没有连接 RoboChallenge 平台，没有上传 checkpoint，没有生成 checkpoint tar，也没有启动真实 runner。
+- 目标确认现在已经贯穿 wrapper、Jupyter 第 44 节、baseline quickstart、交接文档和审计报告；当前仍没有替用户确认目标，真实提交仍阻塞在目标确认、token、submission id、variant=baseline 和真实 runner 强确认。
+
+### 下一步
+- P0：提交并推送本轮提交交接文档目标确认一致性审计。
+- P1：用户明确确认目标并提供 token/submission id 后，先跑 Jupyter 第 44/45 节或 shell baseline 授权预检与 dry-run gate；真实 runner 仍必须等待用户明确授权。

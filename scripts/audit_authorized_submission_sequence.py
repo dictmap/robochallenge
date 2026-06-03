@@ -53,6 +53,7 @@ REQUIRED_COMMANDS = [
 ]
 
 REQUIRED_ENV_KEYS = [
+    "ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION",
     "ROBOCHALLENGE_USER_TOKEN",
     "ROBOCHALLENGE_SUBMISSION_ID",
     "ROBOCHALLENGE_SUBMISSION_VARIANT",
@@ -94,8 +95,13 @@ REQUIRED_GUARDRAILS = {
         "不需要生成 tar、不需要上传 checkpoint、不需要 checkpoint link",
     ],
     "baseline_local_env_link_optional": [
+        "ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION=CONFIRM_TABLE30V2_ALOHA_BASELINE",
         "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline",
         "ROBOCHALLENGE_CHECKPOINT_LINK` 可以留空",
+    ],
+    "target_confirmation_exact_match": [
+        "ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION=CONFIRM_TABLE30V2_ALOHA_BASELINE",
+        "目标确认",
     ],
     "lora_web_link_branch": [
         "只有明确选择 LoRA/web checkpoint 路线",
@@ -368,7 +374,7 @@ def build_status(doc_path: Path) -> dict[str, Any]:
         blocking.append("审计输入显示曾连接平台或执行上传。")
     if not blocking:
         blocking.append(
-            "清单侧无阻塞；baseline 仍需要用户 token、submission id 和真实 runner 强确认，"
+            "清单侧无阻塞；baseline 仍需要用户目标确认、token、submission id、variant=baseline 和真实 runner 强确认，"
             "LoRA/web checkpoint 路线额外需要授权上传和真实 checkpoint link。"
         )
 

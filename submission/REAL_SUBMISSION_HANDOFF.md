@@ -17,9 +17,9 @@
 
 推荐优先走 Jupyter 安全入口，避免在 shell 历史里留下敏感值。入口在 `notebooks/robochallenge_pi05_submit_cn.ipynb`：
 
-- 第 44 节“安全填空本地 env 入口”默认 `RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE=False`，不询问、不读取、不写入真实凭据；用户确认后才把开关改成 `RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE=True`，只写入被 Git 忽略的 `submission/robochallenge_env.local.sh`。
+- 第 44 节“安全填空本地 env 入口”默认 `RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE=False`，不询问、不读取、不写入真实凭据；用户确认 Table30v2 / aloha / pack_the_toothbrush_holder / baseline 后，才把开关改成 `RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE=True`，并手动填入 `ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION=CONFIRM_TABLE30V2_ALOHA_BASELINE`，只写入被 Git 忽略的 `submission/robochallenge_env.local.sh`。
 - 第 45 节“授权后 Jupyter 预检入口”默认 `RUN_JUPYTER_AUTHORIZED_PREFLIGHT_TEMPLATE_AUDIT=True` 且 `RUN_JUPYTER_AUTHORIZED_PREFLIGHT=False`，默认只做静态审计，不读取 local env；第 44 节写入本地 env 后，用户确认再改成 `RUN_JUPYTER_AUTHORIZED_PREFLIGHT=True`。
-- 真实值只能进入 `submission/robochallenge_env.local.sh`，不要把真实 token、submission id 或 checkpoint link 写入 Notebook 源码、Notebook 输出、Git、报告或截图。
+- 真实值和目标确认只能进入 `submission/robochallenge_env.local.sh` 或当前 shell，不能写入 tracked 文件；不要把真实 token、submission id 或 checkpoint link 写入 Notebook 源码、Notebook 输出、Git、报告或截图。
 
 Notebook 入口也有独立审计，修改后先运行：
 
@@ -52,7 +52,7 @@ bash submission/run_authorized_checkpoint_archive_template.sh
 ROBOCHALLENGE_ARCHIVE_CONFIRM=CREATE_ROBOCHALLENGE_CHECKPOINT_ARCHIVE bash submission/run_authorized_checkpoint_archive_template.sh
 ```
 
-如果走 baseline 官方路线，跳过本段归档/上传/link 流程，只需在本地副本中设置 `ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID` 和 `ROBOCHALLENGE_SUBMISSION_VARIANT=baseline`。如果走 LoRA/web checkpoint 路线，上传完成后再复制 tracked 模板到被 Git 忽略的本地副本，并只编辑本地副本。下面命令不会保存真实值到仓库：
+如果走 baseline 官方路线，跳过本段归档/上传/link 流程，只需在本地副本中设置 `ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION=CONFIRM_TABLE30V2_ALOHA_BASELINE`、`ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID` 和 `ROBOCHALLENGE_SUBMISSION_VARIANT=baseline`。如果走 LoRA/web checkpoint 路线，上传完成后再复制 tracked 模板到被 Git 忽略的本地副本，并只编辑本地副本。下面命令不会保存真实值到仓库：
 
 tracked 模板只允许保留 `<真实 user token>`、`<真实 submission id>` 和 `<真实 checkpoint 下载 URL>` 占位符；真实值只能进入 `submission/robochallenge_env.local.sh`。
 
@@ -94,7 +94,7 @@ ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION bash submission
 bash submission/run_table30v2_aloha_lora_demo_template.sh
 ```
 
-如果只提交官方 Table30v2 ALOHA baseline，则设置 `ROBOCHALLENGE_USER_TOKEN` 和 `ROBOCHALLENGE_SUBMISSION_ID` 后，通过同一个强确认入口并切换 variant：
+如果只提交官方 Table30v2 ALOHA baseline，则设置 `ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION=CONFIRM_TABLE30V2_ALOHA_BASELINE`、`ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID` 和 `ROBOCHALLENGE_SUBMISSION_VARIANT=baseline` 后，通过同一个强确认入口：
 
 ```bash
 ROBOCHALLENGE_SUBMISSION_VARIANT=baseline ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION bash submission/run_ready_real_submission_template.sh

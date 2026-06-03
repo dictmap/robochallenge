@@ -7,8 +7,10 @@
   "credentials_printed": false,
   "secret_patterns_found": [],
   "env_mentions": {
+    "ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION": true,
     "ROBOCHALLENGE_USER_TOKEN": true,
     "ROBOCHALLENGE_SUBMISSION_ID": true,
+    "ROBOCHALLENGE_SUBMISSION_VARIANT": true,
     "ROBOCHALLENGE_LORA_CHECKPOINT_LINK": true
   },
   "path_mentions": {
@@ -49,6 +51,7 @@
     "jupyter_input_template": true,
     "jupyter_authorized_preflight_template": true,
     "jupyter_input_enable_flag": true,
+    "target_confirmation_value": true,
     "jupyter_authorized_preflight_enable_flag": true,
     "authorized_preflight_template": true,
     "ready_real_runner_template": true,
@@ -82,6 +85,7 @@
     "says_jupyter_input_default_safe": true,
     "says_jupyter_preflight_default_safe": true,
     "says_jupyter_values_stay_local": true,
+    "says_baseline_target_confirmation": true,
     "says_route_aware_summary_exists": true,
     "says_baseline_no_checkpoint_link": true,
     "says_baseline_no_upload_or_archive": true,
@@ -117,6 +121,6 @@
     "route_aware_lora_web_needs_link": true
   },
   "blocking": [
-    "无文档侧阻塞；baseline 仍取决于用户 token、submission id 和真实 runner 强确认，LoRA/web checkpoint 路线额外取决于授权上传和真实 checkpoint link。"
+    "无文档侧阻塞；baseline 仍取决于用户目标确认、token、submission id、variant=baseline 和真实 runner 强确认，LoRA/web checkpoint 路线额外取决于授权上传和真实 checkpoint link。"
   ]
 }

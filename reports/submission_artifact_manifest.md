@@ -14,7 +14,7 @@
 ## 材料清单
 
 - `README.md`：exists=`True`，tracked=`True`，size=`19168`，sha256=`58dff8b9599520d8de819ab2dd636d7e1d46962e276499858d6f51f4151f620c`。
-- `work.md`：exists=`True`，tracked=`True`，size=`197673`，sha256=`0b28136d2a78cfe4c658577ad5a53c46ccfa76017fad6b24a1d006dc533cba84`。
+- `work.md`：exists=`True`，tracked=`True`，size=`200377`，sha256=`d6c25e66d9545c253e7c8dd3cc6ceb36afc6117903f308cb05e36f1649d6907a`。
 - `notebooks/robochallenge_pi05_submit_cn.ipynb`：exists=`True`，tracked=`True`，size=`98951`，sha256=`aa9c8d8b97f6cb05dce400f0fc1068df7b60ad3719ce8c099abdc354f294d607`。
 - `submission/README.md`：exists=`True`，tracked=`True`，size=`1736`，sha256=`1e56978190bcd369dce7fab828d6d7125b6777e62e7a4f6a78cb914c9ea5535b`。
 - `submission/REAL_SUBMISSION_HANDOFF.md`：exists=`True`，tracked=`True`，size=`9131`，sha256=`1e77c1e65175f5ad5996d7b4b6950ffa838c6cd34d025ee13a5738a48a2b8f93`。
@@ -52,10 +52,10 @@
 - `reports/ready_real_runner_template_audit.md`：exists=`True`，tracked=`True`，size=`1916`，sha256=`59b7118168ac5b97be9cc64e9dd015ac8c1df2d81368834828eaa229ceeda059`。
 - `reports/authorized_checkpoint_archive_template_audit.md`：exists=`True`，tracked=`True`，size=`2030`，sha256=`0a02a63659e96376720e1c11c78ab6bd7a5b4118c13a93c99155fbd2dd5d6bbe`。
 - `reports/authorized_execution_checklist.md`：exists=`True`，tracked=`True`，size=`5960`，sha256=`947c9938cda815b6f2c1952de8dd10de2fa1c7dfa26137792a439948abb1abd0`。
-- `reports/next_user_action_packet.md`：exists=`True`，tracked=`True`，size=`7449`，sha256=`c5f544d699482f0ce4cdb65454067d3814735577201f7bd548b80047cc490b77`。
+- `reports/next_user_action_packet.md`：exists=`True`，tracked=`True`，size=`7511`，sha256=`d75f47c6e9ee0eda61470d326a3159793755cb19010f91fb575055ae260be6b7`。
 - `reports/web_form_field_packet.md`：exists=`True`，tracked=`True`，size=`5153`，sha256=`125b9b431bd4125b01bdd706ee40d6eefe0a4eafa593870a9f9977f4ed001b7c`。
 - `reports/submission_variant_route_packet.md`：exists=`True`，tracked=`True`，size=`3186`，sha256=`fa7e12529fc7a0dd8b17cae5234103c39af969bf5f20509e21e9a4c674bcb3f3`。
-- `reports/baseline_submission_quickstart.md`：exists=`True`，tracked=`True`，size=`2755`，sha256=`370c7ccde88a66311e864349ed648756db11cb52c87336aa5b4b313c53af3671`。
+- `reports/baseline_submission_quickstart.md`：exists=`True`，tracked=`True`，size=`3206`，sha256=`41ec7900721616b4aca97d5ba86cf8c0fffbb041dd344c38fa9325883f5f4c8d`。
 - `reports/baseline_dry_run_gate.md`：exists=`True`，tracked=`True`，size=`3634`，sha256=`580b94e4bae38bb93b89f3f1eb4368e098bf9a0e5108f525f8e47455f2b22b50`。
 - `reports/baseline_credential_hygiene.md`：exists=`True`，tracked=`True`，size=`2313`，sha256=`76ee43531cb291c5c3f0e319aaa439f7ea4651388af0223e9ce6a8e938a0d673`。
 - `reports/local_env_permission_contract.md`：exists=`True`，tracked=`True`，size=`1566`，sha256=`08bf60a84ff5ba2d5e0d1a5ea78df581d69a68830be6ab58ae56319ece1b2968`。
@@ -74,13 +74,13 @@
 - `reports/submission_target_confirmation_gate.md`：exists=`True`，tracked=`True`，size=`3289`，sha256=`5d57fb9f0e82473a8edfd7d316d56ca8d115ae8239ba8a452e885fd7cf974dce`。
 - `reports/submission_handoff_docs_audit.md`：exists=`True`，tracked=`True`，size=`5768`，sha256=`65fad9790e12b656f34652f15f4016740f9953f9bdd44b2419390358f32dc04c`。
 - `reports/authorized_submission_sequence_audit.md`：exists=`True`，tracked=`True`，size=`5771`，sha256=`2c373b72177573448649a3c29568c6eb61c8eb1b68b6c6e4cd602836845e39cc`。
-- `reports/submission_preflight_bundle.md`：exists=`True`，tracked=`True`，size=`9683`，sha256=`f8a91d2f3421ef3cf806ddcb5432fbaf42efcc2ba417584d4c2d6c0e54197c7a`。
+- `reports/submission_preflight_bundle.md`：exists=`True`，tracked=`True`，size=`9924`，sha256=`54b21d928ccaa8210f01df0a7f06f0d6c69645559632c056ca264be95ba4cd7c`。
 - `reports/plaintext_secret_scan.md`：exists=`True`，tracked=`True`，size=`610`，sha256=`237e266a50bb711e45d76dc146175b268116c92ae1201c6e8e1cf5c2e274dfa8`。
-- `reports/submission_status_dashboard.html`：exists=`True`，tracked=`True`，size=`22525`，sha256=`cef4232ff0cb57c4ff830a637e9602af9f1236849a7abc803b28ef508d8035f4`。
-- `scripts/render_next_user_action_packet.py`：exists=`True`，tracked=`True`，size=`19746`，sha256=`e9a3daa0a0fcb06225ed4ff867c4ae60bfc63cffda9db796bc0feee0463ce655`。
+- `reports/submission_status_dashboard.html`：exists=`True`，tracked=`True`，size=`22529`，sha256=`60addcb372d279b9542ed229a5f8179281299b92bae8bc30ff523c5b4045a5d0`。
+- `scripts/render_next_user_action_packet.py`：exists=`True`，tracked=`True`，size=`19884`，sha256=`4cffc13a8f607b091691318e44211b4f538d7899ba94305ceedac5b63a188b20`。
 - `scripts/render_web_form_field_packet.py`：exists=`True`，tracked=`True`，size=`15558`，sha256=`bb93e4e858a1221289aa72263ba1384af17117ad30100c02d8e91f9aca204ebc`。
 - `scripts/render_submission_variant_route_packet.py`：exists=`True`，tracked=`True`，size=`14345`，sha256=`208f35442ab2425bc937267ff6ea8909aab0330460c38547038fd41345773b2b`。
-- `scripts/render_baseline_submission_quickstart.py`：exists=`True`，tracked=`True`，size=`9973`，sha256=`a6dd12fde694bb1d688bef942533a6d08a781112c19c59afe2d851a00600c634`。
+- `scripts/render_baseline_submission_quickstart.py`：exists=`True`，tracked=`True`，size=`11539`，sha256=`96c98e6b591f20ff19fa414a53e3fe505daa67736fbdae774f807998067cb35e`。
 - `scripts/render_baseline_dry_run_gate.py`：exists=`True`，tracked=`True`，size=`13906`，sha256=`5c311cffbdacc9c96a9925c942d7d188a9bf397b4479b0ddc4f5a598583d5a07`。
 - `scripts/render_baseline_credential_hygiene.py`：exists=`True`，tracked=`True`，size=`11177`，sha256=`91a8ccbf133f4854092b47a8290a9213a2eb79fa31f43cc0c377d70771e95528`。
 - `scripts/audit_local_env_permission_contract.py`：exists=`True`，tracked=`True`，size=`8185`，sha256=`23641d0614747f2434def6a1220f8fad150dcec67bf763f3254527f7142ab4e4`。
@@ -183,6 +183,9 @@
 - `submission_variant_route_packet_baseline_default`：`True`。
 - `submission_variant_route_packet_has_two_routes`：`True`。
 - `baseline_submission_quickstart_passed`：`True`。
+- `baseline_submission_quickstart_target_confirmation_value_exact`：`True`。
+- `baseline_submission_quickstart_target_confirmation_manual_input`：`True`。
+- `baseline_submission_quickstart_target_confirmation_exact_match`：`True`。
 - `baseline_submission_quickstart_no_upload`：`True`。
 - `baseline_submission_quickstart_no_link`：`True`。
 - `baseline_dry_run_gate_passed`：`True`。

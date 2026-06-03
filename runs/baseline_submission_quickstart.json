@@ -2,6 +2,9 @@
   "kind": "baseline_submission_quickstart",
   "passed": true,
   "recommended_route": "baseline_official_aloha",
+  "target_confirmation_value": "CONFIRM_TABLE30V2_ALOHA_BASELINE",
+  "target_confirmation_manual_input_required": true,
+  "target_confirmation_exact_match_required": true,
   "requires_checkpoint_upload": false,
   "requires_checkpoint_link": false,
   "required_user_inputs": [
@@ -30,7 +33,7 @@
     {
       "step": 1,
       "name": "写入本地 env",
-      "command": "Notebook 第 44 节：RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE=True；variant 填 baseline。",
+      "command": "Notebook 第 44 节：RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE=True；确认值填 CONFIRM_TABLE30V2_ALOHA_BASELINE；variant 填 baseline。",
       "guard": "只写 submission/robochallenge_env.local.sh；不把真实值写入 Notebook 源码或 tracked 文件。"
     },
     {
@@ -61,6 +64,10 @@
     "baseline_does_not_need_checkpoint_link": true,
     "ready_runner_template_passed": true,
     "ready_runner_default_baseline": true,
+    "target_confirmation_packet_passed": true,
+    "target_confirmation_value_exact": true,
+    "jupyter_input_requires_manual_target_confirmation": true,
+    "jupyter_input_requires_exact_target_confirmation": true,
     "synthetic_baseline_no_confirm_dry_run": true,
     "package_audit_passed": true,
     "readiness_gate_passed": true,
@@ -83,6 +90,6 @@
   "link_values_printed": false,
   "secret_values_printed": false,
   "blocking": [
-    "baseline 最短路径已固化；真实提交仍等待用户 token、submission id 和强确认。"
+    "baseline 最短路径已固化；真实提交仍等待用户确认目标、token、submission id 和强确认。"
   ]
 }

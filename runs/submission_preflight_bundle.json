@@ -40,6 +40,10 @@
   "jupyter_input_target_confirmation_exact_match": true,
   "next_user_action_target_confirmation_value": "CONFIRM_TABLE30V2_ALOHA_BASELINE",
   "next_user_action_target_user_confirmed": false,
+  "baseline_submission_quickstart_passed": true,
+  "baseline_submission_quickstart_target_confirmation_value": "CONFIRM_TABLE30V2_ALOHA_BASELINE",
+  "baseline_submission_quickstart_target_confirmation_manual_input": true,
+  "baseline_submission_quickstart_target_confirmation_exact_match": true,
   "baseline_requires_checkpoint_link": false,
   "baseline_requires_checkpoint_upload": false,
   "chinese_utf8_artifact_audit_passed": true,
@@ -255,7 +259,7 @@
       "script": "scripts/render_baseline_submission_quickstart.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": "ue,\n    \"baseline_is_recommended_default\": true,\n    \"baseline_route_ready_without_credentials\": true,\n    \"baseline_checkpoint_ready\": true,\n    \"baseline_does_not_need_upload\": true,\n    \"baseline_does_not_need_checkpoint_link\": true,\n    \"ready_runner_template_passed\": true,\n    \"ready_runner_default_baseline\": true,\n    \"synthetic_baseline_no_confirm_dry_run\": true,\n    \"package_audit_passed\": true,\n    \"readiness_gate_passed\": true,\n    \"secret_scan_clean\": true\n  },\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false\n  },\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"baseline 最短路径已固化；真实提交仍等待用户 token、submission id 和强确认。\"\n  ]\n}\n",
+      "stdout_tail": "nt_link\": true,\n    \"ready_runner_template_passed\": true,\n    \"ready_runner_default_baseline\": true,\n    \"target_confirmation_packet_passed\": true,\n    \"target_confirmation_value_exact\": true,\n    \"jupyter_input_requires_manual_target_confirmation\": true,\n    \"jupyter_input_requires_exact_target_confirmation\": true,\n    \"synthetic_baseline_no_confirm_dry_run\": true,\n    \"package_audit_passed\": true,\n    \"readiness_gate_passed\": true,\n    \"secret_scan_clean\": true\n  },\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false\n  },\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"baseline 最短路径已固化；真实提交仍等待用户确认目标、token、submission id 和强确认。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "submission_target_confirmation_packet": {

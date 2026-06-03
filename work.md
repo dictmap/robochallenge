@@ -2360,3 +2360,26 @@
 ### 下一步
 - P0：提交并推送本轮 Jupyter 第 44 节目标确认接入。
 - P1：用户明确确认目标并提供 token/submission id 后，先跑 Jupyter 第 44/45 节或 shell baseline 授权预检与 dry-run gate；真实 runner 仍必须等待用户明确授权。
+## 2026-06-03 第八十四轮：baseline 最短路径目标确认文档闭环
+
+### 已完成
+- 更新 `scripts/render_baseline_submission_quickstart.py`，让 baseline 最短路径第 1 步明确写出：第 44 节需要填写 `CONFIRM_TABLE30V2_ALOHA_BASELINE`，再填 token、submission id 和 `baseline` variant。
+- baseline quickstart 机器字段新增 `target_confirmation_value`、`target_confirmation_manual_input_required`、`target_confirmation_exact_match_required`，并把 Jupyter 第 44 节审计作为输入证据。
+- 更新 `scripts/render_next_user_action_packet.py`，推荐入口第 2 步明确要求先输入目标确认值 `CONFIRM_TABLE30V2_ALOHA_BASELINE`，再写入真实 token/submission id/variant。
+- 更新 dashboard、preflight、artifact manifest 和总 validator，新增 baseline quickstart 目标确认值、手动输入和精确匹配断言。
+
+### 验证结果
+- Linux 端完整 no-contact 链路已通过：`py_compile`、`render_baseline_submission_quickstart.py`、`render_next_user_action_packet.py`、`audit_chinese_utf8_artifacts.py`、`audit_plaintext_secrets.py`、`audit_submission_preflight_bundle.py`、`audit_submission_artifact_manifest.py`、`render_submission_status_dashboard.py`、`validate_repro_workspace.py` 与 `git diff --check`。
+- `runs/baseline_submission_quickstart.json` 实测：`passed=true`，`target_confirmation_value=CONFIRM_TABLE30V2_ALOHA_BASELINE`，`target_confirmation_manual_input_required=true`，`target_confirmation_exact_match_required=true`。
+- `reports/next_user_action_packet.md` 实测第 65 行已写明：第 44 节输入目标确认值 `CONFIRM_TABLE30V2_ALOHA_BASELINE`。
+- GUI dashboard 实测仍为 `source_count=37`、`card_count=37`、`done_count=31`、`blocked_count=5`、`watch_count=1`、`ready_for_real_submission=false`。
+- 明文凭据扫描仍为 `hit_count=0`；中文 UTF-8 审计为 `scanned_file_count=156`、`decode_error_count=0`、`bad_marker_hit_count=0`。
+
+### 当前边界
+- 本轮没有读取真实 token、submission id、checkpoint link 或真实 local env 内容。
+- 没有连接 RoboChallenge 平台，没有上传 checkpoint，没有生成 checkpoint tar，也没有启动真实 runner。
+- 文档和机器断言现在都要求目标确认值，但当前仍没有替用户确认；真实提交仍阻塞在目标确认、token、submission id、variant=baseline 和真实 runner 强确认。
+
+### 下一步
+- P0：提交并推送本轮 baseline 最短路径目标确认文档闭环。
+- P1：用户明确确认目标并提供 token/submission id 后，先跑 Jupyter 第 44/45 节或 shell baseline 授权预检与 dry-run gate；真实 runner 仍必须等待用户明确授权。

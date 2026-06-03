@@ -28,6 +28,10 @@
 - Jupyter 第 44 节是否精确匹配确认：`True`。
 - 下一步动作包透传确认值：`CONFIRM_TABLE30V2_ALOHA_BASELINE`。
 - 下一步动作包是否替用户确认：`False`。
+- baseline 最短路径：`True`。
+- baseline 最短路径确认值：`CONFIRM_TABLE30V2_ALOHA_BASELINE`。
+- baseline 最短路径是否要求手动目标确认：`True`。
+- baseline 最短路径是否精确匹配目标确认：`True`。
 - baseline 是否需要 checkpoint link：`False`。
 - baseline 是否需要 checkpoint upload：`False`。
 - 中文 UTF-8 产物审计：`True`。

@@ -400,6 +400,18 @@ def build_status() -> dict[str, Any]:
         is True,
         "next_user_action_target_confirmation_value": action_packet.get("target_confirmation_value"),
         "next_user_action_target_user_confirmed": action_packet.get("target_user_confirmed"),
+        "baseline_submission_quickstart_passed": baseline_quickstart.get("passed") is True,
+        "baseline_submission_quickstart_target_confirmation_value": baseline_quickstart.get(
+            "target_confirmation_value"
+        ),
+        "baseline_submission_quickstart_target_confirmation_manual_input": baseline_quickstart.get(
+            "target_confirmation_manual_input_required"
+        )
+        is True,
+        "baseline_submission_quickstart_target_confirmation_exact_match": baseline_quickstart.get(
+            "target_confirmation_exact_match_required"
+        )
+        is True,
         "baseline_requires_checkpoint_link": route_aware_blockers.get("baseline_requires_checkpoint_link"),
         "baseline_requires_checkpoint_upload": route_aware_blockers.get("baseline_requires_checkpoint_upload"),
         "chinese_utf8_artifact_audit_passed": chinese_utf8.get("passed") is True,
@@ -650,6 +662,10 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         f"- Jupyter 第 44 节是否精确匹配确认：`{status['jupyter_input_target_confirmation_exact_match']}`。",
         f"- 下一步动作包透传确认值：`{status['next_user_action_target_confirmation_value']}`。",
         f"- 下一步动作包是否替用户确认：`{status['next_user_action_target_user_confirmed']}`。",
+        f"- baseline 最短路径：`{status['baseline_submission_quickstart_passed']}`。",
+        f"- baseline 最短路径确认值：`{status['baseline_submission_quickstart_target_confirmation_value']}`。",
+        f"- baseline 最短路径是否要求手动目标确认：`{status['baseline_submission_quickstart_target_confirmation_manual_input']}`。",
+        f"- baseline 最短路径是否精确匹配目标确认：`{status['baseline_submission_quickstart_target_confirmation_exact_match']}`。",
         f"- baseline 是否需要 checkpoint link：`{status['baseline_requires_checkpoint_link']}`。",
         f"- baseline 是否需要 checkpoint upload：`{status['baseline_requires_checkpoint_upload']}`。",
         f"- 中文 UTF-8 产物审计：`{status['chinese_utf8_artifact_audit_passed']}`。",

@@ -136,7 +136,7 @@
     },
     {
       "path": "reports/baseline_submission_quickstart.md",
-      "size_bytes": 2755,
+      "size_bytes": 3206,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -280,7 +280,7 @@
     },
     {
       "path": "reports/next_user_action_packet.md",
-      "size_bytes": 7449,
+      "size_bytes": 7511,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -488,7 +488,7 @@
     },
     {
       "path": "reports/submission_artifact_manifest.md",
-      "size_bytes": 26179,
+      "size_bytes": 26418,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -520,7 +520,7 @@
     },
     {
       "path": "reports/submission_preflight_bundle.md",
-      "size_bytes": 9683,
+      "size_bytes": 9924,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -528,7 +528,7 @@
     },
     {
       "path": "reports/submission_status_dashboard.html",
-      "size_bytes": 22525,
+      "size_bytes": 22529,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,

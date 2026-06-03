@@ -47,8 +47,13 @@ def build_status() -> dict[str, Any]:
     package = read_json(RUNS_DIR / "robochallenge_submission_package_audit.json")
     readiness = read_json(RUNS_DIR / "real_submission_readiness.json")
     secret_scan = read_json(RUNS_DIR / "plaintext_secret_scan.json")
+    jupyter_input = read_json(RUNS_DIR / "jupyter_input_template_audit.json")
+    target_confirmation = read_json(RUNS_DIR / "submission_target_confirmation_packet.json")
     baseline_route = find_route(route_packet, "baseline_official_aloha")
     synthetic = ready_runner.get("synthetic_no_confirm_smoke", {})
+    target_confirmation_value = target_confirmation.get(
+        "recommended_confirmation_value", "CONFIRM_TABLE30V2_ALOHA_BASELINE"
+    )
 
     required_user_inputs = [
         {
@@ -76,7 +81,10 @@ def build_status() -> dict[str, Any]:
         command(
             1,
             "写入本地 env",
-            "Notebook 第 44 节：RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE=True；variant 填 baseline。",
+            (
+                "Notebook 第 44 节：RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE=True；"
+                f"确认值填 {target_confirmation_value}；variant 填 baseline。"
+            ),
             "只写 submission/robochallenge_env.local.sh；不把真实值写入 Notebook 源码或 tracked 文件。",
         ),
         command(
@@ -114,6 +122,16 @@ def build_status() -> dict[str, Any]:
         is False,
         "ready_runner_template_passed": ready_runner.get("passed") is True,
         "ready_runner_default_baseline": ready_runner.get("default_variant") == "baseline",
+        "target_confirmation_packet_passed": target_confirmation.get("passed") is True,
+        "target_confirmation_value_exact": target_confirmation_value == "CONFIRM_TABLE30V2_ALOHA_BASELINE",
+        "jupyter_input_requires_manual_target_confirmation": jupyter_input.get(
+            "target_confirmation_manual_input_required"
+        )
+        is True,
+        "jupyter_input_requires_exact_target_confirmation": jupyter_input.get(
+            "target_confirmation_exact_match_required"
+        )
+        is True,
         "synthetic_baseline_no_confirm_dry_run": synthetic.get("passed") is True
         and synthetic.get("variant") == "baseline"
         and synthetic.get("dry_run_called") is True
@@ -150,12 +168,17 @@ def build_status() -> dict[str, Any]:
         if any(contact_flags.values()):
             blocking.append("输入审计显示曾连接平台、接触下载 host 或执行上传。")
     else:
-        blocking.append("baseline 最短路径已固化；真实提交仍等待用户 token、submission id 和强确认。")
+        blocking.append("baseline 最短路径已固化；真实提交仍等待用户确认目标、token、submission id 和强确认。")
 
     return {
         "kind": "baseline_submission_quickstart",
         "passed": passed,
         "recommended_route": "baseline_official_aloha",
+        "target_confirmation_value": target_confirmation_value,
+        "target_confirmation_manual_input_required": jupyter_input.get("target_confirmation_manual_input_required")
+        is True,
+        "target_confirmation_exact_match_required": jupyter_input.get("target_confirmation_exact_match_required")
+        is True,
         "requires_checkpoint_upload": False,
         "requires_checkpoint_link": False,
         "required_user_inputs": required_user_inputs,
@@ -181,6 +204,9 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         "",
         f"- 审计状态：`passed={status['passed']}`。",
         f"- 推荐路线：`{status['recommended_route']}`。",
+        f"- 目标确认值：`{status['target_confirmation_value']}`。",
+        f"- 是否要求手动输入目标确认：`{status['target_confirmation_manual_input_required']}`。",
+        f"- 是否要求精确匹配目标确认：`{status['target_confirmation_exact_match_required']}`。",
         f"- 是否需要 checkpoint upload：`{status['requires_checkpoint_upload']}`。",
         f"- 是否需要 checkpoint link：`{status['requires_checkpoint_link']}`。",
         "",

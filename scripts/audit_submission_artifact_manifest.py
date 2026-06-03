@@ -355,6 +355,18 @@ def build_status() -> dict[str, Any]:
         == "baseline_official_aloha",
         "submission_variant_route_packet_has_two_routes": route_packet.get("route_count") == 2,
         "baseline_submission_quickstart_passed": baseline_quickstart.get("passed") is True,
+        "baseline_submission_quickstart_target_confirmation_value_exact": baseline_quickstart.get(
+            "target_confirmation_value"
+        )
+        == "CONFIRM_TABLE30V2_ALOHA_BASELINE",
+        "baseline_submission_quickstart_target_confirmation_manual_input": baseline_quickstart.get(
+            "target_confirmation_manual_input_required"
+        )
+        is True,
+        "baseline_submission_quickstart_target_confirmation_exact_match": baseline_quickstart.get(
+            "target_confirmation_exact_match_required"
+        )
+        is True,
         "baseline_submission_quickstart_no_upload": baseline_quickstart.get("requires_checkpoint_upload") is False,
         "baseline_submission_quickstart_no_link": baseline_quickstart.get("requires_checkpoint_link") is False,
         "baseline_dry_run_gate_passed": baseline_dry_run_gate.get("passed") is True,

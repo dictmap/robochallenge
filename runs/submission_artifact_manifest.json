@@ -20,8 +20,8 @@
       "path": "work.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 197673,
-      "sha256": "0b28136d2a78cfe4c658577ad5a53c46ccfa76017fad6b24a1d006dc533cba84"
+      "size_bytes": 200377,
+      "sha256": "d6c25e66d9545c253e7c8dd3cc6ceb36afc6117903f308cb05e36f1649d6907a"
     },
     {
       "path": "notebooks/robochallenge_pi05_submit_cn.ipynb",
@@ -286,8 +286,8 @@
       "path": "reports/next_user_action_packet.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 7449,
-      "sha256": "c5f544d699482f0ce4cdb65454067d3814735577201f7bd548b80047cc490b77"
+      "size_bytes": 7511,
+      "sha256": "d75f47c6e9ee0eda61470d326a3159793755cb19010f91fb575055ae260be6b7"
     },
     {
       "path": "reports/web_form_field_packet.md",
@@ -307,8 +307,8 @@
       "path": "reports/baseline_submission_quickstart.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 2755,
-      "sha256": "370c7ccde88a66311e864349ed648756db11cb52c87336aa5b4b313c53af3671"
+      "size_bytes": 3206,
+      "sha256": "41ec7900721616b4aca97d5ba86cf8c0fffbb041dd344c38fa9325883f5f4c8d"
     },
     {
       "path": "reports/baseline_dry_run_gate.md",
@@ -440,8 +440,8 @@
       "path": "reports/submission_preflight_bundle.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 9683,
-      "sha256": "f8a91d2f3421ef3cf806ddcb5432fbaf42efcc2ba417584d4c2d6c0e54197c7a"
+      "size_bytes": 9924,
+      "sha256": "54b21d928ccaa8210f01df0a7f06f0d6c69645559632c056ca264be95ba4cd7c"
     },
     {
       "path": "reports/plaintext_secret_scan.md",
@@ -454,15 +454,15 @@
       "path": "reports/submission_status_dashboard.html",
       "exists": true,
       "tracked": true,
-      "size_bytes": 22525,
-      "sha256": "cef4232ff0cb57c4ff830a637e9602af9f1236849a7abc803b28ef508d8035f4"
+      "size_bytes": 22529,
+      "sha256": "60addcb372d279b9542ed229a5f8179281299b92bae8bc30ff523c5b4045a5d0"
     },
     {
       "path": "scripts/render_next_user_action_packet.py",
       "exists": true,
       "tracked": true,
-      "size_bytes": 19746,
-      "sha256": "e9a3daa0a0fcb06225ed4ff867c4ae60bfc63cffda9db796bc0feee0463ce655"
+      "size_bytes": 19884,
+      "sha256": "4cffc13a8f607b091691318e44211b4f538d7899ba94305ceedac5b63a188b20"
     },
     {
       "path": "scripts/render_web_form_field_packet.py",
@@ -482,8 +482,8 @@
       "path": "scripts/render_baseline_submission_quickstart.py",
       "exists": true,
       "tracked": true,
-      "size_bytes": 9973,
-      "sha256": "a6dd12fde694bb1d688bef942533a6d08a781112c19c59afe2d851a00600c634"
+      "size_bytes": 11539,
+      "sha256": "96c98e6b591f20ff19fa414a53e3fe505daa67736fbdae774f807998067cb35e"
     },
     {
       "path": "scripts/render_baseline_dry_run_gate.py",
@@ -742,6 +742,9 @@
     "submission_variant_route_packet_baseline_default": true,
     "submission_variant_route_packet_has_two_routes": true,
     "baseline_submission_quickstart_passed": true,
+    "baseline_submission_quickstart_target_confirmation_value_exact": true,
+    "baseline_submission_quickstart_target_confirmation_manual_input": true,
+    "baseline_submission_quickstart_target_confirmation_exact_match": true,
     "baseline_submission_quickstart_no_upload": true,
     "baseline_submission_quickstart_no_link": true,
     "baseline_dry_run_gate_passed": true,

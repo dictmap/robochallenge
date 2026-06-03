@@ -67,6 +67,9 @@
   "submission_variant_recommended_default": "baseline_official_aloha",
   "submission_variant_route_count": 2,
   "baseline_submission_quickstart_passed": true,
+  "baseline_submission_quickstart_target_confirmation_value": "CONFIRM_TABLE30V2_ALOHA_BASELINE",
+  "baseline_submission_quickstart_target_confirmation_manual_input": true,
+  "baseline_submission_quickstart_target_confirmation_exact_match": true,
   "baseline_submission_quickstart_no_upload": true,
   "baseline_submission_quickstart_no_link": true,
   "baseline_dry_run_gate_passed": true,
@@ -378,7 +381,7 @@
       "state": "done",
       "state_label": "已完成",
       "value": "无 link 前置",
-      "detail": "token 和 submission id 到位后先跑 baseline 授权预检；缺真实确认短语时只到 dry-run，不启动 runner。",
+      "detail": "目标确认、token 和 submission id 到位后先跑 baseline 授权预检；缺真实 runner 确认短语时只到 dry-run。",
       "report": "reports/baseline_submission_quickstart.md"
     },
     {

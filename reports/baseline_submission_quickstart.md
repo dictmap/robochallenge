@@ -4,6 +4,9 @@
 
 - 审计状态：`passed=True`。
 - 推荐路线：`baseline_official_aloha`。
+- 目标确认值：`CONFIRM_TABLE30V2_ALOHA_BASELINE`。
+- 是否要求手动输入目标确认：`True`。
+- 是否要求精确匹配目标确认：`True`。
 - 是否需要 checkpoint upload：`False`。
 - 是否需要 checkpoint link：`False`。
 
@@ -17,7 +20,7 @@
 
 ## 最短命令顺序
 
-1. 写入本地 env：`Notebook 第 44 节：RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE=True；variant 填 baseline。`
+1. 写入本地 env：`Notebook 第 44 节：RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE=True；确认值填 CONFIRM_TABLE30V2_ALOHA_BASELINE；variant 填 baseline。`
    - 边界：只写 submission/robochallenge_env.local.sh；不把真实值写入 Notebook 源码或 tracked 文件。
 2. 授权前只读预检：`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_authorized_preflight_template.sh`
    - 边界：只读检查；ready=false 时停止。
@@ -45,6 +48,10 @@
 - `baseline_does_not_need_checkpoint_link`：`True`。
 - `ready_runner_template_passed`：`True`。
 - `ready_runner_default_baseline`：`True`。
+- `target_confirmation_packet_passed`：`True`。
+- `target_confirmation_value_exact`：`True`。
+- `jupyter_input_requires_manual_target_confirmation`：`True`。
+- `jupyter_input_requires_exact_target_confirmation`：`True`。
 - `synthetic_baseline_no_confirm_dry_run`：`True`。
 - `package_audit_passed`：`True`。
 - `readiness_gate_passed`：`True`。
@@ -52,4 +59,4 @@
 
 ## Blocking
 
-- baseline 最短路径已固化；真实提交仍等待用户 token、submission id 和强确认。
+- baseline 最短路径已固化；真实提交仍等待用户确认目标、token、submission id 和强确认。

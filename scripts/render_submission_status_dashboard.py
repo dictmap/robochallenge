@@ -207,6 +207,9 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
     baseline_quickstart_ready = bool(
         baseline_quickstart.get("passed")
         and baseline_quickstart.get("recommended_route") == "baseline_official_aloha"
+        and baseline_quickstart.get("target_confirmation_value") == "CONFIRM_TABLE30V2_ALOHA_BASELINE"
+        and baseline_quickstart.get("target_confirmation_manual_input_required") is True
+        and baseline_quickstart.get("target_confirmation_exact_match_required") is True
         and baseline_quickstart.get("requires_checkpoint_upload") is False
         and baseline_quickstart.get("requires_checkpoint_link") is False
     )
@@ -537,7 +540,7 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
             "Baseline 最短路径",
             "done" if baseline_quickstart_ready else "watch",
             "无 link 前置",
-            "token 和 submission id 到位后先跑 baseline 授权预检；缺真实确认短语时只到 dry-run，不启动 runner。",
+            "目标确认、token 和 submission id 到位后先跑 baseline 授权预检；缺真实 runner 确认短语时只到 dry-run。",
             "reports/baseline_submission_quickstart.md",
         ),
         card(
@@ -801,6 +804,17 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
         "submission_variant_recommended_default": route_packet.get("recommended_default"),
         "submission_variant_route_count": route_packet.get("route_count"),
         "baseline_submission_quickstart_passed": baseline_quickstart.get("passed") is True,
+        "baseline_submission_quickstart_target_confirmation_value": baseline_quickstart.get(
+            "target_confirmation_value"
+        ),
+        "baseline_submission_quickstart_target_confirmation_manual_input": baseline_quickstart.get(
+            "target_confirmation_manual_input_required"
+        )
+        is True,
+        "baseline_submission_quickstart_target_confirmation_exact_match": baseline_quickstart.get(
+            "target_confirmation_exact_match_required"
+        )
+        is True,
         "baseline_submission_quickstart_no_upload": baseline_quickstart.get("requires_checkpoint_upload") is False,
         "baseline_submission_quickstart_no_link": baseline_quickstart.get("requires_checkpoint_link") is False,
         "baseline_dry_run_gate_passed": baseline_dry_run_gate.get("passed") is True,

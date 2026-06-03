@@ -394,7 +394,11 @@ def write_report(status: dict[str, Any], path: Path) -> None:
             "## 推荐入口",
             "",
             "1. 打开 `notebooks/robochallenge_pi05_submit_cn.ipynb`。",
-            "2. 在第 44 节手动设置 `RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE=True`，把真实 token、submission id 和 `baseline` variant 写入被 Git 忽略的 local env。",
+            (
+                "2. 在第 44 节手动设置 `RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE=True`，"
+                f"输入目标确认值 `{status['target_confirmation_value']}`，"
+                "再把真实 token、submission id 和 `baseline` variant 写入被 Git 忽略的 local env。"
+            ),
             "3. 在第 45 节手动设置 `RUN_JUPYTER_AUTHORIZED_PREFLIGHT=True`，优先运行 baseline 授权预检。",
             "4. 先按 `reports/baseline_submission_quickstart.md` 跑 baseline dry-run gate；只有明确选择 LoRA/web checkpoint 路线时，才进入 checkpoint 归档、上传和 link 回填。",
             "",

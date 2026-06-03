@@ -14,7 +14,7 @@
 ## 材料清单
 
 - `README.md`：exists=`True`，tracked=`True`，size=`19168`，sha256=`58dff8b9599520d8de819ab2dd636d7e1d46962e276499858d6f51f4151f620c`。
-- `work.md`：exists=`True`，tracked=`True`，size=`223605`，sha256=`02a49852e00e9b9330612cb3e9ac04e87ded69b0a636fba7dc5108676d2fe907`。
+- `work.md`：exists=`True`，tracked=`True`，size=`226334`，sha256=`88159e94018d7ecb1348e36a1b252516c71aaacbb5fc45a0694632a285140078`。
 - `notebooks/robochallenge_pi05_submit_cn.ipynb`：exists=`True`，tracked=`True`，size=`98951`，sha256=`aa9c8d8b97f6cb05dce400f0fc1068df7b60ad3719ce8c099abdc354f294d607`。
 - `submission/README.md`：exists=`True`，tracked=`True`，size=`1966`，sha256=`9661c643ac3a13348b1cdd49a90a200ed9238d063960a4d9c3edad41f7464251`。
 - `submission/REAL_SUBMISSION_HANDOFF.md`：exists=`True`，tracked=`True`，size=`9545`，sha256=`834d5199a5334444b016a352c4698284d9060131ba7794ec5c079514780b0744`。
@@ -27,7 +27,7 @@
 - `submission/run_ready_real_submission_template.sh`：exists=`True`，tracked=`True`，size=`4485`，sha256=`1a20f33a7413ebe672ccfb7a47f34742719a7f802af9bd504b669dc8043e485e`。
 - `submission/run_authorized_checkpoint_archive_template.sh`：exists=`True`，tracked=`True`，size=`1304`，sha256=`e48d88ab07b7340d8e1f54f20242fc42bdcc52dbc9acc16518d7b0c28c8cc041`。
 - `reports/pi05_base_repro.md`：exists=`True`，tracked=`True`，size=`4145`，sha256=`d537bdaeb9611c168c0edecdd5ee6c9183fd4e072538f0129090c8813d39802a`。
-- `reports/pi06_pi07_public_release_audit.md`：exists=`True`，tracked=`True`，size=`2523`，sha256=`25c679ae8cfb899af07f02fd5b99c7a640ae78728f4c4e16a161bfdc92e73773`。
+- `reports/pi06_pi07_public_release_audit.md`：exists=`True`，tracked=`True`，size=`3014`，sha256=`a8d5809b1a72373d0bcb6e6fe189dca800ebc1fa3c3e297e0946bcf713786623`。
 - `reports/table30_vs_table30v2.md`：exists=`True`，tracked=`True`，size=`2680`，sha256=`701844a0a4316e38210400478fe3ea9b057019c054ef807a1a51f0f87f646ebe`。
 - `reports/table30v2_aloha_mapping.md`：exists=`True`，tracked=`True`，size=`3037`，sha256=`93151a67871f416f94a87562c4e6dce60a7a27566e1f15e8e167c49bd7df1b8b`。
 - `reports/table30v2_aloha_dry_run_converter.md`：exists=`True`，tracked=`True`，size=`1189`，sha256=`f3d1c14f366e01b89b74ce226a0cc0c76dbf1dcee02af1b03c9f52d23d1d9bf6`。
@@ -48,7 +48,7 @@
 - `reports/jupyter_authorized_preflight_template_audit.md`：exists=`True`，tracked=`True`，size=`3025`，sha256=`7c7745d3fc347c80a5854ac005260f3f7770efdfe97bc37f0753ebfecaf7b68b`。
 - `reports/jupyter_final_handoff_template_audit.md`：exists=`True`，tracked=`True`，size=`3099`，sha256=`7c9a4011772d6e2a7bd83cf223f0577b03d4742deb637dd968330ad6fd9685e4`。
 - `reports/historical_notebook_checkpoint_outputs.md`：exists=`True`，tracked=`True`，size=`2659`，sha256=`56531c38088e20392687aae92b9607dc00657ce818f2ad54cefabe5555534a64`。
-- `reports/chinese_utf8_artifact_audit.md`：exists=`True`，tracked=`True`，size=`1045`，sha256=`5f5c4660799cf97645620b5e55c652384df1766c3100557eca9504305432afca`。
+- `reports/chinese_utf8_artifact_audit.md`：exists=`True`，tracked=`True`，size=`1045`，sha256=`374645831c1a0402dc2e7f9e046a9f35fa173ce0992547b0545a06d34b17a8af`。
 - `reports/authorized_preflight_template_audit.md`：exists=`True`，tracked=`True`，size=`1426`，sha256=`7ecb501d2ba85af6e6a7ae109acf9a144a7fb559bf7b2e1a02dcdfa9171bdd26`。
 - `reports/ready_real_runner_template_audit.md`：exists=`True`，tracked=`True`，size=`1916`，sha256=`59b7118168ac5b97be9cc64e9dd015ac8c1df2d81368834828eaa229ceeda059`。
 - `reports/authorized_checkpoint_archive_template_audit.md`：exists=`True`，tracked=`True`，size=`2030`，sha256=`0a02a63659e96376720e1c11c78ab6bd7a5b4118c13a93c99155fbd2dd5d6bbe`。
@@ -76,11 +76,11 @@
 - `reports/submission_target_confirmation_gate.md`：exists=`True`，tracked=`True`，size=`3289`，sha256=`5d57fb9f0e82473a8edfd7d316d56ca8d115ae8239ba8a452e885fd7cf974dce`。
 - `reports/submission_handoff_docs_audit.md`：exists=`True`，tracked=`True`，size=`6003`，sha256=`13b9fda20546fa88ae7a6ab30f6f9534614dacfb859eb99e631fb5c2408d369d`。
 - `reports/authorized_submission_sequence_audit.md`：exists=`True`，tracked=`True`，size=`5913`，sha256=`1eb54851a38aa01e3fb79d51c180b443a91a130ee45c4adc11c1278493b3ca72`。
-- `reports/submission_preflight_bundle.md`：exists=`True`，tracked=`True`，size=`11218`，sha256=`598398a7fab1af4c8c5913a33ccbe89502771219e84cf361bfca286b8978a687`。
+- `reports/submission_preflight_bundle.md`：exists=`True`，tracked=`True`，size=`11218`，sha256=`3097ff7b30ec6d03cc9c9b1e845cc7d639689b97bd1ecff7059c4bf8b9ccbcb7`。
 - `reports/plaintext_secret_scan.md`：exists=`True`，tracked=`True`，size=`689`，sha256=`00244a2c84f52426567a7cf0c6361b045b9ef16795175a74efaea66cc6151688`。
-- `reports/submission_status_dashboard.html`：exists=`True`，tracked=`True`，size=`23646`，sha256=`88f6f83daa019d81b0abded136bfd0ed579a630fe109d0f5a863771d46ea0587`。
+- `reports/submission_status_dashboard.html`：exists=`True`，tracked=`True`，size=`23641`，sha256=`3362452df7b0e979f84dd0a777dfaf8d8ebac07ed8a6841f74296c1ccc52d876`。
 - `reports/submission_dashboard_links_audit.md`：exists=`True`，tracked=`True`，size=`1113`，sha256=`8d9a8ab9649f6adba8d7ea33e9b6b7fb28aa30691b6b0a476e51154443236d4e`。
-- `reports/dashboard_gui_access_packet.md`：exists=`True`，tracked=`False`，size=`1360`，sha256=`7718d67ba5084d8b94d148298e4b7f619c0c0b10d8ce45f1180f66771fdeb290`。
+- `reports/dashboard_gui_access_packet.md`：exists=`True`，tracked=`True`，size=`1360`，sha256=`7718d67ba5084d8b94d148298e4b7f619c0c0b10d8ce45f1180f66771fdeb290`。
 - `scripts/render_next_user_action_packet.py`：exists=`True`，tracked=`True`，size=`19917`，sha256=`15bc1c396cae99d33f8d536aab954e64f7e834745f828cf1bcd5393cee843cc8`。
 - `scripts/render_web_form_field_packet.py`：exists=`True`，tracked=`True`，size=`18024`，sha256=`7f9bd1684e079431289f507026ac43937a4025e946a79177277602590f0121ed`。
 - `scripts/render_submission_variant_route_packet.py`：exists=`True`，tracked=`True`，size=`15015`，sha256=`1abb11e4605a9df87b755f96b264056b62288a2ae3909de2dc0b970a7bc92a28`。
@@ -109,7 +109,7 @@
 - `scripts/audit_historical_notebook_checkpoint_outputs.py`：exists=`True`，tracked=`True`，size=`8810`，sha256=`8757520ae782636586f99799c02e64febbdf3b0753e01fb91d41120407ad1f37`。
 - `scripts/audit_chinese_utf8_artifacts.py`：exists=`True`，tracked=`True`，size=`8099`，sha256=`1d9a1b5dc5e30786081bd7a851bad972fe47c39553b2b78556e78ce0ef9db48d`。
 - `scripts/audit_authorized_execution_checklist.py`：exists=`True`，tracked=`True`，size=`20422`，sha256=`b3dcb7415df1cb4bcb6f19deef19d780502960c9e2e9919357b31f902811492d`。
-- `scripts/render_dashboard_gui_access_packet.py`：exists=`True`，tracked=`False`，size=`7615`，sha256=`0fadbbcf8c0e9fa52c63a512baee2506fb07e6b85a68400b1c393de47c0b4023`。
+- `scripts/render_dashboard_gui_access_packet.py`：exists=`True`，tracked=`True`，size=`7615`，sha256=`0fadbbcf8c0e9fa52c63a512baee2506fb07e6b85a68400b1c393de47c0b4023`。
 
 ## 本地凭据与大文件忽略检查
 

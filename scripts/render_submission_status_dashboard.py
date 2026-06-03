@@ -139,6 +139,11 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
     plaintext = data["plaintext_scan"]
 
     gcs_zero = all(item.get("object_count") == 0 for item in pi06_pi07.get("gcs_prefixes", []))
+    remote_readme = pi06_pi07.get("remote_openpi_readme", {})
+    remote_pi07 = pi06_pi07.get("remote_pi07_page", {})
+    remote_release_gap = bool(
+        pi06_pi07.get("remote_release_gap_confirmed") and remote_readme.get("fetched") and remote_pi07.get("fetched")
+    )
     current_link_ready = link_intake.get("current_env", {}).get("link_shape_ready")
     ready_for_real = readiness.get("ready_for_real_submission")
     preflight_contacts = preflight.get("contact_flags", {})
@@ -445,9 +450,9 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
         ),
         card(
             "pi0.6 / pi0.7",
-            "watch" if gcs_zero else "done",
+            "watch" if gcs_zero and remote_release_gap else "done",
             "未发现公开 checkpoint",
-            "公开 OpenPI/GCS 审计未找到可直接复现 checkpoint；当前只能记录为 release gap。",
+            "远端 OpenPI README、pi0.7 官网页与 GCS 前缀均未给出可直接复现 checkpoint。",
             "reports/pi06_pi07_public_release_audit.md",
         ),
         card(

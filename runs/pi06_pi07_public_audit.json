@@ -1,6 +1,6 @@
 {
   "kind": "pi06_pi07_public_release_audit",
-  "checked_at_utc": "2026-06-02T20:40:29.655802Z",
+  "checked_at_utc": "2026-06-03T03:41:39.274420Z",
   "passed": true,
   "official_sources": [
     {
@@ -15,7 +15,7 @@
     },
     {
       "name": "pi0.7 blog",
-      "url": "https://www.pi.website/blog/pi07",
+      "url": "https://www.pi.website/pi07",
       "note": "pi0.7 博客，发布于 2026-04-16，描述 steerable generalist 和组合泛化。"
     },
     {
@@ -36,6 +36,47 @@
     "matches": []
   },
   "openpi_target_match_count": 0,
+  "remote_openpi_readme": {
+    "url": "https://raw.githubusercontent.com/Physical-Intelligence/openpi/main/README.md",
+    "fetched": true,
+    "attempt_count": 1,
+    "status_code": 200,
+    "byte_count": 23254,
+    "checkpoint_paths": [
+      "gs://openpi-assets/checkpoints/pi05_base",
+      "gs://openpi-assets/checkpoints/pi05_droid",
+      "gs://openpi-assets/checkpoints/pi05_libero",
+      "gs://openpi-assets/checkpoints/pi0_aloha_pen_uncap",
+      "gs://openpi-assets/checkpoints/pi0_aloha_towel",
+      "gs://openpi-assets/checkpoints/pi0_aloha_tupperware",
+      "gs://openpi-assets/checkpoints/pi0_base",
+      "gs://openpi-assets/checkpoints/pi0_droid",
+      "gs://openpi-assets/checkpoints/pi0_fast_base",
+      "gs://openpi-assets/checkpoints/pi0_fast_droid"
+    ],
+    "checkpoint_path_count": 10,
+    "base_paths_present": {
+      "pi0_base": true,
+      "pi0_fast_base": true,
+      "pi05_base": true
+    },
+    "all_expected_public_base_paths_present": true,
+    "target_text_match_count": 0,
+    "unexpected_pi06_pi07_checkpoint_paths": [],
+    "unexpected_pi06_pi07_checkpoint_count": 0
+  },
+  "remote_pi07_page": {
+    "url": "https://www.pi.website/pi07",
+    "fetched": true,
+    "attempt_count": 1,
+    "status_code": 200,
+    "byte_count": 252068,
+    "mentions_pi07": true,
+    "published_april_16_2026": true,
+    "mentions_steerable": true,
+    "checkpoint_path_count": 0
+  },
+  "remote_release_gap_confirmed": true,
   "gcs_prefixes": [
     {
       "prefix": "checkpoints/pi06",

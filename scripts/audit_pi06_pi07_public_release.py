@@ -18,6 +18,9 @@ RUNS_DIR = ROOT / "runs"
 REPORTS_DIR = ROOT / "reports"
 STATUS_PATH = RUNS_DIR / "pi06_pi07_public_audit.json"
 REPORT_PATH = REPORTS_DIR / "pi06_pi07_public_release_audit.md"
+REMOTE_OPENPI_README_URL = "https://raw.githubusercontent.com/Physical-Intelligence/openpi/main/README.md"
+REMOTE_PI07_URL = "https://www.pi.website/pi07"
+OPENPI_CHECKPOINT_RE = re.compile(r"gs://openpi-assets/checkpoints/[A-Za-z0-9_.-]+")
 
 TARGET_PATTERNS = [
     r"\bpi06\b",
@@ -52,7 +55,7 @@ OFFICIAL_SOURCES = [
     },
     {
         "name": "pi0.7 blog",
-        "url": "https://www.pi.website/blog/pi07",
+        "url": REMOTE_PI07_URL,
         "note": "pi0.7 博客，发布于 2026-04-16，描述 steerable generalist 和组合泛化。",
     },
     {
@@ -68,6 +71,34 @@ OFFICIAL_SOURCES = [
 ]
 
 
+def fetch_public_text(url: str, attempts: int = 3) -> dict:
+    request = urllib.request.Request(url, headers={"User-Agent": "robochallenge-pi05-audit/1.0"})
+    errors: list[str] = []
+    for attempt in range(1, attempts + 1):
+        try:
+            with urllib.request.urlopen(request, timeout=45) as resp:
+                raw = resp.read()
+                return {
+                    "url": url,
+                    "fetched": True,
+                    "attempt_count": attempt,
+                    "status_code": getattr(resp, "status", None),
+                    "byte_count": len(raw),
+                    "text": raw.decode("utf-8", errors="replace"),
+                }
+        except Exception as exc:  # noqa: BLE001 - public source availability belongs in the audit status.
+            errors.append(f"attempt {attempt}: {type(exc).__name__}: {exc}")
+    return {
+        "url": url,
+        "fetched": False,
+        "attempt_count": attempts,
+        "error": errors[-1] if errors else "unknown fetch error",
+        "errors": errors,
+        "byte_count": 0,
+        "text": "",
+    }
+
+
 def list_gcs(prefix: str) -> list[dict]:
     query = urllib.parse.urlencode(
         {
@@ -80,6 +111,49 @@ def list_gcs(prefix: str) -> list[dict]:
     with urllib.request.urlopen(url, timeout=30) as resp:
         data = json.load(resp)
     return data.get("items", [])
+
+
+def summarize_remote_openpi_readme() -> dict:
+    fetched = fetch_public_text(REMOTE_OPENPI_README_URL)
+    text = fetched.pop("text")
+    checkpoint_paths = sorted(set(OPENPI_CHECKPOINT_RE.findall(text)))
+    unexpected_checkpoint_paths = [
+        path
+        for path in checkpoint_paths
+        if re.search(r"pi0?[._-]?6|pi0?[._-]?7|pi06|pi07|pistar06|pi_star06", path, re.IGNORECASE)
+    ]
+    target_line_count = 0
+    pattern = re.compile("|".join(TARGET_PATTERNS), re.IGNORECASE)
+    for line in text.splitlines():
+        if pattern.search(line):
+            target_line_count += 1
+    base_paths_present = {
+        "pi0_base": "gs://openpi-assets/checkpoints/pi0_base" in text,
+        "pi0_fast_base": "gs://openpi-assets/checkpoints/pi0_fast_base" in text,
+        "pi05_base": "gs://openpi-assets/checkpoints/pi05_base" in text,
+    }
+    return {
+        **fetched,
+        "checkpoint_paths": checkpoint_paths,
+        "checkpoint_path_count": len(checkpoint_paths),
+        "base_paths_present": base_paths_present,
+        "all_expected_public_base_paths_present": all(base_paths_present.values()),
+        "target_text_match_count": target_line_count,
+        "unexpected_pi06_pi07_checkpoint_paths": unexpected_checkpoint_paths,
+        "unexpected_pi06_pi07_checkpoint_count": len(unexpected_checkpoint_paths),
+    }
+
+
+def summarize_remote_pi07_page() -> dict:
+    fetched = fetch_public_text(REMOTE_PI07_URL)
+    text = fetched.pop("text")
+    return {
+        **fetched,
+        "mentions_pi07": "π_{0.7}" in text or "pi0.7" in text.lower() or "0.7" in text,
+        "published_april_16_2026": "April 16, 2026" in text,
+        "mentions_steerable": "steerable" in text.lower(),
+        "checkpoint_path_count": len(set(OPENPI_CHECKPOINT_RE.findall(text))),
+    }
 
 
 def scan_openpi() -> dict:
@@ -117,6 +191,8 @@ def scan_openpi() -> dict:
 
 
 def write_report(status: dict) -> None:
+    remote_readme = status["remote_openpi_readme"]
+    remote_pi07 = status["remote_pi07_page"]
     lines = [
         "# pi0.6 / pi0.7 公开复现性审计",
         "",
@@ -133,6 +209,22 @@ def write_report(status: dict) -> None:
         f"- OpenPI root：`{status['openpi_scan']['root']}`。",
         f"- 扫描文件数：`{status['openpi_scan']['scanned_files']}`。",
         f"- 命中数：`{len(status['openpi_scan']['matches'])}`。",
+        "",
+        "## 远端 OpenPI README 实时检查",
+        "",
+        f"- URL：`{remote_readme['url']}`。",
+        f"- 抓取成功：`{remote_readme['fetched']}`。",
+        f"- checkpoint 路径数：`{remote_readme['checkpoint_path_count']}`。",
+        f"- 预期公开基模路径均存在：`{remote_readme['all_expected_public_base_paths_present']}`。",
+        f"- pi0.6/pi0.7 checkpoint 路径数：`{remote_readme['unexpected_pi06_pi07_checkpoint_count']}`。",
+        "",
+        "## pi0.7 官网页实时检查",
+        "",
+        f"- URL：`{remote_pi07['url']}`。",
+        f"- 抓取成功：`{remote_pi07['fetched']}`。",
+        f"- 发布日期命中 2026-04-16：`{remote_pi07['published_april_16_2026']}`。",
+        f"- steerable 描述命中：`{remote_pi07['mentions_steerable']}`。",
+        f"- checkpoint 路径数：`{remote_pi07['checkpoint_path_count']}`。",
         "",
         "## 公共 GCS checkpoint 前缀",
         "",
@@ -184,16 +276,29 @@ def main() -> int:
             gcs_results.append({"prefix": prefix, "error": f"{type(exc).__name__}: {exc}", "object_count": None})
     public_checkpoint_found = any((item.get("object_count") or 0) > 0 for item in gcs_results)
     openpi_scan = scan_openpi()
+    remote_openpi_readme = summarize_remote_openpi_readme()
+    remote_pi07_page = summarize_remote_pi07_page()
     gcs_all_zero = all(item.get("object_count") == 0 for item in gcs_results)
     openpi_match_count = len(openpi_scan["matches"])
+    remote_release_gap_confirmed = bool(
+        remote_openpi_readme.get("fetched")
+        and remote_openpi_readme.get("all_expected_public_base_paths_present")
+        and remote_openpi_readme.get("unexpected_pi06_pi07_checkpoint_count") == 0
+        and remote_pi07_page.get("fetched")
+        and remote_pi07_page.get("published_april_16_2026")
+        and remote_pi07_page.get("checkpoint_path_count") == 0
+    )
     status = {
         "kind": "pi06_pi07_public_release_audit",
         "checked_at_utc": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
-        "passed": (not public_checkpoint_found) and gcs_all_zero and openpi_match_count == 0,
+        "passed": (not public_checkpoint_found) and gcs_all_zero and openpi_match_count == 0 and remote_release_gap_confirmed,
         "official_sources": OFFICIAL_SOURCES,
         "official_source_count": len(OFFICIAL_SOURCES),
         "openpi_scan": openpi_scan,
         "openpi_target_match_count": openpi_match_count,
+        "remote_openpi_readme": remote_openpi_readme,
+        "remote_pi07_page": remote_pi07_page,
+        "remote_release_gap_confirmed": remote_release_gap_confirmed,
         "gcs_prefixes": gcs_results,
         "gcs_prefix_count": len(gcs_results),
         "gcs_all_zero": gcs_all_zero,

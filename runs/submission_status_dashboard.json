@@ -255,7 +255,7 @@
   "historical_notebook_executed_hit_count": 13,
   "historical_notebook_work_log_audit_only": true,
   "chinese_utf8_artifact_audit_passed": true,
-  "chinese_utf8_artifact_scanned_file_count": 162,
+  "chinese_utf8_artifact_scanned_file_count": 164,
   "chinese_utf8_artifact_decode_error_count": 0,
   "chinese_utf8_artifact_bad_marker_hit_count": 0,
   "chinese_utf8_artifact_required_phrases_present": true,
@@ -291,7 +291,7 @@
       "state": "watch",
       "state_label": "需关注",
       "value": "未发现公开 checkpoint",
-      "detail": "公开 OpenPI/GCS 审计未找到可直接复现 checkpoint；当前只能记录为 release gap。",
+      "detail": "远端 OpenPI README、pi0.7 官网页与 GCS 前缀均未给出可直接复现 checkpoint。",
       "report": "reports/pi06_pi07_public_release_audit.md"
     },
     {
@@ -578,7 +578,7 @@
       "title": "中文 UTF-8",
       "state": "done",
       "state_label": "已完成",
-      "value": "162 个文件",
+      "value": "164 个文件",
       "detail": "关键报告、GUI、Notebook 和交接文档已做 UTF-8 解码与常见乱码哨兵扫描。",
       "report": "reports/chinese_utf8_artifact_audit.md"
     },

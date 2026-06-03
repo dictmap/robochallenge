@@ -276,6 +276,13 @@ def main() -> int:
             pi06_pi07_status.get("openpi_target_match_count")
             == len(pi06_pi07_status.get("openpi_scan", {}).get("matches", [])),
             pi06_pi07_status.get("openpi_target_match_count") == 0,
+            pi06_pi07_status.get("remote_release_gap_confirmed") is True,
+            pi06_pi07_status.get("remote_openpi_readme", {}).get("fetched") is True,
+            pi06_pi07_status.get("remote_openpi_readme", {}).get("all_expected_public_base_paths_present") is True,
+            pi06_pi07_status.get("remote_openpi_readme", {}).get("unexpected_pi06_pi07_checkpoint_count") == 0,
+            pi06_pi07_status.get("remote_pi07_page", {}).get("fetched") is True,
+            pi06_pi07_status.get("remote_pi07_page", {}).get("published_april_16_2026") is True,
+            pi06_pi07_status.get("remote_pi07_page", {}).get("checkpoint_path_count") == 0,
             pi06_pi07_status.get("public_sources_contacted") is True,
             pi06_pi07_status.get("platform_contacted") is False,
             pi06_pi07_status.get("robochallenge_platform_contacted") is False,

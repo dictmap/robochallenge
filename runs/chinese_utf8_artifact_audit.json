@@ -1,7 +1,7 @@
 {
   "kind": "chinese_utf8_artifact_audit",
   "passed": true,
-  "scanned_file_count": 162,
+  "scanned_file_count": 164,
   "decode_error_count": 0,
   "bad_marker_hit_file_count": 0,
   "bad_marker_hit_count": 0,
@@ -223,6 +223,14 @@
       "bad_marker_hits": []
     },
     {
+      "path": "reports/dashboard_gui_access_packet.md",
+      "size_bytes": 1360,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
       "path": "reports/historical_notebook_checkpoint_outputs.md",
       "size_bytes": 2659,
       "utf8_decode_ok": true,
@@ -432,7 +440,7 @@
     },
     {
       "path": "reports/pi06_pi07_public_release_audit.md",
-      "size_bytes": 2523,
+      "size_bytes": 3014,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -504,7 +512,7 @@
     },
     {
       "path": "reports/submission_artifact_manifest.md",
-      "size_bytes": 29693,
+      "size_bytes": 29691,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -552,7 +560,7 @@
     },
     {
       "path": "reports/submission_status_dashboard.html",
-      "size_bytes": 23646,
+      "size_bytes": 23641,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -665,14 +673,6 @@
     {
       "path": "runs/authorized_preflight_template_audit.json",
       "size_bytes": 4118,
-      "utf8_decode_ok": true,
-      "decode_error": "",
-      "bad_marker_count": 0,
-      "bad_marker_hits": []
-    },
-    {
-      "path": "runs/authorized_submission_sequence_audit.json",
-      "size_bytes": 9618,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,

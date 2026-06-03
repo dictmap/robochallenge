@@ -2568,3 +2568,30 @@
 ### 下一步
 - P0：提交并推送本轮 GUI dashboard 展示入口与浏览器边界审计。
 - P1：用户若明确确认 `CONFIRM_TABLE30V2_ALOHA_BASELINE` 并提供 token/submission id，先跑 Jupyter 第 44/45 节或 shell baseline 授权前只读预检；真实 runner 仍必须等待用户明确授权。
+
+## 2026-06-03 第九十三轮：pi0.6 / pi0.7 公开复现边界刷新
+
+### 已完成
+- 更新 `scripts/audit_pi06_pi07_public_release.py`，在原有本地 OpenPI 扫描和 `openpi-assets` GCS 前缀检查之外，新增远端 OpenPI README 实时抓取与 pi0.7 官网页实时抓取。
+- 远端 OpenPI README 实测抓取成功，公开 checkpoint 路径数为 `10`，覆盖 `pi0`、`pi0-FAST`、`pi0.5`，没有出现 `pi0.6/pi0.7` checkpoint 路径。
+- pi0.7 官网页 `https://www.pi.website/pi07` 实测抓取成功，命中发布日期 `2026-04-16` 与 `steerable` 描述，但没有出现可下载 checkpoint 路径。
+- 更新 `scripts/validate_repro_workspace.py`，把远端 README、pi0.7 官网页和 release gap 结论纳入总体验证。
+- 更新 `scripts/render_submission_status_dashboard.py`，GUI dashboard 的 `pi0.6 / pi0.7` 卡片现在说明远端 README、pi0.7 官网页和 GCS 前缀均未给出可直接复现 checkpoint。
+
+### 验证结果
+- Linux 端完整 no-contact 链路已通过：`py_compile`、`audit_pi06_pi07_public_release.py`、`audit_submission_preflight_bundle.py`、`audit_submission_artifact_manifest.py`、`render_submission_status_dashboard.py`、`audit_submission_dashboard_links.py`、`validate_repro_workspace.py`、`audit_chinese_utf8_artifacts.py`、`audit_plaintext_secrets.py` 和 `git diff --check`。
+- `runs/pi06_pi07_public_audit.json` 实测 `passed=true`、`remote_release_gap_confirmed=true`。
+- `remote_openpi_readme.fetched=true`、`checkpoint_path_count=10`、`unexpected_pi06_pi07_checkpoint_count=0`。
+- `remote_pi07_page.fetched=true`、`published_april_16_2026=true`、`checkpoint_path_count=0`。
+- GUI dashboard 仍为 `source_count=39`、`card_count=39`、`done_count=33`、`blocked_count=5`、`watch_count=1`、`ready_for_real_submission=false`。
+- 明文凭据扫描 `hit_count=0`；中文 UTF-8 与乱码哨兵审计 `bad_marker_hit_count=0`。
+
+### 当前边界
+- 本轮只访问公开 OpenPI README、公开 pi0.7 官网页和公开 GCS 元数据；没有接触 RoboChallenge 平台。
+- 没有读取真实 token、submission id、checkpoint link 或真实 local env 内容。
+- 没有上传 checkpoint，没有生成 checkpoint tar，也没有启动真实 runner。
+- 当前仍不能声称复现 `pi0.6/pi0.7` 模型本体；它们只能作为后续优化方法参考，基线复现与提交仍以 `pi05_base` 和官方 ALOHA baseline 路线为主。
+
+### 下一步
+- P0：提交并推送本轮 `pi0.6/pi0.7` 公开复现边界刷新。
+- P1：继续推进 baseline 授权前只读预检入口；用户若确认 `CONFIRM_TABLE30V2_ALOHA_BASELINE` 并提供 token/submission id，先跑只读预检，真实 runner 仍等待用户明确授权。

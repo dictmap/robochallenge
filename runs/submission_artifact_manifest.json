@@ -20,8 +20,8 @@
       "path": "work.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 223605,
-      "sha256": "02a49852e00e9b9330612cb3e9ac04e87ded69b0a636fba7dc5108676d2fe907"
+      "size_bytes": 226334,
+      "sha256": "88159e94018d7ecb1348e36a1b252516c71aaacbb5fc45a0694632a285140078"
     },
     {
       "path": "notebooks/robochallenge_pi05_submit_cn.ipynb",
@@ -111,8 +111,8 @@
       "path": "reports/pi06_pi07_public_release_audit.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 2523,
-      "sha256": "25c679ae8cfb899af07f02fd5b99c7a640ae78728f4c4e16a161bfdc92e73773"
+      "size_bytes": 3014,
+      "sha256": "a8d5809b1a72373d0bcb6e6fe189dca800ebc1fa3c3e297e0946bcf713786623"
     },
     {
       "path": "reports/table30_vs_table30v2.md",
@@ -259,7 +259,7 @@
       "exists": true,
       "tracked": true,
       "size_bytes": 1045,
-      "sha256": "5f5c4660799cf97645620b5e55c652384df1766c3100557eca9504305432afca"
+      "sha256": "374645831c1a0402dc2e7f9e046a9f35fa173ce0992547b0545a06d34b17a8af"
     },
     {
       "path": "reports/authorized_preflight_template_audit.md",
@@ -455,7 +455,7 @@
       "exists": true,
       "tracked": true,
       "size_bytes": 11218,
-      "sha256": "598398a7fab1af4c8c5913a33ccbe89502771219e84cf361bfca286b8978a687"
+      "sha256": "3097ff7b30ec6d03cc9c9b1e845cc7d639689b97bd1ecff7059c4bf8b9ccbcb7"
     },
     {
       "path": "reports/plaintext_secret_scan.md",
@@ -468,8 +468,8 @@
       "path": "reports/submission_status_dashboard.html",
       "exists": true,
       "tracked": true,
-      "size_bytes": 23646,
-      "sha256": "88f6f83daa019d81b0abded136bfd0ed579a630fe109d0f5a863771d46ea0587"
+      "size_bytes": 23641,
+      "sha256": "3362452df7b0e979f84dd0a777dfaf8d8ebac07ed8a6841f74296c1ccc52d876"
     },
     {
       "path": "reports/submission_dashboard_links_audit.md",
@@ -481,7 +481,7 @@
     {
       "path": "reports/dashboard_gui_access_packet.md",
       "exists": true,
-      "tracked": false,
+      "tracked": true,
       "size_bytes": 1360,
       "sha256": "7718d67ba5084d8b94d148298e4b7f619c0c0b10d8ce45f1180f66771fdeb290"
     },
@@ -684,7 +684,7 @@
     {
       "path": "scripts/render_dashboard_gui_access_packet.py",
       "exists": true,
-      "tracked": false,
+      "tracked": true,
       "size_bytes": 7615,
       "sha256": "0fadbbcf8c0e9fa52c63a512baee2506fb07e6b85a68400b1c393de47c0b4023"
     }

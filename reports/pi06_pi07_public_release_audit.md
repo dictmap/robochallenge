@@ -2,7 +2,7 @@
 
 ## 结论
 
-- 审计时间：`2026-06-02T20:40:29.655802Z`。
+- 审计时间：`2026-06-03T03:41:39.274420Z`。
 - 目前没有找到可直接复现的公开 `pi0.6` 或 `pi0.7` OpenPI checkpoint/config。
 - 本地 OpenPI 仓库没有 `pi06/pi07/pi0.6/pi0.7` 训练或推理配置命中。
 - `openpi-assets` 公共 bucket 常见 `pi06/pi07` 前缀对象数均为 0。
@@ -13,6 +13,22 @@
 - OpenPI root：`/home/yjl/robochallenge/openpi`。
 - 扫描文件数：`113`。
 - 命中数：`0`。
+
+## 远端 OpenPI README 实时检查
+
+- URL：`https://raw.githubusercontent.com/Physical-Intelligence/openpi/main/README.md`。
+- 抓取成功：`True`。
+- checkpoint 路径数：`10`。
+- 预期公开基模路径均存在：`True`。
+- pi0.6/pi0.7 checkpoint 路径数：`0`。
+
+## pi0.7 官网页实时检查
+
+- URL：`https://www.pi.website/pi07`。
+- 抓取成功：`True`。
+- 发布日期命中 2026-04-16：`True`。
+- steerable 描述命中：`True`。
+- checkpoint 路径数：`0`。
 
 ## 公共 GCS checkpoint 前缀
 
@@ -36,7 +52,7 @@
 
 - [Physical-Intelligence/openpi](https://github.com/Physical-Intelligence/openpi)：公开 OpenPI 仓库当前列出的模型族为 pi0、pi0-FAST、pi0.5。
 - [pi*0.6 paper](https://www.physicalintelligence.company/download/pistar06.pdf)：pi*0.6 / RECAP 论文，描述从经验和奖励反馈改进 VLA 的方法。
-- [pi0.7 blog](https://www.pi.website/blog/pi07)：pi0.7 博客，发布于 2026-04-16，描述 steerable generalist 和组合泛化。
+- [pi0.7 blog](https://www.pi.website/pi07)：pi0.7 博客，发布于 2026-04-16，描述 steerable generalist 和组合泛化。
 - [openpi issue 789](https://github.com/Physical-Intelligence/openpi/issues/789)：社区询问 pi0.6 是否会发布的公开 issue。
 - [openpi issue 860](https://github.com/Physical-Intelligence/openpi/issues/860)：社区讨论 pi0.6 star 是否可从 pi0.5 checkpoint 实现的公开 issue。
 

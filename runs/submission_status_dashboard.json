@@ -195,6 +195,9 @@
   "jupyter_input_baseline_no_link": true,
   "jupyter_input_lora_web_needs_upload": true,
   "jupyter_input_lora_web_needs_link": true,
+  "jupyter_input_target_confirmation_value": "CONFIRM_TABLE30V2_ALOHA_BASELINE",
+  "jupyter_input_target_confirmation_manual_input": true,
+  "jupyter_input_target_confirmation_exact_match": true,
   "jupyter_authorized_preflight_template_passed": true,
   "jupyter_authorized_preflight_default_off": true,
   "jupyter_authorized_preflight_audit_on": true,
@@ -211,7 +214,7 @@
   "jupyter_final_handoff_no_contact_command_count": 3,
   "jupyter_final_handoff_real_runner_requires_confirmation": true,
   "chinese_utf8_artifact_audit_passed": true,
-  "chinese_utf8_artifact_scanned_file_count": 154,
+  "chinese_utf8_artifact_scanned_file_count": 156,
   "chinese_utf8_artifact_decode_error_count": 0,
   "chinese_utf8_artifact_bad_marker_hit_count": 0,
   "chinese_utf8_artifact_required_phrases_present": true,
@@ -495,7 +498,7 @@
       "state": "done",
       "state_label": "已完成",
       "value": "baseline 默认",
-      "detail": "Notebook 第 44 节默认关闭；baseline 只填 token/submission id，checkpoint link 留空不会进入 LoRA 上传流程。",
+      "detail": "Notebook 第 44 节默认关闭；用户需手动输入目标确认短语后才写入 local env，baseline checkpoint link 可留空。",
       "report": "reports/jupyter_input_template_audit.md"
     },
     {
@@ -518,7 +521,7 @@
       "title": "中文 UTF-8",
       "state": "done",
       "state_label": "已完成",
-      "value": "154 个文件",
+      "value": "156 个文件",
       "detail": "关键报告、GUI、Notebook 和交接文档已做 UTF-8 解码与常见乱码哨兵扫描。",
       "report": "reports/chinese_utf8_artifact_audit.md"
     },

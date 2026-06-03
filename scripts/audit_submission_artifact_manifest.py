@@ -244,6 +244,16 @@ def build_status() -> dict[str, Any]:
         "jupyter_input_baseline_no_link": jupyter_input.get("baseline_requires_checkpoint_link") is False,
         "jupyter_input_lora_web_needs_upload": jupyter_input.get("lora_web_requires_checkpoint_upload") is True,
         "jupyter_input_lora_web_needs_link": jupyter_input.get("lora_web_requires_checkpoint_link") is True,
+        "jupyter_input_target_confirmation_value_exact": jupyter_input.get("target_confirmation_value")
+        == "CONFIRM_TABLE30V2_ALOHA_BASELINE",
+        "jupyter_input_target_confirmation_manual_input": jupyter_input.get(
+            "target_confirmation_manual_input_required"
+        )
+        is True,
+        "jupyter_input_target_confirmation_exact_match": jupyter_input.get(
+            "target_confirmation_exact_match_required"
+        )
+        is True,
         "jupyter_authorized_preflight_template_passed": jupyter_authorized.get("passed") is True,
         "jupyter_authorized_recommended_baseline": jupyter_authorized.get("recommended_route")
         == "baseline_official_aloha",

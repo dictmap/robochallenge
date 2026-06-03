@@ -389,6 +389,15 @@ def build_status() -> dict[str, Any]:
             "real_runner_started"
         )
         is False,
+        "jupyter_input_target_confirmation_value": jupyter_input.get("target_confirmation_value"),
+        "jupyter_input_target_confirmation_manual_input": jupyter_input.get(
+            "target_confirmation_manual_input_required"
+        )
+        is True,
+        "jupyter_input_target_confirmation_exact_match": jupyter_input.get(
+            "target_confirmation_exact_match_required"
+        )
+        is True,
         "next_user_action_target_confirmation_value": action_packet.get("target_confirmation_value"),
         "next_user_action_target_user_confirmed": action_packet.get("target_user_confirmed"),
         "baseline_requires_checkpoint_link": route_aware_blockers.get("baseline_requires_checkpoint_link"),
@@ -636,6 +645,9 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         f"- 错误确认值是否停在预检前：`{status['submission_target_confirmation_gate_bad_stop_before_preflight']}`。",
         f"- 正确确认值是否被接受：`{status['submission_target_confirmation_gate_correct_accepted']}`。",
         f"- 确认 gate 是否未启动真实 runner：`{status['submission_target_confirmation_gate_real_runner_not_started']}`。",
+        f"- Jupyter 第 44 节确认值：`{status['jupyter_input_target_confirmation_value']}`。",
+        f"- Jupyter 第 44 节是否要求手动输入确认：`{status['jupyter_input_target_confirmation_manual_input']}`。",
+        f"- Jupyter 第 44 节是否精确匹配确认：`{status['jupyter_input_target_confirmation_exact_match']}`。",
         f"- 下一步动作包透传确认值：`{status['next_user_action_target_confirmation_value']}`。",
         f"- 下一步动作包是否替用户确认：`{status['next_user_action_target_user_confirmed']}`。",
         f"- baseline 是否需要 checkpoint link：`{status['baseline_requires_checkpoint_link']}`。",

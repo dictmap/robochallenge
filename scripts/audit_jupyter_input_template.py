@@ -22,10 +22,12 @@ DEFAULT_REPORT = REPORTS_DIR / "jupyter_input_template_audit.md"
 SECTION_MARKER = "第 44 节：安全填空本地 env 入口"
 RUN_FLAG = "RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE"
 LOCAL_ENV_PATH = "submission/robochallenge_env.local.sh"
+TARGET_CONFIRMATION_VALUE = "CONFIRM_TABLE30V2_ALOHA_BASELINE"
 REQUIRED_KEYS = [
     "ROBOCHALLENGE_USER_TOKEN",
     "ROBOCHALLENGE_SUBMISSION_ID",
     "ROBOCHALLENGE_SUBMISSION_VARIANT",
+    "ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION",
     "ROBOCHALLENGE_LORA_CHECKPOINT_LINK",
     "ROBOCHALLENGE_CHECKPOINT_LINK",
 ]
@@ -42,9 +44,14 @@ REQUIRED_FRAGMENTS = [
     "missing_or_placeholder",
     "normalize_submission_variant",
     "required_for_variant",
+    "TARGET_CONFIRMATION_VALUE",
+    TARGET_CONFIRMATION_VALUE,
+    "ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION",
+    "target_confirmation != TARGET_CONFIRMATION_VALUE",
+    "确认 Table30v2 / aloha / pack_the_toothbrush_holder 后",
     'submission_variant == "lora"',
     "ROBOCHALLENGE_CHECKPOINT_LINK [baseline 可留空]",
-    "baseline 官方 ALOHA 路线只要求 token 和 submission id，不要求 checkpoint link",
+    "baseline 官方 ALOHA 路线只要求 token、submission id 和目标确认，不要求 checkpoint link",
     "scripts/render_route_aware_submission_blockers.py",
     "reports/baseline_submission_quickstart.md",
     "baseline 不因 checkpoint link 留空进入 LoRA 上传流程",
@@ -59,6 +66,7 @@ FORBIDDEN_FRAGMENTS = [
     "display(env_values",
     "ROBOCHALLENGE_USER_TOKEN =",
     "ROBOCHALLENGE_SUBMISSION_ID =",
+    "ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION =",
     "ROBOCHALLENGE_LORA_CHECKPOINT_LINK =",
     "ROBOCHALLENGE_CHECKPOINT_LINK =",
 ]
@@ -153,6 +161,17 @@ def build_status(notebook_path: Path) -> dict[str, Any]:
         in section_source,
         "lora_web_upload_flow_separate": "LoRA 上传流程" in section_source,
     }
+    target_confirmation_logic = {
+        "target_confirmation_key_written": "ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION" in section_source
+        and "REQUIRED_ENV_KEYS" in section_source,
+        "target_confirmation_value_exact": TARGET_CONFIRMATION_VALUE in section_source,
+        "target_confirmation_manual_input": "ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION [" in section_source
+        and "target_confirmation = ask_required" in section_source
+        and "secret=False" in section_source,
+        "target_confirmation_exact_match": "target_confirmation != TARGET_CONFIRMATION_VALUE" in section_source
+        and "raise RuntimeError" in section_source,
+        "target_confirmation_route_named": "Table30v2 / aloha / pack_the_toothbrush_holder" in section_source,
+    }
     code_cell_ok = bool(code_cell and code_cell.get("cell_type") == "code")
     code_cell_clean = bool(
         code_cell_ok
@@ -189,6 +208,8 @@ def build_status(notebook_path: Path) -> dict[str, Any]:
         blocking.append("安全填空入口没有正确区分 baseline 与 LoRA 的 checkpoint link 要求。")
     if not all(route_guidance.values()):
         blocking.append("安全填空入口没有把 baseline 默认路线和 LoRA/web checkpoint 上传路线清晰分离。")
+    if not all(target_confirmation_logic.values()):
+        blocking.append("安全填空入口没有把提交对象确认值写入 local env，或没有要求用户手动精确确认目标。")
     if not local_env_ignore["ignored"]:
         blocking.append(f"`{LOCAL_ENV_PATH}` 没有被 Git 忽略。")
     if secret_hits or whole_notebook_secret_hits:
@@ -206,6 +227,7 @@ def build_status(notebook_path: Path) -> dict[str, Any]:
         and all(required_keys.values())
         and all(variant_logic.values())
         and all(route_guidance.values())
+        and all(target_confirmation_logic.values())
         and local_env_ignore["ignored"]
         and not secret_hits
         and not whole_notebook_secret_hits
@@ -234,8 +256,13 @@ def build_status(notebook_path: Path) -> dict[str, Any]:
         else None,
         "lora_web_requires_checkpoint_link": True if variant_logic["lora_checkpoint_link_required"] else None,
         "lora_web_requires_checkpoint_upload": True if route_guidance["lora_web_upload_flow_separate"] else None,
+        "target_confirmation_value": TARGET_CONFIRMATION_VALUE,
+        "target_confirmation_key": "ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION",
+        "target_confirmation_manual_input_required": target_confirmation_logic["target_confirmation_manual_input"],
+        "target_confirmation_exact_match_required": target_confirmation_logic["target_confirmation_exact_match"],
         "variant_logic": variant_logic,
         "route_guidance": route_guidance,
+        "target_confirmation_logic": target_confirmation_logic,
         "required_fragments": required_fragments,
         "forbidden_fragments": forbidden_fragments,
         "code_cell_clean": code_cell_clean,
@@ -267,6 +294,10 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         f"- baseline 是否要求 checkpoint upload：`{status['baseline_requires_checkpoint_upload']}`。",
         f"- LoRA/web 是否要求 checkpoint link：`{status['lora_web_requires_checkpoint_link']}`。",
         f"- LoRA/web 是否要求 checkpoint upload：`{status['lora_web_requires_checkpoint_upload']}`。",
+        f"- 目标确认变量：`{status['target_confirmation_key']}`。",
+        f"- 目标确认值：`{status['target_confirmation_value']}`。",
+        f"- 是否要求手动输入目标确认：`{status['target_confirmation_manual_input_required']}`。",
+        f"- 是否要求精确匹配目标确认：`{status['target_confirmation_exact_match_required']}`。",
         "",
         "## 必要变量",
         "",
@@ -278,6 +309,9 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         lines.append(f"- `{key}`：`{ok}`。")
     lines.extend(["", "## 路线引导", ""])
     for key, ok in status["route_guidance"].items():
+        lines.append(f"- `{key}`：`{ok}`。")
+    lines.extend(["", "## 提交对象确认", ""])
+    for key, ok in status["target_confirmation_logic"].items():
         lines.append(f"- `{key}`：`{ok}`。")
     lines.extend(["", "## 关键片段", ""])
     for fragment, ok in status["required_fragments"].items():

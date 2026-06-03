@@ -20,15 +20,15 @@
       "path": "work.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 194927,
-      "sha256": "662c0536d1623be90fbcf1e5052a4707d8f59e8fa329b7db54fbda9ac97cf55a"
+      "size_bytes": 197673,
+      "sha256": "0b28136d2a78cfe4c658577ad5a53c46ccfa76017fad6b24a1d006dc533cba84"
     },
     {
       "path": "notebooks/robochallenge_pi05_submit_cn.ipynb",
       "exists": true,
       "tracked": true,
-      "size_bytes": 97941,
-      "sha256": "3063649288beb3fb268eeaa30964120cbd090119580c74134dcfba6739b26609"
+      "size_bytes": 98951,
+      "sha256": "aa9c8d8b97f6cb05dce400f0fc1068df7b60ad3719ce8c099abdc354f294d607"
     },
     {
       "path": "submission/README.md",
@@ -230,8 +230,8 @@
       "path": "reports/jupyter_input_template_audit.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 3192,
-      "sha256": "96dcb89542438689dde35c8abd0060544478daec4dd19ac7d83946ae8826aeea"
+      "size_bytes": 4120,
+      "sha256": "907e8f31eaafe212836830d6ba8d70cd9f173386efd0cd57068996cff999e739"
     },
     {
       "path": "reports/jupyter_authorized_preflight_template_audit.md",
@@ -252,7 +252,7 @@
       "exists": true,
       "tracked": true,
       "size_bytes": 1045,
-      "sha256": "c3e47ed5387785b80ae3b3c0628f471e4a557b87e02190fc20e86079766bef6a"
+      "sha256": "eb6d0f31c5b1749a883c0ba10b29e1fe4d1298483cd19e5be1c33a267f35c2ee"
     },
     {
       "path": "reports/authorized_preflight_template_audit.md",
@@ -418,7 +418,7 @@
     {
       "path": "reports/submission_target_confirmation_gate.md",
       "exists": true,
-      "tracked": false,
+      "tracked": true,
       "size_bytes": 3289,
       "sha256": "5d57fb9f0e82473a8edfd7d316d56ca8d115ae8239ba8a452e885fd7cf974dce"
     },
@@ -440,8 +440,8 @@
       "path": "reports/submission_preflight_bundle.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 9493,
-      "sha256": "e37b826532c90d33f07c49256cff873cbe9ceec3055b3570ce7ee2f4f8c0f711"
+      "size_bytes": 9683,
+      "sha256": "f8a91d2f3421ef3cf806ddcb5432fbaf42efcc2ba417584d4c2d6c0e54197c7a"
     },
     {
       "path": "reports/plaintext_secret_scan.md",
@@ -454,8 +454,8 @@
       "path": "reports/submission_status_dashboard.html",
       "exists": true,
       "tracked": true,
-      "size_bytes": 22517,
-      "sha256": "91cfe7adf30a4cc175ab4085b9411177eb61cf74904c3f9d95545c7b200c9020"
+      "size_bytes": 22525,
+      "sha256": "cef4232ff0cb57c4ff830a637e9602af9f1236849a7abc803b28ef508d8035f4"
     },
     {
       "path": "scripts/render_next_user_action_packet.py",
@@ -593,7 +593,7 @@
     {
       "path": "scripts/audit_submission_target_confirmation_gate.py",
       "exists": true,
-      "tracked": false,
+      "tracked": true,
       "size_bytes": 13859,
       "sha256": "a8b50cf21734d59601bc22f6b646da2cfe998532abe114b83f44e9367ed2f3d5"
     },
@@ -601,8 +601,8 @@
       "path": "scripts/audit_jupyter_input_template.py",
       "exists": true,
       "tracked": true,
-      "size_bytes": 13811,
-      "sha256": "f9db1d790f5e92c57025b69c9fc3e6b14e1596354ef7e4dfb84da3ff6aa422a6"
+      "size_bytes": 16242,
+      "sha256": "48115b8ede3ee2ffb479bbe9f10acd9621686e356adf80331c9a94cd985f692c"
     },
     {
       "path": "scripts/audit_jupyter_authorized_preflight_template.py",
@@ -683,6 +683,9 @@
     "jupyter_input_baseline_no_link": true,
     "jupyter_input_lora_web_needs_upload": true,
     "jupyter_input_lora_web_needs_link": true,
+    "jupyter_input_target_confirmation_value_exact": true,
+    "jupyter_input_target_confirmation_manual_input": true,
+    "jupyter_input_target_confirmation_exact_match": true,
     "jupyter_authorized_preflight_template_passed": true,
     "jupyter_authorized_recommended_baseline": true,
     "jupyter_authorized_baseline_no_upload": true,

@@ -1115,6 +1115,9 @@ def main() -> int:
             dashboard.get("jupyter_input_baseline_no_link") is True,
             dashboard.get("jupyter_input_lora_web_needs_upload") is True,
             dashboard.get("jupyter_input_lora_web_needs_link") is True,
+            dashboard.get("jupyter_input_target_confirmation_value") == "CONFIRM_TABLE30V2_ALOHA_BASELINE",
+            dashboard.get("jupyter_input_target_confirmation_manual_input") is True,
+            dashboard.get("jupyter_input_target_confirmation_exact_match") is True,
             dashboard.get("jupyter_authorized_preflight_template_passed") is True,
             dashboard.get("jupyter_authorized_preflight_default_off") is True,
             dashboard.get("jupyter_authorized_preflight_audit_on") is True,
@@ -1337,6 +1340,7 @@ def main() -> int:
     jupyter_keys = jupyter_input.get("required_keys", {})
     jupyter_variant_logic = jupyter_input.get("variant_logic", {})
     jupyter_route_guidance = jupyter_input.get("route_guidance", {})
+    jupyter_target_confirmation_logic = jupyter_input.get("target_confirmation_logic", {})
     if not all(
         [
             jupyter_input.get("kind") == "jupyter_input_template_audit",
@@ -1358,7 +1362,12 @@ def main() -> int:
             all(jupyter_keys.values()),
             all(jupyter_variant_logic.values()),
             all(jupyter_route_guidance.values()),
+            all(jupyter_target_confirmation_logic.values()),
             jupyter_input.get("recommended_route") == "baseline_official_aloha",
+            jupyter_input.get("target_confirmation_value") == "CONFIRM_TABLE30V2_ALOHA_BASELINE",
+            jupyter_input.get("target_confirmation_key") == "ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION",
+            jupyter_input.get("target_confirmation_manual_input_required") is True,
+            jupyter_input.get("target_confirmation_exact_match_required") is True,
             jupyter_input.get("baseline_requires_checkpoint_link") is False,
             jupyter_input.get("baseline_requires_checkpoint_upload") is False,
             jupyter_input.get("lora_web_requires_checkpoint_link") is True,
@@ -2805,6 +2814,9 @@ def main() -> int:
             preflight.get("submission_target_confirmation_gate_bad_stop_before_preflight") is True,
             preflight.get("submission_target_confirmation_gate_correct_accepted") is True,
             preflight.get("submission_target_confirmation_gate_real_runner_not_started") is True,
+            preflight.get("jupyter_input_target_confirmation_value") == "CONFIRM_TABLE30V2_ALOHA_BASELINE",
+            preflight.get("jupyter_input_target_confirmation_manual_input") is True,
+            preflight.get("jupyter_input_target_confirmation_exact_match") is True,
             preflight.get("next_user_action_target_confirmation_value") == "CONFIRM_TABLE30V2_ALOHA_BASELINE",
             preflight.get("next_user_action_target_user_confirmed") is False,
             preflight.get("local_baseline_runner_ready") is False,

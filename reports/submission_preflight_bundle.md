@@ -23,12 +23,15 @@
 - 错误确认值是否停在预检前：`True`。
 - 正确确认值是否被接受：`True`。
 - 确认 gate 是否未启动真实 runner：`True`。
+- Jupyter 第 44 节确认值：`CONFIRM_TABLE30V2_ALOHA_BASELINE`。
+- Jupyter 第 44 节是否要求手动输入确认：`True`。
+- Jupyter 第 44 节是否精确匹配确认：`True`。
 - 下一步动作包透传确认值：`CONFIRM_TABLE30V2_ALOHA_BASELINE`。
 - 下一步动作包是否替用户确认：`False`。
 - baseline 是否需要 checkpoint link：`False`。
 - baseline 是否需要 checkpoint upload：`False`。
 - 中文 UTF-8 产物审计：`True`。
-- 中文 UTF-8 扫描文件数：`154`。
+- 中文 UTF-8 扫描文件数：`156`。
 - 中文 UTF-8 解码错误数：`0`。
 - 中文乱码哨兵命中数：`0`。
 - baseline dry-run gate：`True`。

@@ -1,7 +1,7 @@
 {
   "kind": "chinese_utf8_artifact_audit",
   "passed": true,
-  "scanned_file_count": 154,
+  "scanned_file_count": 156,
   "decode_error_count": 0,
   "bad_marker_hit_file_count": 0,
   "bad_marker_hit_count": 0,
@@ -48,7 +48,7 @@
     },
     {
       "path": "notebooks/robochallenge_pi05_submit_cn.ipynb",
-      "size_bytes": 97941,
+      "size_bytes": 98951,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -240,7 +240,7 @@
     },
     {
       "path": "reports/jupyter_input_template_audit.md",
-      "size_bytes": 3192,
+      "size_bytes": 4120,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -488,7 +488,7 @@
     },
     {
       "path": "reports/submission_artifact_manifest.md",
-      "size_bytes": 25994,
+      "size_bytes": 26179,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -520,7 +520,7 @@
     },
     {
       "path": "reports/submission_preflight_bundle.md",
-      "size_bytes": 9493,
+      "size_bytes": 9683,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -528,7 +528,15 @@
     },
     {
       "path": "reports/submission_status_dashboard.html",
-      "size_bytes": 22517,
+      "size_bytes": 22525,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/submission_target_confirmation_gate.md",
+      "size_bytes": 3289,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -665,14 +673,6 @@
     {
       "path": "runs/baseline_final_handoff_packet.json",
       "size_bytes": 5668,
-      "utf8_decode_ok": true,
-      "decode_error": "",
-      "bad_marker_count": 0,
-      "bad_marker_hits": []
-    },
-    {
-      "path": "runs/baseline_final_handoff_rehearsal.json",
-      "size_bytes": 5337,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,

@@ -35,12 +35,15 @@
   "submission_target_confirmation_gate_bad_stop_before_preflight": true,
   "submission_target_confirmation_gate_correct_accepted": true,
   "submission_target_confirmation_gate_real_runner_not_started": true,
+  "jupyter_input_target_confirmation_value": "CONFIRM_TABLE30V2_ALOHA_BASELINE",
+  "jupyter_input_target_confirmation_manual_input": true,
+  "jupyter_input_target_confirmation_exact_match": true,
   "next_user_action_target_confirmation_value": "CONFIRM_TABLE30V2_ALOHA_BASELINE",
   "next_user_action_target_user_confirmed": false,
   "baseline_requires_checkpoint_link": false,
   "baseline_requires_checkpoint_upload": false,
   "chinese_utf8_artifact_audit_passed": true,
-  "chinese_utf8_artifact_scanned_file_count": 154,
+  "chinese_utf8_artifact_scanned_file_count": 156,
   "chinese_utf8_artifact_decode_error_count": 0,
   "chinese_utf8_artifact_bad_marker_hit_count": 0,
   "baseline_dry_run_gate_passed": true,
@@ -182,7 +185,7 @@
       "script": "scripts/audit_jupyter_input_template.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": "nder_route_aware_submission_blockers.py\": true,\n    \"reports/baseline_submission_quickstart.md\": true,\n    \"baseline 不因 checkpoint link 留空进入 LoRA 上传流程\": true,\n    \"os.chmod\": true,\n    \"submission/robochallenge_env.local.sh\": true,\n    \"ROBOCHALLENGE_USER_TOKEN\": true,\n    \"ROBOCHALLENGE_SUBMISSION_ID\": true,\n    \"ROBOCHALLENGE_SUBMISSION_VARIANT\": true,\n    \"ROBOCHALLENGE_LORA_CHECKPOINT_LINK\": true,\n    \"ROBOCHALLENGE_CHECKPOINT_LINK\": true\n  },\n  \"forbidden_fragments\": {\n    \"print(token\": false,\n    \"print(env_values\": false,\n    \"print(value\": false,\n    \"display(env_values\": false,\n    \"ROBOCHALLENGE_USER_TOKEN =\": false,\n    \"ROBOCHALLENGE_SUBMISSION_ID =\": false,\n    \"ROBOCHALLENGE_LORA_CHECKPOINT_LINK =\": false,\n    \"ROBOCHALLENGE_CHECKPOINT_LINK =\": false\n  },\n  \"code_cell_clean\": true,\n  \"code_cell_id\": \"safe-local-env-input-code\",\n  \"secret_pattern_hits\": [],\n  \"whole_notebook_secret_pattern_hits\": [],\n  \"blocking\": [\n    \"Jupyter 安全填空本地 env 入口已就绪；当前未读取、未写入、未打印真实凭据。\"\n  ]\n}\n",
+      "stdout_tail": "baseline_submission_quickstart.md\": true,\n    \"baseline 不因 checkpoint link 留空进入 LoRA 上传流程\": true,\n    \"os.chmod\": true,\n    \"submission/robochallenge_env.local.sh\": true,\n    \"ROBOCHALLENGE_USER_TOKEN\": true,\n    \"ROBOCHALLENGE_SUBMISSION_ID\": true,\n    \"ROBOCHALLENGE_SUBMISSION_VARIANT\": true,\n    \"ROBOCHALLENGE_LORA_CHECKPOINT_LINK\": true,\n    \"ROBOCHALLENGE_CHECKPOINT_LINK\": true\n  },\n  \"forbidden_fragments\": {\n    \"print(token\": false,\n    \"print(env_values\": false,\n    \"print(value\": false,\n    \"display(env_values\": false,\n    \"ROBOCHALLENGE_USER_TOKEN =\": false,\n    \"ROBOCHALLENGE_SUBMISSION_ID =\": false,\n    \"ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION =\": false,\n    \"ROBOCHALLENGE_LORA_CHECKPOINT_LINK =\": false,\n    \"ROBOCHALLENGE_CHECKPOINT_LINK =\": false\n  },\n  \"code_cell_clean\": true,\n  \"code_cell_id\": \"safe-local-env-input-code\",\n  \"secret_pattern_hits\": [],\n  \"whole_notebook_secret_pattern_hits\": [],\n  \"blocking\": [\n    \"Jupyter 安全填空本地 env 入口已就绪；当前未读取、未写入、未打印真实凭据。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "jupyter_authorized_preflight_template": {
@@ -203,7 +206,7 @@
       "script": "scripts/audit_chinese_utf8_artifacts.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": "ror\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"runs/baseline_dry_run_gate.json\",\n      \"size_bytes\": 3627,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"runs/baseline_final_handoff_packet.json\",\n      \"size_bytes\": 5668,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"runs/baseline_final_handoff_rehearsal.json\",\n      \"size_bytes\": 5337,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    }\n  ],\n  \"decode_error_paths\": [],\n  \"bad_marker_hit_paths\": [],\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"中文交接产物 UTF-8 解码与乱码哨兵扫描通过。\"\n  ]\n}\n",
+      "stdout_tail": "de_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"runs/baseline_credential_hygiene.json\",\n      \"size_bytes\": 2361,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"runs/baseline_dry_run_gate.json\",\n      \"size_bytes\": 3627,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"runs/baseline_final_handoff_packet.json\",\n      \"size_bytes\": 5668,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    }\n  ],\n  \"decode_error_paths\": [],\n  \"bad_marker_hit_paths\": [],\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"中文交接产物 UTF-8 解码与乱码哨兵扫描通过。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "real_submission_readiness": {

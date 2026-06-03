@@ -17,12 +17,17 @@
 - baseline 是否要求 checkpoint upload：`False`。
 - LoRA/web 是否要求 checkpoint link：`True`。
 - LoRA/web 是否要求 checkpoint upload：`True`。
+- 目标确认变量：`ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION`。
+- 目标确认值：`CONFIRM_TABLE30V2_ALOHA_BASELINE`。
+- 是否要求手动输入目标确认：`True`。
+- 是否要求精确匹配目标确认：`True`。
 
 ## 必要变量
 
 - `ROBOCHALLENGE_USER_TOKEN`：`True`。
 - `ROBOCHALLENGE_SUBMISSION_ID`：`True`。
 - `ROBOCHALLENGE_SUBMISSION_VARIANT`：`True`。
+- `ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION`：`True`。
 - `ROBOCHALLENGE_LORA_CHECKPOINT_LINK`：`True`。
 - `ROBOCHALLENGE_CHECKPOINT_LINK`：`True`。
 
@@ -41,6 +46,14 @@
 - `baseline_no_lora_upload_when_link_blank`：`True`。
 - `lora_web_upload_flow_separate`：`True`。
 
+## 提交对象确认
+
+- `target_confirmation_key_written`：`True`。
+- `target_confirmation_value_exact`：`True`。
+- `target_confirmation_manual_input`：`True`。
+- `target_confirmation_exact_match`：`True`。
+- `target_confirmation_route_named`：`True`。
+
 ## 关键片段
 
 - `第 44 节：安全填空本地 env 入口`：`True`。
@@ -55,9 +68,14 @@
 - `missing_or_placeholder`：`True`。
 - `normalize_submission_variant`：`True`。
 - `required_for_variant`：`True`。
+- `TARGET_CONFIRMATION_VALUE`：`True`。
+- `CONFIRM_TABLE30V2_ALOHA_BASELINE`：`True`。
+- `ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION`：`True`。
+- `target_confirmation != TARGET_CONFIRMATION_VALUE`：`True`。
+- `确认 Table30v2 / aloha / pack_the_toothbrush_holder 后`：`True`。
 - `submission_variant == "lora"`：`True`。
 - `ROBOCHALLENGE_CHECKPOINT_LINK [baseline 可留空]`：`True`。
-- `baseline 官方 ALOHA 路线只要求 token 和 submission id，不要求 checkpoint link`：`True`。
+- `baseline 官方 ALOHA 路线只要求 token、submission id 和目标确认，不要求 checkpoint link`：`True`。
 - `scripts/render_route_aware_submission_blockers.py`：`True`。
 - `reports/baseline_submission_quickstart.md`：`True`。
 - `baseline 不因 checkpoint link 留空进入 LoRA 上传流程`：`True`。
@@ -77,6 +95,7 @@
 - `display(env_values`：`False`。
 - `ROBOCHALLENGE_USER_TOKEN =`：`False`。
 - `ROBOCHALLENGE_SUBMISSION_ID =`：`False`。
+- `ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION =`：`False`。
 - `ROBOCHALLENGE_LORA_CHECKPOINT_LINK =`：`False`。
 - `ROBOCHALLENGE_CHECKPOINT_LINK =`：`False`。
 

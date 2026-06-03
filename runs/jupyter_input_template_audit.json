@@ -22,6 +22,7 @@
     "ROBOCHALLENGE_USER_TOKEN": true,
     "ROBOCHALLENGE_SUBMISSION_ID": true,
     "ROBOCHALLENGE_SUBMISSION_VARIANT": true,
+    "ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION": true,
     "ROBOCHALLENGE_LORA_CHECKPOINT_LINK": true,
     "ROBOCHALLENGE_CHECKPOINT_LINK": true
   },
@@ -30,6 +31,10 @@
   "baseline_requires_checkpoint_upload": false,
   "lora_web_requires_checkpoint_link": true,
   "lora_web_requires_checkpoint_upload": true,
+  "target_confirmation_value": "CONFIRM_TABLE30V2_ALOHA_BASELINE",
+  "target_confirmation_key": "ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION",
+  "target_confirmation_manual_input_required": true,
+  "target_confirmation_exact_match_required": true,
   "variant_logic": {
     "submission_variant_supported": true,
     "baseline_checkpoint_link_optional": true,
@@ -42,6 +47,13 @@
     "baseline_no_checkpoint_link": true,
     "baseline_no_lora_upload_when_link_blank": true,
     "lora_web_upload_flow_separate": true
+  },
+  "target_confirmation_logic": {
+    "target_confirmation_key_written": true,
+    "target_confirmation_value_exact": true,
+    "target_confirmation_manual_input": true,
+    "target_confirmation_exact_match": true,
+    "target_confirmation_route_named": true
   },
   "required_fragments": {
     "第 44 节：安全填空本地 env 入口": true,
@@ -56,9 +68,14 @@
     "missing_or_placeholder": true,
     "normalize_submission_variant": true,
     "required_for_variant": true,
+    "TARGET_CONFIRMATION_VALUE": true,
+    "CONFIRM_TABLE30V2_ALOHA_BASELINE": true,
+    "ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION": true,
+    "target_confirmation != TARGET_CONFIRMATION_VALUE": true,
+    "确认 Table30v2 / aloha / pack_the_toothbrush_holder 后": true,
     "submission_variant == \"lora\"": true,
     "ROBOCHALLENGE_CHECKPOINT_LINK [baseline 可留空]": true,
-    "baseline 官方 ALOHA 路线只要求 token 和 submission id，不要求 checkpoint link": true,
+    "baseline 官方 ALOHA 路线只要求 token、submission id 和目标确认，不要求 checkpoint link": true,
     "scripts/render_route_aware_submission_blockers.py": true,
     "reports/baseline_submission_quickstart.md": true,
     "baseline 不因 checkpoint link 留空进入 LoRA 上传流程": true,
@@ -77,6 +94,7 @@
     "display(env_values": false,
     "ROBOCHALLENGE_USER_TOKEN =": false,
     "ROBOCHALLENGE_SUBMISSION_ID =": false,
+    "ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION =": false,
     "ROBOCHALLENGE_LORA_CHECKPOINT_LINK =": false,
     "ROBOCHALLENGE_CHECKPOINT_LINK =": false
   },

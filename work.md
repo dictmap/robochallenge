@@ -2337,3 +2337,26 @@
 ### 下一步
 - P0：提交并推送本轮提交对象确认运行时 gate 审计。
 - P1：用户明确确认目标并提供 token/submission id 后，先跑 baseline 授权前只读预检与 dry-run gate；真实 runner 仍必须等待用户明确授权。
+## 2026-06-03 第八十三轮：Jupyter 第 44 节目标确认接入
+
+### 已完成
+- 修复 Notebook 第 44 节“安全填空本地 env 入口”：用户把 `RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE=True` 后，必须手动输入 `ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION=CONFIRM_TABLE30V2_ALOHA_BASELINE`。
+- 第 44 节会先精确校验该确认值，确认目标为 `Table30v2 / aloha / pack_the_toothbrush_holder` 后，才继续询问 token、submission id、variant 和可选 link。
+- 第 44 节写出的 `submission/robochallenge_env.local.sh` 现在包含 `ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION`，因此 Jupyter 路线不会绕过上一轮新增的 shell runtime gate。
+- 更新 `scripts/audit_jupyter_input_template.py`，新增目标确认变量、固定确认值、手动输入、精确匹配与任务目标命名的机器断言。
+- 更新 `scripts/render_submission_status_dashboard.py`、`scripts/audit_submission_preflight_bundle.py`、`scripts/audit_submission_artifact_manifest.py` 和 `scripts/validate_repro_workspace.py`，把 Jupyter 第 44 节目标确认接入 dashboard、preflight、manifest 和总 validator。
+
+### 验证结果
+- Linux 端完整 no-contact 链路已通过：`py_compile`、`audit_jupyter_input_template.py`、`audit_chinese_utf8_artifacts.py`、`audit_plaintext_secrets.py`、`audit_submission_preflight_bundle.py`、`audit_submission_artifact_manifest.py`、`render_submission_status_dashboard.py`、`validate_repro_workspace.py` 与 `git diff --check`。
+- `runs/jupyter_input_template_audit.json` 实测：`passed=true`，`target_confirmation_manual_input_required=true`，`target_confirmation_exact_match_required=true`。
+- GUI dashboard 实测仍为 `source_count=37`、`card_count=37`、`done_count=31`、`blocked_count=5`、`watch_count=1`、`ready_for_real_submission=false`。
+- 明文凭据扫描仍为 `hit_count=0`；中文 UTF-8 审计为 `scanned_file_count=156`、`decode_error_count=0`、`bad_marker_hit_count=0`；Notebook `?` 计数为 `0`。
+
+### 当前边界
+- 本轮没有读取真实 token、submission id、checkpoint link 或真实 local env 内容。
+- 没有连接 RoboChallenge 平台，没有上传 checkpoint，没有生成 checkpoint tar，也没有启动真实 runner。
+- Jupyter 第 44 节现在会要求用户手动确认目标，但当前仍没有替用户确认；真实提交仍阻塞在目标确认、token、submission id、variant=baseline 和真实 runner 强确认。
+
+### 下一步
+- P0：提交并推送本轮 Jupyter 第 44 节目标确认接入。
+- P1：用户明确确认目标并提供 token/submission id 后，先跑 Jupyter 第 44/45 节或 shell baseline 授权预检与 dry-run gate；真实 runner 仍必须等待用户明确授权。

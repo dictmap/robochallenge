@@ -373,6 +373,9 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
         and jupyter_input.get("recommended_route") == "baseline_official_aloha"
         and jupyter_input.get("baseline_requires_checkpoint_link") is False
         and jupyter_input.get("lora_web_requires_checkpoint_link") is True
+        and jupyter_input.get("target_confirmation_value") == "CONFIRM_TABLE30V2_ALOHA_BASELINE"
+        and jupyter_input.get("target_confirmation_manual_input_required") is True
+        and jupyter_input.get("target_confirmation_exact_match_required") is True
     )
     jupyter_authorized_ready = bool(
         jupyter_authorized.get("passed")
@@ -639,7 +642,7 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
             "Jupyter 安全填空",
             "done" if jupyter_input_ready else "watch",
             "baseline 默认",
-            "Notebook 第 44 节默认关闭；baseline 只填 token/submission id，checkpoint link 留空不会进入 LoRA 上传流程。",
+            "Notebook 第 44 节默认关闭；用户需手动输入目标确认短语后才写入 local env，baseline checkpoint link 可留空。",
             "reports/jupyter_input_template_audit.md",
         ),
         card(
@@ -1046,6 +1049,15 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
         "jupyter_input_baseline_no_link": jupyter_input.get("baseline_requires_checkpoint_link") is False,
         "jupyter_input_lora_web_needs_upload": jupyter_input.get("lora_web_requires_checkpoint_upload") is True,
         "jupyter_input_lora_web_needs_link": jupyter_input.get("lora_web_requires_checkpoint_link") is True,
+        "jupyter_input_target_confirmation_value": jupyter_input.get("target_confirmation_value"),
+        "jupyter_input_target_confirmation_manual_input": jupyter_input.get(
+            "target_confirmation_manual_input_required"
+        )
+        is True,
+        "jupyter_input_target_confirmation_exact_match": jupyter_input.get(
+            "target_confirmation_exact_match_required"
+        )
+        is True,
         "jupyter_authorized_preflight_template_passed": jupyter_authorized.get("passed") is True,
         "jupyter_authorized_preflight_default_off": jupyter_authorized.get("execution_default_false") is True,
         "jupyter_authorized_preflight_audit_on": jupyter_authorized.get("audit_default_true") is True,

@@ -6,7 +6,7 @@
 - 当前可运行目标：`Table30v2 / aloha / pack_the_toothbrush_holder`。
 - 官方 Table30v2 ALOHA baseline 仍是最稳的提交模板。
 - LoRA 完整物化 checkpoint 本地可读：`True`。
-- 真实提交仍不能伪造 token、submission_id 或 checkpoint link。
+- 真实提交仍不能伪造 token 或 submission_id；checkpoint link 只属于 LoRA/web checkpoint 路线。
 
 ## 已准备材料
 
@@ -42,7 +42,8 @@
 
 ## Blocking
 
+- baseline 真实提交需要用户确认目标：ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION=CONFIRM_TABLE30V2_ALOHA_BASELINE。
 - 需要用户提供真实 ROBOCHALLENGE_USER_TOKEN。
 - 需要用户提供真实 ROBOCHALLENGE_SUBMISSION_ID。
-- 需要确认本次要提交的是 Table30v2 ALOHA 还是原始 Table30；当前可运行链路是 Table30v2 ALOHA。
-- 若要提交 LoRA 版本，还需要把本地 12GB+ checkpoint 放到网站可访问的 checkpoint link。
+- baseline 真实提交需要 ROBOCHALLENGE_SUBMISSION_VARIANT=baseline 和真实 runner 强确认。
+- 若选择 LoRA/web checkpoint 路线，还需要把本地 12GB+ checkpoint 放到网站可访问的 checkpoint link。

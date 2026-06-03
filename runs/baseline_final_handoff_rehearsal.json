@@ -38,7 +38,7 @@
     {
       "command": "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_authorized_preflight_template.sh",
       "returncode": 0,
-      "stdout_line_count": 344,
+      "stdout_line_count": 346,
       "stderr_line_count": 1,
       "env_file_present_true": true,
       "variant_baseline": true,
@@ -59,7 +59,7 @@
     {
       "command": "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_ready_real_submission_template.sh",
       "returncode": 1,
-      "stdout_line_count": 188,
+      "stdout_line_count": 189,
       "stderr_line_count": 0,
       "env_file_present_true": true,
       "variant_baseline": true,

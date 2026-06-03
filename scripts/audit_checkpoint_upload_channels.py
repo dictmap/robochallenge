@@ -217,8 +217,9 @@ def build_status() -> dict[str, Any]:
         "blocking": [
             "需要用户选择上传通道和存储位置。",
             "需要用户授权相应存储凭据；本审计只检查是否存在凭据迹象，不读取明文。",
-            "需要生成真实 checkpoint link 后回填 RoboChallenge 网站。",
-            "真实提交仍需要 ROBOCHALLENGE_USER_TOKEN 和 ROBOCHALLENGE_SUBMISSION_ID。",
+            "只有 LoRA/web checkpoint 路线需要生成真实 checkpoint link 后回填 RoboChallenge 网站。",
+            "baseline 官方 ALOHA 路线不需要上传 checkpoint 或 checkpoint link。",
+            "baseline 真实提交仍需要 ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION、ROBOCHALLENGE_USER_TOKEN、ROBOCHALLENGE_SUBMISSION_ID、ROBOCHALLENGE_SUBMISSION_VARIANT=baseline 和 ROBOCHALLENGE_REAL_RUN_CONFIRM。",
         ],
     }
 

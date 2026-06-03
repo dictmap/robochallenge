@@ -20,8 +20,8 @@
       "path": "work.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 206038,
-      "sha256": "1a3959627370fbff4c891f73652d3b88c8777008c92b1d2ebfdc5370783860ef"
+      "size_bytes": 212464,
+      "sha256": "d4d6c360404b6755db73cab0bace457011a65bd2d4f6649b0fcde5c444fa57a4"
     },
     {
       "path": "notebooks/robochallenge_pi05_submit_cn.ipynb",
@@ -55,15 +55,15 @@
       "path": "submission/robochallenge_env_template.sh",
       "exists": true,
       "tracked": true,
-      "size_bytes": 1255,
-      "sha256": "18edcf0c062e1d8c525cdc84f8e509cd9829324dff65feba5852af991ea4d21d"
+      "size_bytes": 1276,
+      "sha256": "888394ce35cce5467b8fe4eba63ab2f9648e9836d6b5ddba548b6b4e2f14e5ba"
     },
     {
       "path": "submission/submission_manifest_template.json",
       "exists": true,
       "tracked": true,
-      "size_bytes": 4182,
-      "sha256": "89ff0fcc8e130546e373a757f3192cc737063822c9040dba316006869a41c9ec"
+      "size_bytes": 4387,
+      "sha256": "328d71421189cb2c27af113f0e6c3cfae2bb3779a12fcc2b16b5d0a448ff87f0"
     },
     {
       "path": "submission/run_table30v2_aloha_demo_template.sh",
@@ -174,15 +174,15 @@
       "path": "reports/checkpoint_archive_dry_run.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 1581,
-      "sha256": "1fa28abd19398bb245e5fea1bbc6ebae856861b153d4ad6275c25e5139b108be"
+      "size_bytes": 1828,
+      "sha256": "5fdf9aa65002693382ca05e7de9d04406bc958453784c26e492f2183633f9fe1"
     },
     {
       "path": "reports/checkpoint_link_intake.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 1644,
-      "sha256": "f523ed05b4f08a2f2f10a7be5d8aff380d40088e4a7a24c861908a4f5b0e5724"
+      "size_bytes": 1800,
+      "sha256": "a23ba2485843933259cf97fac45273ca4dd6a0fdeeeb5ba9b68c9723af754042"
     },
     {
       "path": "reports/checkpoint_link_download_verification.md",
@@ -195,8 +195,8 @@
       "path": "reports/checkpoint_upload_channels_audit.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 3298,
-      "sha256": "9024b88a2272abb033591cb2d47b9fce1a280711708ab02cbbd5fe31767463c7"
+      "size_bytes": 3544,
+      "sha256": "d6fd8ea143069c3d5100095172022fe1df40d1b61be8cb21b8bef5591875f371"
     },
     {
       "path": "reports/real_submission_readiness.md",
@@ -286,8 +286,8 @@
       "path": "reports/next_user_action_packet.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 7511,
-      "sha256": "d75f47c6e9ee0eda61470d326a3159793755cb19010f91fb575055ae260be6b7"
+      "size_bytes": 7670,
+      "sha256": "ef352faab9ef5e98ddb20822558ff8c2de8478deadc39515d062e48f715612e6"
     },
     {
       "path": "reports/web_form_field_packet.md",
@@ -405,8 +405,8 @@
       "path": "reports/route_aware_submission_blockers.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 3887,
-      "sha256": "cce19852ed4e3facc5c624b6d0660a6db8a162dd9856aec0d39dc3f81e1b5a70"
+      "size_bytes": 4013,
+      "sha256": "27a0b1281aa3b1abd82c9338dfd3a2a37e14f8df4a0c4e09d89cdec8ab63ce5a"
     },
     {
       "path": "reports/submission_target_confirmation_packet.md",
@@ -455,14 +455,14 @@
       "exists": true,
       "tracked": true,
       "size_bytes": 22564,
-      "sha256": "94e7446695be367ca71a313a401b6093e8247fef258ae0e26c8ce7a99dddff81"
+      "sha256": "6cae44b7bd6f9302cc9208c634dd859673e78e4eb89ee9922aa6e922a6fb47ce"
     },
     {
       "path": "scripts/render_next_user_action_packet.py",
       "exists": true,
       "tracked": true,
-      "size_bytes": 19884,
-      "sha256": "4cffc13a8f607b091691318e44211b4f538d7899ba94305ceedac5b63a188b20"
+      "size_bytes": 19917,
+      "sha256": "15bc1c396cae99d33f8d536aab954e64f7e834745f828cf1bcd5393cee843cc8"
     },
     {
       "path": "scripts/render_web_form_field_packet.py",

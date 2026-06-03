@@ -20,5 +20,5 @@ export ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION="CONFIRM_TABLE30V2_ALOHA_BAS
 # LoRA / fine-tuned checkpoint 下载链接。走 LoRA 路线时设置这一项。
 export ROBOCHALLENGE_LORA_CHECKPOINT_LINK="<真实 checkpoint 下载 URL>"
 
-# 可选：如果平台表单或 baseline 路线要求通用 checkpoint link，再设置这一项。
+# 可选：只有选择 LoRA/web checkpoint 路线，且平台表单要求通用 checkpoint link 时再设置这一项。
 export ROBOCHALLENGE_CHECKPOINT_LINK="<真实 checkpoint 下载 URL>"

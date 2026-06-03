@@ -60,10 +60,11 @@
     "缺少 checkpoint link；请设置 ROBOCHALLENGE_CHECKPOINT_LINK 或 ROBOCHALLENGE_LORA_CHECKPOINT_LINK。",
     "缺少真实 checkpoint link；当前只能审计下载校验协议，不能联网验证。",
     "未请求 --verify-download；本轮不联网、不下载、不接触 checkpoint link host。",
+    "baseline 真实提交需要用户确认目标：ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION=CONFIRM_TABLE30V2_ALOHA_BASELINE。",
     "需要用户提供真实 ROBOCHALLENGE_USER_TOKEN。",
     "需要用户提供真实 ROBOCHALLENGE_SUBMISSION_ID。",
-    "需要确认本次要提交的是 Table30v2 ALOHA 还是原始 Table30；当前可运行链路是 Table30v2 ALOHA。",
-    "若要提交 LoRA 版本，还需要把本地 12GB+ checkpoint 放到网站可访问的 checkpoint link。"
+    "baseline 真实提交需要 ROBOCHALLENGE_SUBMISSION_VARIANT=baseline 和真实 runner 强确认。",
+    "若选择 LoRA/web checkpoint 路线，还需要把本地 12GB+ checkpoint 放到网站可访问的 checkpoint link。"
   ],
   "required_user_decisions": [
     {
@@ -231,6 +232,6 @@
   "link_values_printed": false,
   "secret_values_printed": false,
   "blocking": [
-    "动作包已生成；baseline 仍等待用户 token、submission id 和真实 runner 强确认，LoRA/web checkpoint 路线额外等待授权上传和真实 checkpoint link。"
+    "动作包已生成；baseline 仍等待用户目标确认、token、submission id、variant=baseline 和真实 runner 强确认，LoRA/web checkpoint 路线额外等待授权上传和真实 checkpoint link。"
   ]
 }

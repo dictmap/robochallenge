@@ -291,7 +291,7 @@ def build_status() -> dict[str, Any]:
             blocking.append("LoRA/web 当前阻塞项为空，动作包无法说明 checkpoint 路线需要用户补齐什么。")
     else:
         blocking.append(
-            "动作包已生成；baseline 仍等待用户 token、submission id 和真实 runner 强确认，"
+            "动作包已生成；baseline 仍等待用户目标确认、token、submission id、variant=baseline 和真实 runner 强确认，"
             "LoRA/web checkpoint 路线额外等待授权上传和真实 checkpoint link。"
         )
 

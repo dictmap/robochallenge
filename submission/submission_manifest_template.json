@@ -57,7 +57,7 @@
     "policy_smoke_passed": true,
     "policy_smoke_model_type": "Pi0",
     "direct_demo_checkpoint_ready": true,
-    "direct_demo_checkpoint_note": "LoRA checkpoint 已本地物化为 demo.py/create_trained_policy 可读的完整 policy checkpoint；真实网站提交仍需要用户提供 token/submission_id 和可访问 checkpoint link。"
+    "direct_demo_checkpoint_note": "LoRA checkpoint 已本地物化为 demo.py/create_trained_policy 可读的完整 policy checkpoint；只有 LoRA/web checkpoint 网站路线才需要用户授权上传并提供真实可访问 checkpoint link。baseline 官方 ALOHA 路线不需要 checkpoint link。"
   },
   "evidence_files": {
     "mock_smoke": "runs/policy_smoke_aloha_status.json",
@@ -72,9 +72,10 @@
     "fine_tuning_code_link": "建议填同仓库脚本、Notebook 和报告；LoRA 训练/恢复/物化证据已在仓库内记录。"
   },
   "blocking": [
+    "baseline 真实提交需要用户确认目标：ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION=CONFIRM_TABLE30V2_ALOHA_BASELINE。",
     "需要用户提供真实 ROBOCHALLENGE_USER_TOKEN。",
     "需要用户提供真实 ROBOCHALLENGE_SUBMISSION_ID。",
-    "需要确认本次要提交的是 Table30v2 ALOHA 还是原始 Table30；当前可运行链路是 Table30v2 ALOHA。",
-    "若要提交 LoRA 版本，还需要把本地 12GB+ checkpoint 放到网站可访问的 checkpoint link。"
+    "baseline 真实提交需要 ROBOCHALLENGE_SUBMISSION_VARIANT=baseline 和真实 runner 强确认。",
+    "若选择 LoRA/web checkpoint 路线，还需要把本地 12GB+ checkpoint 放到网站可访问的 checkpoint link。"
   ]
 }

@@ -40,6 +40,8 @@
   "blocking": [
     "默认 dry-run 不生成 tar；真正生成约 12GB 归档必须显式使用 --execute --confirm-create-large-archive。",
     "本脚本不上传 checkpoint、不读取凭据、不连接 RoboChallenge 平台。",
-    "真实提交仍需要用户提供 token、submission id 和可访问 checkpoint link。"
+    "baseline 官方 ALOHA 路线不需要生成 tar、上传 checkpoint 或填写 checkpoint link。",
+    "LoRA/web checkpoint 路线才需要用户授权生成归档、上传并提供真实可访问 checkpoint link。",
+    "baseline 真实提交仍需要用户目标确认、token、submission id、variant=baseline 和真实 runner 强确认。"
   ]
 }

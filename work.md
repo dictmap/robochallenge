@@ -2450,3 +2450,26 @@
 ### 下一步
 - P0：提交并推送本轮中心报告 5 项 baseline 阻塞口径收敛。
 - P1：继续扫描 LoRA/checkpoint 分支报告，把可能误导为 baseline 必需 checkpoint link 的文案改为 “仅 LoRA/web checkpoint 路线需要”。
+## 2026-06-03 第八十八轮：LoRA/checkpoint 分支 baseline-link 口径收敛
+
+### 已完成
+- 更新 `scripts/audit_checkpoint_link_intake.py`，把 checkpoint link intake 的 blocking 改成：baseline 官方 ALOHA 路线不需要 checkpoint link；只有 LoRA/web checkpoint 路线才需要真实可访问 link。
+- 更新 `scripts/audit_checkpoint_upload_channels.py` 和 `scripts/create_checkpoint_archive.py`，明确上传、归档、link 回填只属于 LoRA/web checkpoint 路线；baseline 仍阻塞在目标确认、token、submission id、variant=baseline 和真实 runner 强确认。
+- 更新 `scripts/audit_robochallenge_submission_package.py`、`submission/submission_manifest_template.json` 和 `reports/robochallenge_submission_package_checklist.md`，让提交包 blocking 也落到同一 5 项 baseline 口径。
+- 更新 `scripts/render_next_user_action_packet.py`，动作包总结不再写成 baseline 只等 token/submission id/runner，而是包含目标确认和 variant=baseline。
+- 更新 `submission/robochallenge_env_template.sh`，把通用 `ROBOCHALLENGE_CHECKPOINT_LINK` 注释限定为 LoRA/web checkpoint 路线，不再写成 baseline 路线可能要求。
+
+### 验证结果
+- Linux 端 no-contact 链路已通过：`py_compile`、`audit_checkpoint_link_intake.py`、`audit_checkpoint_upload_channels.py`、`create_checkpoint_archive.py`、`render_next_user_action_packet.py`、`audit_plaintext_secrets.py`、`audit_submission_preflight_bundle.py`、`audit_submission_artifact_manifest.py`、`render_submission_status_dashboard.py`、`validate_repro_workspace.py`、`audit_chinese_utf8_artifacts.py`、`json.tool` 和 `git diff --check`。
+- 旧口径搜索已清空：`真实提交仍需要用户提供 token、submission id 和可访问 checkpoint link`、`真实提交仍需要用户提供 token、submission id 和真实可访问 checkpoint link`、`真实网站提交仍需要用户提供 token/submission_id 和可访问 checkpoint link`、`真实提交仍需要 ROBOCHALLENGE_USER_TOKEN 和 ROBOCHALLENGE_SUBMISSION_ID`、`baseline 路线要求通用 checkpoint link`、`baseline 仍等待用户 token`、`需要确认本次要提交的是 Table30v2 ALOHA 还是原始 Table30` 均无命中。
+- `runs/next_user_action_packet.json` 实测 `baseline_current_blocking` 为 `SUBMISSION_TARGET_CONFIRMATION`、`ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline`、`ROBOCHALLENGE_REAL_RUN_CONFIRM`。
+- `runs/submission_status_dashboard.json` 实测 `ready_for_real_submission=false`，`card_count=37`；GUI 仍显示未达到真实提交条件。
+
+### 当前边界
+- 本轮没有读取真实 token、submission id、checkpoint link 或真实 local env 内容。
+- 没有连接 RoboChallenge 平台，没有上传 checkpoint，没有生成 checkpoint tar，也没有启动真实 runner。
+- 本轮曾发现 PowerShell heredoc 写中文 JSON 会造成问号乱码；已在 Linux 端通过 UTF-8 源码抽取修复，并用 `audit_chinese_utf8_artifacts.py` 与 `git diff --check` 复验通过。
+
+### 下一步
+- P0：提交并推送本轮 LoRA/checkpoint 分支 baseline-link 口径收敛。
+- P1：继续检查 Notebook executed 输出和旧运行日志中的历史 “checkpoint link” 文案；若保留，需明确标注为历史输出或重新执行/清理输出，避免被误读为当前 baseline 前置条件。

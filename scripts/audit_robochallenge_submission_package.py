@@ -329,11 +329,11 @@ def write_readme(path: Path, manifest_rel: str, runner_rel: str, lora_runner_rel
 - `{manifest_rel}`：机器可读提交 manifest 模板。
 - `{runner_rel}`：Table30v2 ALOHA baseline 的 `demo.py` 启动模板。
 - `{lora_runner_rel}`：Table30v2 ALOHA LoRA 完整物化 checkpoint 的 `demo.py` 启动模板。
-- `submission/REAL_SUBMISSION_HANDOFF.md`：用户拿到 token、submission id 和 checkpoint link 后的真实提交交接清单。
+- `submission/REAL_SUBMISSION_HANDOFF.md`：用户确认 Table30v2/ALOHA/baseline 提交对象并拿到 token、submission id 后的真实提交交接清单；baseline 路线不需要 checkpoint link，LoRA/web checkpoint 路线才需要 link。
 
-当前默认稳妥提交路线仍是官方 pi0.5 Table30v2 ALOHA baseline。LoRA scoped checkpoint 已被物化为本地完整 checkpoint，并通过 `create_trained_policy` 加载 smoke；但真实网站提交仍需要用户提供凭据，并把本地 checkpoint 上传成网站可访问链接。
+当前默认稳妥提交路线仍是官方 pi0.5 Table30v2 ALOHA baseline。该路线使用 Linux 上已有的官方 ALOHA checkpoint，本地 runner 不需要生成 LoRA tar，也不需要 checkpoint link。LoRA scoped checkpoint 已被物化为本地完整 checkpoint，并通过 `create_trained_policy` 加载 smoke；只有选择 LoRA/web checkpoint 路线时，才需要用户提供凭据并把本地 checkpoint 上传成网站可访问链接。
 
-运行前需要用户在 shell 中提供 `ROBOCHALLENGE_USER_TOKEN` 和 `ROBOCHALLENGE_SUBMISSION_ID` 两个环境变量；不要把具体值写入仓库、Notebook 或报告。runner 会拒绝 `<真实 ...>`、`example`、`replace_me` 这类占位符。可以先设置 `ROBOCHALLENGE_DRY_RUN=1` 做不连接平台的本地命令摘要检查，输出不会包含 token、submission id 或 checkpoint/link 明文。设置好之后运行：
+baseline 真实运行前需要用户在 shell 中提供 `ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION=CONFIRM_TABLE30V2_ALOHA_BASELINE`、`ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline` 和 `ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION`；不要把具体值写入仓库、Notebook 或报告。runner 会拒绝 `<真实 ...>`、`example`、`replace_me` 这类占位符。可以先设置 `ROBOCHALLENGE_DRY_RUN=1` 做不连接平台的本地命令摘要检查，输出不会包含 token、submission id 或 checkpoint/link 明文。设置好之后运行：
 
 ```bash
 bash {runner_rel}
@@ -358,7 +358,7 @@ def write_report(status: dict[str, Any], report_path: Path) -> None:
         f"- 当前可运行目标：`Table30v2 / {selected['robot_type']} / {selected['task_name']}`。",
         "- 官方 Table30v2 ALOHA baseline 仍是最稳的提交模板。",
         f"- LoRA 完整物化 checkpoint 本地可读：`{restore['direct_demo_checkpoint_ready']}`。",
-        "- 真实提交仍不能伪造 token、submission_id 或 checkpoint link。",
+        "- 真实提交仍不能伪造 token 或 submission_id；checkpoint link 只属于 LoRA/web checkpoint 路线。",
         "",
         "## 已准备材料",
         "",
@@ -489,7 +489,7 @@ def main() -> int:
             "policy_smoke_passed": bool(policy_smoke.get("passed") and policy_load.get("passed")),
             "policy_smoke_model_type": policy_load.get("model_type"),
             "direct_demo_checkpoint_ready": materialized_ready,
-            "direct_demo_checkpoint_note": "LoRA checkpoint 已本地物化为 demo.py/create_trained_policy 可读的完整 policy checkpoint；真实网站提交仍需要用户提供 token/submission_id 和可访问 checkpoint link。",
+            "direct_demo_checkpoint_note": "LoRA checkpoint 已本地物化为 demo.py/create_trained_policy 可读的完整 policy checkpoint；只有 LoRA/web checkpoint 网站路线才需要用户授权上传并提供真实可访问 checkpoint link。baseline 官方 ALOHA 路线不需要 checkpoint link。",
         },
         "outputs": {
             "report": str(args.report_path.relative_to(ROOT)),
@@ -500,10 +500,11 @@ def main() -> int:
         },
         "runner_audit": {},
         "blocking": [
+            "baseline 真实提交需要用户确认目标：ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION=CONFIRM_TABLE30V2_ALOHA_BASELINE。",
             "需要用户提供真实 ROBOCHALLENGE_USER_TOKEN。",
             "需要用户提供真实 ROBOCHALLENGE_SUBMISSION_ID。",
-            "需要确认本次要提交的是 Table30v2 ALOHA 还是原始 Table30；当前可运行链路是 Table30v2 ALOHA。",
-            "若要提交 LoRA 版本，还需要把本地 12GB+ checkpoint 放到网站可访问的 checkpoint link。",
+            "baseline 真实提交需要 ROBOCHALLENGE_SUBMISSION_VARIANT=baseline 和真实 runner 强确认。",
+            "若选择 LoRA/web checkpoint 路线，还需要把本地 12GB+ checkpoint 放到网站可访问的 checkpoint link。",
         ],
     }
 

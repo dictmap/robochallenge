@@ -152,7 +152,7 @@
     },
     {
       "path": "reports/checkpoint_archive_dry_run.md",
-      "size_bytes": 1581,
+      "size_bytes": 1828,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -176,7 +176,7 @@
     },
     {
       "path": "reports/checkpoint_link_intake.md",
-      "size_bytes": 1644,
+      "size_bytes": 1800,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -192,7 +192,7 @@
     },
     {
       "path": "reports/checkpoint_upload_channels_audit.md",
-      "size_bytes": 3298,
+      "size_bytes": 3544,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -280,7 +280,7 @@
     },
     {
       "path": "reports/next_user_action_packet.md",
-      "size_bytes": 7511,
+      "size_bytes": 7670,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -464,7 +464,7 @@
     },
     {
       "path": "reports/robochallenge_submission_package_checklist.md",
-      "size_bytes": 2838,
+      "size_bytes": 3001,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -472,7 +472,7 @@
     },
     {
       "path": "reports/route_aware_submission_blockers.md",
-      "size_bytes": 3887,
+      "size_bytes": 4013,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -496,7 +496,7 @@
     },
     {
       "path": "reports/submission_blockers_summary.md",
-      "size_bytes": 3911,
+      "size_bytes": 4037,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -624,7 +624,7 @@
     },
     {
       "path": "runs/authorized_checkpoint_archive_template_audit.json",
-      "size_bytes": 5565,
+      "size_bytes": 5645,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -640,7 +640,7 @@
     },
     {
       "path": "runs/authorized_preflight_template_audit.json",
-      "size_bytes": 4122,
+      "size_bytes": 4118,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,

@@ -47,4 +47,5 @@
 
 - 缺少 checkpoint link；请设置 ROBOCHALLENGE_CHECKPOINT_LINK 或 ROBOCHALLENGE_LORA_CHECKPOINT_LINK。
 - 本审计只检查 checkpoint link 回填形态，不联网验证下载有效性。
-- 真实提交仍需要用户提供 token、submission id 和真实可访问 checkpoint link。
+- baseline 官方 ALOHA 路线不需要 checkpoint link；LoRA/web checkpoint 路线才需要真实可访问 checkpoint link。
+- baseline 真实提交仍需要用户目标确认、token、submission id、variant=baseline 和真实 runner 强确认。

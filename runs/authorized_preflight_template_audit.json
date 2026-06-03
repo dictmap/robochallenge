@@ -17,6 +17,7 @@
     "sources_local_env_file": true,
     "reads_variant_after_local_env_source": true,
     "default_variant_baseline": true,
+    "requires_target_confirmation": true,
     "runs_link_intake": true,
     "runs_link_download_default": true,
     "download_verify_guarded": true,
@@ -40,6 +41,7 @@
     "stderr_tail": "",
     "env_file_present_false": true,
     "verify_download_disabled": true,
+    "target_confirmation_present": true,
     "stops_before_runner": true,
     "ready_false": true,
     "real_runner_not_called": true

@@ -7,7 +7,7 @@
   "credentials_printed": false,
   "link_values_printed": false,
   "secret_values_printed": false,
-  "artifact_count": 87,
+  "artifact_count": 89,
   "artifacts": [
     {
       "path": "README.md",
@@ -20,8 +20,8 @@
       "path": "work.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 191685,
-      "sha256": "8e8683108fe55c43c6dd60bfe5bef0973ce27c4e7cd3b54a9049c5c9cec54eab"
+      "size_bytes": 194927,
+      "sha256": "662c0536d1623be90fbcf1e5052a4707d8f59e8fa329b7db54fbda9ac97cf55a"
     },
     {
       "path": "notebooks/robochallenge_pi05_submit_cn.ipynb",
@@ -55,8 +55,8 @@
       "path": "submission/robochallenge_env_template.sh",
       "exists": true,
       "tracked": true,
-      "size_bytes": 1053,
-      "sha256": "823feb4e6075b0fc0d6ff1b14e7d90e831de5d6e0284c9bc93d5b352a34107d8"
+      "size_bytes": 1255,
+      "sha256": "18edcf0c062e1d8c525cdc84f8e509cd9829324dff65feba5852af991ea4d21d"
     },
     {
       "path": "submission/submission_manifest_template.json",
@@ -83,15 +83,15 @@
       "path": "submission/run_authorized_preflight_template.sh",
       "exists": true,
       "tracked": true,
-      "size_bytes": 3313,
-      "sha256": "8cc859f362eb2bf3755ec460059ba010f895ab82a6c8608c67cc7145fa002764"
+      "size_bytes": 3938,
+      "sha256": "512b05eb8df177132d5897653f5cce3b62d0153570fc701a875ec200aa5e59a3"
     },
     {
       "path": "submission/run_ready_real_submission_template.sh",
       "exists": true,
       "tracked": true,
-      "size_bytes": 3869,
-      "sha256": "84a7b10dec1f67ea95b95955def37048acdff6f0a74358d553afd80cbbbe225f"
+      "size_bytes": 4485,
+      "sha256": "1a20f33a7413ebe672ccfb7a47f34742719a7f802af9bd504b669dc8043e485e"
     },
     {
       "path": "submission/run_authorized_checkpoint_archive_template.sh",
@@ -202,8 +202,8 @@
       "path": "reports/real_submission_readiness.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 1306,
-      "sha256": "fac759b5bd681903dae8c9f672998797b35430b4b37c3d61baf146903aa92d11"
+      "size_bytes": 1522,
+      "sha256": "ef3d4117b5790c8c1d7283e8d39c3fdd5f907eb57670a61602121ffc6e6bdf4c"
     },
     {
       "path": "reports/real_submission_readiness_scenarios.md",
@@ -216,8 +216,8 @@
       "path": "reports/submission_env_template_audit.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 1100,
-      "sha256": "a668eda776f2782e8fced7348adc8d43293126e0789fff64f1c6a745624a096c"
+      "size_bytes": 1190,
+      "sha256": "d5b9c72ede806f85784bd045aa7e6b633762f002508708bece6dce3c08404c9b"
     },
     {
       "path": "reports/notebook_structure_audit.md",
@@ -258,15 +258,15 @@
       "path": "reports/authorized_preflight_template_audit.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 1337,
-      "sha256": "8bcada942bd335593bd72a50030ca58a84b54ad68959fc8758ac55248a5b4350"
+      "size_bytes": 1426,
+      "sha256": "7ecb501d2ba85af6e6a7ae109acf9a144a7fb559bf7b2e1a02dcdfa9171bdd26"
     },
     {
       "path": "reports/ready_real_runner_template_audit.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 1828,
-      "sha256": "7868b274a308fb457489b08cc428c7dadb0932e593a8a343b0f08c051e984b7d"
+      "size_bytes": 1916,
+      "sha256": "59b7118168ac5b97be9cc64e9dd015ac8c1df2d81368834828eaa229ceeda059"
     },
     {
       "path": "reports/authorized_checkpoint_archive_template_audit.md",
@@ -286,8 +286,8 @@
       "path": "reports/next_user_action_packet.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 7341,
-      "sha256": "fab57cf7348d6c6354348287577fae8177d1e30216085f5da062a5715303a0ef"
+      "size_bytes": 7449,
+      "sha256": "c5f544d699482f0ce4cdb65454067d3814735577201f7bd548b80047cc490b77"
     },
     {
       "path": "reports/web_form_field_packet.md",
@@ -384,8 +384,8 @@
       "path": "reports/baseline_local_env_smoke.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 2061,
-      "sha256": "c58fc42901c86e4ed7cd5581d01ab81ee82a381c023c96c819a10d5f899b6b71"
+      "size_bytes": 2183,
+      "sha256": "f58dc13dc6cc0ab7534867c3d610b5530ccdbeae7db91b8e93dba64df06e0145"
     },
     {
       "path": "reports/baseline_final_handoff_packet.md",
@@ -398,15 +398,15 @@
       "path": "reports/baseline_final_handoff_rehearsal.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 2839,
-      "sha256": "8157049c294b8ea1f57e24c0975e475ed6eec6ce9cbbb10846fa494fefbdaaca"
+      "size_bytes": 2939,
+      "sha256": "a60d93a93ef36ccfa949c945a3895140b330dcfc42e5c2b661756974029ded35"
     },
     {
       "path": "reports/route_aware_submission_blockers.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 3779,
-      "sha256": "1d31c9f61397183ff8f4dd8e092b27f9fccf3f4951fd40266d732d974a4f1e4a"
+      "size_bytes": 3887,
+      "sha256": "cce19852ed4e3facc5c624b6d0660a6db8a162dd9856aec0d39dc3f81e1b5a70"
     },
     {
       "path": "reports/submission_target_confirmation_packet.md",
@@ -414,6 +414,13 @@
       "tracked": true,
       "size_bytes": 2258,
       "sha256": "748bc59be2068c5f58da62603539ab4a66092e9b76b01e44e321bf26a325a642"
+    },
+    {
+      "path": "reports/submission_target_confirmation_gate.md",
+      "exists": true,
+      "tracked": false,
+      "size_bytes": 3289,
+      "sha256": "5d57fb9f0e82473a8edfd7d316d56ca8d115ae8239ba8a452e885fd7cf974dce"
     },
     {
       "path": "reports/submission_handoff_docs_audit.md",
@@ -433,22 +440,22 @@
       "path": "reports/submission_preflight_bundle.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 9085,
-      "sha256": "56a61c1aed8b6f11acb0f24daa71850ea30e8ac1aa8a2e73b31369f2e993271a"
+      "size_bytes": 9493,
+      "sha256": "e37b826532c90d33f07c49256cff873cbe9ceec3055b3570ce7ee2f4f8c0f711"
     },
     {
       "path": "reports/plaintext_secret_scan.md",
       "exists": true,
       "tracked": true,
       "size_bytes": 610,
-      "sha256": "6c22f07d17e904e5e1f36f7e43a3cdaa97d3301c797818172d57f69287ef6c37"
+      "sha256": "237e266a50bb711e45d76dc146175b268116c92ae1201c6e8e1cf5c2e274dfa8"
     },
     {
       "path": "reports/submission_status_dashboard.html",
       "exists": true,
       "tracked": true,
-      "size_bytes": 21990,
-      "sha256": "2dea932dbbce6f0d1e1c6f47200b9df17b21abf4094e4b2769b79486adee5697"
+      "size_bytes": 22517,
+      "sha256": "91cfe7adf30a4cc175ab4085b9411177eb61cf74904c3f9d95545c7b200c9020"
     },
     {
       "path": "scripts/render_next_user_action_packet.py",
@@ -503,22 +510,22 @@
       "path": "scripts/audit_local_env_runtime_permission_gate.py",
       "exists": true,
       "tracked": true,
-      "size_bytes": 13368,
-      "sha256": "a59bbe0108e47989c88a4a14f1935c003681bb19628220f00abc1db88baf462e"
+      "size_bytes": 13533,
+      "sha256": "aaef8519f8abe78997f5d9a28e376253bf444b8f6bc7f8e5171895e8c0607bbb"
     },
     {
       "path": "scripts/audit_submission_variant_gate.py",
       "exists": true,
       "tracked": true,
-      "size_bytes": 11770,
-      "sha256": "bef72793f347282da8eb4781c380c4a312d0a0a9a5c7111d20efad9eda99fbb3"
+      "size_bytes": 11917,
+      "sha256": "acba5062c1d69752cc99bbbfddcb4855948f2610ca9934f2d6c164cf8796b5a0"
     },
     {
       "path": "scripts/audit_boolean_env_gate.py",
       "exists": true,
       "tracked": true,
-      "size_bytes": 13140,
-      "sha256": "2a0ff991d21bc9be862622ff9c42531b217254436abcb9e5cfec9ff4bfccb8b2"
+      "size_bytes": 13287,
+      "sha256": "761f2d4d224a0f76bb863026e4410b38b8bceef6f866d847c19c97c470e8a3f2"
     },
     {
       "path": "scripts/audit_placeholder_credential_rejection.py",
@@ -545,15 +552,15 @@
       "path": "scripts/audit_shell_xtrace_secret_guard.py",
       "exists": true,
       "tracked": true,
-      "size_bytes": 12238,
-      "sha256": "befd36828cdb48788a7a3a33b7d4dc6fd8293bcda3b7edc2d7769ecdc0f5f042"
+      "size_bytes": 12385,
+      "sha256": "dbe4b0b05616e8dfb09800795a3996a2608b00f981a3df4fc49753e3a87b2847"
     },
     {
       "path": "scripts/render_baseline_local_env_smoke.py",
       "exists": true,
       "tracked": true,
-      "size_bytes": 12264,
-      "sha256": "59e3fa45b365f606c246a62edbf1765a20970519f04a515e607e4b945d817485"
+      "size_bytes": 12836,
+      "sha256": "7c6da7d4977f1683e2a872d4f53249c118abf8db43e968461c44dcb39499d12d"
     },
     {
       "path": "scripts/render_baseline_final_handoff_packet.py",
@@ -566,8 +573,8 @@
       "path": "scripts/render_baseline_final_handoff_rehearsal.py",
       "exists": true,
       "tracked": true,
-      "size_bytes": 17083,
-      "sha256": "bb096820daadf10b129090bc7c611404ffc09c2686bce04d3940da7d074dac22"
+      "size_bytes": 17621,
+      "sha256": "966cfefc24446f3a0bd03c2164f9cd49f5af0183a5edec63f7b8745999c69176"
     },
     {
       "path": "scripts/render_route_aware_submission_blockers.py",
@@ -582,6 +589,13 @@
       "tracked": true,
       "size_bytes": 9670,
       "sha256": "ea55934743df710c44a3ead0454f67513865c84790a90c845bc1c60652d0a485"
+    },
+    {
+      "path": "scripts/audit_submission_target_confirmation_gate.py",
+      "exists": true,
+      "tracked": false,
+      "size_bytes": 13859,
+      "sha256": "a8b50cf21734d59601bc22f6b646da2cfe998532abe114b83f44e9367ed2f3d5"
     },
     {
       "path": "scripts/audit_jupyter_input_template.py",
@@ -716,6 +730,11 @@
     "submission_target_confirmation_task_exact": true,
     "submission_target_confirmation_robot_exact": true,
     "submission_target_confirmation_benchmark_exact": true,
+    "submission_target_confirmation_gate_passed": true,
+    "submission_target_confirmation_gate_bad_rejected": true,
+    "submission_target_confirmation_gate_bad_stop_before_preflight": true,
+    "submission_target_confirmation_gate_correct_accepted": true,
+    "submission_target_confirmation_gate_real_runner_not_started": true,
     "submission_variant_route_packet_passed": true,
     "submission_variant_route_packet_baseline_default": true,
     "submission_variant_route_packet_has_two_routes": true,

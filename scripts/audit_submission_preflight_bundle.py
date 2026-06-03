@@ -35,6 +35,7 @@ SUBCOMMANDS = [
     ("submission_variant_route_packet", "scripts/render_submission_variant_route_packet.py"),
     ("baseline_submission_quickstart", "scripts/render_baseline_submission_quickstart.py"),
     ("submission_target_confirmation_packet", "scripts/render_submission_target_confirmation_packet.py"),
+    ("submission_target_confirmation_gate", "scripts/audit_submission_target_confirmation_gate.py"),
     ("authorized_execution_checklist", "scripts/audit_authorized_execution_checklist.py"),
     ("next_user_action_packet", "scripts/render_next_user_action_packet.py"),
     ("web_form_field_packet", "scripts/render_web_form_field_packet.py"),
@@ -115,6 +116,7 @@ def build_status() -> dict[str, Any]:
     action_packet = read_json(RUNS_DIR / "next_user_action_packet.json")
     web_form_packet = read_json(RUNS_DIR / "web_form_field_packet.json")
     target_confirmation = read_json(RUNS_DIR / "submission_target_confirmation_packet.json")
+    target_confirmation_gate = read_json(RUNS_DIR / "submission_target_confirmation_gate.json")
     route_packet = read_json(RUNS_DIR / "submission_variant_route_packet.json")
     baseline_quickstart = read_json(RUNS_DIR / "baseline_submission_quickstart.json")
     baseline_dry_run_gate = read_json(RUNS_DIR / "baseline_dry_run_gate.json")
@@ -153,6 +155,7 @@ def build_status() -> dict[str, Any]:
                 action_packet,
                 web_form_packet,
                 target_confirmation,
+                target_confirmation_gate,
                 route_packet,
                 baseline_quickstart,
                 baseline_dry_run_gate,
@@ -185,6 +188,7 @@ def build_status() -> dict[str, Any]:
         or bool(action_packet.get("link_values_printed"))
         or bool(web_form_packet.get("link_values_printed"))
         or bool(target_confirmation.get("link_values_printed"))
+        or bool(target_confirmation_gate.get("link_values_printed"))
         or bool(route_packet.get("link_values_printed"))
         or bool(baseline_quickstart.get("link_values_printed"))
         or bool(baseline_dry_run_gate.get("link_values_printed"))
@@ -214,6 +218,7 @@ def build_status() -> dict[str, Any]:
         or bool(action_packet.get("secret_values_printed"))
         or bool(web_form_packet.get("secret_values_printed"))
         or bool(target_confirmation.get("secret_values_printed"))
+        or bool(target_confirmation_gate.get("secret_values_printed"))
         or bool(route_packet.get("secret_values_printed"))
         or bool(baseline_quickstart.get("secret_values_printed"))
         or bool(baseline_dry_run_gate.get("secret_values_printed"))
@@ -252,6 +257,7 @@ def build_status() -> dict[str, Any]:
                 action_packet,
                 web_form_packet,
                 target_confirmation,
+                target_confirmation_gate,
                 route_packet,
                 baseline_quickstart,
                 baseline_dry_run_gate,
@@ -290,6 +296,7 @@ def build_status() -> dict[str, Any]:
                 action_packet,
                 web_form_packet,
                 target_confirmation,
+                target_confirmation_gate,
                 route_packet,
                 baseline_quickstart,
                 baseline_dry_run_gate,
@@ -364,6 +371,24 @@ def build_status() -> dict[str, Any]:
         "submission_target_target_task": target_confirmation.get("target", {}).get("task_name"),
         "submission_target_target_robot": target_confirmation.get("target", {}).get("robot_type"),
         "submission_target_target_benchmark": target_confirmation.get("target", {}).get("benchmark"),
+        "submission_target_confirmation_gate_passed": target_confirmation_gate.get("passed") is True,
+        "submission_target_confirmation_gate_case_count": target_confirmation_gate.get("case_count"),
+        "submission_target_confirmation_gate_bad_rejected": target_confirmation_gate.get(
+            "bad_confirmations_rejected"
+        )
+        is True,
+        "submission_target_confirmation_gate_bad_stop_before_preflight": target_confirmation_gate.get(
+            "bad_confirmations_stop_before_preflight"
+        )
+        is True,
+        "submission_target_confirmation_gate_correct_accepted": target_confirmation_gate.get(
+            "correct_confirmation_accepted"
+        )
+        is True,
+        "submission_target_confirmation_gate_real_runner_not_started": target_confirmation_gate.get(
+            "real_runner_started"
+        )
+        is False,
         "next_user_action_target_confirmation_value": action_packet.get("target_confirmation_value"),
         "next_user_action_target_user_confirmed": action_packet.get("target_user_confirmed"),
         "baseline_requires_checkpoint_link": route_aware_blockers.get("baseline_requires_checkpoint_link"),
@@ -606,6 +631,11 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         f"- 推荐目标确认值：`{status['submission_target_confirmation_value']}`。",
         f"- 是否已经替用户确认目标：`{status['submission_target_user_confirmed']}`。",
         f"- 确认包目标：`{status['submission_target_target_benchmark']} / {status['submission_target_target_robot']} / {status['submission_target_target_task']}`。",
+        f"- 提交对象确认 gate：`{status['submission_target_confirmation_gate_passed']}`。",
+        f"- 确认 gate case 数量：`{status['submission_target_confirmation_gate_case_count']}`。",
+        f"- 错误确认值是否停在预检前：`{status['submission_target_confirmation_gate_bad_stop_before_preflight']}`。",
+        f"- 正确确认值是否被接受：`{status['submission_target_confirmation_gate_correct_accepted']}`。",
+        f"- 确认 gate 是否未启动真实 runner：`{status['submission_target_confirmation_gate_real_runner_not_started']}`。",
         f"- 下一步动作包透传确认值：`{status['next_user_action_target_confirmation_value']}`。",
         f"- 下一步动作包是否替用户确认：`{status['next_user_action_target_user_confirmed']}`。",
         f"- baseline 是否需要 checkpoint link：`{status['baseline_requires_checkpoint_link']}`。",

@@ -2314,3 +2314,26 @@
 ### 下一步
 - P0：提交并推送本轮目标确认值交接透传审计。
 - P1：用户明确确认目标并提供 token/submission id 后，先跑 baseline 授权前只读预检与 dry-run gate；真实 runner 仍必须等待用户明确授权。
+## 2026-06-03 第八十二轮：提交对象确认运行时 gate 审计
+
+### 已完成
+- 在 `submission/robochallenge_env_template.sh` 中加入固定非密钥确认项：`ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION=CONFIRM_TABLE30V2_ALOHA_BASELINE`。
+- 在 `submission/run_authorized_preflight_template.sh` 与 `submission/run_ready_real_submission_template.sh` 中新增运行时 gate：只有该环境变量精确匹配时，才进入 checkpoint/readiness 预检和 dry-run；缺失、大小写不一致、尾随空格或换行都会以 `69` 停在预检前。
+- 新增 `scripts/audit_submission_target_confirmation_gate.py`，生成 `runs/submission_target_confirmation_gate.json` 与 `reports/submission_target_confirmation_gate.md`，覆盖 5 个错误确认值场景和 2 个正确确认值场景。
+- 更新 `scripts/audit_real_submission_readiness.py`、两个 wrapper 审计、baseline local env smoke、final handoff rehearsal、preflight bundle、artifact manifest、GUI dashboard 和总 validator，把目标确认 gate 纳入机器可验证证据链。
+- GUI dashboard 新增“提交对象确认 gate”卡片；确认 gate 自身为已完成，但“提交对象确认”仍保持待用户授权。
+
+### 验证结果
+- Linux 端完整 no-contact 链路已通过：`py_compile`、`audit_submission_env_template.py`、`audit_submission_target_confirmation_gate.py`、`audit_authorized_preflight_template.py`、`audit_ready_real_runner_template.py`、`render_baseline_local_env_smoke.py`、`render_baseline_final_handoff_rehearsal.py`、`audit_chinese_utf8_artifacts.py`、`audit_plaintext_secrets.py`、`audit_submission_preflight_bundle.py`、`audit_submission_artifact_manifest.py`、`render_submission_status_dashboard.py`、`validate_repro_workspace.py` 与 `git diff --check`。
+- `runs/submission_target_confirmation_gate.json` 实测：`passed=true`，`case_count=7`，`bad_case_count=5`，`good_case_count=2`，`bad_confirmations_rejected=true`，`bad_confirmations_stop_before_preflight=true`，`correct_confirmation_accepted=true`，`real_runner_started=false`。
+- GUI dashboard 实测变为 `source_count=37`、`card_count=37`、`done_count=31`、`blocked_count=5`、`watch_count=1`、`ready_for_real_submission=false`。
+- 明文凭据扫描仍为 `hit_count=0`；中文 UTF-8 审计为 `scanned_file_count=154`、`decode_error_count=0`、`bad_marker_hit_count=0`。
+
+### 当前边界
+- 本轮没有读取真实 token、submission id、checkpoint link 或真实 local env 内容。
+- 没有连接 RoboChallenge 平台，没有上传 checkpoint，没有生成 checkpoint tar，也没有启动真实 runner。
+- `CONFIRM_TABLE30V2_ALOHA_BASELINE` 现在是 wrapper 必须精确匹配的运行时确认值，但当前仍没有替用户确认目标；真实提交仍阻塞在 `SUBMISSION_TARGET_CONFIRMATION`、`ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline` 和 `ROBOCHALLENGE_REAL_RUN_CONFIRM`。
+
+### 下一步
+- P0：提交并推送本轮提交对象确认运行时 gate 审计。
+- P1：用户明确确认目标并提供 token/submission id 后，先跑 baseline 授权前只读预检与 dry-run gate；真实 runner 仍必须等待用户明确授权。

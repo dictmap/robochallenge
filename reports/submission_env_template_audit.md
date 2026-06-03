@@ -16,6 +16,7 @@
 - `ROBOCHALLENGE_USER_TOKEN`：present=`True`，placeholder=`True`。
 - `ROBOCHALLENGE_SUBMISSION_ID`：present=`True`，placeholder=`True`。
 - `ROBOCHALLENGE_SUBMISSION_VARIANT`：present=`True`，placeholder=`True`。
+- `ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION`：present=`True`，placeholder=`True`。
 - `ROBOCHALLENGE_LORA_CHECKPOINT_LINK`：present=`True`，placeholder=`True`。
 - `ROBOCHALLENGE_CHECKPOINT_LINK`：present=`True`，placeholder=`True`。
 

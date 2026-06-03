@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Audit boolean submission env gates before checkpoint/readiness work starts."""
+"""Audit the submission target confirmation gate without real credentials."""
 
 from __future__ import annotations
 
@@ -15,10 +15,13 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 RUNS_DIR = ROOT / "runs"
 REPORTS_DIR = ROOT / "reports"
-DEFAULT_STATUS = RUNS_DIR / "boolean_env_gate.json"
-DEFAULT_REPORT = REPORTS_DIR / "boolean_env_gate.md"
-MISSING_ENV_FILE = ROOT / "submission" / "__synthetic_missing_env__.sh"
-TARGET_CONFIRMATION_VALUE = "CONFIRM_TABLE30V2_ALOHA_BASELINE"
+DEFAULT_STATUS = RUNS_DIR / "submission_target_confirmation_gate.json"
+DEFAULT_REPORT = REPORTS_DIR / "submission_target_confirmation_gate.md"
+
+CONFIRMATION_VALUE = "CONFIRM_TABLE30V2_ALOHA_BASELINE"
+SYNTHETIC_TOKEN = "synthetic_target_confirmation_token_0001"
+SYNTHETIC_SUBMISSION_ID = "synthetic_target_confirmation_submission_0001"
+REDACTION = "[REDACTED_SYNTHETIC_VALUE]"
 
 SCRIPTS = {
     "authorized_preflight": "submission/run_authorized_preflight_template.sh",
@@ -26,80 +29,61 @@ SCRIPTS = {
 }
 
 BAD_CASES = [
-    (
-        "authorized_verify_true",
-        "authorized_preflight",
-        "ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD",
-        {"ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD": "true"},
-    ),
-    (
-        "ready_verify_yes",
-        "ready_runner",
-        "ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD",
-        {"ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD": "yes"},
-    ),
-    (
-        "authorized_require_ready_true",
-        "authorized_preflight",
-        "ROBOCHALLENGE_REQUIRE_READY",
-        {"ROBOCHALLENGE_REQUIRE_READY": "true"},
-    ),
-    (
-        "authorized_verify_space",
-        "authorized_preflight",
-        "ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD",
-        {"ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD": " "},
-    ),
+    ("authorized_missing", "authorized_preflight", None),
+    ("ready_wrong", "ready_runner", "CONFIRM_TABLE30V2_ALOHA_LORA"),
+    ("authorized_trailing_space", "authorized_preflight", CONFIRMATION_VALUE + " "),
+    ("ready_lowercase", "ready_runner", CONFIRMATION_VALUE.lower()),
+    ("authorized_newline", "authorized_preflight", CONFIRMATION_VALUE + "\n"),
 ]
 
 GOOD_CASES = [
-    ("authorized_flags_zero", "authorized_preflight", {}, 0),
-    ("authorized_require_ready_one", "authorized_preflight", {"ROBOCHALLENGE_REQUIRE_READY": "1"}, 1),
-    ("ready_baseline_verify_zero", "ready_runner", {}, 1),
-    ("ready_lora_verify_zero", "ready_runner", {"ROBOCHALLENGE_SUBMISSION_VARIANT": "lora"}, 1),
+    ("authorized_correct", "authorized_preflight", CONFIRMATION_VALUE, 0),
+    ("ready_correct_missing_real_confirm", "ready_runner", CONFIRMATION_VALUE, 1),
 ]
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(
-        description="审计提交入口布尔环境变量 gate；只接受 0/1，不读取真实凭据。"
-    )
+    parser = argparse.ArgumentParser(description="审计提交对象确认 gate；不读取真实凭据、不联网、不上传。")
     parser.add_argument("--status-path", type=Path, default=DEFAULT_STATUS, help="机器可读 JSON 输出路径。")
     parser.add_argument("--report-path", type=Path, default=DEFAULT_REPORT, help="中文报告输出路径。")
     return parser.parse_args()
 
 
-def sanitized_env(extra: dict[str, str]) -> dict[str, str]:
+def clean_env(confirm_value: str | None) -> dict[str, str]:
     env = os.environ.copy()
     for key in list(env):
         if key.startswith("ROBOCHALLENGE_"):
             env.pop(key, None)
     env["PYTHONIOENCODING"] = "utf-8"
-    env["ROBOCHALLENGE_ENV_FILE"] = str(MISSING_ENV_FILE)
-    env["ROBOCHALLENGE_SUBMISSION_VARIANT"] = extra.get("ROBOCHALLENGE_SUBMISSION_VARIANT", "baseline")
-    env["ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION"] = TARGET_CONFIRMATION_VALUE
-    env["ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD"] = extra.get(
-        "ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD", "0"
-    )
-    if "ROBOCHALLENGE_REQUIRE_READY" in extra:
-        env["ROBOCHALLENGE_REQUIRE_READY"] = extra["ROBOCHALLENGE_REQUIRE_READY"]
-    else:
-        env["ROBOCHALLENGE_REQUIRE_READY"] = "0"
+    env["ROBOCHALLENGE_ENV_FILE"] = str(ROOT / "submission" / "__missing_env_for_target_confirmation_gate__.sh")
+    env["ROBOCHALLENGE_USER_TOKEN"] = SYNTHETIC_TOKEN
+    env["ROBOCHALLENGE_SUBMISSION_ID"] = SYNTHETIC_SUBMISSION_ID
+    env["ROBOCHALLENGE_SUBMISSION_VARIANT"] = "baseline"
+    env["ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD"] = "0"
+    env["ROBOCHALLENGE_REQUIRE_READY"] = "0"
+    if confirm_value is not None:
+        env["ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION"] = confirm_value
     return env
+
+
+def redact(text: str) -> str:
+    redacted = text
+    for value in [SYNTHETIC_TOKEN, SYNTHETIC_SUBMISSION_ID]:
+        redacted = redacted.replace(value, REDACTION)
+    return redacted
 
 
 def run_case(
     name: str,
     script_key: str,
-    env_overrides: dict[str, str],
+    confirm_value: str | None,
     expected_returncode: int,
-    bad_flag_name: str = "",
+    bad_case: bool,
 ) -> dict[str, Any]:
-    script = SCRIPTS[script_key]
     result = subprocess.run(
-        ["bash", script],
+        ["bash", SCRIPTS[script_key]],
         cwd=ROOT,
-        env=sanitized_env(env_overrides),
+        env=clean_env(confirm_value),
         text=True,
         encoding="utf-8",
         errors="replace",
@@ -111,11 +95,10 @@ def run_case(
     stdout = result.stdout or ""
     stderr = result.stderr or ""
     combined = stdout + "\n" + stderr
-    bool_rejected = (
-        result.returncode == 68
-        and bool(bad_flag_name)
-        and bad_flag_name in combined
-        and "must be 0 or 1" in combined
+    target_rejected = (
+        result.returncode == 69
+        and "missing target confirmation" in combined
+        and "ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION" in combined
     )
     preflight_started = (
         "checkpoint link" in combined
@@ -123,39 +106,40 @@ def run_case(
         or "dry_run=true" in combined
         or "checkpoint_length=" in combined
     )
-    valid_flags_accepted = (
+    correct_accepted = (
         result.returncode == expected_returncode
-        and "must be 0 or 1" not in combined
+        and "missing target confirmation" not in combined
+        and "target_confirmation_present=true" in combined
         and (
-            "ready_for_real_submission=false" in combined
-            or "stop before runner dry-run" in combined
-            or "stop before dry-run and real runner" in combined
+            "dry_run=true" in combined
+            or "ready_for_real_submission=false" in combined
+            or "missing explicit real-run confirmation" in combined
         )
     )
+    protected_printed = SYNTHETIC_TOKEN in combined or SYNTHETIC_SUBMISSION_ID in combined
     real_runner_started = "confirmation accepted; starting real runner" in combined
-    protected_printed = False
-    bad_case = bool(bad_flag_name)
     passed = (
         result.returncode == expected_returncode
         and protected_printed is False
         and real_runner_started is False
-        and (bool_rejected and not preflight_started if bad_case else valid_flags_accepted)
+        and (target_rejected and not preflight_started if bad_case else correct_accepted)
     )
     return {
         "name": name,
         "script_key": script_key,
-        "script": script,
-        "bad_flag_name": bad_flag_name,
-        "override_keys": sorted(env_overrides.keys()),
-        "override_value_lengths": {key: len(value) for key, value in env_overrides.items()},
+        "script": SCRIPTS[script_key],
+        "confirmation_value_present": confirm_value is not None,
+        "confirmation_value_length": len(confirm_value or ""),
         "returncode": result.returncode,
         "expected_returncode": expected_returncode,
         "returncode_expected": result.returncode == expected_returncode,
-        "bool_rejected": bool_rejected,
+        "target_rejected": target_rejected,
         "preflight_started": preflight_started,
-        "valid_flags_accepted": valid_flags_accepted,
-        "stdout_tail": stdout[-1000:],
-        "stderr_tail": stderr[-1000:],
+        "correct_accepted": correct_accepted,
+        "dry_run_called": "dry_run=true" in combined,
+        "missing_real_confirmation": "missing explicit real-run confirmation" in combined,
+        "stdout_tail": redact(stdout[-1200:]),
+        "stderr_tail": redact(stderr[-1200:]),
         "printed_protected_values": protected_printed,
         "real_runner_started": real_runner_started,
         "platform_contacted": False,
@@ -170,7 +154,6 @@ def restore_clean_submission_state() -> dict[str, Any]:
         if key.startswith("ROBOCHALLENGE_"):
             env.pop(key, None)
     env["PYTHONIOENCODING"] = "utf-8"
-    env["ROBOCHALLENGE_ENV_FILE"] = str(MISSING_ENV_FILE)
     commands = [
         ["python3", "scripts/audit_checkpoint_link_intake.py"],
         ["python3", "scripts/audit_checkpoint_link_download_verification.py"],
@@ -196,58 +179,62 @@ def restore_clean_submission_state() -> dict[str, Any]:
 
 
 def build_status() -> dict[str, Any]:
-    bad_cases = [
-        run_case(name, script_key, overrides, 68, flag_name)
-        for name, script_key, flag_name, overrides in BAD_CASES
-    ]
+    bad_cases = [run_case(name, script_key, value, 69, True) for name, script_key, value in BAD_CASES]
     good_cases = [
-        run_case(name, script_key, overrides, expected_returncode, "")
-        for name, script_key, overrides, expected_returncode in GOOD_CASES
+        run_case(name, script_key, value, expected_returncode, False)
+        for name, script_key, value, expected_returncode in GOOD_CASES
     ]
     cases = bad_cases + good_cases
     restore = restore_clean_submission_state()
     evidence = {
-        "bad_flags_rejected": all(item["bool_rejected"] for item in bad_cases),
-        "bad_flags_stop_before_preflight": all(item["preflight_started"] is False for item in bad_cases),
-        "valid_flags_accepted": all(item["valid_flags_accepted"] for item in good_cases),
+        "bad_confirmations_rejected": all(item["target_rejected"] for item in bad_cases),
+        "bad_confirmations_stop_before_preflight": all(item["preflight_started"] is False for item in bad_cases),
+        "correct_confirmation_accepted": all(item["correct_accepted"] for item in good_cases),
+        "authorized_correct_reaches_dry_run": next(
+            item for item in good_cases if item["name"] == "authorized_correct"
+        )["dry_run_called"],
+        "ready_correct_stops_without_real_confirm": next(
+            item for item in good_cases if item["name"] == "ready_correct_missing_real_confirm"
+        )["missing_real_confirmation"],
         "all_cases_expected_returncodes": all(item["returncode_expected"] for item in cases),
         "all_cases_no_protected_values": all(item["printed_protected_values"] is False for item in cases),
         "real_runner_not_started": all(item["real_runner_started"] is False for item in cases),
         "restore_clean_state_passed": restore["passed"],
     }
     leak_flags = {
-        "credentials_printed": False,
+        "credentials_printed": any(item["printed_protected_values"] for item in cases),
         "link_values_printed": False,
-        "secret_values_printed": False,
+        "secret_values_printed": any(item["printed_protected_values"] for item in cases),
     }
     contact_flags = {
         "platform_contacted": False,
         "uploads_performed": False,
         "download_host_contacted": False,
     }
-    passed = bool(all(item["passed"] for item in cases) and all(evidence.values()) and not any(leak_flags.values()))
-    passed = bool(passed and not any(contact_flags.values()))
+    passed = bool(all(item["passed"] for item in cases) and all(evidence.values()))
+    passed = bool(passed and not any(leak_flags.values()) and not any(contact_flags.values()))
     blocking = []
     if passed:
-        blocking.append("布尔环境变量 gate 已通过；提交入口只接受 0/1，true/false/yes/no 或空白会在预检前被拒绝。")
+        blocking.append("提交对象确认 gate 已通过；缺失、错误或畸形确认值会在 checkpoint/readiness/dry-run 前被拒绝。")
     else:
         for key, ok in evidence.items():
             if not ok:
-                blocking.append(f"布尔环境变量 gate 证据未通过 `{key}`。")
+                blocking.append(f"提交对象确认 gate 证据未通过 `{key}`。")
         failed_cases = [item["name"] for item in cases if not item["passed"]]
         if failed_cases:
             blocking.append(f"未通过 case：`{', '.join(failed_cases)}`。")
-
     return {
-        "kind": "boolean_env_gate",
+        "kind": "submission_target_confirmation_gate",
         "passed": passed,
+        "confirmation_env_key": "ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION",
+        "confirmation_value": CONFIRMATION_VALUE,
         "recommended_route": "baseline_official_aloha",
         "case_count": len(cases),
         "bad_case_count": len(bad_cases),
         "good_case_count": len(good_cases),
-        "bad_flags_rejected": evidence["bad_flags_rejected"],
-        "bad_flags_stop_before_preflight": evidence["bad_flags_stop_before_preflight"],
-        "valid_flags_accepted": evidence["valid_flags_accepted"],
+        "bad_confirmations_rejected": evidence["bad_confirmations_rejected"],
+        "bad_confirmations_stop_before_preflight": evidence["bad_confirmations_stop_before_preflight"],
+        "correct_confirmation_accepted": evidence["correct_confirmation_accepted"],
         "real_runner_started": any(item["real_runner_started"] for item in cases),
         "synthetic_values_recorded": False,
         "cases": cases,
@@ -267,26 +254,27 @@ def build_status() -> dict[str, Any]:
 
 def write_report(status: dict[str, Any], path: Path) -> None:
     lines = [
-        "# 布尔环境变量 gate 审计",
+        "# 提交对象确认 gate 审计",
         "",
         "## 结论",
         "",
         f"- 审计状态：`passed={status['passed']}`。",
+        f"- 环境变量：`{status['confirmation_env_key']}`。",
+        f"- 固定确认值：`{status['confirmation_value']}`。",
         f"- 推荐路线：`{status['recommended_route']}`。",
         f"- 覆盖 case 数量：`{status['case_count']}`。",
-        f"- 错误布尔值 case 数量：`{status['bad_case_count']}`。",
-        f"- 合法布尔值 case 数量：`{status['good_case_count']}`。",
-        f"- 错误布尔值是否被拒绝：`{status['bad_flags_rejected']}`。",
-        f"- 错误布尔值是否停在预检前：`{status['bad_flags_stop_before_preflight']}`。",
-        f"- 合法布尔值是否被接受：`{status['valid_flags_accepted']}`。",
+        f"- 错误确认值 case 数量：`{status['bad_case_count']}`。",
+        f"- 正确确认值 case 数量：`{status['good_case_count']}`。",
+        f"- 错误确认值是否被拒绝：`{status['bad_confirmations_rejected']}`。",
+        f"- 错误确认值是否停在预检前：`{status['bad_confirmations_stop_before_preflight']}`。",
+        f"- 正确确认值是否被接受：`{status['correct_confirmation_accepted']}`。",
         f"- 是否启动真实 runner：`{status['real_runner_started']}`。",
-        f"- 是否记录 synthetic 明文：`{status['synthetic_values_recorded']}`。",
         "",
         "## 边界",
         "",
-        "- 本审计只设置 synthetic 环境变量，并显式使用不存在的 local env 路径；不读取真实 token、submission id 或 checkpoint link。",
-        "- `ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD` 和 `ROBOCHALLENGE_REQUIRE_READY` 只允许 `0` 或 `1`。",
-        "- 错误布尔值会在 checkpoint link、readiness 和 dry-run 前退出，避免 `true/yes/空白` 被静默当成关闭。",
+        "- 本审计只使用 synthetic token/submission id；不会读取真实 local env。",
+        "- 错误确认值会在 checkpoint link、readiness 和 dry-run 前退出。",
+        "- 正确确认值只允许流程继续到 no-contact dry-run 或真实 runner 强确认 gate，不会启动真实 runner。",
         "",
         "## 只读边界",
         "",
@@ -301,15 +289,18 @@ def write_report(status: dict[str, Any], path: Path) -> None:
     lines.extend(["", "## Case 摘要", ""])
     for item in status["cases"]:
         lines.append(
-            "- `{name}`：script=`{script_key}`，override_keys=`{override_keys}`，returncode=`{returncode}`，"
-            "bool_rejected=`{rejected}`，preflight_started=`{preflight}`，accepted=`{accepted}`，passed=`{passed}`。".format(
+            "- `{name}`：script=`{script_key}`，confirmation_present=`{present}`，confirmation_length=`{length}`，"
+            "returncode=`{returncode}`，rejected=`{rejected}`，preflight_started=`{preflight}`，"
+            "accepted=`{accepted}`，dry_run=`{dry_run}`，passed=`{passed}`。".format(
                 name=item["name"],
                 script_key=item["script_key"],
-                override_keys=",".join(item["override_keys"]) or "none",
+                present=item["confirmation_value_present"],
+                length=item["confirmation_value_length"],
                 returncode=item["returncode"],
-                rejected=item["bool_rejected"],
+                rejected=item["target_rejected"],
                 preflight=item["preflight_started"],
-                accepted=item["valid_flags_accepted"],
+                accepted=item["correct_accepted"],
+                dry_run=item["dry_run_called"],
                 passed=item["passed"],
             )
         )

@@ -29,6 +29,12 @@
   "submission_target_target_task": "pack_the_toothbrush_holder",
   "submission_target_target_robot": "aloha",
   "submission_target_target_benchmark": "Table30v2",
+  "submission_target_confirmation_gate_passed": true,
+  "submission_target_confirmation_gate_case_count": 7,
+  "submission_target_confirmation_gate_bad_rejected": true,
+  "submission_target_confirmation_gate_bad_stop_before_preflight": true,
+  "submission_target_confirmation_gate_correct_accepted": true,
+  "submission_target_confirmation_gate_real_runner_not_started": true,
   "next_user_action_target_confirmation_value": "CONFIRM_TABLE30V2_ALOHA_BASELINE",
   "next_user_action_target_user_confirmed": false,
   "baseline_requires_checkpoint_link": false,
@@ -142,7 +148,7 @@
     "ROBOCHALLENGE_REAL_RUN_CONFIRM"
   ],
   "secret_scan_hit_count": 0,
-  "secret_scan_scanned_files": 244,
+  "secret_scan_scanned_files": 247,
   "subcommands": {
     "checkpoint_link_intake": {
       "script": "scripts/audit_checkpoint_link_intake.py",
@@ -162,7 +168,7 @@
       "script": "scripts/audit_submission_env_template.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": "OKEN\": true,\n    \"ROBOCHALLENGE_SUBMISSION_ID\": true,\n    \"ROBOCHALLENGE_SUBMISSION_VARIANT\": true,\n    \"ROBOCHALLENGE_LORA_CHECKPOINT_LINK\": true,\n    \"ROBOCHALLENGE_CHECKPOINT_LINK\": true\n  },\n  \"placeholder_values\": {\n    \"ROBOCHALLENGE_USER_TOKEN\": true,\n    \"ROBOCHALLENGE_SUBMISSION_ID\": true,\n    \"ROBOCHALLENGE_SUBMISSION_VARIANT\": true,\n    \"ROBOCHALLENGE_LORA_CHECKPOINT_LINK\": true,\n    \"ROBOCHALLENGE_CHECKPOINT_LINK\": true\n  },\n  \"local_secret_paths\": {\n    \"submission/robochallenge_env.local.sh\": {\n      \"path\": \"submission/robochallenge_env.local.sh\",\n      \"ignored\": true,\n      \"returncode\": 0\n    },\n    \".env\": {\n      \"path\": \".env\",\n      \"ignored\": true,\n      \"returncode\": 0\n    },\n    \".env.local\": {\n      \"path\": \".env.local\",\n      \"ignored\": true,\n      \"returncode\": 0\n    }\n  },\n  \"secret_pattern_hits\": [],\n  \"recommended_local_copy\": \"submission/robochallenge_env.local.sh\",\n  \"blocking\": [\n    \"无模板侧阻塞；baseline 默认路线仍取决于用户提供凭据、submission id 和真实 runner 强确认。\"\n  ]\n}\n",
+      "stdout_tail": "GE_SUBMISSION_TARGET_CONFIRMATION\": true,\n    \"ROBOCHALLENGE_LORA_CHECKPOINT_LINK\": true,\n    \"ROBOCHALLENGE_CHECKPOINT_LINK\": true\n  },\n  \"placeholder_values\": {\n    \"ROBOCHALLENGE_USER_TOKEN\": true,\n    \"ROBOCHALLENGE_SUBMISSION_ID\": true,\n    \"ROBOCHALLENGE_SUBMISSION_VARIANT\": true,\n    \"ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION\": true,\n    \"ROBOCHALLENGE_LORA_CHECKPOINT_LINK\": true,\n    \"ROBOCHALLENGE_CHECKPOINT_LINK\": true\n  },\n  \"local_secret_paths\": {\n    \"submission/robochallenge_env.local.sh\": {\n      \"path\": \"submission/robochallenge_env.local.sh\",\n      \"ignored\": true,\n      \"returncode\": 0\n    },\n    \".env\": {\n      \"path\": \".env\",\n      \"ignored\": true,\n      \"returncode\": 0\n    },\n    \".env.local\": {\n      \"path\": \".env.local\",\n      \"ignored\": true,\n      \"returncode\": 0\n    }\n  },\n  \"secret_pattern_hits\": [],\n  \"recommended_local_copy\": \"submission/robochallenge_env.local.sh\",\n  \"blocking\": [\n    \"无模板侧阻塞；baseline 默认路线仍取决于用户提供凭据、submission id 和真实 runner 强确认。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "notebook_structure": {
@@ -197,28 +203,28 @@
       "script": "scripts/audit_chinese_utf8_artifacts.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": "ror\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"runs/baseline_dry_run_gate.json\",\n      \"size_bytes\": 3627,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"runs/baseline_final_handoff_packet.json\",\n      \"size_bytes\": 5668,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"runs/baseline_final_handoff_rehearsal.json\",\n      \"size_bytes\": 5113,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    }\n  ],\n  \"decode_error_paths\": [],\n  \"bad_marker_hit_paths\": [],\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"中文交接产物 UTF-8 解码与乱码哨兵扫描通过。\"\n  ]\n}\n",
+      "stdout_tail": "ror\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"runs/baseline_dry_run_gate.json\",\n      \"size_bytes\": 3627,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"runs/baseline_final_handoff_packet.json\",\n      \"size_bytes\": 5668,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"runs/baseline_final_handoff_rehearsal.json\",\n      \"size_bytes\": 5337,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    }\n  ],\n  \"decode_error_paths\": [],\n  \"bad_marker_hit_paths\": [],\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"中文交接产物 UTF-8 解码与乱码哨兵扫描通过。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "real_submission_readiness": {
       "script": "scripts/audit_real_submission_readiness.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": "CKPOINT_LINK\": {\n      \"present\": false,\n      \"length\": 0,\n      \"looks_like_url\": false\n    },\n    \"ROBOCHALLENGE_LORA_CHECKPOINT_LINK\": {\n      \"present\": false,\n      \"length\": 0,\n      \"looks_like_url\": false\n    }\n  },\n  \"runner_checks\": {\n    \"baseline\": {\n      \"exists\": true,\n      \"passed\": true,\n      \"returncode\": 0,\n      \"stderr\": \"\"\n    },\n    \"lora\": {\n      \"exists\": true,\n      \"passed\": true,\n      \"returncode\": 0,\n      \"stderr\": \"\"\n    }\n  },\n  \"inputs\": {\n    \"submission_audit_passed\": true,\n    \"export_audit_local_ready\": true,\n    \"upload_audit_passed\": true,\n    \"uploads_performed\": false,\n    \"manifest_status\": \"template_pending_credentials\",\n    \"baseline_checkpoint_exists\": true,\n    \"lora_checkpoint_exists\": true\n  },\n  \"blocking\": [\n    \"缺少 ROBOCHALLENGE_USER_TOKEN。\",\n    \"缺少 ROBOCHALLENGE_SUBMISSION_ID。\",\n    \"缺少真实可访问 checkpoint link；可使用 ROBOCHALLENGE_CHECKPOINT_LINK 或 ROBOCHALLENGE_LORA_CHECKPOINT_LINK 记录。\",\n    \"尚未执行 checkpoint 上传，本地 tar 文件也未生成。\"\n  ]\n}\n",
+      "stdout_tail": " {\n      \"present\": false,\n      \"length\": 0,\n      \"looks_like_url\": false,\n      \"matches_target_confirmation\": null\n    }\n  },\n  \"runner_checks\": {\n    \"baseline\": {\n      \"exists\": true,\n      \"passed\": true,\n      \"returncode\": 0,\n      \"stderr\": \"\"\n    },\n    \"lora\": {\n      \"exists\": true,\n      \"passed\": true,\n      \"returncode\": 0,\n      \"stderr\": \"\"\n    }\n  },\n  \"inputs\": {\n    \"submission_audit_passed\": true,\n    \"export_audit_local_ready\": true,\n    \"upload_audit_passed\": true,\n    \"uploads_performed\": false,\n    \"manifest_status\": \"template_pending_credentials\",\n    \"baseline_checkpoint_exists\": true,\n    \"lora_checkpoint_exists\": true\n  },\n  \"blocking\": [\n    \"缺少 ROBOCHALLENGE_USER_TOKEN。\",\n    \"缺少 ROBOCHALLENGE_SUBMISSION_ID。\",\n    \"缺少或未精确匹配 ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION=CONFIRM_TABLE30V2_ALOHA_BASELINE。\",\n    \"缺少真实可访问 checkpoint link；可使用 ROBOCHALLENGE_CHECKPOINT_LINK 或 ROBOCHALLENGE_LORA_CHECKPOINT_LINK 记录。\",\n    \"尚未执行 checkpoint 上传，本地 tar 文件也未生成。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "authorized_preflight_template": {
       "script": "scripts/audit_authorized_preflight_template.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": " LoRA 版本，还需要把本地 12GB+ checkpoint 放到网站可访问的 checkpoint link。\\\"\\n  ],\\n  \\\"blocking_count\\\": 16,\\n  \\\"leak_flags\\\": {\\n    \\\"credentials_printed\\\": false,\\n    \\\"link_values_printed\\\": false,\\n    \\\"secret_values_printed\\\": false\\n  },\\n  \\\"contact_flags\\\": {\\n    \\\"platform_contacted\\\": false,\\n    \\\"uploads_performed\\\": false,\\n    \\\"download_host_contacted\\\": false\\n  },\\n  \\\"next_command_after_user_inputs\\\": \\\"python3 scripts/audit_real_submission_readiness.py\\\"\\n}\\n[authorized-preflight] ready_for_real_submission=false\\n[authorized-preflight] stop before runner dry-run; see reports/submission_blockers_summary.md\\n\",\n    \"stderr_tail\": \"\",\n    \"env_file_present_false\": true,\n    \"verify_download_disabled\": true,\n    \"stops_before_runner\": true,\n    \"ready_false\": true,\n    \"real_runner_not_called\": true\n  },\n  \"input_evidence\": {\n    \"readiness_currently_blocked\": true,\n    \"blockers_summary_go_no_go_blocked\": true\n  },\n  \"blocking\": [\n    \"授权后安全预检模板已通过；默认不联网、不上传、不运行真实 runner。\"\n  ]\n}\n",
+      "stdout_tail": " checkpoint link。\\\"\\n  ],\\n  \\\"blocking_count\\\": 16,\\n  \\\"leak_flags\\\": {\\n    \\\"credentials_printed\\\": false,\\n    \\\"link_values_printed\\\": false,\\n    \\\"secret_values_printed\\\": false\\n  },\\n  \\\"contact_flags\\\": {\\n    \\\"platform_contacted\\\": false,\\n    \\\"uploads_performed\\\": false,\\n    \\\"download_host_contacted\\\": false\\n  },\\n  \\\"next_command_after_user_inputs\\\": \\\"python3 scripts/audit_real_submission_readiness.py\\\"\\n}\\n[authorized-preflight] ready_for_real_submission=false\\n[authorized-preflight] stop before runner dry-run; see reports/submission_blockers_summary.md\\n\",\n    \"stderr_tail\": \"\",\n    \"env_file_present_false\": true,\n    \"verify_download_disabled\": true,\n    \"target_confirmation_present\": true,\n    \"stops_before_runner\": true,\n    \"ready_false\": true,\n    \"real_runner_not_called\": true\n  },\n  \"input_evidence\": {\n    \"readiness_currently_blocked\": true,\n    \"blockers_summary_go_no_go_blocked\": true\n  },\n  \"blocking\": [\n    \"授权后安全预检模板已通过；默认不联网、不上传、不运行真实 runner。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "ready_real_runner_template": {
       "script": "scripts/audit_ready_real_runner_template.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": "y-real-runner] stop before real runner\\n\",\n      \"stderr_tail\": \"\",\n      \"variant\": \"baseline\",\n      \"printed_protected_values\": false,\n      \"leaked_value_count\": 0,\n      \"ready_false\": false,\n      \"dry_run_called\": true,\n      \"missing_confirmation\": true,\n      \"confirmation_present\": true,\n      \"stops_before_real_runner\": true,\n      \"real_runner_started\": false,\n      \"demo_mentioned\": false,\n      \"name\": \"newline\",\n      \"confirm_value_length\": 34,\n      \"passed\": true\n    }\n  ],\n  \"clean_state_restore\": {\n    \"passed\": true,\n    \"commands\": [\n      {\n        \"command\": \"python3 scripts/audit_checkpoint_link_intake.py\",\n        \"returncode\": 0\n      },\n      {\n        \"command\": \"python3 scripts/audit_checkpoint_link_download_verification.py\",\n        \"returncode\": 0\n      },\n      {\n        \"command\": \"python3 scripts/audit_real_submission_readiness.py\",\n        \"returncode\": 0\n      }\n    ]\n  },\n  \"blocking\": [\n    \"强确认真实 runner 模板已通过；没有确认短语或确认短语写错时都不会启动真实 runner。\"\n  ]\n}\n",
+      "stdout_tail": "      \"stderr_tail\": \"\",\n      \"variant\": \"baseline\",\n      \"printed_protected_values\": false,\n      \"leaked_value_count\": 0,\n      \"ready_false\": false,\n      \"dry_run_called\": true,\n      \"missing_confirmation\": true,\n      \"confirmation_present\": true,\n      \"target_confirmation_present\": true,\n      \"stops_before_real_runner\": true,\n      \"real_runner_started\": false,\n      \"demo_mentioned\": false,\n      \"name\": \"newline\",\n      \"confirm_value_length\": 34,\n      \"passed\": true\n    }\n  ],\n  \"clean_state_restore\": {\n    \"passed\": true,\n    \"commands\": [\n      {\n        \"command\": \"python3 scripts/audit_checkpoint_link_intake.py\",\n        \"returncode\": 0\n      },\n      {\n        \"command\": \"python3 scripts/audit_checkpoint_link_download_verification.py\",\n        \"returncode\": 0\n      },\n      {\n        \"command\": \"python3 scripts/audit_real_submission_readiness.py\",\n        \"returncode\": 0\n      }\n    ]\n  },\n  \"blocking\": [\n    \"强确认真实 runner 模板已通过；没有确认短语或确认短语写错时都不会启动真实 runner。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "authorized_checkpoint_archive_template": {
@@ -232,7 +238,7 @@
       "script": "scripts/audit_plaintext_secrets.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": "{\n  \"kind\": \"plaintext_secret_scan\",\n  \"passed\": true,\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"secret_values_printed\": false,\n  \"scan_scope\": \"git tracked files plus unignored untracked files\",\n  \"scanned_files\": 244,\n  \"skipped_binary_files\": 0,\n  \"pattern_count\": 7,\n  \"hit_count\": 0,\n  \"hits\": [],\n  \"blocking\": [\n    \"如发现命中项，先移除明文凭据并轮换对应 token，再重新运行本审计。\",\n    \"本审计不替代真实平台权限检查；真实提交仍需要用户提供凭据。\"\n  ]\n}\n",
+      "stdout_tail": "{\n  \"kind\": \"plaintext_secret_scan\",\n  \"passed\": true,\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"secret_values_printed\": false,\n  \"scan_scope\": \"git tracked files plus unignored untracked files\",\n  \"scanned_files\": 247,\n  \"skipped_binary_files\": 0,\n  \"pattern_count\": 7,\n  \"hit_count\": 0,\n  \"hits\": [],\n  \"blocking\": [\n    \"如发现命中项，先移除明文凭据并轮换对应 token，再重新运行本审计。\",\n    \"本审计不替代真实平台权限检查；真实提交仍需要用户提供凭据。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "submission_variant_route_packet": {
@@ -254,6 +260,13 @@
       "returncode": 0,
       "passed": true,
       "stdout_tail": "erter\": true,\n    \"mapping_lengths_match\": true,\n    \"dry_run_transform_smoke_present\": true,\n    \"quickstart_recommends_baseline\": true,\n    \"quickstart_baseline_needs_no_link\": true,\n    \"route_aware_recommends_baseline\": true,\n    \"route_aware_baseline_keeps_target_confirmation_blocking\": true,\n    \"web_form_recommends_baseline\": true,\n    \"web_form_keeps_target_confirmation_out_of_field_blocking\": true,\n    \"secret_scan_clean\": true\n  },\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false\n  },\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"确认包已生成；仍需用户明确确认提交 Table30v2 ALOHA baseline 后，才可视为满足 SUBMISSION_TARGET_CONFIRMATION。\"\n  ]\n}\n",
+      "stderr_tail": ""
+    },
+    "submission_target_confirmation_gate": {
+      "script": "scripts/audit_submission_target_confirmation_gate.py",
+      "returncode": 0,
+      "passed": true,
+      "stdout_tail": "        \"returncode\": 0\n      }\n    ]\n  },\n  \"evidence\": {\n    \"bad_confirmations_rejected\": true,\n    \"bad_confirmations_stop_before_preflight\": true,\n    \"correct_confirmation_accepted\": true,\n    \"authorized_correct_reaches_dry_run\": true,\n    \"ready_correct_stops_without_real_confirm\": true,\n    \"all_cases_expected_returncodes\": true,\n    \"all_cases_no_protected_values\": true,\n    \"real_runner_not_started\": true,\n    \"restore_clean_state_passed\": true\n  },\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false\n  },\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"提交对象确认 gate 已通过；缺失、错误或畸形确认值会在 checkpoint/readiness/dry-run 前被拒绝。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "authorized_execution_checklist": {
@@ -358,7 +371,7 @@
       "script": "scripts/render_baseline_local_env_smoke.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": "ner_variant_baseline\": true,\n    \"ready_runner_dry_run_called\": true,\n    \"ready_runner_parent_real_confirm_injected_before_scrub\": true,\n    \"ready_runner_parent_real_confirm_scrubbed\": true,\n    \"ready_runner_confirmation_absent_after_scrub\": true,\n    \"ready_runner_missing_confirmation\": true,\n    \"ready_runner_stops_before_real_runner\": true,\n    \"ready_runner_real_runner_not_started\": true,\n    \"ready_runner_no_protected_values_printed\": true\n  },\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false\n  },\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"synthetic local env 已验证：baseline 预检和 dry-run gate 均会读取 local env，且不会打印值。\"\n  ]\n}\n",
+      "stdout_tail": "confirmation_present\": true,\n    \"ready_runner_dry_run_called\": true,\n    \"ready_runner_parent_real_confirm_injected_before_scrub\": true,\n    \"ready_runner_parent_real_confirm_scrubbed\": true,\n    \"ready_runner_confirmation_absent_after_scrub\": true,\n    \"ready_runner_missing_confirmation\": true,\n    \"ready_runner_stops_before_real_runner\": true,\n    \"ready_runner_real_runner_not_started\": true,\n    \"ready_runner_no_protected_values_printed\": true\n  },\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false\n  },\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"synthetic local env 已验证：baseline 预检和 dry-run gate 均会读取 local env，且不会打印值。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "baseline_final_handoff_packet": {
@@ -372,7 +385,7 @@
       "script": "scripts/render_baseline_final_handoff_rehearsal.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": " \"step3_loaded_env_file\": true,\n    \"step3_variant_baseline\": true,\n    \"step3_dry_run_called\": true,\n    \"step3_parent_real_confirm_injected_before_scrub\": true,\n    \"step3_parent_real_confirm_scrubbed\": true,\n    \"step3_confirmation_absent_after_scrub\": true,\n    \"step3_missing_confirmation\": true,\n    \"step3_stops_before_real_runner\": true,\n    \"step3_real_runner_not_started\": true,\n    \"step3_no_protected_values_printed\": true\n  },\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false\n  },\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"baseline final handoff 前三条命令已用 synthetic local env 按顺序演练；前三步不会启动真实 runner，第四步仍必须等待用户明确授权。\"\n  ]\n}\n",
+      "stdout_tail": "ant_baseline\": true,\n    \"step3_target_confirmation_present\": true,\n    \"step3_dry_run_called\": true,\n    \"step3_parent_real_confirm_injected_before_scrub\": true,\n    \"step3_parent_real_confirm_scrubbed\": true,\n    \"step3_confirmation_absent_after_scrub\": true,\n    \"step3_missing_confirmation\": true,\n    \"step3_stops_before_real_runner\": true,\n    \"step3_real_runner_not_started\": true,\n    \"step3_no_protected_values_printed\": true\n  },\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false\n  },\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"baseline final handoff 前三条命令已用 synthetic local env 按顺序演练；前三步不会启动真实 runner，第四步仍必须等待用户明确授权。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "submission_handoff_docs": {
@@ -403,6 +416,7 @@
   "legacy_global_blocking": [
     "缺少 ROBOCHALLENGE_USER_TOKEN。",
     "缺少 ROBOCHALLENGE_SUBMISSION_ID。",
+    "缺少或未精确匹配 ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION=CONFIRM_TABLE30V2_ALOHA_BASELINE。",
     "缺少真实可访问 checkpoint link；可使用 ROBOCHALLENGE_CHECKPOINT_LINK 或 ROBOCHALLENGE_LORA_CHECKPOINT_LINK 记录。",
     "尚未执行 checkpoint 上传，本地 tar 文件也未生成。",
     "缺少 checkpoint link；请设置 ROBOCHALLENGE_CHECKPOINT_LINK 或 ROBOCHALLENGE_LORA_CHECKPOINT_LINK。",

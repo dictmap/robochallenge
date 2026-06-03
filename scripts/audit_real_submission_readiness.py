@@ -19,11 +19,13 @@ RUNS_DIR = ROOT / "runs"
 SUBMISSION_DIR = ROOT / "submission"
 DEFAULT_STATUS = RUNS_DIR / "real_submission_readiness.json"
 DEFAULT_REPORT = REPORTS_DIR / "real_submission_readiness.md"
+TARGET_CONFIRMATION_VALUE = "CONFIRM_TABLE30V2_ALOHA_BASELINE"
 
 
 ENV_KEYS = [
     "ROBOCHALLENGE_USER_TOKEN",
     "ROBOCHALLENGE_SUBMISSION_ID",
+    "ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION",
     "ROBOCHALLENGE_CHECKPOINT_LINK",
     "ROBOCHALLENGE_LORA_CHECKPOINT_LINK",
 ]
@@ -50,6 +52,9 @@ def env_probe() -> dict[str, dict[str, Any]]:
             "present": bool(value),
             "length": len(value) if value else 0,
             "looks_like_url": bool(re.match(r"^https?://", value)) if value else False,
+            "matches_target_confirmation": value == TARGET_CONFIRMATION_VALUE
+            if key == "ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION"
+            else None,
         }
     return result
 
@@ -98,6 +103,7 @@ def build_status() -> dict[str, Any]:
 
     has_user_token = env["ROBOCHALLENGE_USER_TOKEN"]["present"]
     has_submission_id = env["ROBOCHALLENGE_SUBMISSION_ID"]["present"]
+    has_target_confirmation = env["ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION"]["matches_target_confirmation"]
     has_any_checkpoint_link = (
         env["ROBOCHALLENGE_CHECKPOINT_LINK"]["looks_like_url"]
         or env["ROBOCHALLENGE_LORA_CHECKPOINT_LINK"]["looks_like_url"]
@@ -109,6 +115,7 @@ def build_status() -> dict[str, Any]:
         and baseline_checkpoint.exists()
         and has_user_token
         and has_submission_id
+        and has_target_confirmation
     )
     local_lora_runner_ready = bool(
         submission_audit.get("passed")
@@ -117,12 +124,14 @@ def build_status() -> dict[str, Any]:
         and lora_checkpoint.exists()
         and has_user_token
         and has_submission_id
+        and has_target_confirmation
     )
     web_form_ready = bool(
         manifest.get("status") == "template_pending_credentials"
         and upload_audit.get("passed")
         and has_user_token
         and has_submission_id
+        and has_target_confirmation
         and has_any_checkpoint_link
     )
     ready_for_real_submission = local_baseline_runner_ready or local_lora_runner_ready or web_form_ready
@@ -132,6 +141,8 @@ def build_status() -> dict[str, Any]:
         blocking.append("缺少 ROBOCHALLENGE_USER_TOKEN。")
     if not has_submission_id:
         blocking.append("缺少 ROBOCHALLENGE_SUBMISSION_ID。")
+    if not has_target_confirmation:
+        blocking.append("缺少或未精确匹配 ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION=CONFIRM_TABLE30V2_ALOHA_BASELINE。")
     if not has_any_checkpoint_link:
         blocking.append("缺少真实可访问 checkpoint link；可使用 ROBOCHALLENGE_CHECKPOINT_LINK 或 ROBOCHALLENGE_LORA_CHECKPOINT_LINK 记录。")
     if not upload_audit.get("passed"):

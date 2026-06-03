@@ -80,7 +80,7 @@
     },
     {
       "path": "reports/authorized_preflight_template_audit.md",
-      "size_bytes": 1337,
+      "size_bytes": 1426,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -120,7 +120,7 @@
     },
     {
       "path": "reports/baseline_final_handoff_rehearsal.md",
-      "size_bytes": 2839,
+      "size_bytes": 2939,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -128,7 +128,7 @@
     },
     {
       "path": "reports/baseline_local_env_smoke.md",
-      "size_bytes": 2061,
+      "size_bytes": 2183,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -280,7 +280,7 @@
     },
     {
       "path": "reports/next_user_action_packet.md",
-      "size_bytes": 7341,
+      "size_bytes": 7449,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -440,7 +440,7 @@
     },
     {
       "path": "reports/ready_real_runner_template_audit.md",
-      "size_bytes": 1828,
+      "size_bytes": 1916,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -448,7 +448,7 @@
     },
     {
       "path": "reports/real_submission_readiness.md",
-      "size_bytes": 1306,
+      "size_bytes": 1522,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -472,7 +472,7 @@
     },
     {
       "path": "reports/route_aware_submission_blockers.md",
-      "size_bytes": 3779,
+      "size_bytes": 3887,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -488,7 +488,7 @@
     },
     {
       "path": "reports/submission_artifact_manifest.md",
-      "size_bytes": 25284,
+      "size_bytes": 25994,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -496,7 +496,7 @@
     },
     {
       "path": "reports/submission_blockers_summary.md",
-      "size_bytes": 3803,
+      "size_bytes": 3911,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -504,7 +504,7 @@
     },
     {
       "path": "reports/submission_env_template_audit.md",
-      "size_bytes": 1100,
+      "size_bytes": 1190,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -520,7 +520,7 @@
     },
     {
       "path": "reports/submission_preflight_bundle.md",
-      "size_bytes": 9085,
+      "size_bytes": 9493,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -528,7 +528,7 @@
     },
     {
       "path": "reports/submission_status_dashboard.html",
-      "size_bytes": 21990,
+      "size_bytes": 22517,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -632,7 +632,7 @@
     },
     {
       "path": "runs/authorized_preflight_template_audit.json",
-      "size_bytes": 4039,
+      "size_bytes": 4122,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -672,7 +672,7 @@
     },
     {
       "path": "runs/baseline_final_handoff_rehearsal.json",
-      "size_bytes": 5113,
+      "size_bytes": 5337,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,

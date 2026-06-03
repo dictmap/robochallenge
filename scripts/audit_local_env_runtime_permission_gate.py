@@ -22,6 +22,7 @@ DEFAULT_REPORT = REPORTS_DIR / "local_env_runtime_permission_gate.md"
 
 SYNTHETIC_TOKEN = "synthetic_runtime_gate_token_0001"
 SYNTHETIC_SUBMISSION_ID = "synthetic_runtime_gate_submission_0001"
+TARGET_CONFIRMATION_VALUE = "CONFIRM_TABLE30V2_ALOHA_BASELINE"
 REDACTION = "[REDACTED_SYNTHETIC_VALUE]"
 TEMP_ENV_DIR_RE = re.compile(r"/tmp/robochallenge-runtime-env-gate-[A-Za-z0-9_-]+")
 
@@ -90,6 +91,7 @@ def write_synthetic_env(path: Path, mode: int) -> None:
                 f"export ROBOCHALLENGE_USER_TOKEN='{SYNTHETIC_TOKEN}'",
                 f"export ROBOCHALLENGE_SUBMISSION_ID='{SYNTHETIC_SUBMISSION_ID}'",
                 "export ROBOCHALLENGE_SUBMISSION_VARIANT='baseline'",
+                f"export ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION='{TARGET_CONFIRMATION_VALUE}'",
                 "export ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD='0'",
                 "",
             ]

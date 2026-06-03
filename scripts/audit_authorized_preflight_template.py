@@ -19,6 +19,7 @@ RUNS_DIR = ROOT / "runs"
 TEMPLATE = ROOT / "submission" / "run_authorized_preflight_template.sh"
 DEFAULT_STATUS = RUNS_DIR / "authorized_preflight_template_audit.json"
 DEFAULT_REPORT = REPORTS_DIR / "authorized_preflight_template_audit.md"
+TARGET_CONFIRMATION_VALUE = "CONFIRM_TABLE30V2_ALOHA_BASELINE"
 
 SECRET_PATTERNS = [
     r"sk-[A-Za-z0-9_-]{30,}",
@@ -67,6 +68,7 @@ def synthetic_no_credentials_smoke() -> dict[str, Any]:
         "ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD": "0",
         "ROBOCHALLENGE_REQUIRE_READY": "0",
         "ROBOCHALLENGE_SUBMISSION_VARIANT": "lora",
+        "ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION": TARGET_CONFIRMATION_VALUE,
     }
     for key in [
         "ROBOCHALLENGE_USER_TOKEN",
@@ -84,6 +86,7 @@ def synthetic_no_credentials_smoke() -> dict[str, Any]:
         "stderr_tail": (result.stderr or "")[-1000:],
         "env_file_present_false": "env_file_present=false" in output,
         "verify_download_disabled": "verify_download=0" in output,
+        "target_confirmation_present": "target_confirmation_present=true" in output,
         "stops_before_runner": "stop before runner dry-run" in output,
         "ready_false": "ready_for_real_submission=false" in output,
         "real_runner_not_called": "dry-run passed; real runner" not in output,
@@ -104,6 +107,9 @@ def build_status() -> dict[str, Any]:
         "sources_local_env_file": "source \"$ENV_FILE\"" in text,
         "reads_variant_after_local_env_source": source_index >= 0 and variant_index > source_index,
         "default_variant_baseline": 'VARIANT="${ROBOCHALLENGE_SUBMISSION_VARIANT:-baseline}"' in text,
+        "requires_target_confirmation": "ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION" in text
+        and TARGET_CONFIRMATION_VALUE in text
+        and "validate_target_confirmation" in text,
         "runs_link_intake": "python3 scripts/audit_checkpoint_link_intake.py" in text,
         "runs_link_download_default": "python3 scripts/audit_checkpoint_link_download_verification.py" in text,
         "download_verify_guarded": "ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD" in text
@@ -134,6 +140,7 @@ def build_status() -> dict[str, Any]:
         and smoke.get("passed")
         and smoke.get("env_file_present_false")
         and smoke.get("verify_download_disabled")
+        and smoke.get("target_confirmation_present")
         and smoke.get("stops_before_runner")
         and smoke.get("ready_false")
         and smoke.get("real_runner_not_called")
@@ -153,7 +160,14 @@ def build_status() -> dict[str, Any]:
             blocking.append(f"模板疑似包含真实 runner 直接调用：{key}。")
     if secret_hits:
         blocking.append("模板疑似包含明文 token 或密钥模式。")
-    for key in ["passed", "env_file_present_false", "verify_download_disabled", "stops_before_runner", "ready_false"]:
+    for key in [
+        "passed",
+        "env_file_present_false",
+        "verify_download_disabled",
+        "target_confirmation_present",
+        "stops_before_runner",
+        "ready_false",
+    ]:
         if not smoke.get(key):
             blocking.append(f"无凭据 smoke 未满足：{key}。")
     if not blocking:

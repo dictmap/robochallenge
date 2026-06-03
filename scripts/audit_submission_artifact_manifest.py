@@ -77,6 +77,7 @@ REQUIRED_ARTIFACTS = [
     "reports/baseline_final_handoff_rehearsal.md",
     "reports/route_aware_submission_blockers.md",
     "reports/submission_target_confirmation_packet.md",
+    "reports/submission_target_confirmation_gate.md",
     "reports/submission_handoff_docs_audit.md",
     "reports/authorized_submission_sequence_audit.md",
     "reports/submission_preflight_bundle.md",
@@ -101,6 +102,7 @@ REQUIRED_ARTIFACTS = [
     "scripts/render_baseline_final_handoff_rehearsal.py",
     "scripts/render_route_aware_submission_blockers.py",
     "scripts/render_submission_target_confirmation_packet.py",
+    "scripts/audit_submission_target_confirmation_gate.py",
     "scripts/audit_jupyter_input_template.py",
     "scripts/audit_jupyter_authorized_preflight_template.py",
     "scripts/audit_jupyter_final_handoff_template.py",
@@ -226,6 +228,7 @@ def build_status() -> dict[str, Any]:
     baseline_final_handoff_rehearsal = read_json(RUNS_DIR / "baseline_final_handoff_rehearsal.json")
     route_aware_blockers = read_json(RUNS_DIR / "route_aware_submission_blockers.json")
     target_confirmation = read_json(RUNS_DIR / "submission_target_confirmation_packet.json")
+    target_confirmation_gate = read_json(RUNS_DIR / "submission_target_confirmation_gate.json")
     readiness = read_json(RUNS_DIR / "real_submission_readiness.json")
     env_template = read_json(RUNS_DIR / "submission_env_template_audit.json")
     secret_scan = read_json(RUNS_DIR / "plaintext_secret_scan.json")
@@ -320,6 +323,23 @@ def build_status() -> dict[str, Any]:
         == "aloha",
         "submission_target_confirmation_benchmark_exact": target_confirmation.get("target", {}).get("benchmark")
         == "Table30v2",
+        "submission_target_confirmation_gate_passed": target_confirmation_gate.get("passed") is True,
+        "submission_target_confirmation_gate_bad_rejected": target_confirmation_gate.get(
+            "bad_confirmations_rejected"
+        )
+        is True,
+        "submission_target_confirmation_gate_bad_stop_before_preflight": target_confirmation_gate.get(
+            "bad_confirmations_stop_before_preflight"
+        )
+        is True,
+        "submission_target_confirmation_gate_correct_accepted": target_confirmation_gate.get(
+            "correct_confirmation_accepted"
+        )
+        is True,
+        "submission_target_confirmation_gate_real_runner_not_started": target_confirmation_gate.get(
+            "real_runner_started"
+        )
+        is False,
         "submission_variant_route_packet_passed": route_packet.get("passed") is True,
         "submission_variant_route_packet_baseline_default": route_packet.get("recommended_default")
         == "baseline_official_aloha",
@@ -601,6 +621,7 @@ def build_status() -> dict[str, Any]:
                 baseline_final_handoff_rehearsal,
                 route_aware_blockers,
                 target_confirmation,
+                target_confirmation_gate,
                 readiness,
                 env_template,
             ]
@@ -632,7 +653,8 @@ def build_status() -> dict[str, Any]:
         or bool(baseline_final_handoff.get("link_values_printed"))
         or bool(baseline_final_handoff_rehearsal.get("link_values_printed"))
         or bool(route_aware_blockers.get("link_values_printed"))
-        or bool(target_confirmation.get("link_values_printed")),
+        or bool(target_confirmation.get("link_values_printed"))
+        or bool(target_confirmation_gate.get("link_values_printed")),
         "secret_values_printed": bool(secret_scan.get("secret_values_printed"))
         or bool(jupyter_input.get("secret_values_printed"))
         or bool(jupyter_authorized.get("secret_values_printed"))
@@ -656,7 +678,8 @@ def build_status() -> dict[str, Any]:
         or bool(baseline_final_handoff.get("secret_values_printed"))
         or bool(baseline_final_handoff_rehearsal.get("secret_values_printed"))
         or bool(route_aware_blockers.get("secret_values_printed"))
-        or bool(target_confirmation.get("secret_values_printed")),
+        or bool(target_confirmation.get("secret_values_printed"))
+        or bool(target_confirmation_gate.get("secret_values_printed")),
     }
     contact_flags = {
         "platform_contacted": any(
@@ -691,6 +714,7 @@ def build_status() -> dict[str, Any]:
                 baseline_final_handoff_rehearsal,
                 route_aware_blockers,
                 target_confirmation,
+                target_confirmation_gate,
                 readiness,
                 env_template,
                 secret_scan,
@@ -728,6 +752,7 @@ def build_status() -> dict[str, Any]:
                 baseline_final_handoff_rehearsal,
                 route_aware_blockers,
                 target_confirmation,
+                target_confirmation_gate,
                 readiness,
                 env_template,
                 secret_scan,

@@ -21,6 +21,7 @@ DEFAULT_STATUS = RUNS_DIR / "ready_real_runner_template_audit.json"
 DEFAULT_REPORT = REPORTS_DIR / "ready_real_runner_template_audit.md"
 CONFIRM_PHRASE = "RUN_REAL_ROBOCHALLENGE_SUBMISSION"
 WRONG_CONFIRM_PHRASE = "RUN_REAL_ROBOCHALLENGE_SUBMISSION_WRONG"
+TARGET_CONFIRMATION_VALUE = "CONFIRM_TABLE30V2_ALOHA_BASELINE"
 MALFORMED_CONFIRM_CASES = [
     ("trailing_space", CONFIRM_PHRASE + " "),
     ("leading_space", " " + CONFIRM_PHRASE),
@@ -50,6 +51,8 @@ REQUIRED_FRAGMENTS = {
     "lora_dry_run_first": "ROBOCHALLENGE_DRY_RUN=1 bash submission/run_table30v2_aloha_lora_demo_template.sh",
     "baseline_dry_run_first": "ROBOCHALLENGE_DRY_RUN=1 bash submission/run_table30v2_aloha_demo_template.sh",
     "requires_confirmation": "ROBOCHALLENGE_REAL_RUN_CONFIRM",
+    "requires_target_confirmation": "ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION",
+    "target_confirmation_phrase": TARGET_CONFIRMATION_VALUE,
     "confirmation_phrase": CONFIRM_PHRASE,
     "lora_real_runner_available": "bash submission/run_table30v2_aloha_lora_demo_template.sh",
     "baseline_real_runner_available": "bash submission/run_table30v2_aloha_demo_template.sh",
@@ -94,6 +97,7 @@ def clean_env(extra: dict[str, str] | None = None) -> dict[str, str]:
         "ROBOCHALLENGE_LORA_CHECKPOINT_LINK",
         "ROBOCHALLENGE_CHECKPOINT",
         "ROBOCHALLENGE_REAL_RUN_CONFIRM",
+        "ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION",
         "ROBOCHALLENGE_ENV_FILE",
         "ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD",
         "ROBOCHALLENGE_SUBMISSION_VARIANT",
@@ -144,7 +148,8 @@ def run_template(extra_env: dict[str, str]) -> dict[str, Any]:
         "ready_false": "ready_for_real_submission=false" in combined,
         "dry_run_called": "dry_run=true" in combined,
         "missing_confirmation": "missing explicit real-run confirmation" in combined,
-        "confirmation_present": "confirmation_present=true" in combined,
+        "confirmation_present": "[ready-real-runner] confirmation_present=true" in combined,
+        "target_confirmation_present": "target_confirmation_present=true" in combined,
         "stops_before_real_runner": "stop before real runner" in combined,
         "real_runner_started": "confirmation accepted; starting real runner" in combined,
         "demo_mentioned": "demo.py" in combined,
@@ -190,12 +195,14 @@ def build_status() -> dict[str, Any]:
         {
             "ROBOCHALLENGE_ENV_FILE": str(ROOT / "submission" / "__missing_env_for_real_runner_audit__.sh"),
             "ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD": "0",
+            "ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION": TARGET_CONFIRMATION_VALUE,
         }
     )
     synthetic_no_confirm = run_template(
         {
             "ROBOCHALLENGE_ENV_FILE": str(ROOT / "submission" / "__missing_env_for_real_runner_audit__.sh"),
             "ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD": "0",
+            "ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION": TARGET_CONFIRMATION_VALUE,
             "ROBOCHALLENGE_USER_TOKEN": SYNTHETIC_TOKEN,
             "ROBOCHALLENGE_SUBMISSION_ID": SYNTHETIC_SUBMISSION_ID,
         }
@@ -204,6 +211,7 @@ def build_status() -> dict[str, Any]:
         {
             "ROBOCHALLENGE_ENV_FILE": str(ROOT / "submission" / "__missing_env_for_real_runner_audit__.sh"),
             "ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD": "0",
+            "ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION": TARGET_CONFIRMATION_VALUE,
             "ROBOCHALLENGE_USER_TOKEN": SYNTHETIC_TOKEN,
             "ROBOCHALLENGE_SUBMISSION_ID": SYNTHETIC_SUBMISSION_ID,
             "ROBOCHALLENGE_REAL_RUN_CONFIRM": WRONG_CONFIRM_PHRASE,
@@ -215,6 +223,7 @@ def build_status() -> dict[str, Any]:
             {
                 "ROBOCHALLENGE_ENV_FILE": str(ROOT / "submission" / "__missing_env_for_real_runner_audit__.sh"),
                 "ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD": "0",
+                "ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION": TARGET_CONFIRMATION_VALUE,
                 "ROBOCHALLENGE_USER_TOKEN": SYNTHETIC_TOKEN,
                 "ROBOCHALLENGE_SUBMISSION_ID": SYNTHETIC_SUBMISSION_ID,
                 "ROBOCHALLENGE_REAL_RUN_CONFIRM": confirm_value,
@@ -229,6 +238,7 @@ def build_status() -> dict[str, Any]:
         [
             no_credentials["returncode"] != 0,
             no_credentials["ready_false"],
+            no_credentials["target_confirmation_present"],
             not no_credentials["dry_run_called"],
             not no_credentials["real_runner_started"],
             not no_credentials["demo_mentioned"],
@@ -240,6 +250,7 @@ def build_status() -> dict[str, Any]:
             synthetic_no_confirm["returncode"] != 0,
             synthetic_no_confirm["variant"] == "baseline",
             synthetic_no_confirm["dry_run_called"],
+            synthetic_no_confirm["target_confirmation_present"],
             not synthetic_no_confirm["confirmation_present"],
             synthetic_no_confirm["missing_confirmation"],
             synthetic_no_confirm["stops_before_real_runner"],
@@ -253,6 +264,7 @@ def build_status() -> dict[str, Any]:
             synthetic_wrong_confirm["returncode"] != 0,
             synthetic_wrong_confirm["variant"] == "baseline",
             synthetic_wrong_confirm["dry_run_called"],
+            synthetic_wrong_confirm["target_confirmation_present"],
             synthetic_wrong_confirm["confirmation_present"],
             synthetic_wrong_confirm["missing_confirmation"],
             synthetic_wrong_confirm["stops_before_real_runner"],
@@ -267,6 +279,7 @@ def build_status() -> dict[str, Any]:
                 item["returncode"] != 0,
                 item["variant"] == "baseline",
                 item["dry_run_called"],
+                item["target_confirmation_present"],
                 item["confirmation_present"],
                 item["missing_confirmation"],
                 item["stops_before_real_runner"],

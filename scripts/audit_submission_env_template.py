@@ -23,6 +23,7 @@ REQUIRED_KEYS = [
     "ROBOCHALLENGE_USER_TOKEN",
     "ROBOCHALLENGE_SUBMISSION_ID",
     "ROBOCHALLENGE_SUBMISSION_VARIANT",
+    "ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION",
     "ROBOCHALLENGE_LORA_CHECKPOINT_LINK",
     "ROBOCHALLENGE_CHECKPOINT_LINK",
 ]
@@ -96,6 +97,8 @@ def build_status(template_path: Path) -> dict[str, Any]:
         value = exports.get(key, "")
         if key == "ROBOCHALLENGE_SUBMISSION_VARIANT":
             placeholder_values[key] = value == "baseline"
+        elif key == "ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION":
+            placeholder_values[key] = value == "CONFIRM_TABLE30V2_ALOHA_BASELINE"
         else:
             placeholder_values[key] = bool(value.startswith("<真实 ") and value.endswith(">"))
     local_ignore = {path: git_check_ignore(path) for path in LOCAL_SECRET_PATHS}
@@ -110,6 +113,8 @@ def build_status(template_path: Path) -> dict[str, Any]:
         if not ok:
             if key == "ROBOCHALLENGE_SUBMISSION_VARIANT":
                 blocking.append(f"模板中的 `{key}` 不是 baseline 默认值。")
+            elif key == "ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION":
+                blocking.append(f"模板中的 `{key}` 不是 Table30v2 ALOHA baseline 固定确认值。")
             else:
                 blocking.append(f"模板中的 `{key}` 不是占位符。")
     for path, item in local_ignore.items():

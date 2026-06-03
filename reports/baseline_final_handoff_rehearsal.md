@@ -49,12 +49,14 @@
 - `step2_returncode_zero`：`True`。
 - `step2_loaded_env_file`：`True`。
 - `step2_variant_baseline`：`True`。
+- `step2_target_confirmation_present`：`True`。
 - `step2_dry_run_called`：`True`。
 - `step2_robot_type_aloha`：`True`。
 - `step2_no_protected_values_printed`：`True`。
 - `step3_returncode_missing_confirmation`：`True`。
 - `step3_loaded_env_file`：`True`。
 - `step3_variant_baseline`：`True`。
+- `step3_target_confirmation_present`：`True`。
 - `step3_dry_run_called`：`True`。
 - `step3_parent_real_confirm_injected_before_scrub`：`True`。
 - `step3_parent_real_confirm_scrubbed`：`True`。

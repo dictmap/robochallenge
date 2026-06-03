@@ -33,12 +33,14 @@
 - `authorized_preflight_returncode_zero`：`True`。
 - `authorized_preflight_loaded_env_file`：`True`。
 - `authorized_preflight_variant_baseline`：`True`。
+- `authorized_preflight_target_confirmation_present`：`True`。
 - `authorized_preflight_dry_run_called`：`True`。
 - `authorized_preflight_robot_type_aloha`：`True`。
 - `authorized_preflight_no_protected_values_printed`：`True`。
 - `ready_runner_returncode_missing_confirmation`：`True`。
 - `ready_runner_loaded_env_file`：`True`。
 - `ready_runner_variant_baseline`：`True`。
+- `ready_runner_target_confirmation_present`：`True`。
 - `ready_runner_dry_run_called`：`True`。
 - `ready_runner_parent_real_confirm_injected_before_scrub`：`True`。
 - `ready_runner_parent_real_confirm_scrubbed`：`True`。

@@ -15,6 +15,7 @@
 - `sources_local_env_file`：`True`。
 - `reads_variant_after_local_env_source`：`True`。
 - `default_variant_baseline`：`True`。
+- `requires_target_confirmation`：`True`。
 - `runs_link_intake`：`True`。
 - `runs_link_download_default`：`True`。
 - `download_verify_guarded`：`True`。
@@ -37,6 +38,7 @@
 - `passed`：`True`。
 - `env_file_present_false`：`True`。
 - `verify_download_disabled`：`True`。
+- `target_confirmation_present`：`True`。
 - `stops_before_runner`：`True`。
 - `ready_false`：`True`。
 - `real_runner_not_called`：`True`。

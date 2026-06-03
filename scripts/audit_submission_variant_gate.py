@@ -17,6 +17,7 @@ RUNS_DIR = ROOT / "runs"
 REPORTS_DIR = ROOT / "reports"
 DEFAULT_STATUS = RUNS_DIR / "submission_variant_gate.json"
 DEFAULT_REPORT = REPORTS_DIR / "submission_variant_gate.md"
+TARGET_CONFIRMATION_VALUE = "CONFIRM_TABLE30V2_ALOHA_BASELINE"
 
 SCRIPTS = {
     "authorized_preflight": "submission/run_authorized_preflight_template.sh",
@@ -52,6 +53,7 @@ def sanitized_env(variant: str) -> dict[str, str]:
             env.pop(key, None)
     env["PYTHONIOENCODING"] = "utf-8"
     env["ROBOCHALLENGE_SUBMISSION_VARIANT"] = variant
+    env["ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION"] = TARGET_CONFIRMATION_VALUE
     env["ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD"] = "0"
     return env
 

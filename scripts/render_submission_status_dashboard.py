@@ -30,6 +30,7 @@ SOURCE_FILES = {
     "next_user_action_packet": RUNS_DIR / "next_user_action_packet.json",
     "web_form_field_packet": RUNS_DIR / "web_form_field_packet.json",
     "submission_target_confirmation": RUNS_DIR / "submission_target_confirmation_packet.json",
+    "submission_target_confirmation_gate": RUNS_DIR / "submission_target_confirmation_gate.json",
     "submission_variant_route_packet": RUNS_DIR / "submission_variant_route_packet.json",
     "baseline_submission_quickstart": RUNS_DIR / "baseline_submission_quickstart.json",
     "baseline_dry_run_gate": RUNS_DIR / "baseline_dry_run_gate.json",
@@ -106,6 +107,7 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
     action_packet = data["next_user_action_packet"]
     web_form_packet = data["web_form_field_packet"]
     target_confirmation = data["submission_target_confirmation"]
+    target_confirmation_gate = data["submission_target_confirmation_gate"]
     route_packet = data["submission_variant_route_packet"]
     baseline_quickstart = data["baseline_submission_quickstart"]
     baseline_dry_run_gate = data["baseline_dry_run_gate"]
@@ -186,6 +188,16 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
         and target_confirmation.get("does_not_confirm_for_user") is True
         and not any(target_confirmation.get("contact_flags", {}).values())
         and not any(target_confirmation.get("leak_flags", {}).values())
+    )
+    target_confirmation_gate_ready = bool(
+        target_confirmation_gate.get("passed")
+        and target_confirmation_gate.get("confirmation_value") == "CONFIRM_TABLE30V2_ALOHA_BASELINE"
+        and target_confirmation_gate.get("bad_confirmations_rejected") is True
+        and target_confirmation_gate.get("bad_confirmations_stop_before_preflight") is True
+        and target_confirmation_gate.get("correct_confirmation_accepted") is True
+        and target_confirmation_gate.get("real_runner_started") is False
+        and not any(target_confirmation_gate.get("contact_flags", {}).values())
+        and not any(target_confirmation_gate.get("leak_flags", {}).values())
     )
     route_packet_ready = bool(
         route_packet.get("passed")
@@ -417,6 +429,13 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
             "待用户确认",
             "确认包已整理 Table30v2 / aloha / pack_the_toothbrush_holder；它不替用户确认，只给出可核对目标和推荐确认值。",
             "reports/submission_target_confirmation_packet.md",
+        ),
+        card(
+            "提交对象确认 gate",
+            "done" if target_confirmation_gate_ready else "watch",
+            "精确匹配",
+            "提交 wrapper 已要求 ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION 精确等于 CONFIRM_TABLE30V2_ALOHA_BASELINE；错误值会停在预检前。",
+            "reports/submission_target_confirmation_gate.md",
         ),
         card(
             "LoRA 物化 policy",
@@ -663,6 +682,7 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
     action_packet = data["next_user_action_packet"]
     web_form_packet = data["web_form_field_packet"]
     target_confirmation = data["submission_target_confirmation"]
+    target_confirmation_gate = data["submission_target_confirmation_gate"]
     route_packet = data["submission_variant_route_packet"]
     baseline_quickstart = data["baseline_submission_quickstart"]
     baseline_dry_run_gate = data["baseline_dry_run_gate"]
@@ -750,6 +770,30 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
         "submission_target_task_name": target_confirmation.get("target", {}).get("task_name"),
         "submission_target_no_contact": not any(target_confirmation.get("contact_flags", {}).values()),
         "submission_target_no_leak": not any(target_confirmation.get("leak_flags", {}).values()),
+        "submission_target_confirmation_gate_passed": target_confirmation_gate.get("passed") is True,
+        "submission_target_confirmation_gate_case_count": target_confirmation_gate.get("case_count"),
+        "submission_target_confirmation_gate_bad_rejected": target_confirmation_gate.get(
+            "bad_confirmations_rejected"
+        )
+        is True,
+        "submission_target_confirmation_gate_bad_stop_before_preflight": target_confirmation_gate.get(
+            "bad_confirmations_stop_before_preflight"
+        )
+        is True,
+        "submission_target_confirmation_gate_correct_accepted": target_confirmation_gate.get(
+            "correct_confirmation_accepted"
+        )
+        is True,
+        "submission_target_confirmation_gate_real_runner_not_started": target_confirmation_gate.get(
+            "real_runner_started"
+        )
+        is False,
+        "submission_target_confirmation_gate_no_contact": not any(
+            target_confirmation_gate.get("contact_flags", {}).values()
+        ),
+        "submission_target_confirmation_gate_no_leak": not any(
+            target_confirmation_gate.get("leak_flags", {}).values()
+        ),
         "submission_variant_route_packet_passed": route_packet.get("passed") is True,
         "submission_variant_recommended_default": route_packet.get("recommended_default"),
         "submission_variant_route_count": route_packet.get("route_count"),

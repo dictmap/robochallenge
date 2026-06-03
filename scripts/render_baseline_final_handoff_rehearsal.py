@@ -22,6 +22,7 @@ DEFAULT_REPORT = REPORTS_DIR / "baseline_final_handoff_rehearsal.md"
 SYNTHETIC_TOKEN = "synthetic_user_token_for_final_handoff_rehearsal_0001"
 SYNTHETIC_SUBMISSION_ID = "synthetic_submission_id_for_final_handoff_rehearsal_0001"
 PARENT_CONFIRM_PHRASE = "RUN_REAL_ROBOCHALLENGE_SUBMISSION"
+TARGET_CONFIRMATION_VALUE = "CONFIRM_TABLE30V2_ALOHA_BASELINE"
 
 EXPECTED_FIRST_THREE_COMMANDS = [
     "python3 scripts/render_baseline_credential_hygiene.py",
@@ -66,6 +67,7 @@ def write_synthetic_env(path: Path) -> None:
                 f"export ROBOCHALLENGE_USER_TOKEN={SYNTHETIC_TOKEN!r}",
                 f"export ROBOCHALLENGE_SUBMISSION_ID={SYNTHETIC_SUBMISSION_ID!r}",
                 "export ROBOCHALLENGE_SUBMISSION_VARIANT='baseline'",
+                f"export ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION={TARGET_CONFIRMATION_VALUE!r}",
                 "export ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD='0'",
                 "export ROBOCHALLENGE_CHECKPOINT_LINK=''",
                 "export ROBOCHALLENGE_LORA_CHECKPOINT_LINK=''",
@@ -117,6 +119,7 @@ def scrub_env(env_file: Path) -> dict[str, str]:
         "ROBOCHALLENGE_USER_TOKEN",
         "ROBOCHALLENGE_SUBMISSION_ID",
         "ROBOCHALLENGE_SUBMISSION_VARIANT",
+        "ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION",
         "ROBOCHALLENGE_CHECKPOINT_LINK",
         "ROBOCHALLENGE_LORA_CHECKPOINT_LINK",
         "ROBOCHALLENGE_REAL_RUN_CONFIRM",
@@ -151,13 +154,14 @@ def run_handoff_command(command: str, env_file: Path) -> dict[str, Any]:
         "stderr_line_count": len(stderr.splitlines()),
         "env_file_present_true": "env_file_present=true" in combined,
         "variant_baseline": "variant=baseline" in combined,
+        "target_confirmation_present": "target_confirmation_present=true" in combined,
         "dry_run_called": "dry_run=true" in combined,
         "robot_type_aloha": "robot_type=aloha" in combined,
         "ready_false": "ready_for_real_submission=false" in combined,
         "parent_real_confirm_injected_before_scrub": True,
         "parent_real_confirm_present_in_subprocess_env": "ROBOCHALLENGE_REAL_RUN_CONFIRM" in env,
-        "confirmation_present": "confirmation_present=true" in combined,
-        "confirmation_absent": "confirmation_present=false" in combined,
+        "confirmation_present": "[ready-real-runner] confirmation_present=true" in combined,
+        "confirmation_absent": "[ready-real-runner] confirmation_present=false" in combined,
         "missing_confirmation": "missing explicit real-run confirmation" in combined,
         "stops_before_real_runner": "stop before real runner" in combined,
         "real_runner_started": "confirmation accepted; starting real runner" in combined,
@@ -242,12 +246,14 @@ def build_status() -> dict[str, Any]:
         "step2_returncode_zero": step2.get("returncode") == 0,
         "step2_loaded_env_file": step2.get("env_file_present_true") is True,
         "step2_variant_baseline": step2.get("variant_baseline") is True,
+        "step2_target_confirmation_present": step2.get("target_confirmation_present") is True,
         "step2_dry_run_called": step2.get("dry_run_called") is True,
         "step2_robot_type_aloha": step2.get("robot_type_aloha") is True,
         "step2_no_protected_values_printed": step2.get("printed_protected_values") is False,
         "step3_returncode_missing_confirmation": step3.get("returncode") == 1,
         "step3_loaded_env_file": step3.get("env_file_present_true") is True,
         "step3_variant_baseline": step3.get("variant_baseline") is True,
+        "step3_target_confirmation_present": step3.get("target_confirmation_present") is True,
         "step3_dry_run_called": step3.get("dry_run_called") is True,
         "step3_parent_real_confirm_injected_before_scrub": step3.get(
             "parent_real_confirm_injected_before_scrub"

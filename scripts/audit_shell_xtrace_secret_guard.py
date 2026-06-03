@@ -20,6 +20,7 @@ DEFAULT_REPORT = REPORTS_DIR / "shell_xtrace_secret_guard.md"
 
 SYNTHETIC_TOKEN = "synthetic_xtrace_token_value_0001"
 SYNTHETIC_SUBMISSION_ID = "synthetic_xtrace_submission_id_0001"
+TARGET_CONFIRMATION_VALUE = "CONFIRM_TABLE30V2_ALOHA_BASELINE"
 REDACTION = "[REDACTED_SYNTHETIC_VALUE]"
 
 WRAPPERS = {
@@ -47,6 +48,7 @@ def clean_env(extra: dict[str, str] | None = None) -> dict[str, str]:
     env["ROBOCHALLENGE_USER_TOKEN"] = SYNTHETIC_TOKEN
     env["ROBOCHALLENGE_SUBMISSION_ID"] = SYNTHETIC_SUBMISSION_ID
     env["ROBOCHALLENGE_SUBMISSION_VARIANT"] = "baseline"
+    env["ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION"] = TARGET_CONFIRMATION_VALUE
     env["ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD"] = "0"
     if extra:
         env.update(extra)

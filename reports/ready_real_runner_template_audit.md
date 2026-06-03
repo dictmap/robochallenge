@@ -28,6 +28,8 @@
 - `lora_dry_run_first`：`True`。
 - `baseline_dry_run_first`：`True`。
 - `requires_confirmation`：`True`。
+- `requires_target_confirmation`：`True`。
+- `target_confirmation_phrase`：`True`。
 - `confirmation_phrase`：`True`。
 - `lora_real_runner_available`：`True`。
 - `baseline_real_runner_available`：`True`。

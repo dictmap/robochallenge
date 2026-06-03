@@ -105,10 +105,10 @@
         <h1>RoboChallenge pi0.5 提交状态面板</h1>
         <p class="sub">静态 GUI 汇总当前复现、LoRA checkpoint、上传/link/readiness 阻塞和授权后执行顺序。面板由 JSON 审计结果生成，不读取或显示真实凭据。</p>
       </div>
-      <div class="stamp">生成时间<br>2026-06-02 23:57:49 UTC</div>
+      <div class="stamp">生成时间<br>2026-06-03 00:23:28 UTC</div>
     </header>
     <section class="summary">
-      <div class="metric"><b>30</b><span>已完成项</span></div>
+      <div class="metric"><b>31</b><span>已完成项</span></div>
       <div class="metric"><b>5</b><span>待授权项</span></div>
       <div class="metric"><b>否</b><span>真实提交就绪</span></div>
       <div class="metric"><b>否</b><span>checkpoint link 就绪</span></div>
@@ -154,6 +154,16 @@
               <h2>提交对象确认</h2>
               <p class="value">待用户确认</p>
               <p>确认包已整理 Table30v2 / aloha / pack_the_toothbrush_holder；它不替用户确认，只给出可核对目标和推荐确认值。</p>
+            </article>
+
+            <article class="card done">
+              <div class="card-top">
+                <span class="state">已完成</span>
+                <a href="../reports/submission_target_confirmation_gate.md">报告</a>
+              </div>
+              <h2>提交对象确认 gate</h2>
+              <p class="value">精确匹配</p>
+              <p>提交 wrapper 已要求 ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION 精确等于 CONFIRM_TABLE30V2_ALOHA_BASELINE；错误值会停在预检前。</p>
             </article>
 
             <article class="card done">

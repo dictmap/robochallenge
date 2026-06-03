@@ -5,6 +5,7 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 ENV_FILE="${ROBOCHALLENGE_ENV_FILE:-$REPO_ROOT/submission/robochallenge_env.local.sh}"
 CONFIRM_PHRASE="RUN_REAL_ROBOCHALLENGE_SUBMISSION"
+TARGET_CONFIRMATION_PHRASE="CONFIRM_TABLE30V2_ALOHA_BASELINE"
 
 cd "$REPO_ROOT"
 
@@ -55,6 +56,15 @@ validate_bool_flag() {
   esac
 }
 
+validate_target_confirmation() {
+  local value="$1"
+  if [[ "$value" != "$TARGET_CONFIRMATION_PHRASE" ]]; then
+    echo "[ready-real-runner] missing target confirmation" >&2
+    echo "[ready-real-runner] set ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION=$TARGET_CONFIRMATION_PHRASE after confirming Table30v2 / aloha / pack_the_toothbrush_holder" >&2
+    exit 69
+  fi
+}
+
 echo "[ready-real-runner] repo=$REPO_ROOT"
 echo "[ready-real-runner] env_file_present=$([[ -f "$ENV_FILE" ]] && echo true || echo false)"
 
@@ -67,12 +77,15 @@ fi
 VARIANT="${ROBOCHALLENGE_SUBMISSION_VARIANT:-baseline}"
 VERIFY_DOWNLOAD="${ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD:-0}"
 CONFIRM_VALUE="${ROBOCHALLENGE_REAL_RUN_CONFIRM:-}"
+TARGET_CONFIRMATION="${ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION:-}"
 
 validate_variant "$VARIANT"
 validate_bool_flag ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD "$VERIFY_DOWNLOAD"
+validate_target_confirmation "$TARGET_CONFIRMATION"
 
 echo "[ready-real-runner] variant=$VARIANT"
 echo "[ready-real-runner] verify_download=$VERIFY_DOWNLOAD"
+echo "[ready-real-runner] target_confirmation_present=true"
 echo "[ready-real-runner] confirmation_present=$([[ -n "$CONFIRM_VALUE" ]] && echo true || echo false)"
 
 python3 scripts/audit_checkpoint_link_intake.py --scenario-only

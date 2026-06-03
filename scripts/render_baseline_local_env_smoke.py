@@ -21,6 +21,7 @@ DEFAULT_REPORT = REPORTS_DIR / "baseline_local_env_smoke.md"
 SYNTHETIC_TOKEN = "synthetic_user_token_for_local_env_smoke_0001"
 SYNTHETIC_SUBMISSION_ID = "synthetic_submission_id_for_local_env_smoke_0001"
 PARENT_CONFIRM_PHRASE = "RUN_REAL_ROBOCHALLENGE_SUBMISSION"
+TARGET_CONFIRMATION_VALUE = "CONFIRM_TABLE30V2_ALOHA_BASELINE"
 AUTHORIZED_PREFLIGHT_COMMAND = "bash submission/run_authorized_preflight_template.sh"
 READY_RUNNER_COMMAND = "bash submission/run_ready_real_submission_template.sh"
 SNAPSHOT_RELS = [
@@ -51,6 +52,7 @@ def run_script(script: str, env_file: Path) -> dict[str, Any]:
         "ROBOCHALLENGE_USER_TOKEN",
         "ROBOCHALLENGE_SUBMISSION_ID",
         "ROBOCHALLENGE_SUBMISSION_VARIANT",
+        "ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION",
         "ROBOCHALLENGE_CHECKPOINT_LINK",
         "ROBOCHALLENGE_LORA_CHECKPOINT_LINK",
         "ROBOCHALLENGE_REAL_RUN_CONFIRM",
@@ -79,13 +81,14 @@ def run_script(script: str, env_file: Path) -> dict[str, Any]:
         "stderr_tail": stderr[-1500:],
         "env_file_present_true": "env_file_present=true" in combined,
         "variant_baseline": "variant=baseline" in combined,
+        "target_confirmation_present": "target_confirmation_present=true" in combined,
         "dry_run_called": "dry_run=true" in combined,
         "robot_type_aloha": "robot_type=aloha" in combined,
         "ready_false": "ready_for_real_submission=false" in combined,
         "parent_real_confirm_injected_before_scrub": True,
         "parent_real_confirm_present_in_subprocess_env": "ROBOCHALLENGE_REAL_RUN_CONFIRM" in env,
-        "confirmation_present": "confirmation_present=true" in combined,
-        "confirmation_absent": "confirmation_present=false" in combined,
+        "confirmation_present": "[ready-real-runner] confirmation_present=true" in combined,
+        "confirmation_absent": "[ready-real-runner] confirmation_present=false" in combined,
         "missing_confirmation": "missing explicit real-run confirmation" in combined,
         "stops_before_real_runner": "stop before real runner" in combined,
         "real_runner_started": "confirmation accepted; starting real runner" in combined,
@@ -102,6 +105,7 @@ def write_synthetic_env(path: Path) -> None:
                 f"export ROBOCHALLENGE_USER_TOKEN={SYNTHETIC_TOKEN!r}",
                 f"export ROBOCHALLENGE_SUBMISSION_ID={SYNTHETIC_SUBMISSION_ID!r}",
                 "export ROBOCHALLENGE_SUBMISSION_VARIANT='baseline'",
+                f"export ROBOCHALLENGE_SUBMISSION_TARGET_CONFIRMATION={TARGET_CONFIRMATION_VALUE!r}",
                 "export ROBOCHALLENGE_VERIFY_CHECKPOINT_DOWNLOAD='0'",
                 "export ROBOCHALLENGE_CHECKPOINT_LINK=''",
                 "export ROBOCHALLENGE_LORA_CHECKPOINT_LINK=''",
@@ -152,12 +156,14 @@ def build_status() -> dict[str, Any]:
         "authorized_preflight_returncode_zero": authorized.get("returncode") == 0,
         "authorized_preflight_loaded_env_file": authorized.get("env_file_present_true") is True,
         "authorized_preflight_variant_baseline": authorized.get("variant_baseline") is True,
+        "authorized_preflight_target_confirmation_present": authorized.get("target_confirmation_present") is True,
         "authorized_preflight_dry_run_called": authorized.get("dry_run_called") is True,
         "authorized_preflight_robot_type_aloha": authorized.get("robot_type_aloha") is True,
         "authorized_preflight_no_protected_values_printed": authorized.get("printed_protected_values") is False,
         "ready_runner_returncode_missing_confirmation": ready_runner.get("returncode") == 1,
         "ready_runner_loaded_env_file": ready_runner.get("env_file_present_true") is True,
         "ready_runner_variant_baseline": ready_runner.get("variant_baseline") is True,
+        "ready_runner_target_confirmation_present": ready_runner.get("target_confirmation_present") is True,
         "ready_runner_dry_run_called": ready_runner.get("dry_run_called") is True,
         "ready_runner_parent_real_confirm_injected_before_scrub": ready_runner.get(
             "parent_real_confirm_injected_before_scrub"

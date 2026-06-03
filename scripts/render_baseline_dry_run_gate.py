@@ -15,6 +15,7 @@ REPORTS_DIR = ROOT / "reports"
 RUNS_DIR = ROOT / "runs"
 DEFAULT_STATUS = RUNS_DIR / "baseline_dry_run_gate.json"
 DEFAULT_REPORT = REPORTS_DIR / "baseline_dry_run_gate.md"
+SELF_BOOTSTRAP_EXCLUSIONS = ["previous_preflight_passed_or_absent"]
 
 AUTHORIZED_PREFLIGHT_COMMAND = (
     "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_authorized_preflight_template.sh"
@@ -135,6 +136,9 @@ def build_status() -> dict[str, Any]:
         "secret_scan_clean": secret_scan.get("passed") is True and secret_scan.get("hit_count") == 0,
         "previous_preflight_passed_or_absent": not previous_preflight or previous_preflight.get("passed") is True,
     }
+    bootstrap_evidence = {
+        key: value for key, value in evidence.items() if key not in set(SELF_BOOTSTRAP_EXCLUSIONS)
+    }
     leak_flags = {
         "credentials_printed": any(
             bool(item.get("credentials_printed"))
@@ -160,7 +164,7 @@ def build_status() -> dict[str, Any]:
         ),
         "download_host_contacted": False,
     }
-    passed = bool(all(evidence.values()) and not any(leak_flags.values()) and not any(contact_flags.values()))
+    passed = bool(all(bootstrap_evidence.values()) and not any(leak_flags.values()) and not any(contact_flags.values()))
     blocking = []
     if passed:
         blocking.append(
@@ -168,7 +172,7 @@ def build_status() -> dict[str, Any]:
             "再跑 dry-run gate，缺少真实 runner 强确认短语时不会启动 runner。"
         )
     else:
-        for key, ok in evidence.items():
+        for key, ok in bootstrap_evidence.items():
             if not ok:
                 blocking.append(f"baseline dry-run gate 证据未通过 `{key}`。")
         if any(leak_flags.values()):
@@ -198,6 +202,10 @@ def build_status() -> dict[str, Any]:
         "baseline_required_ids": sorted(BASELINE_REQUIRED_IDS),
         "lora_only_ids": sorted(LORA_ONLY_IDS),
         "evidence": evidence,
+        "self_bootstrap_exclusions": SELF_BOOTSTRAP_EXCLUSIONS,
+        "bootstrap_evidence": bootstrap_evidence,
+        "bootstrap_evidence_passed": all(bootstrap_evidence.values()),
+        "previous_preflight_passed_snapshot": evidence["previous_preflight_passed_or_absent"],
         "leak_flags": leak_flags,
         "contact_flags": contact_flags,
         "platform_contacted": False,
@@ -248,6 +256,11 @@ def write_report(status: dict[str, Any], path: Path) -> None:
     lines.extend(["", "## 输入证据", ""])
     for key, value in status["evidence"].items():
         lines.append(f"- `{key}`：`{value}`。")
+    lines.extend(["", "## 自举快照", ""])
+    lines.append("- `previous_preflight_passed_or_absent` 仅用于记录上一次预检快照，不作为本 gate 自身 `passed` 的硬前置。")
+    for key in status["self_bootstrap_exclusions"]:
+        lines.append(f"- `{key}`：当前快照 `{status['evidence'].get(key)}`。")
+    lines.append(f"- 自举底层证据是否就绪：`{status['bootstrap_evidence_passed']}`。")
     lines.extend(["", "## Blocking", ""])
     for item in status["blocking"]:
         lines.append(f"- {item}")

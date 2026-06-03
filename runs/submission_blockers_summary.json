@@ -30,6 +30,25 @@
     "preflight_bundle_ready": true,
     "secret_scan_clean": true
   },
+  "self_bootstrap_exclusions": [
+    "artifact_manifest_ready",
+    "preflight_bundle_ready"
+  ],
+  "bootstrap_local_ready": {
+    "submission_package_ready": true,
+    "env_template_ready": true,
+    "notebook_structure_ready": true,
+    "jupyter_input_template_ready": true,
+    "jupyter_authorized_preflight_template_ready": true,
+    "authorized_preflight_template_ready": true,
+    "ready_real_runner_template_ready": true,
+    "authorized_checkpoint_archive_template_ready": true,
+    "authorized_execution_checklist_ready": true,
+    "route_aware_submission_blockers_ready": true,
+    "upload_channels_audited": true,
+    "secret_scan_clean": true
+  },
+  "bootstrap_local_ready_passed": true,
   "required_user_inputs": [
     {
       "id": "ROBOCHALLENGE_USER_TOKEN",

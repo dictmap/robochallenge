@@ -7,7 +7,7 @@
   "credentials_printed": false,
   "link_values_printed": false,
   "secret_values_printed": false,
-  "artifact_count": 89,
+  "artifact_count": 91,
   "artifacts": [
     {
       "path": "README.md",
@@ -20,8 +20,8 @@
       "path": "work.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 212464,
-      "sha256": "d4d6c360404b6755db73cab0bace457011a65bd2d4f6649b0fcde5c444fa57a4"
+      "size_bytes": 215564,
+      "sha256": "386b7e477e24992eaec0d94c51a2d539b150dcf7104f2f111aab43a823220cdc"
     },
     {
       "path": "notebooks/robochallenge_pi05_submit_cn.ipynb",
@@ -248,6 +248,13 @@
       "sha256": "7c9a4011772d6e2a7bd83cf223f0577b03d4742deb637dd968330ad6fd9685e4"
     },
     {
+      "path": "reports/historical_notebook_checkpoint_outputs.md",
+      "exists": true,
+      "tracked": false,
+      "size_bytes": 2659,
+      "sha256": "56531c38088e20392687aae92b9607dc00657ce818f2ad54cefabe5555534a64"
+    },
+    {
       "path": "reports/chinese_utf8_artifact_audit.md",
       "exists": true,
       "tracked": true,
@@ -314,8 +321,8 @@
       "path": "reports/baseline_dry_run_gate.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 3717,
-      "sha256": "a9413b2e69533bc03577c38321be0c1444311c7116f37098fbfe8ddce0d58453"
+      "size_bytes": 3974,
+      "sha256": "aad97d114d46117f93fecaab10573b7190c7f33962bf5d9d4c58fadd316f8794"
     },
     {
       "path": "reports/baseline_credential_hygiene.md",
@@ -440,22 +447,22 @@
       "path": "reports/submission_preflight_bundle.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 10109,
-      "sha256": "f532bc1712abd0c4b25c253cdb0e85196a846dd37a8a0c8a8f30b93d9219f5db"
+      "size_bytes": 10453,
+      "sha256": "ce62472de58ffffebdb289399704ea9d2bea33964ad80e3019f0c1d3c4d5b359"
     },
     {
       "path": "reports/plaintext_secret_scan.md",
       "exists": true,
       "tracked": true,
       "size_bytes": 689,
-      "sha256": "0690aabc180b00fa9832f556ee79a7e300071fc64049a3afababf7d45bf445a7"
+      "sha256": "887c4ee01f0860cf5d6a5da2f50a7a803d3969a2e0ecb4d2fd0e450a9f521f0b"
     },
     {
       "path": "reports/submission_status_dashboard.html",
       "exists": true,
       "tracked": true,
-      "size_bytes": 22564,
-      "sha256": "6cae44b7bd6f9302cc9208c634dd859673e78e4eb89ee9922aa6e922a6fb47ce"
+      "size_bytes": 23101,
+      "sha256": "5e205ab8f5bf20a317a8d059091d9fc576515d7304ec95dc8469d0c5710f0b69"
     },
     {
       "path": "scripts/render_next_user_action_packet.py",
@@ -489,8 +496,8 @@
       "path": "scripts/render_baseline_dry_run_gate.py",
       "exists": true,
       "tracked": true,
-      "size_bytes": 13989,
-      "sha256": "94d7e622979e1b81c29e7ff1ee27fb04adf05d436632502f46764ca6876c8b89"
+      "size_bytes": 14920,
+      "sha256": "d24fe7329007f7c10f71d5c5e9b94c59d5749b7e390536d401fee1a906181c1d"
     },
     {
       "path": "scripts/render_baseline_credential_hygiene.py",
@@ -619,6 +626,13 @@
       "sha256": "db2056c05bec5a59ede9c37e52fc43efe5a878202cff3716bab40bd303f2f72d"
     },
     {
+      "path": "scripts/audit_historical_notebook_checkpoint_outputs.py",
+      "exists": true,
+      "tracked": false,
+      "size_bytes": 8810,
+      "sha256": "8757520ae782636586f99799c02e64febbdf3b0753e01fb91d41120407ad1f37"
+    },
+    {
       "path": "scripts/audit_chinese_utf8_artifacts.py",
       "exists": true,
       "tracked": true,
@@ -698,6 +712,11 @@
     "jupyter_final_handoff_command_count": true,
     "jupyter_final_handoff_no_contact_command_count": true,
     "jupyter_final_handoff_real_runner_requires_confirmation": true,
+    "historical_notebook_outputs_passed": true,
+    "historical_notebook_active_material_clean": true,
+    "historical_notebook_current_notebook_clean": true,
+    "historical_notebook_executed_outputs_classified": true,
+    "historical_notebook_work_log_audit_only": true,
     "chinese_utf8_artifact_audit_passed": true,
     "chinese_utf8_artifact_decode_error_count_zero": true,
     "chinese_utf8_artifact_bad_marker_hit_count_zero": true,

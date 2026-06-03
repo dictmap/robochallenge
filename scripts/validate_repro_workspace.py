@@ -56,6 +56,7 @@ REQUIRED = [
     "reports/jupyter_input_template_audit.md",
     "reports/jupyter_authorized_preflight_template_audit.md",
     "reports/jupyter_final_handoff_template_audit.md",
+    "reports/historical_notebook_checkpoint_outputs.md",
     "reports/chinese_utf8_artifact_audit.md",
     "reports/authorized_preflight_template_audit.md",
     "reports/ready_real_runner_template_audit.md",
@@ -123,6 +124,7 @@ REQUIRED = [
     "runs/jupyter_input_template_audit.json",
     "runs/jupyter_authorized_preflight_template_audit.json",
     "runs/jupyter_final_handoff_template_audit.json",
+    "runs/historical_notebook_checkpoint_outputs.json",
     "runs/chinese_utf8_artifact_audit.json",
     "runs/authorized_preflight_template_audit.json",
     "runs/ready_real_runner_template_audit.json",
@@ -922,6 +924,7 @@ def main() -> int:
             "<html lang=\"zh-CN\">" in dashboard_html_text,
             "RoboChallenge pi0.5 提交状态面板" in dashboard_html_text,
             "当前阻塞" in dashboard_html_text,
+            "Notebook 历史输出" in dashboard_titles,
             dashboard.get("source_count") >= 20,
             dashboard.get("card_count") >= 20,
             dashboard.get("done_count", 0) >= 15,
@@ -1145,6 +1148,11 @@ def main() -> int:
             dashboard.get("jupyter_final_handoff_command_count") == 4,
             dashboard.get("jupyter_final_handoff_no_contact_command_count") == 3,
             dashboard.get("jupyter_final_handoff_real_runner_requires_confirmation") is True,
+            dashboard.get("historical_notebook_outputs_passed") is True,
+            dashboard.get("historical_notebook_active_material_stale_hit_count") == 0,
+            dashboard.get("historical_notebook_current_notebook_stale_hit_count") == 0,
+            dashboard.get("historical_notebook_executed_hit_count", 0) > 0,
+            dashboard.get("historical_notebook_work_log_audit_only") is True,
             dashboard.get("chinese_utf8_artifact_audit_passed") is True,
             dashboard.get("chinese_utf8_artifact_scanned_file_count", 0) >= 20,
             dashboard.get("chinese_utf8_artifact_decode_error_count") == 0,
@@ -2020,6 +2028,8 @@ def main() -> int:
         return 1
     baseline_dry_run_gate = json.loads((ROOT / "runs/baseline_dry_run_gate.json").read_text(encoding="utf-8"))
     dry_run_evidence = baseline_dry_run_gate.get("evidence", {})
+    dry_run_bootstrap_evidence = baseline_dry_run_gate.get("bootstrap_evidence", {})
+    dry_run_bootstrap_exclusions = set(baseline_dry_run_gate.get("self_bootstrap_exclusions", []))
     dry_run_leaks = baseline_dry_run_gate.get("leak_flags", {})
     dry_run_contacts = baseline_dry_run_gate.get("contact_flags", {})
     dry_run_required_ids = set(baseline_dry_run_gate.get("baseline_required_ids", []))
@@ -2046,6 +2056,9 @@ def main() -> int:
             baseline_dry_run_gate.get("stops_before_real_runner_without_confirmation") is True,
             baseline_dry_run_gate.get("stops_before_real_runner_with_wrong_confirmation") is True,
             baseline_dry_run_gate.get("stops_before_real_runner_with_malformed_confirmation") is True,
+            dry_run_bootstrap_exclusions == {"previous_preflight_passed_or_absent"},
+            baseline_dry_run_gate.get("bootstrap_evidence_passed") is True,
+            all(dry_run_bootstrap_evidence.values()),
             {
                 "SUBMISSION_TARGET_CONFIRMATION",
                 "ROBOCHALLENGE_USER_TOKEN",
@@ -2056,7 +2069,7 @@ def main() -> int:
             {"CHECKPOINT_ARCHIVE_AUTHORIZATION", "ROBOCHALLENGE_CHECKPOINT_LINK"}.issubset(dry_run_lora_only_ids),
             "CHECKPOINT_ARCHIVE_AUTHORIZATION" not in dry_run_required_ids,
             "ROBOCHALLENGE_CHECKPOINT_LINK" not in dry_run_required_ids,
-            all(dry_run_evidence.values()),
+            dry_run_evidence.get("previous_preflight_passed_or_absent") in {True, False},
             not any(dry_run_leaks.values()),
             not any(dry_run_contacts.values()),
             baseline_dry_run_gate.get("platform_contacted") is False,
@@ -2777,6 +2790,7 @@ def main() -> int:
         "jupyter_input_template",
         "jupyter_authorized_preflight_template",
         "jupyter_final_handoff_template",
+        "historical_notebook_checkpoint_outputs",
         "chinese_utf8_artifacts",
         "real_submission_readiness",
         "authorized_preflight_template",
@@ -2931,6 +2945,11 @@ def main() -> int:
             preflight.get("jupyter_final_handoff_command_count") == 4,
             preflight.get("jupyter_final_handoff_no_contact_command_count") == 3,
             preflight.get("jupyter_final_handoff_real_runner_requires_confirmation") is True,
+            preflight.get("historical_notebook_outputs_passed") is True,
+            preflight.get("historical_notebook_active_material_stale_hit_count") == 0,
+            preflight.get("historical_notebook_current_notebook_stale_hit_count") == 0,
+            preflight.get("historical_notebook_executed_hit_count", 0) > 0,
+            preflight.get("historical_notebook_work_log_audit_only") is True,
             preflight.get("chinese_utf8_artifact_audit_passed") is True,
             preflight.get("chinese_utf8_artifact_scanned_file_count", 0) >= 20,
             preflight.get("chinese_utf8_artifact_decode_error_count") == 0,
@@ -2969,6 +2988,8 @@ def main() -> int:
     blockers_summary = json.loads((ROOT / "runs/submission_blockers_summary.json").read_text(encoding="utf-8"))
     blocker_state = blockers_summary.get("current_state", {})
     blocker_local_ready = blockers_summary.get("local_ready", {})
+    blocker_bootstrap_local_ready = blockers_summary.get("bootstrap_local_ready", {})
+    blocker_bootstrap_exclusions = set(blockers_summary.get("self_bootstrap_exclusions", []))
     blocker_leaks = blockers_summary.get("leak_flags", {})
     blocker_contacts = blockers_summary.get("contact_flags", {})
     required_input_ids = {item.get("id") for item in blockers_summary.get("required_user_inputs", [])}
@@ -2990,6 +3011,9 @@ def main() -> int:
             blocker_state.get("link_shape_ready") is False,
             blocker_state.get("download_verified") is False,
             all(blocker_local_ready.values()),
+            blocker_bootstrap_exclusions == {"artifact_manifest_ready", "preflight_bundle_ready"},
+            blockers_summary.get("bootstrap_local_ready_passed") is True,
+            all(blocker_bootstrap_local_ready.values()),
             blockers_summary.get("recommended_route") == "baseline_official_aloha",
             blockers_summary.get("baseline_requires_checkpoint_link") is False,
             blockers_summary.get("baseline_requires_checkpoint_upload") is False,

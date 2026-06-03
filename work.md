@@ -2473,3 +2473,27 @@
 ### 下一步
 - P0：提交并推送本轮 LoRA/checkpoint 分支 baseline-link 口径收敛。
 - P1：继续检查 Notebook executed 输出和旧运行日志中的历史 “checkpoint link” 文案；若保留，需明确标注为历史输出或重新执行/清理输出，避免被误读为当前 baseline 前置条件。
+## 2026-06-03 第八十九轮：Notebook 历史输出审计与自举验证修复
+
+### 已完成
+- 新增 `scripts/audit_historical_notebook_checkpoint_outputs.py`，把 `notebooks/robochallenge_pi05_submit_cn.executed.ipynb` 中的旧 checkpoint-link 口径明确分类为历史输出，并确认当前 Notebook、提交材料和 GUI 仍以 baseline 5 项阻塞为准。
+- 新增产物 `runs/historical_notebook_checkpoint_outputs.json` 与 `reports/historical_notebook_checkpoint_outputs.md`，并接入 preflight bundle、artifact manifest、GUI dashboard 和总 validator。
+- 修复 `scripts/audit_submission_blockers_summary.py` 的自举循环：manifest/preflight 状态继续保留快照，但不再作为阻塞摘要自身 `passed` 的硬前置，避免低层 gate 恢复时依赖尚未刷新的汇总产物。
+- 修复 `scripts/render_baseline_dry_run_gate.py` 的自举循环：上一轮 preflight 通过与否只作为快照记录，不再阻塞 dry-run gate 自身刷新。
+- GUI dashboard 新增 “Notebook 历史输出” 卡片，用于区分历史 executed Notebook 输出和当前 baseline 提交前置条件。
+
+### 验证结果
+- Linux 端最终 no-contact 汇总链已通过：`audit_chinese_utf8_artifacts.py`、`audit_plaintext_secrets.py`、`audit_historical_notebook_checkpoint_outputs.py`、`audit_submission_artifact_manifest.py`、`audit_submission_preflight_bundle.py`、`audit_submission_blockers_summary.py`、`render_submission_status_dashboard.py`、`validate_repro_workspace.py` 和 `git diff --check`。
+- `runs/historical_notebook_checkpoint_outputs.json` 实测 `passed=true`，当前活跃提交材料旧口径命中数为 `0`，当前 Notebook 旧口径命中数为 `0`，executed Notebook 历史输出命中数为 `13`。
+- `runs/submission_status_dashboard.json` 实测 `passed=true`，`source_count=38`、`card_count=38`、`done_count=32`、`blocked_count=5`、`watch_count=1`、`ready_for_real_submission=false`。
+- `runs/submission_preflight_bundle.json`、`runs/submission_artifact_manifest.json` 与 `runs/submission_blockers_summary.json` 均为 `passed=true`；明文凭据扫描 `hit_count=0`；中文 UTF-8 与乱码哨兵扫描通过。
+
+### 当前边界
+- 本轮没有读取真实 token、submission id、checkpoint link 或真实 local env 内容。
+- 没有连接 RoboChallenge 平台，没有上传 checkpoint，没有生成 checkpoint tar，也没有启动真实 runner。
+- baseline 官方 ALOHA 路线当前仍阻塞在：目标确认、`ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline` 和真实 runner 强确认。
+- LoRA/web checkpoint 路线仍单独需要用户授权上传、归档与真实可访问 checkpoint link；这不再作为 baseline 最短路线前置条件。
+
+### 下一步
+- P0：提交并推送本轮 Notebook 历史输出审计与自举验证修复。
+- P1：用户若确认 `CONFIRM_TABLE30V2_ALOHA_BASELINE` 并提供 token/submission id，先跑 Jupyter 第 44/45 节或 shell baseline 授权前只读预检；真实 runner 仍必须等待用户明确授权。

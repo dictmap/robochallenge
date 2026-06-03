@@ -26,6 +26,7 @@ SUBCOMMANDS = [
     ("jupyter_input_template", "scripts/audit_jupyter_input_template.py"),
     ("jupyter_authorized_preflight_template", "scripts/audit_jupyter_authorized_preflight_template.py"),
     ("jupyter_final_handoff_template", "scripts/audit_jupyter_final_handoff_template.py"),
+    ("historical_notebook_checkpoint_outputs", "scripts/audit_historical_notebook_checkpoint_outputs.py"),
     ("chinese_utf8_artifacts", "scripts/audit_chinese_utf8_artifacts.py"),
     ("real_submission_readiness", "scripts/audit_real_submission_readiness.py"),
     ("authorized_preflight_template", "scripts/audit_authorized_preflight_template.py"),
@@ -88,11 +89,15 @@ def run_subcommand(name: str, script: str) -> dict[str, Any]:
     )
     stdout = result.stdout or ""
     stderr = result.stderr or ""
+    if name == "historical_notebook_checkpoint_outputs":
+        stdout_tail = "[historical notebook checkpoint output audit summarized; see runs/historical_notebook_checkpoint_outputs.json]"
+    else:
+        stdout_tail = stdout[-1000:]
     return {
         "script": script,
         "returncode": result.returncode,
         "passed": result.returncode == 0,
-        "stdout_tail": stdout[-1000:],
+        "stdout_tail": stdout_tail,
         "stderr_tail": stderr[-1000:],
     }
 
@@ -106,6 +111,7 @@ def build_status() -> dict[str, Any]:
     jupyter_input = read_json(RUNS_DIR / "jupyter_input_template_audit.json")
     jupyter_authorized = read_json(RUNS_DIR / "jupyter_authorized_preflight_template_audit.json")
     jupyter_final_handoff = read_json(RUNS_DIR / "jupyter_final_handoff_template_audit.json")
+    historical_notebook_outputs = read_json(RUNS_DIR / "historical_notebook_checkpoint_outputs.json")
     chinese_utf8 = read_json(RUNS_DIR / "chinese_utf8_artifact_audit.json")
     readiness = read_json(RUNS_DIR / "real_submission_readiness.json")
     authorized_preflight = read_json(RUNS_DIR / "authorized_preflight_template_audit.json")
@@ -145,6 +151,7 @@ def build_status() -> dict[str, Any]:
                 jupyter_input,
                 jupyter_authorized,
                 jupyter_final_handoff,
+                historical_notebook_outputs,
                 chinese_utf8,
                 readiness,
                 authorized_preflight,
@@ -181,6 +188,7 @@ def build_status() -> dict[str, Any]:
         or bool(jupyter_input.get("link_values_printed"))
         or bool(jupyter_authorized.get("link_values_printed"))
         or bool(jupyter_final_handoff.get("link_values_printed"))
+        or bool(historical_notebook_outputs.get("link_values_printed"))
         or bool(chinese_utf8.get("link_values_printed"))
         or bool(authorized_preflight.get("link_values_printed"))
         or bool(ready_real_runner.get("link_values_printed"))
@@ -211,6 +219,7 @@ def build_status() -> dict[str, Any]:
         or bool(jupyter_input.get("secret_values_printed"))
         or bool(jupyter_authorized.get("secret_values_printed"))
         or bool(jupyter_final_handoff.get("secret_values_printed"))
+        or bool(historical_notebook_outputs.get("secret_values_printed"))
         or bool(chinese_utf8.get("secret_values_printed"))
         or bool(authorized_preflight.get("secret_values_printed"))
         or bool(ready_real_runner.get("secret_values_printed"))
@@ -247,6 +256,7 @@ def build_status() -> dict[str, Any]:
                 jupyter_input,
                 jupyter_authorized,
                 jupyter_final_handoff,
+                historical_notebook_outputs,
                 chinese_utf8,
                 readiness,
                 authorized_preflight,
@@ -286,6 +296,7 @@ def build_status() -> dict[str, Any]:
                 jupyter_input,
                 jupyter_authorized,
                 jupyter_final_handoff,
+                historical_notebook_outputs,
                 chinese_utf8,
                 readiness,
                 authorized_preflight,
@@ -598,6 +609,19 @@ def build_status() -> dict[str, Any]:
             "real_runner_requires_confirmation"
         )
         is True,
+        "historical_notebook_outputs_passed": historical_notebook_outputs.get("passed") is True,
+        "historical_notebook_active_material_stale_hit_count": historical_notebook_outputs.get(
+            "active_material_stale_hit_count"
+        ),
+        "historical_notebook_current_notebook_stale_hit_count": historical_notebook_outputs.get(
+            "current_notebook_stale_hit_count"
+        ),
+        "historical_notebook_executed_hit_count": historical_notebook_outputs.get(
+            "executed_notebook_historical_hit_count"
+        ),
+        "historical_notebook_work_log_audit_only": historical_notebook_outputs.get(
+            "work_log_mentions_are_audit_only"
+        ),
         "baseline_final_handoff_passed": baseline_final_handoff.get("passed") is True,
         "baseline_final_handoff_command_count": baseline_final_handoff.get("command_count"),
         "baseline_final_handoff_no_contact_command_count": baseline_final_handoff.get("no_contact_command_count"),
@@ -750,6 +774,11 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         f"- Jupyter final handoff：`{status['jupyter_final_handoff_passed']}`。",
         f"- Jupyter final handoff 默认生成包：`{status['jupyter_final_handoff_packet_default_true']}`。",
         f"- Jupyter final handoff 真实 runner 默认关闭：`{status['jupyter_final_handoff_real_runner_default_false']}`。",
+        f"- Notebook 历史输出审计：`{status['historical_notebook_outputs_passed']}`。",
+        f"- 当前材料旧 checkpoint 口径命中数：`{status['historical_notebook_active_material_stale_hit_count']}`。",
+        f"- 当前 Notebook 旧 checkpoint 口径命中数：`{status['historical_notebook_current_notebook_stale_hit_count']}`。",
+        f"- executed Notebook 历史旧口径命中数：`{status['historical_notebook_executed_hit_count']}`。",
+        f"- work.md 旧短语是否仅为审计记录：`{status['historical_notebook_work_log_audit_only']}`。",
         f"- baseline final handoff：`{status['baseline_final_handoff_passed']}`。",
         f"- final handoff 命令数：`{status['baseline_final_handoff_command_count']}`。",
         f"- final handoff no-contact 命令数：`{status['baseline_final_handoff_no_contact_command_count']}`。",

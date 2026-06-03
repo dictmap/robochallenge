@@ -35,6 +35,13 @@
 - `preflight_bundle_ready`：`True`。
 - `secret_scan_clean`：`True`。
 
+## 自举排除项
+
+- 这些字段仍保留快照，但不作为本摘要自身 `passed` 的硬前置，避免低层 gate 恢复时形成汇总产物自引用。
+- `artifact_manifest_ready`：当前快照 `True`。
+- `preflight_bundle_ready`：当前快照 `True`。
+- 自举底层材料是否就绪：`True`。
+
 ## Baseline 最短路线当前只差
 
 - `SUBMISSION_TARGET_CONFIRMATION`

@@ -134,6 +134,11 @@
   "jupyter_final_handoff_command_count": 4,
   "jupyter_final_handoff_no_contact_command_count": 3,
   "jupyter_final_handoff_real_runner_requires_confirmation": true,
+  "historical_notebook_outputs_passed": true,
+  "historical_notebook_active_material_stale_hit_count": 0,
+  "historical_notebook_current_notebook_stale_hit_count": 0,
+  "historical_notebook_executed_hit_count": 13,
+  "historical_notebook_work_log_audit_only": true,
   "baseline_final_handoff_passed": true,
   "baseline_final_handoff_command_count": 4,
   "baseline_final_handoff_no_contact_command_count": 3,
@@ -169,7 +174,7 @@
     "ROBOCHALLENGE_REAL_RUN_CONFIRM"
   ],
   "secret_scan_hit_count": 0,
-  "secret_scan_scanned_files": 247,
+  "secret_scan_scanned_files": 250,
   "subcommands": {
     "checkpoint_link_intake": {
       "script": "scripts/audit_checkpoint_link_intake.py",
@@ -220,11 +225,18 @@
       "stdout_tail": "y\": true,\n    \"ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_authorized_preflight_template.sh\": true,\n    \"ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_ready_real_submission_template.sh\": true,\n    \"ROBOCHALLENGE_SUBMISSION_VARIANT=baseline ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION bash submission/run_ready_real_submission_template.sh\": true\n  },\n  \"forbidden_fragments\": {\n    \"set -x\": false,\n    \"cat submission/robochallenge_env.local.sh\": false,\n    \"print(open(\": false,\n    \"RUN_JUPYTER_BASELINE_REAL_RUNNER = True\": false,\n    \"os.system(\": false,\n    \"subprocess.run(\": false,\n    \"run_cmd([\\\"bash\\\"\": false,\n    \"run_cmd(['bash'\": false,\n    \"run_cmd([\\\"sh\\\"\": false,\n    \"run_cmd(['sh'\": false\n  },\n  \"code_cell_clean\": true,\n  \"code_cell_id\": \"jupyter-final-handoff-code\",\n  \"secret_pattern_hits\": [],\n  \"whole_notebook_secret_pattern_hits\": [],\n  \"blocking\": [\n    \"Jupyter final handoff 交接包入口已就绪；默认只审计和生成 no-contact 交接包。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
+    "historical_notebook_checkpoint_outputs": {
+      "script": "scripts/audit_historical_notebook_checkpoint_outputs.py",
+      "returncode": 0,
+      "passed": true,
+      "stdout_tail": "[historical notebook checkpoint output audit summarized; see runs/historical_notebook_checkpoint_outputs.json]",
+      "stderr_tail": ""
+    },
     "chinese_utf8_artifacts": {
       "script": "scripts/audit_chinese_utf8_artifacts.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": "de_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"runs/baseline_credential_hygiene.json\",\n      \"size_bytes\": 2415,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"runs/baseline_dry_run_gate.json\",\n      \"size_bytes\": 3675,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"runs/baseline_final_handoff_packet.json\",\n      \"size_bytes\": 5668,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    }\n  ],\n  \"decode_error_paths\": [],\n  \"bad_marker_hit_paths\": [],\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"中文交接产物 UTF-8 解码与乱码哨兵扫描通过。\"\n  ]\n}\n",
+      "stdout_tail": "de_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"runs/baseline_credential_hygiene.json\",\n      \"size_bytes\": 2415,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"runs/baseline_dry_run_gate.json\",\n      \"size_bytes\": 5526,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"runs/baseline_final_handoff_packet.json\",\n      \"size_bytes\": 5668,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    }\n  ],\n  \"decode_error_paths\": [],\n  \"bad_marker_hit_paths\": [],\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"中文交接产物 UTF-8 解码与乱码哨兵扫描通过。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "real_submission_readiness": {
@@ -259,7 +271,7 @@
       "script": "scripts/audit_plaintext_secrets.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": "{\n  \"kind\": \"plaintext_secret_scan\",\n  \"passed\": true,\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"secret_values_printed\": false,\n  \"scan_scope\": \"git tracked files plus unignored untracked files\",\n  \"scanned_files\": 247,\n  \"skipped_binary_files\": 0,\n  \"pattern_count\": 7,\n  \"hit_count\": 0,\n  \"hits\": [],\n  \"blocking\": [\n    \"如发现命中项，先移除明文凭据并轮换对应 token，再重新运行本审计。\",\n    \"本审计不替代真实平台权限检查；baseline 真实提交仍需要用户目标确认、token、submission id、variant=baseline 和真实 runner 强确认。\"\n  ]\n}\n",
+      "stdout_tail": "{\n  \"kind\": \"plaintext_secret_scan\",\n  \"passed\": true,\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"secret_values_printed\": false,\n  \"scan_scope\": \"git tracked files plus unignored untracked files\",\n  \"scanned_files\": 250,\n  \"skipped_binary_files\": 0,\n  \"pattern_count\": 7,\n  \"hit_count\": 0,\n  \"hits\": [],\n  \"blocking\": [\n    \"如发现命中项，先移除明文凭据并轮换对应 token，再重新运行本审计。\",\n    \"本审计不替代真实平台权限检查；baseline 真实提交仍需要用户目标确认、token、submission id、variant=baseline 和真实 runner 强确认。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "submission_variant_route_packet": {
@@ -322,7 +334,7 @@
       "script": "scripts/render_baseline_dry_run_gate.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": "n_packet_baseline_no_lora_ids\": true,\n    \"route_aware_passed\": true,\n    \"route_aware_baseline_no_checkpoint_upload\": true,\n    \"route_aware_baseline_no_checkpoint_link\": true,\n    \"route_aware_baseline_required_ids\": true,\n    \"route_aware_baseline_no_lora_ids\": true,\n    \"route_aware_lora_keeps_link_branch\": true,\n    \"secret_scan_clean\": true,\n    \"previous_preflight_passed_or_absent\": true\n  },\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false\n  },\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"baseline dry-run gate 已固化；目标确认、token、submission id 和 variant=baseline 到位后先跑只读预检，再跑 dry-run gate，缺少真实 runner 强确认短语时不会启动 runner。\"\n  ]\n}\n",
+      "stdout_tail": "ue,\n    \"route_aware_passed\": true,\n    \"route_aware_baseline_no_checkpoint_upload\": true,\n    \"route_aware_baseline_no_checkpoint_link\": true,\n    \"route_aware_baseline_required_ids\": true,\n    \"route_aware_baseline_no_lora_ids\": true,\n    \"route_aware_lora_keeps_link_branch\": true,\n    \"secret_scan_clean\": true\n  },\n  \"bootstrap_evidence_passed\": true,\n  \"previous_preflight_passed_snapshot\": true,\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false\n  },\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"baseline dry-run gate 已固化；目标确认、token、submission id 和 variant=baseline 到位后先跑只读预检，再跑 dry-run gate，缺少真实 runner 强确认短语时不会启动 runner。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "baseline_credential_hygiene": {

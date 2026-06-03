@@ -53,6 +53,7 @@ REQUIRED_ARTIFACTS = [
     "reports/jupyter_input_template_audit.md",
     "reports/jupyter_authorized_preflight_template_audit.md",
     "reports/jupyter_final_handoff_template_audit.md",
+    "reports/historical_notebook_checkpoint_outputs.md",
     "reports/chinese_utf8_artifact_audit.md",
     "reports/authorized_preflight_template_audit.md",
     "reports/ready_real_runner_template_audit.md",
@@ -106,6 +107,7 @@ REQUIRED_ARTIFACTS = [
     "scripts/audit_jupyter_input_template.py",
     "scripts/audit_jupyter_authorized_preflight_template.py",
     "scripts/audit_jupyter_final_handoff_template.py",
+    "scripts/audit_historical_notebook_checkpoint_outputs.py",
     "scripts/audit_chinese_utf8_artifacts.py",
     "scripts/audit_authorized_execution_checklist.py",
 ]
@@ -204,6 +206,7 @@ def build_status() -> dict[str, Any]:
     jupyter_input = read_json(RUNS_DIR / "jupyter_input_template_audit.json")
     jupyter_authorized = read_json(RUNS_DIR / "jupyter_authorized_preflight_template_audit.json")
     jupyter_final_handoff = read_json(RUNS_DIR / "jupyter_final_handoff_template_audit.json")
+    historical_notebook_outputs = read_json(RUNS_DIR / "historical_notebook_checkpoint_outputs.json")
     chinese_utf8 = read_json(RUNS_DIR / "chinese_utf8_artifact_audit.json")
     authorized_preflight = read_json(RUNS_DIR / "authorized_preflight_template_audit.json")
     ready_real_runner = read_json(RUNS_DIR / "ready_real_runner_template_audit.json")
@@ -273,6 +276,24 @@ def build_status() -> dict[str, Any]:
         == 3,
         "jupyter_final_handoff_real_runner_requires_confirmation": jupyter_final_handoff.get(
             "real_runner_requires_confirmation"
+        )
+        is True,
+        "historical_notebook_outputs_passed": historical_notebook_outputs.get("passed") is True,
+        "historical_notebook_active_material_clean": historical_notebook_outputs.get(
+            "active_material_stale_hit_count"
+        )
+        == 0,
+        "historical_notebook_current_notebook_clean": historical_notebook_outputs.get(
+            "current_notebook_stale_hit_count"
+        )
+        == 0,
+        "historical_notebook_executed_outputs_classified": historical_notebook_outputs.get(
+            "executed_notebook_historical_hit_count",
+            0,
+        )
+        > 0,
+        "historical_notebook_work_log_audit_only": historical_notebook_outputs.get(
+            "work_log_mentions_are_audit_only"
         )
         is True,
         "chinese_utf8_artifact_audit_passed": chinese_utf8.get("passed") is True,

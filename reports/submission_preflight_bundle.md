@@ -102,6 +102,11 @@
 - Jupyter final handoff：`True`。
 - Jupyter final handoff 默认生成包：`True`。
 - Jupyter final handoff 真实 runner 默认关闭：`True`。
+- Notebook 历史输出审计：`True`。
+- 当前材料旧 checkpoint 口径命中数：`0`。
+- 当前 Notebook 旧 checkpoint 口径命中数：`0`。
+- executed Notebook 历史旧口径命中数：`13`。
+- work.md 旧短语是否仅为审计记录：`True`。
 - baseline final handoff：`True`。
 - final handoff 命令数：`4`。
 - final handoff no-contact 命令数：`3`。
@@ -137,6 +142,7 @@
 - `jupyter_input_template`：returncode=`0`，passed=`True`。
 - `jupyter_authorized_preflight_template`：returncode=`0`，passed=`True`。
 - `jupyter_final_handoff_template`：returncode=`0`，passed=`True`。
+- `historical_notebook_checkpoint_outputs`：returncode=`0`，passed=`True`。
 - `chinese_utf8_artifacts`：returncode=`0`，passed=`True`。
 - `real_submission_readiness`：returncode=`0`，passed=`True`。
 - `authorized_preflight_template`：returncode=`0`，passed=`True`。

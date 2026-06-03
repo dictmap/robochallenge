@@ -15,6 +15,7 @@ REPORTS_DIR = ROOT / "reports"
 RUNS_DIR = ROOT / "runs"
 DEFAULT_STATUS = RUNS_DIR / "submission_blockers_summary.json"
 DEFAULT_REPORT = REPORTS_DIR / "submission_blockers_summary.md"
+SELF_BOOTSTRAP_EXCLUSIONS = ["artifact_manifest_ready", "preflight_bundle_ready"]
 
 REQUIRED_USER_INPUTS = [
     {
@@ -106,6 +107,9 @@ def build_status() -> dict[str, Any]:
         "preflight_bundle_ready": preflight.get("passed") is True,
         "secret_scan_clean": secret_scan.get("passed") is True and secret_scan.get("hit_count") == 0,
     }
+    bootstrap_local_ready = {
+        key: value for key, value in local_ready.items() if key not in set(SELF_BOOTSTRAP_EXCLUSIONS)
+    }
     leak_flags = {
         "credentials_printed": bool(preflight.get("leak_flags", {}).get("credentials_printed"))
         or bool(readiness.get("credentials_printed"))
@@ -161,12 +165,11 @@ def build_status() -> dict[str, Any]:
         "download_verified": link_download.get("verification", {}).get("download_verified"),
     }
     passed = bool(
-        preflight.get("passed")
-        and readiness.get("passed")
+        readiness.get("passed")
         and preflight.get("go_no_go") == "blocked"
         and readiness.get("ready_for_real_submission") is False
         and len(blocking) >= 4
-        and all(local_ready.values())
+        and all(bootstrap_local_ready.values())
         and not any(leak_flags.values())
         and not any(contact_flags.values())
     )
@@ -181,6 +184,9 @@ def build_status() -> dict[str, Any]:
         "secret_values_printed": False,
         "current_state": current_state,
         "local_ready": local_ready,
+        "self_bootstrap_exclusions": SELF_BOOTSTRAP_EXCLUSIONS,
+        "bootstrap_local_ready": bootstrap_local_ready,
+        "bootstrap_local_ready_passed": all(bootstrap_local_ready.values()),
         "required_user_inputs": REQUIRED_USER_INPUTS,
         "recommended_route": route_aware_blockers.get("recommended_route"),
         "baseline_required_user_inputs": route_aware_blockers.get("baseline_required_ids", []),
@@ -226,6 +232,11 @@ def write_report(status: dict[str, Any], path: Path) -> None:
     ]
     for key, value in status["local_ready"].items():
         lines.append(f"- `{key}`：`{value}`。")
+    lines.extend(["", "## 自举排除项", ""])
+    lines.append("- 这些字段仍保留快照，但不作为本摘要自身 `passed` 的硬前置，避免低层 gate 恢复时形成汇总产物自引用。")
+    for key in status["self_bootstrap_exclusions"]:
+        lines.append(f"- `{key}`：当前快照 `{status['local_ready'].get(key)}`。")
+    lines.append(f"- 自举底层材料是否就绪：`{status['bootstrap_local_ready_passed']}`。")
     lines.extend(["", "## Baseline 最短路线当前只差", ""])
     for item in status["baseline_current_blocking"]:
         lines.append(f"- `{item}`")

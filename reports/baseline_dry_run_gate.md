@@ -74,6 +74,12 @@
 - `secret_scan_clean`：`True`。
 - `previous_preflight_passed_or_absent`：`True`。
 
+## 自举快照
+
+- `previous_preflight_passed_or_absent` 仅用于记录上一次预检快照，不作为本 gate 自身 `passed` 的硬前置。
+- `previous_preflight_passed_or_absent`：当前快照 `True`。
+- 自举底层证据是否就绪：`True`。
+
 ## Blocking
 
 - baseline dry-run gate 已固化；目标确认、token、submission id 和 variant=baseline 到位后先跑只读预检，再跑 dry-run gate，缺少真实 runner 强确认短语时不会启动 runner。

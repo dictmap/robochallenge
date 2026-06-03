@@ -1,0 +1,158 @@
+{
+  "kind": "historical_notebook_checkpoint_outputs",
+  "passed": true,
+  "platform_contacted": false,
+  "credentials_read": false,
+  "credentials_printed": false,
+  "uploads_performed": false,
+  "archive_created": false,
+  "current_notebook": "notebooks/robochallenge_pi05_submit_cn.ipynb",
+  "executed_notebook": "notebooks/robochallenge_pi05_submit_cn.executed.ipynb",
+  "active_scanned_file_count": 219,
+  "stale_phrase_count": 6,
+  "active_material_stale_hit_count": 0,
+  "current_notebook_stale_hit_count": 0,
+  "executed_notebook_historical_hit_count": 13,
+  "work_log_stale_phrase_mention_count": 6,
+  "work_log_mentions_are_audit_only": true,
+  "historical_outputs_classified": true,
+  "active_material_hits": [],
+  "current_notebook_hits": [],
+  "executed_notebook_historical_hits": [
+    {
+      "path": "notebooks/robochallenge_pi05_submit_cn.executed.ipynb",
+      "line": 7667,
+      "phrase": "真实网站提交仍需要用户提供 token/submission_id 和可访问 checkpoint link",
+      "context": ".py/create_trained_policy 可读的完整 policy checkpoint；真实网站提交仍需要用户提供 token/submission_id 和可访问 checkpoint link。\\\" \","
+    },
+    {
+      "path": "notebooks/robochallenge_pi05_submit_cn.executed.ipynb",
+      "line": 7755,
+      "phrase": "需要确认本次要提交的是 Table30v2 ALOHA 还是原始 Table30",
+      "context": "\"    \\\"需要确认本次要提交的是 Table30v2 ALOHA 还是原始 Table30；当前可运行链路是 Table30v2 ALOHA。\\\", \","
+    },
+    {
+      "path": "notebooks/robochallenge_pi05_submit_cn.executed.ipynb",
+      "line": 7775,
+      "phrase": "真实网站提交仍需要用户提供 token/submission_id 和可访问 checkpoint link",
+      "context": ".py/create_trained_policy 可读的完整 policy checkpoint；真实网站提交仍需要用户提供 token/submission_id 和可访问 checkpoint link。\\\" \","
+    },
+    {
+      "path": "notebooks/robochallenge_pi05_submit_cn.executed.ipynb",
+      "line": 7863,
+      "phrase": "需要确认本次要提交的是 Table30v2 ALOHA 还是原始 Table30",
+      "context": "\"    \\\"需要确认本次要提交的是 Table30v2 ALOHA 还是原始 Table30；当前可运行链路是 Table30v2 ALOHA。\\\", \","
+    },
+    {
+      "path": "notebooks/robochallenge_pi05_submit_cn.executed.ipynb",
+      "line": 7871,
+      "phrase": "需要确认本次要提交的是 Table30v2 ALOHA 还是原始 Table30",
+      "context": "OKEN。', '需要用户提供真实 ROBOCHALLENGE_SUBMISSION_ID。', '需要确认本次要提交的是 Table30v2 ALOHA 还是原始 Table30；当前可运行链路是 Table30v2 ALOHA。', '若要提交 LoRA 版本，还需要把本地 "
+    },
+    {
+      "path": "notebooks/robochallenge_pi05_submit_cn.executed.ipynb",
+      "line": 8599,
+      "phrase": "真实提交仍需要 ROBOCHALLENGE_USER_TOKEN 和 ROBOCHALLENGE_SUBMISSION_ID",
+      "context": "\"    \\\"真实提交仍需要 ROBOCHALLENGE_USER_TOKEN 和 ROBOCHALLENGE_SUBMISSION_ID。\\\" \","
+    },
+    {
+      "path": "notebooks/robochallenge_pi05_submit_cn.executed.ipynb",
+      "line": 8757,
+      "phrase": "真实提交仍需要 ROBOCHALLENGE_USER_TOKEN 和 ROBOCHALLENGE_SUBMISSION_ID",
+      "context": "\"    \\\"真实提交仍需要 ROBOCHALLENGE_USER_TOKEN 和 ROBOCHALLENGE_SUBMISSION_ID。\\\" \","
+    },
+    {
+      "path": "notebooks/robochallenge_pi05_submit_cn.executed.ipynb",
+      "line": 9673,
+      "phrase": "真实提交仍需要用户提供 token、submission id 和可访问 checkpoint link",
+      "context": "\"    \\\"真实提交仍需要用户提供 token、submission id 和可访问 checkpoint link。\\\" \","
+    },
+    {
+      "path": "notebooks/robochallenge_pi05_submit_cn.executed.ipynb",
+      "line": 9719,
+      "phrase": "真实提交仍需要用户提供 token、submission id 和可访问 checkpoint link",
+      "context": "\"    \\\"真实提交仍需要用户提供 token、submission id 和可访问 checkpoint link。\\\" \","
+    },
+    {
+      "path": "notebooks/robochallenge_pi05_submit_cn.executed.ipynb",
+      "line": 9820,
+      "phrase": "真实提交仍需要用户提供 token、submission id 和真实可访问 checkpoint link",
+      "context": "\"    \\\"真实提交仍需要用户提供 token、submission id 和真实可访问 checkpoint link。\\\" \","
+    },
+    {
+      "path": "notebooks/robochallenge_pi05_submit_cn.executed.ipynb",
+      "line": 9900,
+      "phrase": "真实提交仍需要用户提供 token、submission id 和真实可访问 checkpoint link",
+      "context": "\"    \\\"真实提交仍需要用户提供 token、submission id 和真实可访问 checkpoint link。\\\" \","
+    },
+    {
+      "path": "notebooks/robochallenge_pi05_submit_cn.executed.ipynb",
+      "line": 11814,
+      "phrase": "需要确认本次要提交的是 Table30v2 ALOHA 还是原始 Table30",
+      "context": "\"    \\\"需要确认本次要提交的是 Table30v2 ALOHA 还是原始 Table30；当前可运行链路是 Table30v2 ALOHA。\\\", \","
+    },
+    {
+      "path": "notebooks/robochallenge_pi05_submit_cn.executed.ipynb",
+      "line": 11888,
+      "phrase": "需要确认本次要提交的是 Table30v2 ALOHA 还是原始 Table30",
+      "context": "\"    \\\"需要确认本次要提交的是 Table30v2 ALOHA 还是原始 Table30；当前可运行链路是 Table30v2 ALOHA。\\\", \","
+    }
+  ],
+  "work_log_hits_sample": [
+    {
+      "path": "work.md",
+      "line": 2464,
+      "phrase": "真实提交仍需要用户提供 token、submission id 和可访问 checkpoint link",
+      "context": "- 旧口径搜索已清空：`真实提交仍需要用户提供 token、submission id 和可访问 checkpoint link`、`真实提交仍需要用户提供 token、submission id 和真实可访问 checkpoi"
+    },
+    {
+      "path": "work.md",
+      "line": 2464,
+      "phrase": "真实提交仍需要用户提供 token、submission id 和真实可访问 checkpoint link",
+      "context": "需要用户提供 token、submission id 和可访问 checkpoint link`、`真实提交仍需要用户提供 token、submission id 和真实可访问 checkpoint link`、`真实网站提交仍需要用户提供 token/submission_id 和可访问 checkpoi"
+    },
+    {
+      "path": "work.md",
+      "line": 2464,
+      "phrase": "真实网站提交仍需要用户提供 token/submission_id 和可访问 checkpoint link",
+      "context": "用户提供 token、submission id 和真实可访问 checkpoint link`、`真实网站提交仍需要用户提供 token/submission_id 和可访问 checkpoint link`、`真实提交仍需要 ROBOCHALLENGE_USER_TOKEN 和 ROBOCHALLENG"
+    },
+    {
+      "path": "work.md",
+      "line": 2464,
+      "phrase": "真实提交仍需要 ROBOCHALLENGE_USER_TOKEN 和 ROBOCHALLENGE_SUBMISSION_ID",
+      "context": "需要用户提供 token/submission_id 和可访问 checkpoint link`、`真实提交仍需要 ROBOCHALLENGE_USER_TOKEN 和 ROBOCHALLENGE_SUBMISSION_ID`、`baseline 路线要求通用 checkpoint link`、`baseline 仍等待用"
+    },
+    {
+      "path": "work.md",
+      "line": 2464,
+      "phrase": "baseline 仍等待用户 token",
+      "context": "SUBMISSION_ID`、`baseline 路线要求通用 checkpoint link`、`baseline 仍等待用户 token`、`需要确认本次要提交的是 Table30v2 ALOHA 还是原始 Table30` 均无命中。"
+    },
+    {
+      "path": "work.md",
+      "line": 2464,
+      "phrase": "需要确认本次要提交的是 Table30v2 ALOHA 还是原始 Table30",
+      "context": "e 路线要求通用 checkpoint link`、`baseline 仍等待用户 token`、`需要确认本次要提交的是 Table30v2 ALOHA 还是原始 Table30` 均无命中。"
+    }
+  ],
+  "baseline_current_blocking": [
+    "SUBMISSION_TARGET_CONFIRMATION",
+    "ROBOCHALLENGE_USER_TOKEN",
+    "ROBOCHALLENGE_SUBMISSION_ID",
+    "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline",
+    "ROBOCHALLENGE_REAL_RUN_CONFIRM"
+  ],
+  "current_source_of_truth": [
+    "reports/next_user_action_packet.md",
+    "reports/route_aware_submission_blockers.md",
+    "reports/submission_status_dashboard.html",
+    "submission/README.md",
+    "submission/REAL_SUBMISSION_HANDOFF.md",
+    "submission/AUTHORIZED_SUBMISSION_SEQUENCE.md"
+  ],
+  "blocking": [
+    "executed notebook 中仍有旧口径历史输出；不要把它当作当前 baseline 提交前置条件。",
+    "当前 baseline 真实提交仍等待用户目标确认、token、submission id、variant=baseline 和真实 runner 强确认。"
+  ]
+}

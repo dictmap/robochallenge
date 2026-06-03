@@ -50,6 +50,7 @@ SOURCE_FILES = {
     "jupyter_input": RUNS_DIR / "jupyter_input_template_audit.json",
     "jupyter_authorized": RUNS_DIR / "jupyter_authorized_preflight_template_audit.json",
     "jupyter_final_handoff": RUNS_DIR / "jupyter_final_handoff_template_audit.json",
+    "historical_notebook_outputs": RUNS_DIR / "historical_notebook_checkpoint_outputs.json",
     "chinese_utf8_artifacts": RUNS_DIR / "chinese_utf8_artifact_audit.json",
     "link_intake": RUNS_DIR / "checkpoint_link_intake.json",
     "readiness": RUNS_DIR / "real_submission_readiness.json",
@@ -127,6 +128,7 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
     jupyter_input = data["jupyter_input"]
     jupyter_authorized = data["jupyter_authorized"]
     jupyter_final_handoff = data["jupyter_final_handoff"]
+    historical_notebook_outputs = data["historical_notebook_outputs"]
     chinese_utf8 = data["chinese_utf8_artifacts"]
     link_intake = data["link_intake"]
     readiness = data["readiness"]
@@ -402,6 +404,13 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
         and jupyter_final_handoff.get("no_contact_command_count") == 3
         and jupyter_final_handoff.get("real_runner_requires_confirmation") is True
     )
+    historical_notebook_outputs_ready = bool(
+        historical_notebook_outputs.get("passed")
+        and historical_notebook_outputs.get("active_material_stale_hit_count") == 0
+        and historical_notebook_outputs.get("current_notebook_stale_hit_count") == 0
+        and historical_notebook_outputs.get("executed_notebook_historical_hit_count", 0) > 0
+        and historical_notebook_outputs.get("work_log_mentions_are_audit_only") is True
+    )
     chinese_utf8_ready = bool(
         chinese_utf8.get("passed")
         and chinese_utf8.get("scanned_file_count", 0) >= 20
@@ -668,6 +677,13 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
             "reports/jupyter_final_handoff_template_audit.md",
         ),
         card(
+            "Notebook 历史输出",
+            "done" if historical_notebook_outputs_ready else "watch",
+            f"历史 {historical_notebook_outputs.get('executed_notebook_historical_hit_count', 0)} 条",
+            "当前 Notebook 和提交材料旧口径为 0；executed Notebook 中的 checkpoint-link 旧句只保留为历史输出，不作为 baseline 前置条件。",
+            "reports/historical_notebook_checkpoint_outputs.md",
+        ),
+        card(
             "中文 UTF-8",
             "done" if chinese_utf8_ready else "watch",
             f"{chinese_utf8.get('scanned_file_count', 0)} 个文件",
@@ -713,6 +729,7 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
     jupyter_input = data["jupyter_input"]
     jupyter_authorized = data["jupyter_authorized"]
     jupyter_final_handoff = data["jupyter_final_handoff"]
+    historical_notebook_outputs = data["historical_notebook_outputs"]
     chinese_utf8 = data["chinese_utf8_artifacts"]
     sequence = data["authorized_sequence"]
     preflight = data["preflight_bundle"]
@@ -1112,6 +1129,19 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
             "real_runner_requires_confirmation"
         )
         is True,
+        "historical_notebook_outputs_passed": historical_notebook_outputs.get("passed") is True,
+        "historical_notebook_active_material_stale_hit_count": historical_notebook_outputs.get(
+            "active_material_stale_hit_count"
+        ),
+        "historical_notebook_current_notebook_stale_hit_count": historical_notebook_outputs.get(
+            "current_notebook_stale_hit_count"
+        ),
+        "historical_notebook_executed_hit_count": historical_notebook_outputs.get(
+            "executed_notebook_historical_hit_count"
+        ),
+        "historical_notebook_work_log_audit_only": historical_notebook_outputs.get(
+            "work_log_mentions_are_audit_only"
+        ),
         "chinese_utf8_artifact_audit_passed": chinese_utf8.get("passed") is True,
         "chinese_utf8_artifact_scanned_file_count": chinese_utf8.get("scanned_file_count"),
         "chinese_utf8_artifact_decode_error_count": chinese_utf8.get("decode_error_count"),

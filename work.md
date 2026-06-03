@@ -2497,3 +2497,25 @@
 ### 下一步
 - P0：提交并推送本轮 Notebook 历史输出审计与自举验证修复。
 - P1：用户若确认 `CONFIRM_TABLE30V2_ALOHA_BASELINE` 并提供 token/submission id，先跑 Jupyter 第 44/45 节或 shell baseline 授权前只读预检；真实 runner 仍必须等待用户明确授权。
+## 2026-06-03 第九十轮：GUI dashboard 链接完整性审计
+
+### 已完成
+- 新增 `scripts/audit_submission_dashboard_links.py`，专门审计 `reports/submission_status_dashboard.html` 与 `runs/submission_status_dashboard.json` 的展示一致性。
+- 新增产物 `runs/submission_dashboard_links_audit.json` 与 `reports/submission_dashboard_links_audit.md`。
+- 审计内容覆盖：dashboard JSON/HTML 是否存在、卡片数量是否一致、done/blocked/watch 计数是否一致、每张卡片的报告链接是否为本地 `reports/` 路径、报告文件是否存在、HTML 是否实际渲染对应 href、是否存在外链或重复标题。
+- 将 GUI 链接审计接入 `scripts/audit_submission_artifact_manifest.py` 和 `scripts/validate_repro_workspace.py`，但不把它做成 dashboard 自身卡片，避免引入新的自引用循环。
+
+### 验证结果
+- Linux 端最终 no-contact 汇总链已通过：`render_submission_status_dashboard.py`、`audit_submission_dashboard_links.py`、`audit_chinese_utf8_artifacts.py`、`audit_plaintext_secrets.py`、`audit_submission_artifact_manifest.py`、`audit_submission_preflight_bundle.py`、`audit_submission_blockers_summary.py`、`validate_repro_workspace.py` 和 `git diff --check`。
+- `runs/submission_dashboard_links_audit.json` 实测 `passed=true`，`card_count=38`、`source_count=38`、`done_count=32`、`blocked_count=5`、`watch_count=1`。
+- GUI 链接审计实测 `missing_report_count=0`、`nonlocal_report_count=0`、`missing_html_href_count=0`、`duplicate_title_count=0`。
+- `runs/submission_status_dashboard.json` 仍为 `passed=true`，`ready_for_real_submission=false`；明文凭据扫描 `hit_count=0`；中文 UTF-8 与乱码哨兵扫描通过。
+
+### 当前边界
+- 本轮没有读取真实 token、submission id、checkpoint link 或真实 local env 内容。
+- 没有连接 RoboChallenge 平台，没有上传 checkpoint，没有生成 checkpoint tar，也没有启动真实 runner。
+- 当前最关键 blocking 仍是用户侧 5 项：目标确认、`ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline` 和真实 runner 强确认。
+
+### 下一步
+- P0：提交并推送本轮 GUI dashboard 链接完整性审计。
+- P1：继续把用户确认后的 baseline 授权前只读预检路径整理成最短可执行入口；真实 runner 仍必须等待用户明确授权。

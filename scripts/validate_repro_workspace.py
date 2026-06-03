@@ -46,6 +46,7 @@ REQUIRED = [
     "reports/checkpoint_link_download_verification.md",
     "reports/authorized_submission_sequence_audit.md",
     "reports/submission_status_dashboard.html",
+    "reports/submission_dashboard_links_audit.md",
     "reports/checkpoint_upload_channels_audit.md",
     "reports/real_submission_readiness.md",
     "reports/real_submission_readiness_scenarios.md",
@@ -114,6 +115,7 @@ REQUIRED = [
     "runs/checkpoint_link_download_verification.json",
     "runs/authorized_submission_sequence_audit.json",
     "runs/submission_status_dashboard.json",
+    "runs/submission_dashboard_links_audit.json",
     "runs/checkpoint_upload_channels_audit.json",
     "runs/real_submission_readiness.json",
     "runs/real_submission_readiness_scenarios.json",
@@ -183,6 +185,7 @@ REQUIRED = [
     "scripts/audit_checkpoint_link_download_verification.py",
     "scripts/audit_authorized_submission_sequence.py",
     "scripts/render_submission_status_dashboard.py",
+    "scripts/audit_submission_dashboard_links.py",
     "scripts/audit_checkpoint_upload_channels.py",
     "scripts/audit_real_submission_readiness.py",
     "scripts/audit_real_submission_readiness_scenarios.py",
@@ -1198,6 +1201,35 @@ def main() -> int:
         ]
     ):
         print("提交状态 GUI 面板未通过")
+        return 1
+    dashboard_links = json.loads((ROOT / "runs/submission_dashboard_links_audit.json").read_text(encoding="utf-8"))
+    dashboard_link_evidence = dashboard_links.get("evidence", {})
+    if not all(
+        [
+            dashboard_links.get("kind") == "submission_dashboard_links_audit",
+            dashboard_links.get("passed"),
+            dashboard_links.get("dashboard_status_path") == "runs/submission_status_dashboard.json",
+            dashboard_links.get("dashboard_html_path") == "reports/submission_status_dashboard.html",
+            dashboard_links.get("card_count") == dashboard.get("card_count"),
+            dashboard_links.get("source_count") == dashboard.get("source_count"),
+            dashboard_links.get("done_count") == dashboard.get("done_count"),
+            dashboard_links.get("blocked_count") == dashboard.get("blocked_count"),
+            dashboard_links.get("watch_count") == dashboard.get("watch_count"),
+            dashboard_links.get("ready_for_real_submission") is False,
+            dashboard_links.get("missing_report_count") == 0,
+            dashboard_links.get("nonlocal_report_count") == 0,
+            dashboard_links.get("missing_html_href_count") == 0,
+            dashboard_links.get("duplicate_title_count") == 0,
+            all(dashboard_link_evidence.values()),
+            dashboard_links.get("platform_contacted") is False,
+            dashboard_links.get("uploads_performed") is False,
+            dashboard_links.get("credentials_read") is False,
+            dashboard_links.get("credentials_printed") is False,
+            dashboard_links.get("link_values_printed") is False,
+            dashboard_links.get("secret_values_printed") is False,
+        ]
+    ):
+        print("GUI dashboard 链接审计未通过")
         return 1
     upload_audit = json.loads((ROOT / "runs/checkpoint_upload_channels_audit.json").read_text(encoding="utf-8"))
     upload_channels = upload_audit.get("channels", {})

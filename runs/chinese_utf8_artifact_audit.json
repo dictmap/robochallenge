@@ -1,7 +1,7 @@
 {
   "kind": "chinese_utf8_artifact_audit",
   "passed": true,
-  "scanned_file_count": 156,
+  "scanned_file_count": 158,
   "decode_error_count": 0,
   "bad_marker_hit_file_count": 0,
   "bad_marker_hit_count": 0,
@@ -209,6 +209,14 @@
     {
       "path": "reports/credential_whitespace_guard.md",
       "size_bytes": 2435,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/historical_notebook_checkpoint_outputs.md",
+      "size_bytes": 2659,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -488,7 +496,7 @@
     },
     {
       "path": "reports/submission_artifact_manifest.md",
-      "size_bytes": 27714,
+      "size_bytes": 28294,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -665,14 +673,6 @@
     {
       "path": "runs/baseline_dry_run_gate.json",
       "size_bytes": 5526,
-      "utf8_decode_ok": true,
-      "decode_error": "",
-      "bad_marker_count": 0,
-      "bad_marker_hits": []
-    },
-    {
-      "path": "runs/baseline_final_handoff_packet.json",
-      "size_bytes": 5668,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,

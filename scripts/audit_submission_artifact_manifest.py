@@ -84,6 +84,7 @@ REQUIRED_ARTIFACTS = [
     "reports/submission_preflight_bundle.md",
     "reports/plaintext_secret_scan.md",
     "reports/submission_status_dashboard.html",
+    "reports/submission_dashboard_links_audit.md",
     "scripts/render_next_user_action_packet.py",
     "scripts/render_web_form_field_packet.py",
     "scripts/render_submission_variant_route_packet.py",
@@ -104,6 +105,7 @@ REQUIRED_ARTIFACTS = [
     "scripts/render_route_aware_submission_blockers.py",
     "scripts/render_submission_target_confirmation_packet.py",
     "scripts/audit_submission_target_confirmation_gate.py",
+    "scripts/audit_submission_dashboard_links.py",
     "scripts/audit_jupyter_input_template.py",
     "scripts/audit_jupyter_authorized_preflight_template.py",
     "scripts/audit_jupyter_final_handoff_template.py",
@@ -235,6 +237,7 @@ def build_status() -> dict[str, Any]:
     readiness = read_json(RUNS_DIR / "real_submission_readiness.json")
     env_template = read_json(RUNS_DIR / "submission_env_template_audit.json")
     secret_scan = read_json(RUNS_DIR / "plaintext_secret_scan.json")
+    dashboard_links = read_json(RUNS_DIR / "submission_dashboard_links_audit.json")
     web_form_route_blocking_names = set(web_form_packet.get("recommended_route_blocking_names", []))
 
     inputs = {
@@ -649,6 +652,11 @@ def build_status() -> dict[str, Any]:
         "route_aware_lora_web_needs_link": route_aware_blockers.get("lora_web_requires_checkpoint_link") is True,
         "readiness_currently_blocked": readiness.get("ready_for_real_submission") is False,
         "env_template_passed": env_template.get("passed") is True,
+        "dashboard_links_audit_passed": dashboard_links.get("passed") is True,
+        "dashboard_links_all_reports_exist": dashboard_links.get("missing_report_count") == 0,
+        "dashboard_links_all_local": dashboard_links.get("nonlocal_report_count") == 0,
+        "dashboard_links_html_hrefs_rendered": dashboard_links.get("missing_html_href_count") == 0,
+        "dashboard_links_card_count": dashboard_links.get("card_count", 0) >= 38,
         "secret_scan_passed": secret_scan.get("passed") is True,
         "secret_scan_hit_count_zero": secret_scan.get("hit_count") == 0,
     }

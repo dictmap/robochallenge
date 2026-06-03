@@ -17,6 +17,11 @@
 - LoRA runner 就绪：`False`。
 - checkpoint link 形态就绪：`False`。
 - 推荐提交路线：`baseline_official_aloha`。
+- pi0.5 ALOHA 基模执行证据：`True`。
+- pi0.5 ALOHA 目标：`Table30v2 / aloha / pack_the_toothbrush_holder`。
+- pi0.5 ALOHA dry-run state/actions 形状：`[5, 32]` / `[5, 50, 32]`。
+- pi0.5 ALOHA mock policy 推理次数：`162`。
+- pi0.5 ALOHA 证据 no-contact/no-leak：`True` / `True`。
 - 提交对象确认包：`True`。
 - 推荐目标确认值：`CONFIRM_TABLE30V2_ALOHA_BASELINE`。
 - 是否已经替用户确认目标：`False`。
@@ -47,17 +52,17 @@
 - 共同 wrapper：`submission/run_authorized_preflight_template.sh`。
 - GUI HTTP 静态预览审计：`True`。
 - GUI HTTP 预览地址形状：`http://127.0.0.1:<ephemeral>/submission_status_dashboard.html`。
-- GUI HTTP 预览卡片数量：`40`。
+- GUI HTTP 预览卡片数量：`41`。
 - GUI HTTP 外部链接数量：`0`。
 - GUI 展示入口审计：`True`。
 - GUI HTML 路径：`reports/submission_status_dashboard.html`。
-- GUI 卡片数量：`40`。
+- GUI 卡片数量：`41`。
 - 浏览器 file URL 预览是否被策略阻止：`True`。
 - 本轮是否生成 GUI 截图：`False`。
 - baseline 是否需要 checkpoint link：`False`。
 - baseline 是否需要 checkpoint upload：`False`。
 - 中文 UTF-8 产物审计：`True`。
-- 中文 UTF-8 扫描文件数：`166`。
+- 中文 UTF-8 扫描文件数：`170`。
 - 中文 UTF-8 解码错误数：`0`。
 - 中文乱码哨兵命中数：`0`。
 - baseline dry-run gate：`True`。
@@ -158,6 +163,7 @@
 - `checkpoint_link_download_verification`：returncode=`0`，passed=`True`。
 - `submission_env_template`：returncode=`0`，passed=`True`。
 - `notebook_structure`：returncode=`0`，passed=`True`。
+- `pi05_aloha_baseline_execution_packet`：returncode=`0`，passed=`True`。
 - `jupyter_input_template`：returncode=`0`，passed=`True`。
 - `jupyter_authorized_preflight_template`：returncode=`0`，passed=`True`。
 - `jupyter_final_handoff_template`：returncode=`0`，passed=`True`。

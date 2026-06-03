@@ -20,6 +20,7 @@ DEFAULT_STATUS = RUNS_DIR / "submission_status_dashboard.json"
 
 SOURCE_FILES = {
     "pi05": RUNS_DIR / "pi05_base_probe_status.json",
+    "pi05_aloha_execution": RUNS_DIR / "pi05_aloha_baseline_execution_packet.json",
     "pi06_pi07": RUNS_DIR / "pi06_pi07_public_audit.json",
     "mapping": RUNS_DIR / "table30v2_aloha_mapping_audit.json",
     "lora_policy": RUNS_DIR / "openpi_rtc_lora_materialized_policy_smoke_status.json",
@@ -100,6 +101,7 @@ def card(title: str, state: str, value: str, detail: str, report: str) -> dict[s
 
 def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
     pi05 = data["pi05"]
+    pi05_aloha_execution = data["pi05_aloha_execution"]
     pi06_pi07 = data["pi06_pi07"]
     mapping = data["mapping"]
     lora_policy = data["lora_policy"]
@@ -148,6 +150,20 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
     )
     current_link_ready = link_intake.get("current_env", {}).get("link_shape_ready")
     ready_for_real = readiness.get("ready_for_real_submission")
+    pi05_aloha_execution_ready = bool(
+        pi05_aloha_execution.get("passed")
+        and pi05_aloha_execution.get("recommended_route") == "baseline_official_aloha"
+        and pi05_aloha_execution.get("target_benchmark") == "Table30v2"
+        and pi05_aloha_execution.get("robot_type") == "aloha"
+        and pi05_aloha_execution.get("task_name") == "pack_the_toothbrush_holder"
+        and pi05_aloha_execution.get("checkpoint_exists") is True
+        and pi05_aloha_execution.get("dry_run_padded_state_shape") == [5, 32]
+        and pi05_aloha_execution.get("dry_run_padded_actions_shape") == [5, 50, 32]
+        and pi05_aloha_execution.get("policy_smoke_exit_code") == 0
+        and pi05_aloha_execution.get("policy_smoke_inference_count", 0) >= 2
+        and not any(pi05_aloha_execution.get("contact_flags", {}).values())
+        and not any(pi05_aloha_execution.get("leak_flags", {}).values())
+    )
     preflight_contacts = preflight.get("contact_flags", {})
     preflight_leaks = preflight.get("leak_flags", {})
     preflight_no_contact = not any(preflight_contacts.values())
@@ -466,6 +482,13 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
             "reports/pi05_base_repro.md",
         ),
         card(
+            "pi0.5 ALOHA 离线执行",
+            "done" if pi05_aloha_execution_ready else "watch",
+            f"inference={pi05_aloha_execution.get('policy_smoke_inference_count', 0)}",
+            "汇总 pi0.5 基模缓存、Table30v2 ALOHA 数据、32D/50步转换、短 LeRobot dataloader 与本地 mock policy smoke。",
+            "reports/pi05_aloha_baseline_execution_packet.md",
+        ),
+        card(
             "pi0.6 / pi0.7",
             "watch" if gcs_zero and remote_release_gap else "done",
             "未发现公开 checkpoint",
@@ -751,6 +774,7 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
 
 
 def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], html_path: Path) -> dict[str, Any]:
+    pi05_aloha_execution = data["pi05_aloha_execution"]
     readiness = data["readiness"]
     link_intake = data["link_intake"]
     archive = data["archive_dry_run"]
@@ -808,6 +832,18 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
         "preflight_go_no_go": preflight.get("go_no_go"),
         "preflight_no_contact": not any(preflight_contacts.values()),
         "preflight_no_secret_leak": not any(preflight_leaks.values()),
+        "pi05_aloha_execution_passed": pi05_aloha_execution.get("passed") is True,
+        "pi05_aloha_execution_route": pi05_aloha_execution.get("recommended_route"),
+        "pi05_aloha_target_benchmark": pi05_aloha_execution.get("target_benchmark"),
+        "pi05_aloha_robot_type": pi05_aloha_execution.get("robot_type"),
+        "pi05_aloha_task_name": pi05_aloha_execution.get("task_name"),
+        "pi05_aloha_checkpoint_exists": pi05_aloha_execution.get("checkpoint_exists"),
+        "pi05_aloha_dry_run_state_shape": pi05_aloha_execution.get("dry_run_padded_state_shape"),
+        "pi05_aloha_dry_run_actions_shape": pi05_aloha_execution.get("dry_run_padded_actions_shape"),
+        "pi05_aloha_policy_smoke_exit_code": pi05_aloha_execution.get("policy_smoke_exit_code"),
+        "pi05_aloha_policy_smoke_inference_count": pi05_aloha_execution.get("policy_smoke_inference_count"),
+        "pi05_aloha_no_contact": not any(pi05_aloha_execution.get("contact_flags", {}).values()),
+        "pi05_aloha_no_leak": not any(pi05_aloha_execution.get("leak_flags", {}).values()),
         "link_shape_ready": link_intake.get("current_env", {}).get("link_shape_ready"),
         "archive_created": archive.get("archive_created"),
         "archive_confirm_gate_passed": authorized_archive.get("passed") is True,

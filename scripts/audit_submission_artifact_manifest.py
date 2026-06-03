@@ -58,6 +58,7 @@ REQUIRED_ARTIFACTS = [
     "reports/authorized_preflight_template_audit.md",
     "reports/ready_real_runner_template_audit.md",
     "reports/authorized_checkpoint_archive_template_audit.md",
+    "reports/pi05_aloha_baseline_execution_packet.md",
     "reports/authorized_execution_checklist.md",
     "reports/next_user_action_packet.md",
     "reports/web_form_field_packet.md",
@@ -117,6 +118,7 @@ REQUIRED_ARTIFACTS = [
     "scripts/audit_jupyter_final_handoff_template.py",
     "scripts/audit_historical_notebook_checkpoint_outputs.py",
     "scripts/audit_chinese_utf8_artifacts.py",
+    "scripts/audit_pi05_aloha_baseline_execution_packet.py",
     "scripts/audit_authorized_execution_checklist.py",
     "scripts/audit_dashboard_http_static_preview.py",
     "scripts/render_dashboard_gui_access_packet.py",
@@ -212,6 +214,7 @@ def build_status() -> dict[str, Any]:
     ignored_paths = {rel: git_check_ignore(rel) for rel in LOCAL_SECRET_OR_LARGE_PATHS}
 
     preflight = read_json(RUNS_DIR / "submission_preflight_bundle.json")
+    pi05_aloha_execution = read_json(RUNS_DIR / "pi05_aloha_baseline_execution_packet.json")
     notebook_structure = read_json(RUNS_DIR / "notebook_structure_audit.json")
     jupyter_input = read_json(RUNS_DIR / "jupyter_input_template_audit.json")
     jupyter_authorized = read_json(RUNS_DIR / "jupyter_authorized_preflight_template_audit.json")
@@ -255,6 +258,20 @@ def build_status() -> dict[str, Any]:
     inputs = {
         "preflight_status_available": bool(preflight),
         "preflight_go_no_go_blocked": preflight.get("go_no_go") == "blocked",
+        "pi05_aloha_execution_passed": pi05_aloha_execution.get("passed") is True,
+        "pi05_aloha_execution_recommended_baseline": pi05_aloha_execution.get("recommended_route")
+        == "baseline_official_aloha",
+        "pi05_aloha_execution_benchmark_table30v2": pi05_aloha_execution.get("target_benchmark") == "Table30v2",
+        "pi05_aloha_execution_robot_aloha": pi05_aloha_execution.get("robot_type") == "aloha",
+        "pi05_aloha_execution_task_exact": pi05_aloha_execution.get("task_name") == "pack_the_toothbrush_holder",
+        "pi05_aloha_execution_checkpoint_exists": pi05_aloha_execution.get("checkpoint_exists") is True,
+        "pi05_aloha_execution_state_shape": pi05_aloha_execution.get("dry_run_padded_state_shape") == [5, 32],
+        "pi05_aloha_execution_actions_shape": pi05_aloha_execution.get("dry_run_padded_actions_shape")
+        == [5, 50, 32],
+        "pi05_aloha_execution_policy_smoke": pi05_aloha_execution.get("policy_smoke_exit_code") == 0
+        and pi05_aloha_execution.get("policy_smoke_inference_count", 0) >= 2,
+        "pi05_aloha_execution_no_contact": not any(pi05_aloha_execution.get("contact_flags", {}).values()),
+        "pi05_aloha_execution_no_leak": not any(pi05_aloha_execution.get("leak_flags", {}).values()),
         "notebook_structure_passed": notebook_structure.get("passed") is True,
         "jupyter_input_template_passed": jupyter_input.get("passed") is True,
         "jupyter_input_recommended_baseline": jupyter_input.get("recommended_route") == "baseline_official_aloha",
@@ -715,6 +732,7 @@ def build_status() -> dict[str, Any]:
             bool(item.get("credentials_printed"))
             for item in [
                 preflight,
+                pi05_aloha_execution,
                 notebook_structure,
                 jupyter_input,
                 jupyter_authorized,
@@ -753,6 +771,7 @@ def build_status() -> dict[str, Any]:
             ]
         ),
         "link_values_printed": bool(preflight.get("leak_flags", {}).get("link_values_printed"))
+        or bool(pi05_aloha_execution.get("link_values_printed"))
         or bool(jupyter_input.get("link_values_printed"))
         or bool(jupyter_authorized.get("link_values_printed"))
         or bool(jupyter_final_handoff.get("link_values_printed"))
@@ -786,6 +805,7 @@ def build_status() -> dict[str, Any]:
         or bool(dashboard_http_preview.get("link_values_printed"))
         or bool(dashboard_gui_access.get("link_values_printed")),
         "secret_values_printed": bool(secret_scan.get("secret_values_printed"))
+        or bool(pi05_aloha_execution.get("secret_values_printed"))
         or bool(jupyter_input.get("secret_values_printed"))
         or bool(jupyter_authorized.get("secret_values_printed"))
         or bool(jupyter_final_handoff.get("secret_values_printed"))
@@ -820,6 +840,7 @@ def build_status() -> dict[str, Any]:
             bool(item.get("platform_contacted"))
             for item in [
                 preflight,
+                pi05_aloha_execution,
                 notebook_structure,
                 jupyter_input,
                 jupyter_authorized,
@@ -862,6 +883,7 @@ def build_status() -> dict[str, Any]:
             bool(item.get("uploads_performed") or item.get("upload_performed"))
             for item in [
                 preflight,
+                pi05_aloha_execution,
                 notebook_structure,
                 jupyter_input,
                 jupyter_authorized,
@@ -901,13 +923,15 @@ def build_status() -> dict[str, Any]:
             ]
         ),
         "download_host_contacted": bool(preflight.get("contact_flags", {}).get("download_host_contacted"))
+        or bool(pi05_aloha_execution.get("contact_flags", {}).get("download_host_contacted"))
         or bool(baseline_readonly_entry.get("contact_flags", {}).get("download_host_contacted"))
         or bool(readonly_preflight_parity.get("contact_flags", {}).get("download_host_contacted"))
         or bool(dashboard_http_preview.get("contact_flags", {}).get("download_host_contacted"))
         or bool(dashboard_gui_access.get("contact_flags", {}).get("download_host_contacted")),
         "external_network_contacted": bool(
             dashboard_http_preview.get("contact_flags", {}).get("external_network_contacted")
-        ),
+        )
+        or bool(pi05_aloha_execution.get("contact_flags", {}).get("external_network_contacted")),
     }
     blocking = []
     if missing_required:
@@ -949,6 +973,10 @@ def build_status() -> dict[str, Any]:
         "credentials_printed": False,
         "link_values_printed": False,
         "secret_values_printed": False,
+        "pi05_aloha_execution_passed": pi05_aloha_execution.get("passed") is True,
+        "pi05_aloha_policy_smoke_inference_count": pi05_aloha_execution.get("policy_smoke_inference_count"),
+        "pi05_aloha_no_contact": not any(pi05_aloha_execution.get("contact_flags", {}).values()),
+        "pi05_aloha_no_leak": not any(pi05_aloha_execution.get("leak_flags", {}).values()),
         "artifact_count": len(artifacts),
         "artifacts": artifacts,
         "missing_required_artifacts": missing_required,

@@ -28,6 +28,24 @@
   "download_verified": false,
   "link_shape_ready": false,
   "recommended_route": "baseline_official_aloha",
+  "pi05_aloha_execution_passed": true,
+  "pi05_aloha_execution_route": "baseline_official_aloha",
+  "pi05_aloha_target_benchmark": "Table30v2",
+  "pi05_aloha_robot_type": "aloha",
+  "pi05_aloha_task_name": "pack_the_toothbrush_holder",
+  "pi05_aloha_checkpoint_exists": true,
+  "pi05_aloha_dry_run_state_shape": [
+    5,
+    32
+  ],
+  "pi05_aloha_dry_run_actions_shape": [
+    5,
+    50,
+    32
+  ],
+  "pi05_aloha_policy_smoke_inference_count": 162,
+  "pi05_aloha_no_contact": true,
+  "pi05_aloha_no_leak": true,
   "submission_target_confirmation_packet_passed": true,
   "submission_target_confirmation_value": "CONFIRM_TABLE30V2_ALOHA_BASELINE",
   "submission_target_user_confirmed": false,
@@ -86,17 +104,17 @@
   "readonly_preflight_real_confirm_required_for_readonly": false,
   "dashboard_http_static_preview_passed": true,
   "dashboard_http_static_preview_url_shape": "http://127.0.0.1:<ephemeral>/submission_status_dashboard.html",
-  "dashboard_http_static_preview_card_count": 40,
+  "dashboard_http_static_preview_card_count": 41,
   "dashboard_http_static_preview_external_href_count": 0,
   "dashboard_gui_access_packet_passed": true,
   "dashboard_gui_access_html_path": "reports/submission_status_dashboard.html",
-  "dashboard_gui_access_card_count": 40,
+  "dashboard_gui_access_card_count": 41,
   "dashboard_gui_access_browser_blocked": true,
   "dashboard_gui_access_screenshot_created": false,
   "baseline_requires_checkpoint_link": false,
   "baseline_requires_checkpoint_upload": false,
   "chinese_utf8_artifact_audit_passed": true,
-  "chinese_utf8_artifact_scanned_file_count": 166,
+  "chinese_utf8_artifact_scanned_file_count": 170,
   "chinese_utf8_artifact_decode_error_count": 0,
   "chinese_utf8_artifact_bad_marker_hit_count": 0,
   "baseline_dry_run_gate_passed": true,
@@ -209,7 +227,7 @@
     "ROBOCHALLENGE_REAL_RUN_CONFIRM"
   ],
   "secret_scan_hit_count": 0,
-  "secret_scan_scanned_files": 265,
+  "secret_scan_scanned_files": 268,
   "subcommands": {
     "checkpoint_link_intake": {
       "script": "scripts/audit_checkpoint_link_intake.py",
@@ -237,6 +255,13 @@
       "returncode": 0,
       "passed": true,
       "stdout_tail": "THORIZED_CHECKPOINT_ARCHIVE_TEMPLATE_AUDIT\": true,\n    \"scripts/audit_authorized_checkpoint_archive_template.py\": true,\n    \"第 43 节：授权执行清单审计\": true,\n    \"RUN_AUTHORIZED_EXECUTION_CHECKLIST\": true,\n    \"scripts/audit_authorized_execution_checklist.py\": true,\n    \"第 44 节：安全填空本地 env 入口\": true,\n    \"RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE\": true,\n    \"scripts/audit_jupyter_input_template.py\": true,\n    \"第 45 节：授权后 Jupyter 预检入口\": true,\n    \"RUN_JUPYTER_AUTHORIZED_PREFLIGHT_TEMPLATE_AUDIT\": true,\n    \"RUN_JUPYTER_AUTHORIZED_PREFLIGHT\": true,\n    \"scripts/audit_jupyter_authorized_preflight_template.py\": true,\n    \"第 46 节：baseline final handoff 交接包\": true,\n    \"RUN_JUPYTER_BASELINE_FINAL_HANDOFF_TEMPLATE_AUDIT\": true,\n    \"RUN_JUPYTER_BASELINE_FINAL_HANDOFF_PACKET\": true,\n    \"RUN_JUPYTER_BASELINE_REAL_RUNNER\": true,\n    \"scripts/audit_jupyter_final_handoff_template.py\": true,\n    \"scripts/render_baseline_final_handoff_packet.py\": true\n  },\n  \"blocking\": [\n    \"Notebook 结构、编码和提交阻塞项章节已通过静态审计。\"\n  ]\n}\n",
+      "stderr_tail": ""
+    },
+    "pi05_aloha_baseline_execution_packet": {
+      "script": "scripts/audit_pi05_aloha_baseline_execution_packet.py",
+      "returncode": 0,
+      "passed": true,
+      "stdout_tail": "\n    \"short_lerobot_frame_count\": true,\n    \"short_lerobot_state_shape\": true,\n    \"short_lerobot_actions_shape\": true,\n    \"short_lerobot_cli_passed\": true,\n    \"short_lerobot_cli_frame_count\": true,\n    \"short_lerobot_cli_state_shape\": true,\n    \"short_lerobot_cli_actions_shape\": true,\n    \"policy_smoke_passed\": true,\n    \"policy_smoke_inference_seen\": true,\n    \"mock_server_started\": true,\n    \"secret_scan_clean\": true\n  },\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false,\n    \"real_runner_started\": false\n  },\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"pi0.5 基模缓存、Table30v2 ALOHA 数据转换和本地 mock policy smoke 均已形成离线执行证据。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "jupyter_input_template": {
@@ -271,7 +296,7 @@
       "script": "scripts/audit_chinese_utf8_artifacts.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": " \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"reports/web_form_field_packet.md\",\n      \"size_bytes\": 6265,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"runs/authorized_checkpoint_archive_template_audit.json\",\n      \"size_bytes\": 5645,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"runs/authorized_execution_checklist.json\",\n      \"size_bytes\": 11090,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    }\n  ],\n  \"decode_error_paths\": [],\n  \"bad_marker_hit_paths\": [],\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"中文交接产物 UTF-8 解码与乱码哨兵扫描通过。\"\n  ]\n}\n",
+      "stdout_tail": "r\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"reports/table30v2_aloha_short_lerobot.md\",\n      \"size_bytes\": 897,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"reports/table30v2_aloha_short_lerobot_cli.md\",\n      \"size_bytes\": 916,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"reports/web_form_field_packet.md\",\n      \"size_bytes\": 6265,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    }\n  ],\n  \"decode_error_paths\": [],\n  \"bad_marker_hit_paths\": [],\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"中文交接产物 UTF-8 解码与乱码哨兵扫描通过。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "real_submission_readiness": {
@@ -306,7 +331,7 @@
       "script": "scripts/audit_plaintext_secrets.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": "{\n  \"kind\": \"plaintext_secret_scan\",\n  \"passed\": true,\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"secret_values_printed\": false,\n  \"scan_scope\": \"git tracked files plus unignored untracked files\",\n  \"scanned_files\": 265,\n  \"skipped_binary_files\": 0,\n  \"pattern_count\": 7,\n  \"hit_count\": 0,\n  \"hits\": [],\n  \"blocking\": [\n    \"如发现命中项，先移除明文凭据并轮换对应 token，再重新运行本审计。\",\n    \"本审计不替代真实平台权限检查；baseline 真实提交仍需要用户目标确认、token、submission id、variant=baseline 和真实 runner 强确认。\"\n  ]\n}\n",
+      "stdout_tail": "{\n  \"kind\": \"plaintext_secret_scan\",\n  \"passed\": true,\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"secret_values_printed\": false,\n  \"scan_scope\": \"git tracked files plus unignored untracked files\",\n  \"scanned_files\": 268,\n  \"skipped_binary_files\": 0,\n  \"pattern_count\": 7,\n  \"hit_count\": 0,\n  \"hits\": [],\n  \"blocking\": [\n    \"如发现命中项，先移除明文凭据并轮换对应 token，再重新运行本审计。\",\n    \"本审计不替代真实平台权限检查；baseline 真实提交仍需要用户目标确认、token、submission id、variant=baseline 和真实 runner 强确认。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "submission_variant_route_packet": {

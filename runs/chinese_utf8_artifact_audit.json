@@ -1,7 +1,7 @@
 {
   "kind": "chinese_utf8_artifact_audit",
   "passed": true,
-  "scanned_file_count": 166,
+  "scanned_file_count": 170,
   "decode_error_count": 0,
   "bad_marker_hit_file_count": 0,
   "bad_marker_hit_count": 0,
@@ -231,6 +231,14 @@
       "bad_marker_hits": []
     },
     {
+      "path": "reports/dashboard_http_static_preview.md",
+      "size_bytes": 1793,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
       "path": "reports/historical_notebook_checkpoint_outputs.md",
       "size_bytes": 2659,
       "utf8_decode_ok": true,
@@ -431,6 +439,14 @@
       "bad_marker_hits": []
     },
     {
+      "path": "reports/pi05_aloha_baseline_execution_packet.md",
+      "size_bytes": 2765,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
       "path": "reports/pi05_base_repro.md",
       "size_bytes": 4145,
       "utf8_decode_ok": true,
@@ -520,7 +536,7 @@
     },
     {
       "path": "reports/submission_artifact_manifest.md",
-      "size_bytes": 30851,
+      "size_bytes": 31766,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -560,7 +576,7 @@
     },
     {
       "path": "reports/submission_preflight_bundle.md",
-      "size_bytes": 12032,
+      "size_bytes": 12414,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -568,7 +584,7 @@
     },
     {
       "path": "reports/submission_status_dashboard.html",
-      "size_bytes": 24153,
+      "size_bytes": 24659,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -657,22 +673,6 @@
     {
       "path": "reports/web_form_field_packet.md",
       "size_bytes": 6265,
-      "utf8_decode_ok": true,
-      "decode_error": "",
-      "bad_marker_count": 0,
-      "bad_marker_hits": []
-    },
-    {
-      "path": "runs/authorized_checkpoint_archive_template_audit.json",
-      "size_bytes": 5645,
-      "utf8_decode_ok": true,
-      "decode_error": "",
-      "bad_marker_count": 0,
-      "bad_marker_hits": []
-    },
-    {
-      "path": "runs/authorized_execution_checklist.json",
-      "size_bytes": 11090,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,

@@ -7,7 +7,11 @@
   "credentials_printed": false,
   "link_values_printed": false,
   "secret_values_printed": false,
-  "artifact_count": 101,
+  "pi05_aloha_execution_passed": true,
+  "pi05_aloha_policy_smoke_inference_count": 162,
+  "pi05_aloha_no_contact": true,
+  "pi05_aloha_no_leak": true,
+  "artifact_count": 103,
   "artifacts": [
     {
       "path": "README.md",
@@ -259,7 +263,7 @@
       "exists": true,
       "tracked": true,
       "size_bytes": 1045,
-      "sha256": "00946a383bea60541740cd316010ef0deb3ae79559ec4e68299ef65e00af5bc7"
+      "sha256": "0e58b465c8886bdff0d7252c74338b436cd4a4c79868af4633d35d36be51e1e3"
     },
     {
       "path": "reports/authorized_preflight_template_audit.md",
@@ -281,6 +285,13 @@
       "tracked": true,
       "size_bytes": 2030,
       "sha256": "0a02a63659e96376720e1c11c78ab6bd7a5b4118c13a93c99155fbd2dd5d6bbe"
+    },
+    {
+      "path": "reports/pi05_aloha_baseline_execution_packet.md",
+      "exists": true,
+      "tracked": true,
+      "size_bytes": 2765,
+      "sha256": "1df383bac0a96d9537f21406b0ca461452641028bcc444138a35b94a00c8d031"
     },
     {
       "path": "reports/authorized_execution_checklist.md",
@@ -461,43 +472,43 @@
       "path": "reports/submission_preflight_bundle.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 12032,
-      "sha256": "cb7c0641ee9d7c513f63dbd0d41c618dd57e9fa61017d0c15dbda72679091f30"
+      "size_bytes": 12414,
+      "sha256": "a971c71e62d9ac6992d8e5c309dff7fe9be27a8734f462f446536cb7fc94ea46"
     },
     {
       "path": "reports/plaintext_secret_scan.md",
       "exists": true,
       "tracked": true,
       "size_bytes": 689,
-      "sha256": "3640d5c9eb2c67bb669e1d6dadaa7a5ad9361bdccef6c880c54045b1e0efc3a3"
+      "sha256": "26cff0630421f38f0d428ba14b25113969dea384b3b69046e3bbb6dba55dae7c"
     },
     {
       "path": "reports/submission_status_dashboard.html",
       "exists": true,
       "tracked": true,
-      "size_bytes": 24153,
-      "sha256": "59587321616465deadc7600157c3e89dec95c6fb17bb9336e92f6c3a93fb980c"
+      "size_bytes": 24659,
+      "sha256": "602dacdc51dd57b552e141b217127ec17d66056810e65216a7baa13206d5c2cb"
     },
     {
       "path": "reports/submission_dashboard_links_audit.md",
       "exists": true,
       "tracked": true,
       "size_bytes": 1113,
-      "sha256": "ceaa69de30e182a23388e5f671fdc45d5785dffbc2f6c1f5f3058fb5f43608b8"
+      "sha256": "c6ca0e24d99c8e3f3087a59baa0e3ea522bf6caa50618d941607cd553bca5180"
     },
     {
       "path": "reports/dashboard_http_static_preview.md",
       "exists": true,
-      "tracked": false,
+      "tracked": true,
       "size_bytes": 1793,
-      "sha256": "08375c31fddc92c319c32985b8a9446ebd2d25d2fdff96db84c96338b5ef1bfb"
+      "sha256": "458045051e1bcb9b20d0510026c69a7e91a93c7459a40870cf7e55e8bfd383c4"
     },
     {
       "path": "reports/dashboard_gui_access_packet.md",
       "exists": true,
       "tracked": true,
       "size_bytes": 1916,
-      "sha256": "66968a8b97c4cc686d82b9c518c5435c4bae9998eb233b4a1b48af5db9cb190d"
+      "sha256": "f55f0542850c0ac5255d1429eee702cb55a3776862b32c25413af979517264d1"
     },
     {
       "path": "scripts/render_next_user_action_packet.py",
@@ -696,6 +707,13 @@
       "sha256": "1d9a1b5dc5e30786081bd7a851bad972fe47c39553b2b78556e78ce0ef9db48d"
     },
     {
+      "path": "scripts/audit_pi05_aloha_baseline_execution_packet.py",
+      "exists": true,
+      "tracked": true,
+      "size_bytes": 11922,
+      "sha256": "7cdd1ec6800b5b1150c4752e79a7e2b3ebd28469cc64a3d7f2608a42b16482ff"
+    },
+    {
       "path": "scripts/audit_authorized_execution_checklist.py",
       "exists": true,
       "tracked": true,
@@ -705,7 +723,7 @@
     {
       "path": "scripts/audit_dashboard_http_static_preview.py",
       "exists": true,
-      "tracked": false,
+      "tracked": true,
       "size_bytes": 10381,
       "sha256": "a83061a614d1924b3f1be2c6b0141d6a411afbc8b8d198d009c6b9c87fdb70e9"
     },
@@ -760,6 +778,17 @@
   "inputs": {
     "preflight_status_available": true,
     "preflight_go_no_go_blocked": true,
+    "pi05_aloha_execution_passed": true,
+    "pi05_aloha_execution_recommended_baseline": true,
+    "pi05_aloha_execution_benchmark_table30v2": true,
+    "pi05_aloha_execution_robot_aloha": true,
+    "pi05_aloha_execution_task_exact": true,
+    "pi05_aloha_execution_checkpoint_exists": true,
+    "pi05_aloha_execution_state_shape": true,
+    "pi05_aloha_execution_actions_shape": true,
+    "pi05_aloha_execution_policy_smoke": true,
+    "pi05_aloha_execution_no_contact": true,
+    "pi05_aloha_execution_no_leak": true,
     "notebook_structure_passed": true,
     "jupyter_input_template_passed": true,
     "jupyter_input_recommended_baseline": true,

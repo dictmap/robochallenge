@@ -23,6 +23,7 @@ SUBCOMMANDS = [
     ("checkpoint_link_download_verification", "scripts/audit_checkpoint_link_download_verification.py"),
     ("submission_env_template", "scripts/audit_submission_env_template.py"),
     ("notebook_structure", "scripts/audit_notebook_structure.py"),
+    ("pi05_aloha_baseline_execution_packet", "scripts/audit_pi05_aloha_baseline_execution_packet.py"),
     ("jupyter_input_template", "scripts/audit_jupyter_input_template.py"),
     ("jupyter_authorized_preflight_template", "scripts/audit_jupyter_authorized_preflight_template.py"),
     ("jupyter_final_handoff_template", "scripts/audit_jupyter_final_handoff_template.py"),
@@ -112,6 +113,7 @@ def build_status() -> dict[str, Any]:
     link_download = read_json(RUNS_DIR / "checkpoint_link_download_verification.json")
     artifact_manifest = read_json(RUNS_DIR / "submission_artifact_manifest.json")
     notebook_structure = read_json(RUNS_DIR / "notebook_structure_audit.json")
+    pi05_aloha_execution = read_json(RUNS_DIR / "pi05_aloha_baseline_execution_packet.json")
     jupyter_input = read_json(RUNS_DIR / "jupyter_input_template_audit.json")
     jupyter_authorized = read_json(RUNS_DIR / "jupyter_authorized_preflight_template_audit.json")
     jupyter_final_handoff = read_json(RUNS_DIR / "jupyter_final_handoff_template_audit.json")
@@ -156,6 +158,7 @@ def build_status() -> dict[str, Any]:
                 link_download,
                 artifact_manifest,
                 notebook_structure,
+                pi05_aloha_execution,
                 jupyter_input,
                 jupyter_authorized,
                 jupyter_final_handoff,
@@ -197,6 +200,7 @@ def build_status() -> dict[str, Any]:
         or bool(link_download.get("link_value_printed"))
         or bool(artifact_manifest.get("link_values_printed"))
         or bool(notebook_structure.get("link_values_printed"))
+        or bool(pi05_aloha_execution.get("link_values_printed"))
         or bool(jupyter_input.get("link_values_printed"))
         or bool(jupyter_authorized.get("link_values_printed"))
         or bool(jupyter_final_handoff.get("link_values_printed"))
@@ -232,6 +236,7 @@ def build_status() -> dict[str, Any]:
         "secret_values_printed": bool(secret_scan.get("secret_values_printed"))
         or bool(artifact_manifest.get("secret_values_printed"))
         or bool(notebook_structure.get("secret_values_printed"))
+        or bool(pi05_aloha_execution.get("secret_values_printed"))
         or bool(jupyter_input.get("secret_values_printed"))
         or bool(jupyter_authorized.get("secret_values_printed"))
         or bool(jupyter_final_handoff.get("secret_values_printed"))
@@ -273,6 +278,7 @@ def build_status() -> dict[str, Any]:
                 link_download,
                 artifact_manifest,
                 notebook_structure,
+                pi05_aloha_execution,
                 jupyter_input,
                 jupyter_authorized,
                 jupyter_final_handoff,
@@ -317,6 +323,7 @@ def build_status() -> dict[str, Any]:
                 link_download,
                 artifact_manifest,
                 notebook_structure,
+                pi05_aloha_execution,
                 jupyter_input,
                 jupyter_authorized,
                 jupyter_final_handoff,
@@ -360,11 +367,13 @@ def build_status() -> dict[str, Any]:
         )
         or bool(baseline_readonly_entry.get("contact_flags", {}).get("download_host_contacted"))
         or bool(readonly_preflight_parity.get("contact_flags", {}).get("download_host_contacted"))
+        or bool(pi05_aloha_execution.get("contact_flags", {}).get("download_host_contacted"))
         or bool(dashboard_http_preview.get("contact_flags", {}).get("download_host_contacted"))
         or bool(dashboard_gui_access.get("contact_flags", {}).get("download_host_contacted")),
         "external_network_contacted": bool(
             dashboard_http_preview.get("contact_flags", {}).get("external_network_contacted")
-        ),
+        )
+        or bool(pi05_aloha_execution.get("contact_flags", {}).get("external_network_contacted")),
     }
     readiness_blocking = readiness.get("blocking", [])
     link_blocking = link_intake.get("current_env", {}).get("blocking", [])
@@ -421,6 +430,17 @@ def build_status() -> dict[str, Any]:
         "download_verified": link_download.get("verification", {}).get("download_verified"),
         "link_shape_ready": link_intake.get("current_env", {}).get("link_shape_ready"),
         "recommended_route": route_aware_blockers.get("recommended_route"),
+        "pi05_aloha_execution_passed": pi05_aloha_execution.get("passed") is True,
+        "pi05_aloha_execution_route": pi05_aloha_execution.get("recommended_route"),
+        "pi05_aloha_target_benchmark": pi05_aloha_execution.get("target_benchmark"),
+        "pi05_aloha_robot_type": pi05_aloha_execution.get("robot_type"),
+        "pi05_aloha_task_name": pi05_aloha_execution.get("task_name"),
+        "pi05_aloha_checkpoint_exists": pi05_aloha_execution.get("checkpoint_exists"),
+        "pi05_aloha_dry_run_state_shape": pi05_aloha_execution.get("dry_run_padded_state_shape"),
+        "pi05_aloha_dry_run_actions_shape": pi05_aloha_execution.get("dry_run_padded_actions_shape"),
+        "pi05_aloha_policy_smoke_inference_count": pi05_aloha_execution.get("policy_smoke_inference_count"),
+        "pi05_aloha_no_contact": not any(pi05_aloha_execution.get("contact_flags", {}).values()),
+        "pi05_aloha_no_leak": not any(pi05_aloha_execution.get("leak_flags", {}).values()),
         "submission_target_confirmation_packet_passed": target_confirmation.get("passed") is True,
         "submission_target_confirmation_value": target_confirmation.get("recommended_confirmation_value"),
         "submission_target_user_confirmed": target_confirmation.get("target_user_confirmed"),
@@ -769,6 +789,11 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         f"- LoRA runner 就绪：`{status['local_lora_runner_ready']}`。",
         f"- checkpoint link 形态就绪：`{status['link_shape_ready']}`。",
         f"- 推荐提交路线：`{status['recommended_route']}`。",
+        f"- pi0.5 ALOHA 基模执行证据：`{status['pi05_aloha_execution_passed']}`。",
+        f"- pi0.5 ALOHA 目标：`{status['pi05_aloha_target_benchmark']} / {status['pi05_aloha_robot_type']} / {status['pi05_aloha_task_name']}`。",
+        f"- pi0.5 ALOHA dry-run state/actions 形状：`{status['pi05_aloha_dry_run_state_shape']}` / `{status['pi05_aloha_dry_run_actions_shape']}`。",
+        f"- pi0.5 ALOHA mock policy 推理次数：`{status['pi05_aloha_policy_smoke_inference_count']}`。",
+        f"- pi0.5 ALOHA 证据 no-contact/no-leak：`{status['pi05_aloha_no_contact']}` / `{status['pi05_aloha_no_leak']}`。",
         f"- 提交对象确认包：`{status['submission_target_confirmation_packet_passed']}`。",
         f"- 推荐目标确认值：`{status['submission_target_confirmation_value']}`。",
         f"- 是否已经替用户确认目标：`{status['submission_target_user_confirmed']}`。",

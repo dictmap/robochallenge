@@ -105,10 +105,10 @@
         <h1>RoboChallenge pi0.5 提交状态面板</h1>
         <p class="sub">静态 GUI 汇总当前复现、LoRA checkpoint、上传/link/readiness 阻塞和授权后执行顺序。面板由 JSON 审计结果生成，不读取或显示真实凭据。</p>
       </div>
-      <div class="stamp">生成时间<br>2026-06-03 04:54:26 UTC</div>
+      <div class="stamp">生成时间<br>2026-06-03 05:14:40 UTC</div>
     </header>
     <section class="summary">
-      <div class="metric"><b>34</b><span>已完成项</span></div>
+      <div class="metric"><b>35</b><span>已完成项</span></div>
       <div class="metric"><b>5</b><span>待授权项</span></div>
       <div class="metric"><b>否</b><span>真实提交就绪</span></div>
       <div class="metric"><b>否</b><span>checkpoint link 就绪</span></div>
@@ -124,6 +124,16 @@
               <h2>pi0.5 基模</h2>
               <p class="value">29 个对象</p>
               <p>本地缓存完整，匹配字节 12,441,749,581。</p>
+            </article>
+
+            <article class="card done">
+              <div class="card-top">
+                <span class="state">已完成</span>
+                <a href="../reports/pi05_aloha_baseline_execution_packet.md">报告</a>
+              </div>
+              <h2>pi0.5 ALOHA 离线执行</h2>
+              <p class="value">inference=162</p>
+              <p>汇总 pi0.5 基模缓存、Table30v2 ALOHA 数据、32D/50步转换、短 LeRobot dataloader 与本地 mock policy smoke。</p>
             </article>
 
             <article class="card watch">
@@ -502,7 +512,7 @@
                 <a href="../reports/chinese_utf8_artifact_audit.md">报告</a>
               </div>
               <h2>中文 UTF-8</h2>
-              <p class="value">166 个文件</p>
+              <p class="value">170 个文件</p>
               <p>关键报告、GUI、Notebook 和交接文档已做 UTF-8 解码与常见乱码哨兵扫描。</p>
             </article>
 

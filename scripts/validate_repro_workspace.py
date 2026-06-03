@@ -20,6 +20,7 @@ REQUIRED = [
     "baseline/official_table30v2_readme.md",
     "reports/initial_repro_assessment.md",
     "reports/pi05_base_repro.md",
+    "reports/pi05_aloha_baseline_execution_packet.md",
     "reports/pi06_pi07_public_release_audit.md",
     "reports/table30v2_aloha_mapping.md",
     "reports/table30v2_aloha_dry_run_converter.md",
@@ -92,6 +93,7 @@ REQUIRED = [
     "reports/plaintext_secret_scan.md",
     "reports/robochallenge_submission_package_checklist.md",
     "runs/pi05_base_probe_status.json",
+    "runs/pi05_aloha_baseline_execution_packet.json",
     "runs/pi06_pi07_public_audit.json",
     "runs/table30v2_aloha_mapping_audit.json",
     "runs/table30v2_aloha_dry_run_status.json",
@@ -175,6 +177,7 @@ REQUIRED = [
     "submission/run_ready_real_submission_template.sh",
     "submission/run_authorized_checkpoint_archive_template.sh",
     "scripts/probe_pi05_base_model.sh",
+    "scripts/audit_pi05_aloha_baseline_execution_packet.py",
     "scripts/audit_pi06_pi07_public_release.py",
     "scripts/audit_table30v2_aloha_mapping.py",
     "scripts/dry_run_table30v2_aloha_converter.py",
@@ -262,6 +265,37 @@ def main() -> int:
         return 1
     if not pi05_status.get("load_params_smoke", {}).get("loaded"):
         print("pi05_base 参数读取 smoke 未通过")
+        return 1
+    pi05_aloha_execution = json.loads(
+        (ROOT / "runs/pi05_aloha_baseline_execution_packet.json").read_text(encoding="utf-8")
+    )
+    if not all(
+        [
+            pi05_aloha_execution.get("kind") == "pi05_aloha_baseline_execution_packet",
+            pi05_aloha_execution.get("passed") is True,
+            pi05_aloha_execution.get("recommended_route") == "baseline_official_aloha",
+            pi05_aloha_execution.get("target_benchmark") == "Table30v2",
+            pi05_aloha_execution.get("robot_type") == "aloha",
+            pi05_aloha_execution.get("task_name") == "pack_the_toothbrush_holder",
+            pi05_aloha_execution.get("checkpoint_exists") is True,
+            pi05_aloha_execution.get("data_state_frame_count") == 1100,
+            pi05_aloha_execution.get("data_video_frame_count") == 1100,
+            pi05_aloha_execution.get("dry_run_sample_count") == 5,
+            pi05_aloha_execution.get("dry_run_padded_state_shape") == [5, 32],
+            pi05_aloha_execution.get("dry_run_padded_actions_shape") == [5, 50, 32],
+            pi05_aloha_execution.get("short_lerobot_frame_count") == 64,
+            pi05_aloha_execution.get("short_lerobot_state_shape") == [1, 5, 32],
+            pi05_aloha_execution.get("short_lerobot_actions_shape") == [1, 5, 50, 32],
+            pi05_aloha_execution.get("short_lerobot_cli_frame_count") == 80,
+            pi05_aloha_execution.get("short_lerobot_cli_state_shape") == [1, 5, 32],
+            pi05_aloha_execution.get("short_lerobot_cli_actions_shape") == [1, 5, 50, 32],
+            pi05_aloha_execution.get("policy_smoke_exit_code") == 0,
+            pi05_aloha_execution.get("policy_smoke_inference_count", 0) >= 2,
+            not any(pi05_aloha_execution.get("contact_flags", {}).values()),
+            not any(pi05_aloha_execution.get("leak_flags", {}).values()),
+        ]
+    ):
+        print("pi0.5 ALOHA 基模执行证据包未通过")
         return 1
     pi06_pi07_status = json.loads((ROOT / "runs/pi06_pi07_public_audit.json").read_text(encoding="utf-8"))
     if pi06_pi07_status.get("public_checkpoint_found"):
@@ -957,6 +991,18 @@ def main() -> int:
             dashboard.get("preflight_go_no_go") == "blocked",
             dashboard.get("preflight_no_contact") is True,
             dashboard.get("preflight_no_secret_leak") is True,
+            dashboard.get("pi05_aloha_execution_passed") is True,
+            dashboard.get("pi05_aloha_execution_route") == "baseline_official_aloha",
+            dashboard.get("pi05_aloha_target_benchmark") == "Table30v2",
+            dashboard.get("pi05_aloha_robot_type") == "aloha",
+            dashboard.get("pi05_aloha_task_name") == "pack_the_toothbrush_holder",
+            dashboard.get("pi05_aloha_checkpoint_exists") is True,
+            dashboard.get("pi05_aloha_dry_run_state_shape") == [5, 32],
+            dashboard.get("pi05_aloha_dry_run_actions_shape") == [5, 50, 32],
+            dashboard.get("pi05_aloha_policy_smoke_exit_code") == 0,
+            dashboard.get("pi05_aloha_policy_smoke_inference_count", 0) >= 2,
+            dashboard.get("pi05_aloha_no_contact") is True,
+            dashboard.get("pi05_aloha_no_leak") is True,
             dashboard.get("link_shape_ready") is False,
             dashboard.get("archive_created") is False,
             dashboard.get("archive_confirm_gate_passed") is True,
@@ -1219,6 +1265,7 @@ def main() -> int:
             len(dashboard.get("blocking", [])) >= 3,
             "ROBOCHALLENGE_CHECKPOINT_LINK" not in set(dashboard.get("blocking", [])),
             "pi0.5 基模" in dashboard_titles,
+            "pi0.5 ALOHA 离线执行" in dashboard_titles,
             "Table30v2 ALOHA" in dashboard_titles,
             "归档强确认入口" in dashboard_titles,
             "授权执行清单" in dashboard_titles,
@@ -2995,6 +3042,10 @@ def main() -> int:
             artifact_manifest.get("forbidden_tracked_paths") == [],
             all(item.get("ignored") for item in artifact_ignored.values()),
             all(artifact_inputs.values()),
+            artifact_manifest.get("pi05_aloha_execution_passed") is True,
+            artifact_manifest.get("pi05_aloha_policy_smoke_inference_count", 0) >= 2,
+            artifact_manifest.get("pi05_aloha_no_contact") is True,
+            artifact_manifest.get("pi05_aloha_no_leak") is True,
             artifact_manifest.get("platform_contacted") is False,
             artifact_manifest.get("uploads_performed") is False,
             artifact_manifest.get("credentials_read") is False,
@@ -3016,6 +3067,7 @@ def main() -> int:
         "checkpoint_link_download_verification",
         "submission_env_template",
         "notebook_structure",
+        "pi05_aloha_baseline_execution_packet",
         "jupyter_input_template",
         "jupyter_authorized_preflight_template",
         "jupyter_final_handoff_template",
@@ -3141,6 +3193,17 @@ def main() -> int:
             preflight.get("verify_download_requested") is False,
             preflight.get("download_verified") is False,
             preflight.get("link_shape_ready") is False,
+            preflight.get("pi05_aloha_execution_passed") is True,
+            preflight.get("pi05_aloha_execution_route") == "baseline_official_aloha",
+            preflight.get("pi05_aloha_target_benchmark") == "Table30v2",
+            preflight.get("pi05_aloha_robot_type") == "aloha",
+            preflight.get("pi05_aloha_task_name") == "pack_the_toothbrush_holder",
+            preflight.get("pi05_aloha_checkpoint_exists") is True,
+            preflight.get("pi05_aloha_dry_run_state_shape") == [5, 32],
+            preflight.get("pi05_aloha_dry_run_actions_shape") == [5, 50, 32],
+            preflight.get("pi05_aloha_policy_smoke_inference_count", 0) >= 2,
+            preflight.get("pi05_aloha_no_contact") is True,
+            preflight.get("pi05_aloha_no_leak") is True,
             preflight.get("baseline_dry_run_gate_passed") is True,
             preflight.get("baseline_dry_run_gate_command")
             == "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_ready_real_submission_template.sh",

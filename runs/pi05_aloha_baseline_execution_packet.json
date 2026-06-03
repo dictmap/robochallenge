@@ -1,0 +1,110 @@
+{
+  "kind": "pi05_aloha_baseline_execution_packet",
+  "passed": true,
+  "recommended_route": "baseline_official_aloha",
+  "target_benchmark": "Table30v2",
+  "robot_type": "aloha",
+  "task_name": "pack_the_toothbrush_holder",
+  "pi05_local_base": "/home/yjl/.cache/openpi/openpi-assets/checkpoints/pi05_base",
+  "pi05_remote_object_count": 29,
+  "pi05_remote_total_bytes": 12441749581,
+  "pi05_local_matched_bytes": 12441749581,
+  "pi05_params_leaf_count": 51,
+  "pi05_params_total_elements": 3353433872,
+  "data_record_dir": "/home/yjl/yjl/RoboChallenge/baseline_pi05_multitask/20260413/aloha/pack_the_toothbrush_holder",
+  "data_state_frame_count": 1100,
+  "data_video_frame_count": 1100,
+  "checkpoint_path": "/home/yjl/yjl/RoboChallenge/checkpoints/table30v2_multitask_baseline_aloha",
+  "checkpoint_exists": true,
+  "dry_run_sample_count": 5,
+  "dry_run_padded_state_shape": [
+    5,
+    32
+  ],
+  "dry_run_padded_actions_shape": [
+    5,
+    50,
+    32
+  ],
+  "short_lerobot_frame_count": 64,
+  "short_lerobot_state_shape": [
+    1,
+    5,
+    32
+  ],
+  "short_lerobot_actions_shape": [
+    1,
+    5,
+    50,
+    32
+  ],
+  "short_lerobot_cli_frame_count": 80,
+  "short_lerobot_cli_state_shape": [
+    1,
+    5,
+    32
+  ],
+  "short_lerobot_cli_actions_shape": [
+    1,
+    5,
+    50,
+    32
+  ],
+  "policy_smoke_exit_code": 0,
+  "policy_smoke_inference_count": 162,
+  "policy_smoke_log": "runs/policy_smoke_aloha.log",
+  "mock_server_log": "runs/mock_server_aloha.log",
+  "evidence": {
+    "pi05_local_cache_complete": true,
+    "pi05_remote_object_count": true,
+    "pi05_bytes_match": true,
+    "pi05_params_load_smoke_preserved": true,
+    "pi05_params_loaded": true,
+    "pi05_params_leaf_count_positive": true,
+    "pi05_params_total_elements_positive": true,
+    "selected_robot_aloha": true,
+    "selected_task_pack_toothbrush": true,
+    "selected_checkpoint_exists": true,
+    "data_record_exists": true,
+    "data_state_frame_counts_match": true,
+    "data_video_frame_counts_match": true,
+    "mapping_task_name": true,
+    "mapping_episode_frames": true,
+    "dry_run_passed": true,
+    "dry_run_sample_count": true,
+    "dry_run_state_32": true,
+    "dry_run_actions_50x32": true,
+    "short_lerobot_passed": true,
+    "short_lerobot_frame_count": true,
+    "short_lerobot_state_shape": true,
+    "short_lerobot_actions_shape": true,
+    "short_lerobot_cli_passed": true,
+    "short_lerobot_cli_frame_count": true,
+    "short_lerobot_cli_state_shape": true,
+    "short_lerobot_cli_actions_shape": true,
+    "policy_smoke_passed": true,
+    "policy_smoke_inference_seen": true,
+    "mock_server_started": true,
+    "secret_scan_clean": true
+  },
+  "leak_flags": {
+    "credentials_printed": false,
+    "link_values_printed": false,
+    "secret_values_printed": false
+  },
+  "contact_flags": {
+    "platform_contacted": false,
+    "uploads_performed": false,
+    "download_host_contacted": false,
+    "real_runner_started": false
+  },
+  "platform_contacted": false,
+  "uploads_performed": false,
+  "credentials_read": false,
+  "credentials_printed": false,
+  "link_values_printed": false,
+  "secret_values_printed": false,
+  "blocking": [
+    "pi0.5 基模缓存、Table30v2 ALOHA 数据转换和本地 mock policy smoke 均已形成离线执行证据。"
+  ]
+}

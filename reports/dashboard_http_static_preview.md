@@ -8,9 +8,9 @@
 - HTTP 状态码：`200`。
 - Content-Type：`text/html`。
 - H1：`RoboChallenge pi0.5 提交状态面板`。
-- HTTP 卡片数量：`40`。
-- HTTP 已完成/待授权/关注：`34 / 5 / 1`。
-- dashboard JSON 卡片数量：`40`。
+- HTTP 卡片数量：`41`。
+- HTTP 已完成/待授权/关注：`35 / 5 / 1`。
+- dashboard JSON 卡片数量：`41`。
 - 外部链接数量：`0`。
 - 是否生成截图：`False`。
 

@@ -2519,3 +2519,28 @@
 ### 下一步
 - P0：提交并推送本轮 GUI dashboard 链接完整性审计。
 - P1：继续把用户确认后的 baseline 授权前只读预检路径整理成最短可执行入口；真实 runner 仍必须等待用户明确授权。
+## 2026-06-03 第九十一轮：Baseline 只读预检最短入口固化
+
+### 已完成
+- 新增 `scripts/render_baseline_readonly_preflight_entry.py`，把用户确认目标并填写 token/submission id 后的第一条 no-contact 命令单独固化为机器可审计入口。
+- 新增产物 `runs/baseline_readonly_preflight_entry.json` 与 `reports/baseline_readonly_preflight_entry.md`。
+- 固化最短入口：Notebook 第 44 节写入被 Git 忽略的 local env；Notebook 第 45 节或 shell 命令 `ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_authorized_preflight_template.sh` 执行只读预检。
+- 明确只读预检不需要 `ROBOCHALLENGE_REAL_RUN_CONFIRM`，也不需要 checkpoint 上传、checkpoint archive 授权或 checkpoint link；这些仍只属于真实 runner 或 LoRA/web checkpoint 分支。
+- 将新入口接入 `scripts/audit_submission_preflight_bundle.py`、`scripts/audit_submission_artifact_manifest.py`、`scripts/render_submission_status_dashboard.py` 和 `scripts/validate_repro_workspace.py`。
+- GUI dashboard 新增 “Baseline 只读预检入口” 卡片。
+
+### 验证结果
+- Linux 端最终 no-contact 链路已通过：`py_compile`、`render_baseline_readonly_preflight_entry.py`、`render_submission_status_dashboard.py`、`audit_submission_dashboard_links.py`、`audit_submission_artifact_manifest.py`、`audit_submission_preflight_bundle.py`、`audit_submission_blockers_summary.py`、`validate_repro_workspace.py`、`audit_chinese_utf8_artifacts.py`、`audit_plaintext_secrets.py` 和 `git diff --check`。
+- `runs/baseline_readonly_preflight_entry.json` 实测 `passed=true`，`readonly_preflight_command=ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_authorized_preflight_template.sh`，`real_runner_confirm_required_for_readonly_preflight=false`。
+- GUI dashboard 实测 `source_count=39`、`card_count=39`、`done_count=33`、`blocked_count=5`、`watch_count=1`、`ready_for_real_submission=false`。
+- GUI 链接审计实测 `card_count=39`、`missing_report_count=0`、`nonlocal_report_count=0`、`missing_html_href_count=0`、`duplicate_title_count=0`。
+- 明文凭据扫描 `hit_count=0`；中文 UTF-8 与乱码哨兵审计通过。
+
+### 当前边界
+- 本轮没有读取真实 token、submission id、checkpoint link 或真实 local env 内容。
+- 没有连接 RoboChallenge 平台，没有上传 checkpoint，没有生成 checkpoint tar，也没有启动真实 runner。
+- baseline 官方 ALOHA 路线的只读预检入口已可执行，但真实提交仍阻塞在：目标确认、`ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline` 和真实 runner 强确认。
+
+### 下一步
+- P0：提交并推送本轮 baseline 只读预检最短入口固化。
+- P1：用户若明确确认 `CONFIRM_TABLE30V2_ALOHA_BASELINE` 并提供 token/submission id，先跑 Jupyter 第 44/45 节或 shell baseline 授权前只读预检；真实 runner 仍必须等待用户明确授权。

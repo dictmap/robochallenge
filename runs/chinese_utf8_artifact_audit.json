@@ -1,7 +1,7 @@
 {
   "kind": "chinese_utf8_artifact_audit",
   "passed": true,
-  "scanned_file_count": 158,
+  "scanned_file_count": 160,
   "decode_error_count": 0,
   "bad_marker_hit_file_count": 0,
   "bad_marker_hit_count": 0,
@@ -496,7 +496,7 @@
     },
     {
       "path": "reports/submission_artifact_manifest.md",
-      "size_bytes": 28294,
+      "size_bytes": 29066,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -505,6 +505,14 @@
     {
       "path": "reports/submission_blockers_summary.md",
       "size_bytes": 4350,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/submission_dashboard_links_audit.md",
+      "size_bytes": 1113,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -528,7 +536,7 @@
     },
     {
       "path": "reports/submission_preflight_bundle.md",
-      "size_bytes": 10453,
+      "size_bytes": 10912,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -536,7 +544,7 @@
     },
     {
       "path": "reports/submission_status_dashboard.html",
-      "size_bytes": 23101,
+      "size_bytes": 23646,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -665,14 +673,6 @@
     {
       "path": "runs/baseline_credential_hygiene.json",
       "size_bytes": 2415,
-      "utf8_decode_ok": true,
-      "decode_error": "",
-      "bad_marker_count": 0,
-      "bad_marker_hits": []
-    },
-    {
-      "path": "runs/baseline_dry_run_gate.json",
-      "size_bytes": 5526,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,

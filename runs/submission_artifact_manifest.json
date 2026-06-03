@@ -7,7 +7,7 @@
   "credentials_printed": false,
   "link_values_printed": false,
   "secret_values_printed": false,
-  "artifact_count": 93,
+  "artifact_count": 95,
   "artifacts": [
     {
       "path": "README.md",
@@ -20,8 +20,8 @@
       "path": "work.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 217988,
-      "sha256": "27d84e471db0018dc7fa33f8e45def75d26c877e8e6c06100daa66015e8d3c24"
+      "size_bytes": 221004,
+      "sha256": "7c31321d9699ccd66506ebce332e6f192bc3d65c8b757aba5d1c5c3eb4bb2534"
     },
     {
       "path": "notebooks/robochallenge_pi05_submit_cn.ipynb",
@@ -259,7 +259,7 @@
       "exists": true,
       "tracked": true,
       "size_bytes": 1045,
-      "sha256": "84e3d710d0fad0477e906f5dc71f728d1d10052ef84b5dc0bc59f843302795f7"
+      "sha256": "8a00659e3a860e8ac3e68076ee9c6efbff3e0644e34a0fdb1b762e7fc83141b2"
     },
     {
       "path": "reports/authorized_preflight_template_audit.md",
@@ -316,6 +316,13 @@
       "tracked": true,
       "size_bytes": 3239,
       "sha256": "dce4840f3ce21a64b33605d532ee3aef8107e35215df336c5888cef3c020be27"
+    },
+    {
+      "path": "reports/baseline_readonly_preflight_entry.md",
+      "exists": true,
+      "tracked": false,
+      "size_bytes": 3189,
+      "sha256": "f3d6a51b78c3a19567c48b421771db63b2ab7ec722ad824b2be5e36d68463e2d"
     },
     {
       "path": "reports/baseline_dry_run_gate.md",
@@ -447,29 +454,29 @@
       "path": "reports/submission_preflight_bundle.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 10453,
-      "sha256": "889968fccd6c771f39d9ed926fffe43f4f3c51c4e9b4eb1a60888cc17a408973"
+      "size_bytes": 10912,
+      "sha256": "823380da5fdee4429af86581e234dba062e8c5d651b258e03bdf5bdb1fbf8abb"
     },
     {
       "path": "reports/plaintext_secret_scan.md",
       "exists": true,
       "tracked": true,
       "size_bytes": 689,
-      "sha256": "2e7262cc1210150789f3e45ed34dac8aa03a1293548c554a61a516b7435cb5b3"
+      "sha256": "85f8615562c8fea9588752b883088ae79908cfacdf1da104d75940621426cd38"
     },
     {
       "path": "reports/submission_status_dashboard.html",
       "exists": true,
       "tracked": true,
-      "size_bytes": 23101,
-      "sha256": "6e0a6e976cce1ca68924494bafc94b6ee21a9549a5519932317bca38d66b4547"
+      "size_bytes": 23646,
+      "sha256": "b10acdd3588a181c7af414e5a28fda2810480e354acae1aea36c2a3b5cc0c9ed"
     },
     {
       "path": "reports/submission_dashboard_links_audit.md",
       "exists": true,
-      "tracked": false,
+      "tracked": true,
       "size_bytes": 1113,
-      "sha256": "5c7b0dd8119163a271c6371346614dd53b16f38b76cda1bb3760b3f75ab3f8b9"
+      "sha256": "8d9a8ab9649f6adba8d7ea33e9b6b7fb28aa30691b6b0a476e51154443236d4e"
     },
     {
       "path": "scripts/render_next_user_action_packet.py",
@@ -498,6 +505,13 @@
       "tracked": true,
       "size_bytes": 11609,
       "sha256": "88eec19507b704a425ab25349427735a6c7f0b3bbbf0afa4a997ced637433f45"
+    },
+    {
+      "path": "scripts/render_baseline_readonly_preflight_entry.py",
+      "exists": true,
+      "tracked": false,
+      "size_bytes": 14073,
+      "sha256": "f1e857badcecf0f132f0f9ab4aa74258acd626c62bf5e7d56565e36338401c55"
     },
     {
       "path": "scripts/render_baseline_dry_run_gate.py",
@@ -614,7 +628,7 @@
     {
       "path": "scripts/audit_submission_dashboard_links.py",
       "exists": true,
-      "tracked": false,
+      "tracked": true,
       "size_bytes": 7499,
       "sha256": "54e470ff286844d75e5e5377333e83f7ccfeff9939ab87314512a030e806cc98"
     },
@@ -788,6 +802,13 @@
     "baseline_submission_quickstart_target_confirmation_exact_match": true,
     "baseline_submission_quickstart_no_upload": true,
     "baseline_submission_quickstart_no_link": true,
+    "baseline_readonly_entry_passed": true,
+    "baseline_readonly_entry_command_exact": true,
+    "baseline_readonly_entry_no_upload": true,
+    "baseline_readonly_entry_no_link": true,
+    "baseline_readonly_entry_real_confirm_not_required": true,
+    "baseline_readonly_entry_real_confirm_required_for_submission": true,
+    "baseline_readonly_entry_target_confirmation_value_exact": true,
     "baseline_dry_run_gate_passed": true,
     "baseline_dry_run_gate_no_upload": true,
     "baseline_dry_run_gate_no_link": true,

@@ -105,10 +105,10 @@
         <h1>RoboChallenge pi0.5 提交状态面板</h1>
         <p class="sub">静态 GUI 汇总当前复现、LoRA checkpoint、上传/link/readiness 阻塞和授权后执行顺序。面板由 JSON 审计结果生成，不读取或显示真实凭据。</p>
       </div>
-      <div class="stamp">生成时间<br>2026-06-03 02:18:17 UTC</div>
+      <div class="stamp">生成时间<br>2026-06-03 02:37:58 UTC</div>
     </header>
     <section class="summary">
-      <div class="metric"><b>32</b><span>已完成项</span></div>
+      <div class="metric"><b>33</b><span>已完成项</span></div>
       <div class="metric"><b>5</b><span>待授权项</span></div>
       <div class="metric"><b>否</b><span>真实提交就绪</span></div>
       <div class="metric"><b>否</b><span>checkpoint link 就绪</span></div>
@@ -299,6 +299,16 @@
             <article class="card done">
               <div class="card-top">
                 <span class="state">已完成</span>
+                <a href="../reports/baseline_readonly_preflight_entry.md">报告</a>
+              </div>
+              <h2>Baseline 只读预检入口</h2>
+              <p class="value">shell + Jupyter</p>
+              <p>用户确认目标并填写 token/submission id 后，先跑第 45 节或 shell 只读预检；不需要 checkpoint link，也不设置真实 runner 强确认。</p>
+            </article>
+
+            <article class="card done">
+              <div class="card-top">
+                <span class="state">已完成</span>
                 <a href="../reports/baseline_dry_run_gate.md">报告</a>
               </div>
               <h2>Baseline dry-run gate</h2>
@@ -482,7 +492,7 @@
                 <a href="../reports/chinese_utf8_artifact_audit.md">报告</a>
               </div>
               <h2>中文 UTF-8</h2>
-              <p class="value">158 个文件</p>
+              <p class="value">160 个文件</p>
               <p>关键报告、GUI、Notebook 和交接文档已做 UTF-8 解码与常见乱码哨兵扫描。</p>
             </article>
 

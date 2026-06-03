@@ -35,6 +35,7 @@ SUBCOMMANDS = [
     ("plaintext_secret_scan", "scripts/audit_plaintext_secrets.py"),
     ("submission_variant_route_packet", "scripts/render_submission_variant_route_packet.py"),
     ("baseline_submission_quickstart", "scripts/render_baseline_submission_quickstart.py"),
+    ("baseline_readonly_preflight_entry", "scripts/render_baseline_readonly_preflight_entry.py"),
     ("submission_target_confirmation_packet", "scripts/render_submission_target_confirmation_packet.py"),
     ("submission_target_confirmation_gate", "scripts/audit_submission_target_confirmation_gate.py"),
     ("authorized_execution_checklist", "scripts/audit_authorized_execution_checklist.py"),
@@ -125,6 +126,7 @@ def build_status() -> dict[str, Any]:
     target_confirmation_gate = read_json(RUNS_DIR / "submission_target_confirmation_gate.json")
     route_packet = read_json(RUNS_DIR / "submission_variant_route_packet.json")
     baseline_quickstart = read_json(RUNS_DIR / "baseline_submission_quickstart.json")
+    baseline_readonly_entry = read_json(RUNS_DIR / "baseline_readonly_preflight_entry.json")
     baseline_dry_run_gate = read_json(RUNS_DIR / "baseline_dry_run_gate.json")
     baseline_credential_hygiene = read_json(RUNS_DIR / "baseline_credential_hygiene.json")
     local_env_permission = read_json(RUNS_DIR / "local_env_permission_contract.json")
@@ -165,6 +167,7 @@ def build_status() -> dict[str, Any]:
                 target_confirmation_gate,
                 route_packet,
                 baseline_quickstart,
+                baseline_readonly_entry,
                 baseline_dry_run_gate,
                 baseline_credential_hygiene,
                 local_env_permission,
@@ -199,6 +202,7 @@ def build_status() -> dict[str, Any]:
         or bool(target_confirmation_gate.get("link_values_printed"))
         or bool(route_packet.get("link_values_printed"))
         or bool(baseline_quickstart.get("link_values_printed"))
+        or bool(baseline_readonly_entry.get("link_values_printed"))
         or bool(baseline_dry_run_gate.get("link_values_printed"))
         or bool(baseline_credential_hygiene.get("link_values_printed"))
         or bool(local_env_permission.get("link_values_printed"))
@@ -230,6 +234,7 @@ def build_status() -> dict[str, Any]:
         or bool(target_confirmation_gate.get("secret_values_printed"))
         or bool(route_packet.get("secret_values_printed"))
         or bool(baseline_quickstart.get("secret_values_printed"))
+        or bool(baseline_readonly_entry.get("secret_values_printed"))
         or bool(baseline_dry_run_gate.get("secret_values_printed"))
         or bool(baseline_credential_hygiene.get("secret_values_printed"))
         or bool(local_env_permission.get("secret_values_printed"))
@@ -270,6 +275,7 @@ def build_status() -> dict[str, Any]:
                 target_confirmation_gate,
                 route_packet,
                 baseline_quickstart,
+                baseline_readonly_entry,
                 baseline_dry_run_gate,
                 baseline_credential_hygiene,
                 local_env_permission,
@@ -310,6 +316,7 @@ def build_status() -> dict[str, Any]:
                 target_confirmation_gate,
                 route_packet,
                 baseline_quickstart,
+                baseline_readonly_entry,
                 baseline_dry_run_gate,
                 baseline_credential_hygiene,
                 local_env_permission,
@@ -329,7 +336,8 @@ def build_status() -> dict[str, Any]:
         ),
         "download_host_contacted": bool(
             link_download.get("verification", {}).get("download_host_contacted")
-        ),
+        )
+        or bool(baseline_readonly_entry.get("contact_flags", {}).get("download_host_contacted")),
     }
     readiness_blocking = readiness.get("blocking", [])
     link_blocking = link_intake.get("current_env", {}).get("blocking", [])
@@ -437,6 +445,31 @@ def build_status() -> dict[str, Any]:
             "target_confirmation_exact_match_required"
         )
         is True,
+        "baseline_readonly_preflight_entry_passed": baseline_readonly_entry.get("passed") is True,
+        "baseline_readonly_preflight_entry_command": baseline_readonly_entry.get("readonly_preflight_command"),
+        "baseline_readonly_preflight_entry_target_confirmation_value": baseline_readonly_entry.get(
+            "target_confirmation_value"
+        ),
+        "baseline_readonly_preflight_entry_no_upload": baseline_readonly_entry.get(
+            "requires_checkpoint_upload"
+        )
+        is False,
+        "baseline_readonly_preflight_entry_no_link": baseline_readonly_entry.get("requires_checkpoint_link")
+        is False,
+        "baseline_readonly_preflight_entry_real_confirm_required_for_readonly": baseline_readonly_entry.get(
+            "real_runner_confirm_required_for_readonly_preflight"
+        ),
+        "baseline_readonly_preflight_entry_real_confirm_required_for_submission": baseline_readonly_entry.get(
+            "real_runner_confirm_required_for_real_submission"
+        ),
+        "baseline_readonly_preflight_entry_required_ids": baseline_readonly_entry.get(
+            "required_user_inputs_for_readonly_preflight",
+            [],
+        ),
+        "baseline_readonly_preflight_entry_excluded_ids": baseline_readonly_entry.get(
+            "excluded_from_readonly_preflight",
+            [],
+        ),
         "baseline_requires_checkpoint_link": route_aware_blockers.get("baseline_requires_checkpoint_link"),
         "baseline_requires_checkpoint_upload": route_aware_blockers.get("baseline_requires_checkpoint_upload"),
         "chinese_utf8_artifact_audit_passed": chinese_utf8.get("passed") is True,
@@ -707,6 +740,11 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         f"- baseline 最短路径确认值：`{status['baseline_submission_quickstart_target_confirmation_value']}`。",
         f"- baseline 最短路径是否要求手动目标确认：`{status['baseline_submission_quickstart_target_confirmation_manual_input']}`。",
         f"- baseline 最短路径是否精确匹配目标确认：`{status['baseline_submission_quickstart_target_confirmation_exact_match']}`。",
+        f"- baseline 只读预检入口：`{status['baseline_readonly_preflight_entry_passed']}`。",
+        f"- baseline 只读预检命令：`{status['baseline_readonly_preflight_entry_command']}`。",
+        f"- baseline 只读预检是否需要真实 runner 强确认：`{status['baseline_readonly_preflight_entry_real_confirm_required_for_readonly']}`。",
+        f"- baseline 真实提交是否仍需要强确认：`{status['baseline_readonly_preflight_entry_real_confirm_required_for_submission']}`。",
+        f"- baseline 只读预检目标确认值：`{status['baseline_readonly_preflight_entry_target_confirmation_value']}`。",
         f"- baseline 是否需要 checkpoint link：`{status['baseline_requires_checkpoint_link']}`。",
         f"- baseline 是否需要 checkpoint upload：`{status['baseline_requires_checkpoint_upload']}`。",
         f"- 中文 UTF-8 产物审计：`{status['chinese_utf8_artifact_audit_passed']}`。",

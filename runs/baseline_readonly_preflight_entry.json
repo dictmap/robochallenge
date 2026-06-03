@@ -1,0 +1,90 @@
+{
+  "kind": "baseline_readonly_preflight_entry",
+  "passed": true,
+  "recommended_route": "baseline_official_aloha",
+  "target_confirmation_value": "CONFIRM_TABLE30V2_ALOHA_BASELINE",
+  "target_user_confirmed": false,
+  "readonly_preflight_command": "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_authorized_preflight_template.sh",
+  "jupyter_local_env_entry": "Notebook 第 44 节：RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE=True",
+  "jupyter_authorized_preflight_entry": "Notebook 第 45 节：RUN_AUTHORIZED_PREFLIGHT_TEMPLATE=True",
+  "required_user_inputs_for_readonly_preflight": [
+    "SUBMISSION_TARGET_CONFIRMATION",
+    "ROBOCHALLENGE_USER_TOKEN",
+    "ROBOCHALLENGE_SUBMISSION_ID",
+    "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline"
+  ],
+  "excluded_from_readonly_preflight": [
+    "ROBOCHALLENGE_REAL_RUN_CONFIRM",
+    "CHECKPOINT_ARCHIVE_AUTHORIZATION",
+    "ROBOCHALLENGE_CHECKPOINT_LINK"
+  ],
+  "real_runner_confirm_required_for_real_submission": true,
+  "real_runner_confirm_required_for_readonly_preflight": false,
+  "requires_checkpoint_upload": false,
+  "requires_checkpoint_link": false,
+  "requires_checkpoint_archive_authorization": false,
+  "baseline_current_blocking": [
+    "ROBOCHALLENGE_REAL_RUN_CONFIRM",
+    "ROBOCHALLENGE_SUBMISSION_ID",
+    "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline",
+    "ROBOCHALLENGE_USER_TOKEN",
+    "SUBMISSION_TARGET_CONFIRMATION"
+  ],
+  "evidence": {
+    "quickstart_passed": true,
+    "quickstart_command_2_exact": true,
+    "quickstart_recommends_baseline": true,
+    "quickstart_no_upload": true,
+    "quickstart_no_link": true,
+    "action_packet_passed": true,
+    "action_packet_recommends_baseline": true,
+    "action_packet_target_confirmation_value_exact": true,
+    "action_packet_target_not_confirmed": true,
+    "final_handoff_passed": true,
+    "final_handoff_second_command_exact": true,
+    "final_handoff_first_three_no_contact": true,
+    "final_handoff_real_runner_requires_confirmation": true,
+    "final_handoff_target_confirmation_value_exact": true,
+    "final_handoff_target_not_confirmed": true,
+    "jupyter_input_passed": true,
+    "jupyter_input_manual_target_confirmation": true,
+    "jupyter_input_exact_target_confirmation": true,
+    "jupyter_authorized_preflight_passed": true,
+    "target_confirmation_packet_passed": true,
+    "target_confirmation_value_exact": true,
+    "target_not_confirmed_for_user": true,
+    "target_does_not_confirm_for_user": true,
+    "target_table30v2_aloha_task_exact": true,
+    "route_aware_passed": true,
+    "route_aware_recommends_baseline": true,
+    "route_aware_baseline_no_upload": true,
+    "route_aware_baseline_no_link": true,
+    "route_aware_lora_web_keeps_upload": true,
+    "route_aware_lora_web_keeps_link": true,
+    "readonly_required_ids_subset_current_blocking": true,
+    "readonly_excluded_ids_not_required": true,
+    "real_runner_confirm_excluded_from_readonly_preflight": true,
+    "checkpoint_archive_auth_excluded_from_readonly_preflight": true,
+    "checkpoint_link_excluded_from_readonly_preflight": true,
+    "secret_scan_clean": true
+  },
+  "leak_flags": {
+    "credentials_printed": false,
+    "link_values_printed": false,
+    "secret_values_printed": false
+  },
+  "contact_flags": {
+    "platform_contacted": false,
+    "uploads_performed": false,
+    "download_host_contacted": false
+  },
+  "platform_contacted": false,
+  "uploads_performed": false,
+  "credentials_read": false,
+  "credentials_printed": false,
+  "link_values_printed": false,
+  "secret_values_printed": false,
+  "blocking": [
+    "baseline 只读预检入口已固化；用户确认目标并填写 token/submission id 后，先运行第 45 节或 shell 只读预检，仍不要设置真实 runner 强确认。"
+  ]
+}

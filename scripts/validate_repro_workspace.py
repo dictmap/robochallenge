@@ -67,6 +67,7 @@ REQUIRED = [
     "reports/web_form_field_packet.md",
     "reports/submission_variant_route_packet.md",
     "reports/baseline_submission_quickstart.md",
+    "reports/baseline_readonly_preflight_entry.md",
     "reports/baseline_dry_run_gate.md",
     "reports/baseline_credential_hygiene.md",
     "reports/local_env_permission_contract.md",
@@ -136,6 +137,7 @@ REQUIRED = [
     "runs/web_form_field_packet.json",
     "runs/submission_variant_route_packet.json",
     "runs/baseline_submission_quickstart.json",
+    "runs/baseline_readonly_preflight_entry.json",
     "runs/baseline_dry_run_gate.json",
     "runs/baseline_credential_hygiene.json",
     "runs/local_env_permission_contract.json",
@@ -205,6 +207,7 @@ REQUIRED = [
     "scripts/render_web_form_field_packet.py",
     "scripts/render_submission_variant_route_packet.py",
     "scripts/render_baseline_submission_quickstart.py",
+    "scripts/render_baseline_readonly_preflight_entry.py",
     "scripts/render_baseline_dry_run_gate.py",
     "scripts/render_baseline_credential_hygiene.py",
     "scripts/audit_local_env_permission_contract.py",
@@ -1005,6 +1008,20 @@ def main() -> int:
             dashboard.get("baseline_submission_quickstart_target_confirmation_exact_match") is True,
             dashboard.get("baseline_submission_quickstart_no_upload") is True,
             dashboard.get("baseline_submission_quickstart_no_link") is True,
+            dashboard.get("baseline_readonly_preflight_entry_passed") is True,
+            dashboard.get("baseline_readonly_preflight_entry_command")
+            == "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_authorized_preflight_template.sh",
+            dashboard.get("baseline_readonly_preflight_entry_target_confirmation_value")
+            == "CONFIRM_TABLE30V2_ALOHA_BASELINE",
+            dashboard.get("baseline_readonly_preflight_entry_target_user_confirmed") is False,
+            dashboard.get("baseline_readonly_preflight_entry_no_upload") is True,
+            dashboard.get("baseline_readonly_preflight_entry_no_link") is True,
+            dashboard.get("baseline_readonly_preflight_entry_real_confirm_required_for_readonly") is False,
+            dashboard.get("baseline_readonly_preflight_entry_real_confirm_required_for_submission") is True,
+            "SUBMISSION_TARGET_CONFIRMATION"
+            in set(dashboard.get("baseline_readonly_preflight_entry_required_ids", [])),
+            "ROBOCHALLENGE_REAL_RUN_CONFIRM"
+            in set(dashboard.get("baseline_readonly_preflight_entry_excluded_ids", [])),
             dashboard.get("baseline_dry_run_gate_passed") is True,
             dashboard.get("baseline_dry_run_gate_no_upload") is True,
             dashboard.get("baseline_dry_run_gate_no_link") is True,
@@ -1182,6 +1199,7 @@ def main() -> int:
             "网页表单字段" in dashboard_titles,
             "提交路线拆分" in dashboard_titles,
             "Baseline 最短路径" in dashboard_titles,
+            "Baseline 只读预检入口" in dashboard_titles,
             "Baseline dry-run gate" in dashboard_titles,
             "Baseline 凭据卫生" in dashboard_titles,
             "Local env 权限" in dashboard_titles,
@@ -2058,6 +2076,54 @@ def main() -> int:
     ):
         print("baseline 最短提交路径包审计未通过")
         return 1
+    baseline_readonly = json.loads((ROOT / "runs/baseline_readonly_preflight_entry.json").read_text(encoding="utf-8"))
+    readonly_evidence = baseline_readonly.get("evidence", {})
+    readonly_leaks = baseline_readonly.get("leak_flags", {})
+    readonly_contacts = baseline_readonly.get("contact_flags", {})
+    readonly_required_ids = set(baseline_readonly.get("required_user_inputs_for_readonly_preflight", []))
+    readonly_excluded_ids = set(baseline_readonly.get("excluded_from_readonly_preflight", []))
+    if not all(
+        [
+            baseline_readonly.get("kind") == "baseline_readonly_preflight_entry",
+            baseline_readonly.get("passed"),
+            baseline_readonly.get("recommended_route") == "baseline_official_aloha",
+            baseline_readonly.get("target_confirmation_value") == "CONFIRM_TABLE30V2_ALOHA_BASELINE",
+            baseline_readonly.get("target_user_confirmed") is False,
+            baseline_readonly.get("readonly_preflight_command")
+            == "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_authorized_preflight_template.sh",
+            baseline_readonly.get("jupyter_local_env_entry")
+            == "Notebook 第 44 节：RUN_SAFE_LOCAL_ENV_INPUT_TEMPLATE=True",
+            baseline_readonly.get("jupyter_authorized_preflight_entry")
+            == "Notebook 第 45 节：RUN_AUTHORIZED_PREFLIGHT_TEMPLATE=True",
+            {
+                "SUBMISSION_TARGET_CONFIRMATION",
+                "ROBOCHALLENGE_USER_TOKEN",
+                "ROBOCHALLENGE_SUBMISSION_ID",
+                "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline",
+            }.issubset(readonly_required_ids),
+            {
+                "ROBOCHALLENGE_REAL_RUN_CONFIRM",
+                "CHECKPOINT_ARCHIVE_AUTHORIZATION",
+                "ROBOCHALLENGE_CHECKPOINT_LINK",
+            }.issubset(readonly_excluded_ids),
+            readonly_required_ids.isdisjoint(readonly_excluded_ids),
+            baseline_readonly.get("real_runner_confirm_required_for_readonly_preflight") is False,
+            baseline_readonly.get("real_runner_confirm_required_for_real_submission") is True,
+            baseline_readonly.get("requires_checkpoint_upload") is False,
+            baseline_readonly.get("requires_checkpoint_link") is False,
+            all(readonly_evidence.values()),
+            not any(readonly_leaks.values()),
+            not any(readonly_contacts.values()),
+            baseline_readonly.get("platform_contacted") is False,
+            baseline_readonly.get("uploads_performed") is False,
+            baseline_readonly.get("credentials_read") is False,
+            baseline_readonly.get("credentials_printed") is False,
+            baseline_readonly.get("link_values_printed") is False,
+            baseline_readonly.get("secret_values_printed") is False,
+        ]
+    ):
+        print("baseline 只读预检入口审计未通过")
+        return 1
     baseline_dry_run_gate = json.loads((ROOT / "runs/baseline_dry_run_gate.json").read_text(encoding="utf-8"))
     dry_run_evidence = baseline_dry_run_gate.get("evidence", {})
     dry_run_bootstrap_evidence = baseline_dry_run_gate.get("bootstrap_evidence", {})
@@ -2837,6 +2903,7 @@ def main() -> int:
         "submission_target_confirmation_gate",
         "submission_variant_route_packet",
         "baseline_submission_quickstart",
+        "baseline_readonly_preflight_entry",
         "baseline_dry_run_gate",
         "baseline_credential_hygiene",
         "local_env_permission_contract",
@@ -2902,6 +2969,19 @@ def main() -> int:
             == "CONFIRM_TABLE30V2_ALOHA_BASELINE",
             preflight.get("baseline_submission_quickstart_target_confirmation_manual_input") is True,
             preflight.get("baseline_submission_quickstart_target_confirmation_exact_match") is True,
+            preflight.get("baseline_readonly_preflight_entry_passed") is True,
+            preflight.get("baseline_readonly_preflight_entry_command")
+            == "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_authorized_preflight_template.sh",
+            preflight.get("baseline_readonly_preflight_entry_target_confirmation_value")
+            == "CONFIRM_TABLE30V2_ALOHA_BASELINE",
+            preflight.get("baseline_readonly_preflight_entry_no_upload") is True,
+            preflight.get("baseline_readonly_preflight_entry_no_link") is True,
+            preflight.get("baseline_readonly_preflight_entry_real_confirm_required_for_readonly") is False,
+            preflight.get("baseline_readonly_preflight_entry_real_confirm_required_for_submission") is True,
+            "SUBMISSION_TARGET_CONFIRMATION"
+            in set(preflight.get("baseline_readonly_preflight_entry_required_ids", [])),
+            "ROBOCHALLENGE_REAL_RUN_CONFIRM"
+            in set(preflight.get("baseline_readonly_preflight_entry_excluded_ids", [])),
             preflight.get("local_baseline_runner_ready") is False,
             preflight.get("local_lora_runner_ready") is False,
             preflight.get("verify_download_requested") is False,
@@ -3263,6 +3343,7 @@ def main() -> int:
     print("网页表单字段包审计已通过")
     print("提交路线拆分包审计已通过")
     print("baseline 最短提交路径包审计已通过")
+    print("baseline 只读预检入口审计已通过")
     print("local env 权限契约审计已通过")
     print("占位符凭据拒绝审计已通过")
     print("synthetic dry-run 脱敏审计已通过")

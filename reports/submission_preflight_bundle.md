@@ -35,10 +35,15 @@
 - baseline 最短路径确认值：`CONFIRM_TABLE30V2_ALOHA_BASELINE`。
 - baseline 最短路径是否要求手动目标确认：`True`。
 - baseline 最短路径是否精确匹配目标确认：`True`。
+- baseline 只读预检入口：`True`。
+- baseline 只读预检命令：`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_authorized_preflight_template.sh`。
+- baseline 只读预检是否需要真实 runner 强确认：`False`。
+- baseline 真实提交是否仍需要强确认：`True`。
+- baseline 只读预检目标确认值：`CONFIRM_TABLE30V2_ALOHA_BASELINE`。
 - baseline 是否需要 checkpoint link：`False`。
 - baseline 是否需要 checkpoint upload：`False`。
 - 中文 UTF-8 产物审计：`True`。
-- 中文 UTF-8 扫描文件数：`158`。
+- 中文 UTF-8 扫描文件数：`160`。
 - 中文 UTF-8 解码错误数：`0`。
 - 中文乱码哨兵命中数：`0`。
 - baseline dry-run gate：`True`。
@@ -151,6 +156,7 @@
 - `plaintext_secret_scan`：returncode=`0`，passed=`True`。
 - `submission_variant_route_packet`：returncode=`0`，passed=`True`。
 - `baseline_submission_quickstart`：returncode=`0`，passed=`True`。
+- `baseline_readonly_preflight_entry`：returncode=`0`，passed=`True`。
 - `submission_target_confirmation_packet`：returncode=`0`，passed=`True`。
 - `submission_target_confirmation_gate`：returncode=`0`，passed=`True`。
 - `authorized_execution_checklist`：returncode=`0`，passed=`True`。

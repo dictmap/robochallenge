@@ -63,10 +63,15 @@
 - GUI 卡片数量：`42`。
 - GUI 浏览器预览是否仍被策略阻止：`False`。
 - 本轮是否生成 GUI 截图：`True`。
+- GUI 截图覆盖审计：`True`。
+- GUI 截图尺寸：`1440 x 5200`。
+- GUI 截图大小：`618325` bytes。
+- GUI 截图覆盖卡片数量：`42`。
+- GUI 截图覆盖 HTML 关键短语数量：`5`。
 - baseline 是否需要 checkpoint link：`False`。
 - baseline 是否需要 checkpoint upload：`False`。
 - 中文 UTF-8 产物审计：`True`。
-- 中文 UTF-8 扫描文件数：`174`。
+- 中文 UTF-8 扫描文件数：`176`。
 - 中文 UTF-8 解码错误数：`0`。
 - 中文乱码哨兵命中数：`0`。
 - 关键交接报告一致性审计：`True`。
@@ -212,6 +217,7 @@
 - `submission_handoff_docs`：returncode=`0`，passed=`True`。
 - `dashboard_http_static_preview`：returncode=`0`，passed=`True`。
 - `dashboard_gui_access_packet`：returncode=`0`，passed=`True`。
+- `dashboard_screenshot_coverage`：returncode=`0`，passed=`True`。
 - `submission_artifact_manifest`：returncode=`0`，passed=`True`。
 
 ## Baseline 最短路线当前只差

@@ -1,7 +1,7 @@
 {
   "kind": "chinese_utf8_artifact_audit",
   "passed": true,
-  "scanned_file_count": 174,
+  "scanned_file_count": 176,
   "decode_error_count": 0,
   "bad_marker_hit_file_count": 0,
   "bad_marker_hit_count": 0,
@@ -233,6 +233,14 @@
     {
       "path": "reports/dashboard_http_static_preview.md",
       "size_bytes": 1793,
+      "utf8_decode_ok": true,
+      "decode_error": "",
+      "bad_marker_count": 0,
+      "bad_marker_hits": []
+    },
+    {
+      "path": "reports/dashboard_screenshot_coverage_audit.md",
+      "size_bytes": 1688,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -552,7 +560,7 @@
     },
     {
       "path": "reports/submission_artifact_manifest.md",
-      "size_bytes": 33484,
+      "size_bytes": 34188,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -592,7 +600,7 @@
     },
     {
       "path": "reports/submission_preflight_bundle.md",
-      "size_bytes": 13067,
+      "size_bytes": 13344,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -665,14 +673,6 @@
     {
       "path": "reports/table30v2_aloha_mapping.md",
       "size_bytes": 3037,
-      "utf8_decode_ok": true,
-      "decode_error": "",
-      "bad_marker_count": 0,
-      "bad_marker_hits": []
-    },
-    {
-      "path": "reports/table30v2_aloha_short_lerobot.md",
-      "size_bytes": 897,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,

@@ -11,7 +11,7 @@
   "pi05_aloha_policy_smoke_inference_count": 162,
   "pi05_aloha_no_contact": true,
   "pi05_aloha_no_leak": true,
-  "artifact_count": 108,
+  "artifact_count": 110,
   "artifacts": [
     {
       "path": "README.md",
@@ -24,8 +24,8 @@
       "path": "work.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 243609,
-      "sha256": "36aec55a2df82a0037933e3f079e543352faf2e4bb9bf215b26b72b80a93dbe9"
+      "size_bytes": 247465,
+      "sha256": "e476e1b9d967e6f4c96c009eaafe134ac9c5cf3adb9f33d8a86163861bf82bfb"
     },
     {
       "path": "notebooks/robochallenge_pi05_submit_cn.ipynb",
@@ -270,7 +270,7 @@
       "exists": true,
       "tracked": true,
       "size_bytes": 1045,
-      "sha256": "4ae54f0f413ccff89a3e7998bd7f02e435c2a96d86b6acc950cd75e2bb643ac5"
+      "sha256": "405441c45286650035fb1dadadf72262fd92cf47dedfac87de200f27d3e050b5"
     },
     {
       "path": "reports/key_handoff_report_consistency.md",
@@ -486,15 +486,15 @@
       "path": "reports/submission_preflight_bundle.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 13067,
-      "sha256": "77fc789b13d77c30e5f2b785eed895853300bd0b9080bff635da44e0ed3dbce0"
+      "size_bytes": 13344,
+      "sha256": "b3b3b1349fd23bf575ed4dfb915677e18d531a959b8aa7dbf1954379465f1fe4"
     },
     {
       "path": "reports/plaintext_secret_scan.md",
       "exists": true,
       "tracked": true,
       "size_bytes": 689,
-      "sha256": "b8057d9f82c8bfc34dabac3aa747911626f26d2d57fbbdac6e5de5d1b38eb67d"
+      "sha256": "82729b59e367a32d64d959fa6a7087bfcf39b32b7c5c691e9188767887d73a26"
     },
     {
       "path": "reports/submission_status_dashboard.html",
@@ -523,6 +523,13 @@
       "tracked": true,
       "size_bytes": 2147,
       "sha256": "5086a9b72ba51409ac69e4111e575b695fd22c32ec88b4b0da4431bcb03676e3"
+    },
+    {
+      "path": "reports/dashboard_screenshot_coverage_audit.md",
+      "exists": true,
+      "tracked": true,
+      "size_bytes": 1688,
+      "sha256": "8a141f818611b2f5a9c1ae0e9a3798c6a35bf79776a9216c3197e0022b945d16"
     },
     {
       "path": "reports/submission_status_dashboard_browser.png",
@@ -768,6 +775,13 @@
       "tracked": true,
       "size_bytes": 10839,
       "sha256": "d8ab1294a2ff41f8c51faadd9954c5bed094763c6913b185d0e69cbe87e103f3"
+    },
+    {
+      "path": "scripts/audit_dashboard_screenshot_coverage.py",
+      "exists": true,
+      "tracked": true,
+      "size_bytes": 8881,
+      "sha256": "7af9eb4db3b1f75f03a21f15ff2c3e799176e1c7025ea6f603dff5e3e213a804"
     }
   ],
   "missing_required_artifacts": [],
@@ -1045,6 +1059,12 @@
     "dashboard_gui_access_screenshot_path_exact": true,
     "dashboard_gui_access_screenshot_size_current": true,
     "dashboard_gui_access_card_count_current": true,
+    "dashboard_screenshot_coverage_passed": true,
+    "dashboard_screenshot_coverage_card_count_current": true,
+    "dashboard_screenshot_coverage_png_width": true,
+    "dashboard_screenshot_coverage_png_height": true,
+    "dashboard_screenshot_coverage_png_size": true,
+    "dashboard_screenshot_coverage_html_phrase_count": true,
     "secret_scan_passed": true,
     "secret_scan_hit_count_zero": true
   },

@@ -116,10 +116,16 @@
   "dashboard_gui_access_card_count": 42,
   "dashboard_gui_access_browser_blocked": false,
   "dashboard_gui_access_screenshot_created": true,
+  "dashboard_screenshot_coverage_passed": true,
+  "dashboard_screenshot_coverage_width": 1440,
+  "dashboard_screenshot_coverage_height": 5200,
+  "dashboard_screenshot_coverage_size_bytes": 618325,
+  "dashboard_screenshot_coverage_card_count": 42,
+  "dashboard_screenshot_coverage_phrase_count": 5,
   "baseline_requires_checkpoint_link": false,
   "baseline_requires_checkpoint_upload": false,
   "chinese_utf8_artifact_audit_passed": true,
-  "chinese_utf8_artifact_scanned_file_count": 174,
+  "chinese_utf8_artifact_scanned_file_count": 176,
   "chinese_utf8_artifact_decode_error_count": 0,
   "chinese_utf8_artifact_bad_marker_hit_count": 0,
   "key_handoff_report_consistency_passed": true,
@@ -238,7 +244,7 @@
     "ROBOCHALLENGE_REAL_RUN_CONFIRM"
   ],
   "secret_scan_hit_count": 0,
-  "secret_scan_scanned_files": 274,
+  "secret_scan_scanned_files": 277,
   "subcommands": {
     "checkpoint_link_intake": {
       "script": "scripts/audit_checkpoint_link_intake.py",
@@ -314,7 +320,7 @@
       "script": "scripts/audit_chinese_utf8_artifacts.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": " \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"reports/table30v2_aloha_dry_run_converter.md\",\n      \"size_bytes\": 1189,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"reports/table30v2_aloha_mapping.md\",\n      \"size_bytes\": 3037,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"reports/table30v2_aloha_short_lerobot.md\",\n      \"size_bytes\": 897,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    }\n  ],\n  \"decode_error_paths\": [],\n  \"bad_marker_hit_paths\": [],\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"中文交接产物 UTF-8 解码与乱码哨兵扫描通过。\"\n  ]\n}\n",
+      "stdout_tail": "_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"reports/table30_vs_table30v2.md\",\n      \"size_bytes\": 2680,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"reports/table30v2_aloha_dry_run_converter.md\",\n      \"size_bytes\": 1189,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    },\n    {\n      \"path\": \"reports/table30v2_aloha_mapping.md\",\n      \"size_bytes\": 3037,\n      \"utf8_decode_ok\": true,\n      \"decode_error\": \"\",\n      \"bad_marker_count\": 0,\n      \"bad_marker_hits\": []\n    }\n  ],\n  \"decode_error_paths\": [],\n  \"bad_marker_hit_paths\": [],\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"中文交接产物 UTF-8 解码与乱码哨兵扫描通过。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "key_handoff_report_consistency": {
@@ -356,7 +362,7 @@
       "script": "scripts/audit_plaintext_secrets.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": "{\n  \"kind\": \"plaintext_secret_scan\",\n  \"passed\": true,\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"secret_values_printed\": false,\n  \"scan_scope\": \"git tracked files plus unignored untracked files\",\n  \"scanned_files\": 274,\n  \"skipped_binary_files\": 1,\n  \"pattern_count\": 7,\n  \"hit_count\": 0,\n  \"hits\": [],\n  \"blocking\": [\n    \"如发现命中项，先移除明文凭据并轮换对应 token，再重新运行本审计。\",\n    \"本审计不替代真实平台权限检查；baseline 真实提交仍需要用户目标确认、token、submission id、variant=baseline 和真实 runner 强确认。\"\n  ]\n}\n",
+      "stdout_tail": "{\n  \"kind\": \"plaintext_secret_scan\",\n  \"passed\": true,\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"secret_values_printed\": false,\n  \"scan_scope\": \"git tracked files plus unignored untracked files\",\n  \"scanned_files\": 277,\n  \"skipped_binary_files\": 1,\n  \"pattern_count\": 7,\n  \"hit_count\": 0,\n  \"hits\": [],\n  \"blocking\": [\n    \"如发现命中项，先移除明文凭据并轮换对应 token，再重新运行本审计。\",\n    \"本审计不替代真实平台权限检查；baseline 真实提交仍需要用户目标确认、token、submission id、variant=baseline 和真实 runner 强确认。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "submission_variant_route_packet": {
@@ -541,11 +547,18 @@
       "stdout_tail": "hboard_links_all_href_rendered\": true,\n    \"dashboard_links_no_duplicate_titles\": true,\n    \"http_static_preview_passed\": true,\n    \"http_static_preview_loopback\": true,\n    \"http_static_preview_card_count_matches\": true,\n    \"http_static_preview_no_external_hrefs\": true,\n    \"browser_screenshot_exists\": true,\n    \"browser_screenshot_png_header_ok\": true,\n    \"browser_screenshot_size_gt_10kb\": true,\n    \"secret_scan_clean\": true\n  },\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false,\n    \"external_network_contacted\": false\n  },\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"GUI HTML 展示入口、HTTP loopback 静态预览与浏览器首屏 PNG 截图均已固化。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
+    "dashboard_screenshot_coverage": {
+      "script": "scripts/audit_dashboard_screenshot_coverage.py",
+      "returncode": 0,
+      "passed": true,
+      "stdout_tail": "screenshot_created\": true,\n    \"gui_packet_screenshot_path_exact\": true,\n    \"gui_packet_screenshot_size_matches_file\": true,\n    \"html_exists\": true,\n    \"html_required_phrases_present\": true,\n    \"html_key_handoff_card_present\": true,\n    \"png_exists\": true,\n    \"png_signature_ok\": true,\n    \"png_ihdr_ok\": true,\n    \"png_width_expected\": true,\n    \"png_height_expected_full_page\": true,\n    \"png_size_expected_full_page\": true\n  },\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false,\n    \"external_network_contacted\": false\n  },\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"GUI 截图为当前 42 卡 dashboard 的整页 PNG，且 HTML 覆盖关键交接一致性卡片。\"\n  ]\n}\n",
+      "stderr_tail": ""
+    },
     "submission_artifact_manifest": {
       "script": "scripts/audit_submission_artifact_manifest.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": "count_matches\": true,\n    \"dashboard_http_static_preview_no_external_hrefs\": true,\n    \"dashboard_gui_access_packet_passed\": true,\n    \"dashboard_gui_access_html_path_exact\": true,\n    \"dashboard_gui_access_browser_not_blocked\": true,\n    \"dashboard_gui_access_screenshot_created\": true,\n    \"dashboard_gui_access_screenshot_path_exact\": true,\n    \"dashboard_gui_access_screenshot_size_current\": true,\n    \"dashboard_gui_access_card_count_current\": true,\n    \"secret_scan_passed\": true,\n    \"secret_scan_hit_count_zero\": true\n  },\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false,\n    \"external_network_contacted\": false\n  },\n  \"blocking\": [\n    \"提交准备材料 manifest 已完整；baseline runner 仍需要用户目标确认、token、submission id、variant=baseline 和真实 runner 强确认；LoRA 或网页 checkpoint 路线仍需要上传授权和 checkpoint link。\"\n  ]\n}\n",
+      "stdout_tail": "act\": true,\n    \"dashboard_gui_access_screenshot_size_current\": true,\n    \"dashboard_gui_access_card_count_current\": true,\n    \"dashboard_screenshot_coverage_passed\": true,\n    \"dashboard_screenshot_coverage_card_count_current\": true,\n    \"dashboard_screenshot_coverage_png_width\": true,\n    \"dashboard_screenshot_coverage_png_height\": true,\n    \"dashboard_screenshot_coverage_png_size\": true,\n    \"dashboard_screenshot_coverage_html_phrase_count\": true,\n    \"secret_scan_passed\": true,\n    \"secret_scan_hit_count_zero\": true\n  },\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false,\n    \"external_network_contacted\": false\n  },\n  \"blocking\": [\n    \"提交准备材料 manifest 已完整；baseline runner 仍需要用户目标确认、token、submission id、variant=baseline 和真实 runner 强确认；LoRA 或网页 checkpoint 路线仍需要上传授权和 checkpoint link。\"\n  ]\n}\n",
       "stderr_tail": ""
     }
   },

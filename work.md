@@ -2787,3 +2787,18 @@
 ### 下一步
 - P0：提交并推送本轮 GUI dashboard 一致性卡片闭环。
 - P1：继续保持 baseline 官方 ALOHA 路线优先；用户授权和凭据到位后，先跑只读预检，再进入真实 runner 强确认。
+
+## 2026-06-03 第一百零二轮：GUI dashboard 截图覆盖审计
+### 已完成
+- 新增 `scripts/audit_dashboard_screenshot_coverage.py`，对 `reports/submission_status_dashboard_browser.png` 做 PNG 签名、IHDR 尺寸、文件大小、dashboard JSON 与 HTML 关键短语交叉审计。
+- 新增产物 `runs/dashboard_screenshot_coverage_audit.json` 与 `reports/dashboard_screenshot_coverage_audit.md`。
+- 审计要求当前 GUI 截图必须覆盖 42 张 dashboard 卡片，并且 HTML 中可验证 `pi0.5 ALOHA 离线执行`、`inference=162`、`交接报告一致性` 与 `mismatch=0`。
+- 已将新审计接入 `scripts/audit_submission_preflight_bundle.py`、`scripts/audit_submission_artifact_manifest.py` 与 `scripts/validate_repro_workspace.py`，后续空白页、404 页或旧首屏截图会触发总体验证失败。
+
+### 验证计划
+- Linux 端执行 `py_compile`、新增截图覆盖审计、manifest、preflight、workspace validator、中文 UTF-8 审计、明文凭据扫描与 `git diff --check`。
+- 本轮不读取真实 token、submission id、checkpoint link 或 local env 内容；不连接 RoboChallenge 平台；不上传 checkpoint；不生成 checkpoint tar；不启动真实 runner。
+
+### 下一步
+- P0：在 Linux canonical 仓库跑完整 no-contact 验证并提交推送本轮截图覆盖审计。
+- P1：继续保持 baseline 官方 ALOHA 路线优先；用户授权和凭据到位后，先跑只读预检，再进入真实 runner 强确认。

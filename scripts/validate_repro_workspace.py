@@ -50,6 +50,7 @@ REQUIRED = [
     "reports/submission_dashboard_links_audit.md",
     "reports/dashboard_http_static_preview.md",
     "reports/dashboard_gui_access_packet.md",
+    "reports/dashboard_screenshot_coverage_audit.md",
     "reports/submission_status_dashboard_browser.png",
     "reports/checkpoint_upload_channels_audit.md",
     "reports/real_submission_readiness.md",
@@ -127,6 +128,7 @@ REQUIRED = [
     "runs/submission_dashboard_links_audit.json",
     "runs/dashboard_http_static_preview.json",
     "runs/dashboard_gui_access_packet.json",
+    "runs/dashboard_screenshot_coverage_audit.json",
     "runs/checkpoint_upload_channels_audit.json",
     "runs/real_submission_readiness.json",
     "runs/real_submission_readiness_scenarios.json",
@@ -204,6 +206,7 @@ REQUIRED = [
     "scripts/audit_submission_dashboard_links.py",
     "scripts/audit_dashboard_http_static_preview.py",
     "scripts/render_dashboard_gui_access_packet.py",
+    "scripts/audit_dashboard_screenshot_coverage.py",
     "scripts/audit_checkpoint_upload_channels.py",
     "scripts/audit_real_submission_readiness.py",
     "scripts/audit_real_submission_readiness_scenarios.py",
@@ -1405,6 +1408,41 @@ def main() -> int:
         ]
     ):
         print("GUI dashboard 展示入口包审计未通过")
+        return 1
+    dashboard_screenshot = json.loads(
+        (ROOT / "runs/dashboard_screenshot_coverage_audit.json").read_text(encoding="utf-8")
+    )
+    dashboard_screenshot_evidence = dashboard_screenshot.get("evidence", {})
+    dashboard_screenshot_leaks = dashboard_screenshot.get("leak_flags", {})
+    dashboard_screenshot_contacts = dashboard_screenshot.get("contact_flags", {})
+    phrase_hits = dashboard_screenshot.get("required_html_phrase_hits", {})
+    if not all(
+        [
+            dashboard_screenshot.get("kind") == "dashboard_screenshot_coverage_audit",
+            dashboard_screenshot.get("passed"),
+            dashboard_screenshot.get("screenshot_path") == "reports/submission_status_dashboard_browser.png",
+            (ROOT / dashboard_screenshot.get("screenshot_path", "")).exists(),
+            dashboard_screenshot.get("screenshot_size_bytes", 0) >= 100_000,
+            dashboard_screenshot.get("screenshot_width", 0) >= 1400,
+            dashboard_screenshot.get("screenshot_height", 0) >= 5000,
+            dashboard_screenshot.get("dashboard_card_count") == dashboard.get("card_count"),
+            dashboard_screenshot.get("dashboard_source_count") == dashboard.get("source_count"),
+            dashboard_screenshot.get("required_html_phrase_count") == 5,
+            all(phrase_hits.values()),
+            phrase_hits.get("交接报告一致性") is True,
+            phrase_hits.get("mismatch=0") is True,
+            all(dashboard_screenshot_evidence.values()),
+            not any(dashboard_screenshot_leaks.values()),
+            not any(dashboard_screenshot_contacts.values()),
+            dashboard_screenshot.get("platform_contacted") is False,
+            dashboard_screenshot.get("uploads_performed") is False,
+            dashboard_screenshot.get("credentials_read") is False,
+            dashboard_screenshot.get("credentials_printed") is False,
+            dashboard_screenshot.get("link_values_printed") is False,
+            dashboard_screenshot.get("secret_values_printed") is False,
+        ]
+    ):
+        print("GUI dashboard 截图覆盖审计未通过")
         return 1
     upload_audit = json.loads((ROOT / "runs/checkpoint_upload_channels_audit.json").read_text(encoding="utf-8"))
     upload_channels = upload_audit.get("channels", {})
@@ -3186,6 +3224,7 @@ def main() -> int:
         "route_aware_submission_blockers",
         "dashboard_http_static_preview",
         "dashboard_gui_access_packet",
+        "dashboard_screenshot_coverage",
         "submission_artifact_manifest",
     }
     if not all(
@@ -3275,6 +3314,12 @@ def main() -> int:
             preflight.get("dashboard_gui_access_card_count") == dashboard.get("card_count"),
             preflight.get("dashboard_gui_access_browser_blocked") is False,
             preflight.get("dashboard_gui_access_screenshot_created") is True,
+            preflight.get("dashboard_screenshot_coverage_passed") is True,
+            preflight.get("dashboard_screenshot_coverage_width", 0) >= 1400,
+            preflight.get("dashboard_screenshot_coverage_height", 0) >= 5000,
+            preflight.get("dashboard_screenshot_coverage_size_bytes", 0) >= 100_000,
+            preflight.get("dashboard_screenshot_coverage_card_count") == dashboard.get("card_count"),
+            preflight.get("dashboard_screenshot_coverage_phrase_count") == 5,
             preflight.get("local_baseline_runner_ready") is False,
             preflight.get("local_lora_runner_ready") is False,
             preflight.get("verify_download_requested") is False,

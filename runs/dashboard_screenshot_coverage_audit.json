@@ -1,0 +1,59 @@
+{
+  "kind": "dashboard_screenshot_coverage_audit",
+  "passed": true,
+  "screenshot_path": "reports/submission_status_dashboard_browser.png",
+  "screenshot_size_bytes": 618325,
+  "screenshot_width": 1440,
+  "screenshot_height": 5200,
+  "dashboard_card_count": 42,
+  "dashboard_source_count": 42,
+  "required_html_phrase_count": 5,
+  "required_html_phrase_hits": {
+    "RoboChallenge pi0.5 提交状态面板": true,
+    "pi0.5 ALOHA 离线执行": true,
+    "inference=162": true,
+    "交接报告一致性": true,
+    "mismatch=0": true
+  },
+  "evidence": {
+    "dashboard_status_passed": true,
+    "dashboard_card_count_current": true,
+    "dashboard_source_count_current": true,
+    "dashboard_ready_for_real_submission_false": true,
+    "dashboard_key_handoff_consistency_passed": true,
+    "dashboard_key_handoff_mismatch_zero": true,
+    "gui_packet_passed": true,
+    "gui_packet_screenshot_created": true,
+    "gui_packet_screenshot_path_exact": true,
+    "gui_packet_screenshot_size_matches_file": true,
+    "html_exists": true,
+    "html_required_phrases_present": true,
+    "html_key_handoff_card_present": true,
+    "png_exists": true,
+    "png_signature_ok": true,
+    "png_ihdr_ok": true,
+    "png_width_expected": true,
+    "png_height_expected_full_page": true,
+    "png_size_expected_full_page": true
+  },
+  "leak_flags": {
+    "credentials_printed": false,
+    "link_values_printed": false,
+    "secret_values_printed": false
+  },
+  "contact_flags": {
+    "platform_contacted": false,
+    "uploads_performed": false,
+    "download_host_contacted": false,
+    "external_network_contacted": false
+  },
+  "platform_contacted": false,
+  "uploads_performed": false,
+  "credentials_read": false,
+  "credentials_printed": false,
+  "link_values_printed": false,
+  "secret_values_printed": false,
+  "blocking": [
+    "GUI 截图为当前 42 卡 dashboard 的整页 PNG，且 HTML 覆盖关键交接一致性卡片。"
+  ]
+}

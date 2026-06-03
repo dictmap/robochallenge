@@ -92,6 +92,7 @@ REQUIRED_ARTIFACTS = [
     "reports/submission_dashboard_links_audit.md",
     "reports/dashboard_http_static_preview.md",
     "reports/dashboard_gui_access_packet.md",
+    "reports/dashboard_screenshot_coverage_audit.md",
     "reports/submission_status_dashboard_browser.png",
     "scripts/render_next_user_action_packet.py",
     "scripts/render_web_form_field_packet.py",
@@ -127,6 +128,7 @@ REQUIRED_ARTIFACTS = [
     "scripts/audit_authorized_execution_checklist.py",
     "scripts/audit_dashboard_http_static_preview.py",
     "scripts/render_dashboard_gui_access_packet.py",
+    "scripts/audit_dashboard_screenshot_coverage.py",
 ]
 
 LOCAL_SECRET_OR_LARGE_PATHS = [
@@ -260,6 +262,7 @@ def build_status() -> dict[str, Any]:
     dashboard_links = read_json(RUNS_DIR / "submission_dashboard_links_audit.json")
     dashboard_http_preview = read_json(RUNS_DIR / "dashboard_http_static_preview.json")
     dashboard_gui_access = read_json(RUNS_DIR / "dashboard_gui_access_packet.json")
+    dashboard_screenshot_coverage = read_json(RUNS_DIR / "dashboard_screenshot_coverage_audit.json")
     web_form_route_blocking_names = set(web_form_packet.get("recommended_route_blocking_names", []))
 
     inputs = {
@@ -766,6 +769,25 @@ def build_status() -> dict[str, Any]:
         "dashboard_gui_access_screenshot_size_current": dashboard_gui_access.get("screenshot_size_bytes", 0)
         > 10_000,
         "dashboard_gui_access_card_count_current": dashboard_gui_access.get("dashboard_card_count", 0) >= 39,
+        "dashboard_screenshot_coverage_passed": dashboard_screenshot_coverage.get("passed") is True,
+        "dashboard_screenshot_coverage_card_count_current": dashboard_screenshot_coverage.get(
+            "dashboard_card_count",
+            0,
+        )
+        >= 42,
+        "dashboard_screenshot_coverage_png_width": dashboard_screenshot_coverage.get("screenshot_width", 0)
+        >= 1400,
+        "dashboard_screenshot_coverage_png_height": dashboard_screenshot_coverage.get("screenshot_height", 0)
+        >= 5000,
+        "dashboard_screenshot_coverage_png_size": dashboard_screenshot_coverage.get(
+            "screenshot_size_bytes",
+            0,
+        )
+        >= 100_000,
+        "dashboard_screenshot_coverage_html_phrase_count": dashboard_screenshot_coverage.get(
+            "required_html_phrase_count"
+        )
+        == 5,
         "secret_scan_passed": secret_scan.get("passed") is True,
         "secret_scan_hit_count_zero": secret_scan.get("hit_count") == 0,
     }
@@ -812,6 +834,7 @@ def build_status() -> dict[str, Any]:
                 env_template,
                 dashboard_http_preview,
                 dashboard_gui_access,
+                dashboard_screenshot_coverage,
             ]
         ),
         "link_values_printed": bool(preflight.get("leak_flags", {}).get("link_values_printed"))
@@ -849,7 +872,8 @@ def build_status() -> dict[str, Any]:
         or bool(target_confirmation.get("link_values_printed"))
         or bool(target_confirmation_gate.get("link_values_printed"))
         or bool(dashboard_http_preview.get("link_values_printed"))
-        or bool(dashboard_gui_access.get("link_values_printed")),
+        or bool(dashboard_gui_access.get("link_values_printed"))
+        or bool(dashboard_screenshot_coverage.get("link_values_printed")),
         "secret_values_printed": bool(secret_scan.get("secret_values_printed"))
         or bool(pi05_aloha_execution.get("secret_values_printed"))
         or bool(notebook_dashboard_gui.get("secret_values_printed"))
@@ -881,7 +905,8 @@ def build_status() -> dict[str, Any]:
         or bool(target_confirmation.get("secret_values_printed"))
         or bool(target_confirmation_gate.get("secret_values_printed"))
         or bool(dashboard_http_preview.get("secret_values_printed"))
-        or bool(dashboard_gui_access.get("secret_values_printed")),
+        or bool(dashboard_gui_access.get("secret_values_printed"))
+        or bool(dashboard_screenshot_coverage.get("secret_values_printed")),
     }
     contact_flags = {
         "platform_contacted": any(
@@ -927,6 +952,7 @@ def build_status() -> dict[str, Any]:
                 secret_scan,
                 dashboard_http_preview,
                 dashboard_gui_access,
+                dashboard_screenshot_coverage,
             ]
         ),
         "uploads_performed": any(
@@ -972,6 +998,7 @@ def build_status() -> dict[str, Any]:
                 secret_scan,
                 dashboard_http_preview,
                 dashboard_gui_access,
+                dashboard_screenshot_coverage,
             ]
         ),
         "download_host_contacted": bool(preflight.get("contact_flags", {}).get("download_host_contacted"))
@@ -979,11 +1006,13 @@ def build_status() -> dict[str, Any]:
         or bool(baseline_readonly_entry.get("contact_flags", {}).get("download_host_contacted"))
         or bool(readonly_preflight_parity.get("contact_flags", {}).get("download_host_contacted"))
         or bool(dashboard_http_preview.get("contact_flags", {}).get("download_host_contacted"))
-        or bool(dashboard_gui_access.get("contact_flags", {}).get("download_host_contacted")),
+        or bool(dashboard_gui_access.get("contact_flags", {}).get("download_host_contacted"))
+        or bool(dashboard_screenshot_coverage.get("contact_flags", {}).get("download_host_contacted")),
         "external_network_contacted": bool(
             dashboard_http_preview.get("contact_flags", {}).get("external_network_contacted")
         )
-        or bool(pi05_aloha_execution.get("contact_flags", {}).get("external_network_contacted")),
+        or bool(pi05_aloha_execution.get("contact_flags", {}).get("external_network_contacted"))
+        or bool(dashboard_screenshot_coverage.get("contact_flags", {}).get("external_network_contacted")),
     }
     blocking = []
     if missing_required:

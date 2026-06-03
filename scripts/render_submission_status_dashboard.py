@@ -55,6 +55,7 @@ SOURCE_FILES = {
     "jupyter_final_handoff": RUNS_DIR / "jupyter_final_handoff_template_audit.json",
     "historical_notebook_outputs": RUNS_DIR / "historical_notebook_checkpoint_outputs.json",
     "chinese_utf8_artifacts": RUNS_DIR / "chinese_utf8_artifact_audit.json",
+    "key_report_consistency": RUNS_DIR / "key_handoff_report_consistency.json",
     "link_intake": RUNS_DIR / "checkpoint_link_intake.json",
     "readiness": RUNS_DIR / "real_submission_readiness.json",
     "preflight_bundle": RUNS_DIR / "submission_preflight_bundle.json",
@@ -136,6 +137,7 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
     jupyter_final_handoff = data["jupyter_final_handoff"]
     historical_notebook_outputs = data["historical_notebook_outputs"]
     chinese_utf8 = data["chinese_utf8_artifacts"]
+    key_report_consistency = data["key_report_consistency"]
     link_intake = data["link_intake"]
     readiness = data["readiness"]
     preflight = data["preflight_bundle"]
@@ -470,6 +472,14 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
         and chinese_utf8.get("bad_marker_hit_count") == 0
         and all(item.get("present") is True for item in chinese_utf8.get("required_phrase_checks", {}).values())
     )
+    key_report_consistency_ready = bool(
+        key_report_consistency.get("passed")
+        and key_report_consistency.get("checked_report_count") == 10
+        and key_report_consistency.get("mismatch_count") == 0
+        and key_report_consistency.get("missing_status_line_count") == 0
+        and key_report_consistency.get("bad_marker_hit_count") == 0
+        and key_report_consistency.get("secret_pattern_hit_count") == 0
+    )
     uploads_performed = readiness.get("inputs", {}).get("uploads_performed")
     plaintext_clean = plaintext.get("hit_count") == 0 and plaintext.get("secret_values_printed") is False
 
@@ -764,6 +774,13 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
             "reports/chinese_utf8_artifact_audit.md",
         ),
         card(
+            "交接报告一致性",
+            "done" if key_report_consistency_ready else "watch",
+            f"mismatch={key_report_consistency.get('mismatch_count', 'n/a')}",
+            "关键 Markdown 报告中的 passed 状态必须与对应 runs JSON 一致，防止本地镜像或报告生成滞后误导提交操作。",
+            "reports/key_handoff_report_consistency.md",
+        ),
+        card(
             "明文凭据扫描",
             "done" if plaintext_clean else "watch",
             f"hit_count={plaintext.get('hit_count')}",
@@ -807,6 +824,7 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
     jupyter_final_handoff = data["jupyter_final_handoff"]
     historical_notebook_outputs = data["historical_notebook_outputs"]
     chinese_utf8 = data["chinese_utf8_artifacts"]
+    key_report_consistency = data["key_report_consistency"]
     sequence = data["authorized_sequence"]
     preflight = data["preflight_bundle"]
     plaintext = data["plaintext_scan"]
@@ -968,6 +986,16 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
         "baseline_readonly_preflight_entry_excluded_ids": baseline_readonly_entry.get(
             "excluded_from_readonly_preflight",
             [],
+        ),
+        "key_handoff_report_consistency_passed": key_report_consistency.get("passed") is True,
+        "key_handoff_report_consistency_checked_count": key_report_consistency.get("checked_report_count"),
+        "key_handoff_report_consistency_mismatch_count": key_report_consistency.get("mismatch_count"),
+        "key_handoff_report_consistency_missing_status_line_count": key_report_consistency.get(
+            "missing_status_line_count"
+        ),
+        "key_handoff_report_consistency_bad_marker_hit_count": key_report_consistency.get("bad_marker_hit_count"),
+        "key_handoff_report_consistency_secret_pattern_hit_count": key_report_consistency.get(
+            "secret_pattern_hit_count"
         ),
         "readonly_preflight_jupyter_shell_parity_passed": readonly_preflight_parity.get("passed") is True,
         "readonly_preflight_routes_converge": readonly_preflight_parity.get("routes_converge_to_same_wrapper")

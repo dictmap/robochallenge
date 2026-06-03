@@ -2763,3 +2763,27 @@
 ### 下一步
 - P0：提交并推送本轮关键交接报告一致性门禁。
 - P1：继续保持 baseline 官方 ALOHA 路线优先；用户授权和凭据到位后，先跑只读预检，再进入真实 runner 强确认。
+
+## 2026-06-03 第一百零一轮：GUI dashboard 接入交接报告一致性卡片
+
+### 已完成
+- 更新 `scripts/render_submission_status_dashboard.py`，把 `runs/key_handoff_report_consistency.json` 纳入 GUI dashboard 数据源。
+- GUI dashboard 新增 “交接报告一致性” 卡片，显示 `mismatch=0`，并链接到 `reports/key_handoff_report_consistency.md`。
+- 更新 `scripts/validate_repro_workspace.py`，要求 dashboard 必须包含该卡片，并校验 `checked_report_count=10`、`mismatch_count=0`、`missing_status_line_count=0`、`bad_marker_hit_count=0`、`secret_pattern_hit_count=0`。
+- 用本地 Chrome headless 重新生成 `reports/submission_status_dashboard_browser.png`，使用高视口覆盖整页，截图中可见新增一致性卡片。
+
+### 验证结果
+- Linux 端完整 no-contact 链路已通过：`py_compile`、`render_submission_status_dashboard.py`、`audit_submission_dashboard_links.py`、`audit_dashboard_http_static_preview.py`、`render_dashboard_gui_access_packet.py`、`audit_submission_artifact_manifest.py`、`audit_submission_preflight_bundle.py`、`validate_repro_workspace.py`、`audit_chinese_utf8_artifacts.py`、`audit_plaintext_secrets.py` 和 `git diff --check`。
+- `runs/submission_status_dashboard.json` 实测 `source_count=42`、`card_count=42`、`done_count=36`、`blocked_count=5`、`watch_count=1`。
+- `runs/dashboard_gui_access_packet.json` 实测 `passed=true`、`dashboard_card_count=42`、`screenshot_created=true`、`screenshot_size_bytes=618325`。
+- `runs/submission_dashboard_links_audit.json` 实测 `missing_report_count=0`、`missing_html_href_count=0`、`duplicate_title_count=0`。
+
+### 当前边界
+- 本轮只访问本机 `file:///` 与远端/本地 loopback 页面，没有连接 RoboChallenge 平台。
+- 没有读取真实 token、submission id、checkpoint link 或真实 local env 内容。
+- 没有上传 checkpoint，没有生成 checkpoint tar，也没有启动真实 runner。
+- baseline 官方 ALOHA 路线仍阻塞在目标确认、token、submission id、`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline` 和真实 runner 强确认。
+
+### 下一步
+- P0：提交并推送本轮 GUI dashboard 一致性卡片闭环。
+- P1：继续保持 baseline 官方 ALOHA 路线优先；用户授权和凭据到位后，先跑只读预检，再进入真实 runner 强确认。

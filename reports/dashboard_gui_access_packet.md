@@ -5,13 +5,13 @@
 - 审计状态：`passed=True`。
 - HTML 路径：`reports/submission_status_dashboard.html`。
 - 本机绝对路径：`/home/yjl/robochallenge/repo/reports/submission_status_dashboard.html`。
-- 卡片数量：`41`。
-- 来源数量：`41`。
-- 已完成/待授权/关注：`35 / 5 / 1`。
+- 卡片数量：`42`。
+- 来源数量：`42`。
+- 已完成/待授权/关注：`36 / 5 / 1`。
 - 是否已满足真实提交：`False`。
 - HTTP loopback 静态预览：`True`。
 - HTTP 预览地址形状：`http://127.0.0.1:<ephemeral>/submission_status_dashboard.html`。
-- HTTP 预览卡片数量：`41`。
+- HTTP 预览卡片数量：`42`。
 - HTTP 外部链接数量：`0`。
 
 ## 浏览器边界
@@ -20,7 +20,7 @@
 - 是否仍被浏览器策略阻止：`False`。
 - 是否生成截图：`True`。
 - 截图路径：`reports/submission_status_dashboard_browser.png`。
-- 截图大小：`126289` bytes。
+- 截图大小：`618325` bytes。
 - 边界说明：`HTTP loopback GUI screenshot captured by local browser; no platform contact and no upload`。
 
 ## HTTP 打开方式

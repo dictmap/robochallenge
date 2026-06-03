@@ -487,7 +487,7 @@
       "exists": true,
       "tracked": true,
       "size_bytes": 13067,
-      "sha256": "9f6f5f40e9c7e9667b342c0cfa90de02bca5bd695a0a438836c5cfa197863cb2"
+      "sha256": "77fc789b13d77c30e5f2b785eed895853300bd0b9080bff635da44e0ed3dbce0"
     },
     {
       "path": "reports/plaintext_secret_scan.md",
@@ -500,36 +500,36 @@
       "path": "reports/submission_status_dashboard.html",
       "exists": true,
       "tracked": true,
-      "size_bytes": 24659,
-      "sha256": "602dacdc51dd57b552e141b217127ec17d66056810e65216a7baa13206d5c2cb"
+      "size_bytes": 25166,
+      "sha256": "7bb755f66ab172c21f162350b76e2b5aaf1e88c3bbb71c7c3122bf2c3e401974"
     },
     {
       "path": "reports/submission_dashboard_links_audit.md",
       "exists": true,
       "tracked": true,
       "size_bytes": 1113,
-      "sha256": "c6ca0e24d99c8e3f3087a59baa0e3ea522bf6caa50618d941607cd553bca5180"
+      "sha256": "fcf838a6821896d62671cddc052b5b007d3ef4be68b36867504ee2d8ef8cd821"
     },
     {
       "path": "reports/dashboard_http_static_preview.md",
       "exists": true,
       "tracked": true,
       "size_bytes": 1793,
-      "sha256": "458045051e1bcb9b20d0510026c69a7e91a93c7459a40870cf7e55e8bfd383c4"
+      "sha256": "40f2dafd43a699cc8eafd502671827af193861ffcd39d3e771cdaf2d2541a05c"
     },
     {
       "path": "reports/dashboard_gui_access_packet.md",
       "exists": true,
       "tracked": true,
       "size_bytes": 2147,
-      "sha256": "f42ef19bc2b99d243c5842dfa21c8ef35ea4badb32595650d5ff58d7ac907b1b"
+      "sha256": "5086a9b72ba51409ac69e4111e575b695fd22c32ec88b4b0da4431bcb03676e3"
     },
     {
       "path": "reports/submission_status_dashboard_browser.png",
       "exists": true,
       "tracked": true,
-      "size_bytes": 126289,
-      "sha256": "836a31c42dc9204c24074fafddd0602190a6db8e6c696e76ab1739846fd00408"
+      "size_bytes": 618325,
+      "sha256": "3cba9cdfa278afe07fdccb96433bd0fbc96499ffbe32909367a7d8e4d36f9c9e"
     },
     {
       "path": "scripts/render_next_user_action_packet.py",

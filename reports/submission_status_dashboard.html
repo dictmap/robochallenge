@@ -105,10 +105,10 @@
         <h1>RoboChallenge pi0.5 提交状态面板</h1>
         <p class="sub">静态 GUI 汇总当前复现、LoRA checkpoint、上传/link/readiness 阻塞和授权后执行顺序。面板由 JSON 审计结果生成，不读取或显示真实凭据。</p>
       </div>
-      <div class="stamp">生成时间<br>2026-06-03 05:14:40 UTC</div>
+      <div class="stamp">生成时间<br>2026-06-03 07:51:41 UTC</div>
     </header>
     <section class="summary">
-      <div class="metric"><b>35</b><span>已完成项</span></div>
+      <div class="metric"><b>36</b><span>已完成项</span></div>
       <div class="metric"><b>5</b><span>待授权项</span></div>
       <div class="metric"><b>否</b><span>真实提交就绪</span></div>
       <div class="metric"><b>否</b><span>checkpoint link 就绪</span></div>
@@ -512,8 +512,18 @@
                 <a href="../reports/chinese_utf8_artifact_audit.md">报告</a>
               </div>
               <h2>中文 UTF-8</h2>
-              <p class="value">170 个文件</p>
+              <p class="value">174 个文件</p>
               <p>关键报告、GUI、Notebook 和交接文档已做 UTF-8 解码与常见乱码哨兵扫描。</p>
+            </article>
+
+            <article class="card done">
+              <div class="card-top">
+                <span class="state">已完成</span>
+                <a href="../reports/key_handoff_report_consistency.md">报告</a>
+              </div>
+              <h2>交接报告一致性</h2>
+              <p class="value">mismatch=0</p>
+              <p>关键 Markdown 报告中的 passed 状态必须与对应 runs JSON 一致，防止本地镜像或报告生成滞后误导提交操作。</p>
             </article>
 
             <article class="card done">

@@ -56,11 +56,11 @@
 - 共同 wrapper：`submission/run_authorized_preflight_template.sh`。
 - GUI HTTP 静态预览审计：`True`。
 - GUI HTTP 预览地址形状：`http://127.0.0.1:<ephemeral>/submission_status_dashboard.html`。
-- GUI HTTP 预览卡片数量：`41`。
+- GUI HTTP 预览卡片数量：`42`。
 - GUI HTTP 外部链接数量：`0`。
 - GUI 展示入口审计：`True`。
 - GUI HTML 路径：`reports/submission_status_dashboard.html`。
-- GUI 卡片数量：`41`。
+- GUI 卡片数量：`42`。
 - GUI 浏览器预览是否仍被策略阻止：`False`。
 - 本轮是否生成 GUI 截图：`True`。
 - baseline 是否需要 checkpoint link：`False`。

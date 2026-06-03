@@ -90,6 +90,7 @@ REQUIRED_ARTIFACTS = [
     "reports/submission_dashboard_links_audit.md",
     "reports/dashboard_http_static_preview.md",
     "reports/dashboard_gui_access_packet.md",
+    "reports/submission_status_dashboard_browser.png",
     "scripts/render_next_user_action_packet.py",
     "scripts/render_web_form_field_packet.py",
     "scripts/render_submission_variant_route_packet.py",
@@ -718,11 +719,13 @@ def build_status() -> dict[str, Any]:
         "dashboard_gui_access_packet_passed": dashboard_gui_access.get("passed") is True,
         "dashboard_gui_access_html_path_exact": dashboard_gui_access.get("gui_html_path")
         == "reports/submission_status_dashboard.html",
-        "dashboard_gui_access_browser_blocked_recorded": dashboard_gui_access.get(
-            "browser_visual_blocked_by_policy"
-        )
-        is True,
-        "dashboard_gui_access_screenshot_not_created": dashboard_gui_access.get("screenshot_created") is False,
+        "dashboard_gui_access_browser_not_blocked": dashboard_gui_access.get("browser_visual_blocked_by_policy")
+        is False,
+        "dashboard_gui_access_screenshot_created": dashboard_gui_access.get("screenshot_created") is True,
+        "dashboard_gui_access_screenshot_path_exact": dashboard_gui_access.get("screenshot_path")
+        == "reports/submission_status_dashboard_browser.png",
+        "dashboard_gui_access_screenshot_size_current": dashboard_gui_access.get("screenshot_size_bytes", 0)
+        > 10_000,
         "dashboard_gui_access_card_count_current": dashboard_gui_access.get("dashboard_card_count", 0) >= 39,
         "secret_scan_passed": secret_scan.get("passed") is True,
         "secret_scan_hit_count_zero": secret_scan.get("hit_count") == 0,

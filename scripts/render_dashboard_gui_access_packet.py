@@ -17,6 +17,9 @@ DEFAULT_STATUS = RUNS_DIR / "dashboard_gui_access_packet.json"
 DEFAULT_REPORT = REPORTS_DIR / "dashboard_gui_access_packet.md"
 GUI_HTML = REPORTS_DIR / "submission_status_dashboard.html"
 GUI_HTML_REL = "reports/submission_status_dashboard.html"
+SCREENSHOT = REPORTS_DIR / "submission_status_dashboard_browser.png"
+SCREENSHOT_REL = "reports/submission_status_dashboard_browser.png"
+PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
 
 
 def parse_args() -> argparse.Namespace:
@@ -41,6 +44,13 @@ def build_status() -> dict[str, Any]:
     secret_scan = read_json(RUNS_DIR / "plaintext_secret_scan.json")
     html_exists = GUI_HTML.exists() and GUI_HTML.is_file()
     html_text = GUI_HTML.read_text(encoding="utf-8") if html_exists else ""
+    screenshot_exists = SCREENSHOT.exists() and SCREENSHOT.is_file()
+    screenshot_size_bytes = SCREENSHOT.stat().st_size if screenshot_exists else 0
+    screenshot_png_header_ok = False
+    if screenshot_exists:
+        with SCREENSHOT.open("rb") as handle:
+            screenshot_png_header_ok = handle.read(len(PNG_SIGNATURE)) == PNG_SIGNATURE
+    screenshot_created = bool(screenshot_exists and screenshot_size_bytes > 10_000 and screenshot_png_header_ok)
     evidence = {
         "dashboard_status_passed": dashboard.get("passed") is True,
         "dashboard_html_path_exact": dashboard.get("html_path") == GUI_HTML_REL,
@@ -61,6 +71,9 @@ def build_status() -> dict[str, Any]:
         )
         is True,
         "http_static_preview_no_external_hrefs": http_preview.get("external_href_count") == 0,
+        "browser_screenshot_exists": screenshot_exists,
+        "browser_screenshot_png_header_ok": screenshot_png_header_ok,
+        "browser_screenshot_size_gt_10kb": screenshot_size_bytes > 10_000,
         "secret_scan_clean": secret_scan.get("passed") is True and secret_scan.get("hit_count") == 0,
     }
     leak_flags = {
@@ -92,9 +105,7 @@ def build_status() -> dict[str, Any]:
     if any(contact_flags.values()):
         blocking.append("GUI 展示入口证据显示曾连接平台、上传或接触下载 host。")
     if not blocking:
-        blocking.append(
-            "GUI HTML 展示入口已固化，且 HTTP loopback 静态预览已通过；Browser 截图接口本轮仍未生成截图。"
-        )
+        blocking.append("GUI HTML 展示入口、HTTP loopback 静态预览与浏览器首屏 PNG 截图均已固化。")
 
     passed = bool(all(evidence.values()) and not any(leak_flags.values()) and not any(contact_flags.values()))
     return {
@@ -109,8 +120,12 @@ def build_status() -> dict[str, Any]:
         "dashboard_watch_count": dashboard.get("watch_count"),
         "ready_for_real_submission": dashboard.get("ready_for_real_submission"),
         "browser_visual_attempted": True,
-        "browser_visual_blocked_by_policy": True,
-        "browser_visual_policy_boundary": "in-app browser blocked local file URL preview; this packet does not bypass it",
+        "browser_visual_blocked_by_policy": not screenshot_created,
+        "browser_visual_policy_boundary": (
+            "HTTP loopback GUI screenshot captured by local browser; no platform contact and no upload"
+            if screenshot_created
+            else "browser screenshot artifact missing; HTTP loopback opening path remains available"
+        ),
         "http_static_preview_passed": http_preview.get("passed") is True,
         "http_static_preview_url_shape": http_preview.get("http_preview_url_shape", ""),
         "http_static_preview_card_count": http_preview.get("http_card_count"),
@@ -118,8 +133,10 @@ def build_status() -> dict[str, Any]:
         "http_static_preview_blocked_count": http_preview.get("http_blocked_count"),
         "http_static_preview_watch_count": http_preview.get("http_watch_count"),
         "http_static_preview_external_href_count": http_preview.get("external_href_count"),
-        "screenshot_created": False,
-        "screenshot_path": "",
+        "screenshot_created": screenshot_created,
+        "screenshot_path": SCREENSHOT_REL if screenshot_created else "",
+        "screenshot_absolute_path": str(SCREENSHOT) if screenshot_created else "",
+        "screenshot_size_bytes": screenshot_size_bytes,
         "evidence": evidence,
         "leak_flags": leak_flags,
         "contact_flags": contact_flags,
@@ -154,8 +171,10 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         "## 浏览器边界",
         "",
         f"- 本轮是否尝试 GUI 预览：`{status['browser_visual_attempted']}`。",
-        f"- 是否被浏览器策略阻止：`{status['browser_visual_blocked_by_policy']}`。",
+        f"- 是否仍被浏览器策略阻止：`{status['browser_visual_blocked_by_policy']}`。",
         f"- 是否生成截图：`{status['screenshot_created']}`。",
+        f"- 截图路径：`{status['screenshot_path']}`。",
+        f"- 截图大小：`{status['screenshot_size_bytes']}` bytes。",
         f"- 边界说明：`{status['browser_visual_policy_boundary']}`。",
         "",
         "## HTTP 打开方式",

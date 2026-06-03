@@ -829,7 +829,7 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         f"- GUI 展示入口审计：`{status['dashboard_gui_access_packet_passed']}`。",
         f"- GUI HTML 路径：`{status['dashboard_gui_access_html_path']}`。",
         f"- GUI 卡片数量：`{status['dashboard_gui_access_card_count']}`。",
-        f"- 浏览器 file URL 预览是否被策略阻止：`{status['dashboard_gui_access_browser_blocked']}`。",
+        f"- GUI 浏览器预览是否仍被策略阻止：`{status['dashboard_gui_access_browser_blocked']}`。",
         f"- 本轮是否生成 GUI 截图：`{status['dashboard_gui_access_screenshot_created']}`。",
         f"- baseline 是否需要 checkpoint link：`{status['baseline_requires_checkpoint_link']}`。",
         f"- baseline 是否需要 checkpoint upload：`{status['baseline_requires_checkpoint_upload']}`。",

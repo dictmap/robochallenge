@@ -11,7 +11,7 @@
   "pi05_aloha_policy_smoke_inference_count": 162,
   "pi05_aloha_no_contact": true,
   "pi05_aloha_no_leak": true,
-  "artifact_count": 103,
+  "artifact_count": 104,
   "artifacts": [
     {
       "path": "README.md",
@@ -24,8 +24,8 @@
       "path": "work.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 231890,
-      "sha256": "7f5cadab22118e75ffac851172615273fd4e4d626a08659c96ad747a370f2daf"
+      "size_bytes": 236995,
+      "sha256": "813380f18fb5fae7be1e379e4e74cfc94166b9a14fb764453720ebe306ec05ad"
     },
     {
       "path": "notebooks/robochallenge_pi05_submit_cn.ipynb",
@@ -472,15 +472,15 @@
       "path": "reports/submission_preflight_bundle.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 12414,
-      "sha256": "a971c71e62d9ac6992d8e5c309dff7fe9be27a8734f462f446536cb7fc94ea46"
+      "size_bytes": 12411,
+      "sha256": "c440c824b67cdb70b29d0e63dcc99e9d8890f36d7a3942fe2aa127e54e02c2be"
     },
     {
       "path": "reports/plaintext_secret_scan.md",
       "exists": true,
       "tracked": true,
       "size_bytes": 689,
-      "sha256": "26cff0630421f38f0d428ba14b25113969dea384b3b69046e3bbb6dba55dae7c"
+      "sha256": "1eda9fc7082a2cfc52dd199afe7d33dd643e59c1e2efbb8100a20c5ee6be1674"
     },
     {
       "path": "reports/submission_status_dashboard.html",
@@ -507,8 +507,15 @@
       "path": "reports/dashboard_gui_access_packet.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 1916,
-      "sha256": "f55f0542850c0ac5255d1429eee702cb55a3776862b32c25413af979517264d1"
+      "size_bytes": 2147,
+      "sha256": "f42ef19bc2b99d243c5842dfa21c8ef35ea4badb32595650d5ff58d7ac907b1b"
+    },
+    {
+      "path": "reports/submission_status_dashboard_browser.png",
+      "exists": true,
+      "tracked": true,
+      "size_bytes": 126289,
+      "sha256": "836a31c42dc9204c24074fafddd0602190a6db8e6c696e76ab1739846fd00408"
     },
     {
       "path": "scripts/render_next_user_action_packet.py",
@@ -731,8 +738,8 @@
       "path": "scripts/render_dashboard_gui_access_packet.py",
       "exists": true,
       "tracked": true,
-      "size_bytes": 9532,
-      "sha256": "c0e40249c7bfc22be75b0ac80990797b7c03907633da6d97873d99278f7ca9a6"
+      "size_bytes": 10839,
+      "sha256": "d8ab1294a2ff41f8c51faadd9954c5bed094763c6913b185d0e69cbe87e103f3"
     }
   ],
   "missing_required_artifacts": [],
@@ -994,8 +1001,10 @@
     "dashboard_http_static_preview_no_external_hrefs": true,
     "dashboard_gui_access_packet_passed": true,
     "dashboard_gui_access_html_path_exact": true,
-    "dashboard_gui_access_browser_blocked_recorded": true,
-    "dashboard_gui_access_screenshot_not_created": true,
+    "dashboard_gui_access_browser_not_blocked": true,
+    "dashboard_gui_access_screenshot_created": true,
+    "dashboard_gui_access_screenshot_path_exact": true,
+    "dashboard_gui_access_screenshot_size_current": true,
     "dashboard_gui_access_card_count_current": true,
     "secret_scan_passed": true,
     "secret_scan_hit_count_zero": true

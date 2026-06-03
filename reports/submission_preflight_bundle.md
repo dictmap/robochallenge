@@ -57,8 +57,8 @@
 - GUI 展示入口审计：`True`。
 - GUI HTML 路径：`reports/submission_status_dashboard.html`。
 - GUI 卡片数量：`41`。
-- 浏览器 file URL 预览是否被策略阻止：`True`。
-- 本轮是否生成 GUI 截图：`False`。
+- GUI 浏览器预览是否仍被策略阻止：`False`。
+- 本轮是否生成 GUI 截图：`True`。
 - baseline 是否需要 checkpoint link：`False`。
 - baseline 是否需要 checkpoint upload：`False`。
 - 中文 UTF-8 产物审计：`True`。

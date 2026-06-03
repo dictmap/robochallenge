@@ -109,8 +109,8 @@
   "dashboard_gui_access_packet_passed": true,
   "dashboard_gui_access_html_path": "reports/submission_status_dashboard.html",
   "dashboard_gui_access_card_count": 41,
-  "dashboard_gui_access_browser_blocked": true,
-  "dashboard_gui_access_screenshot_created": false,
+  "dashboard_gui_access_browser_blocked": false,
+  "dashboard_gui_access_screenshot_created": true,
   "baseline_requires_checkpoint_link": false,
   "baseline_requires_checkpoint_upload": false,
   "chinese_utf8_artifact_audit_passed": true,
@@ -331,7 +331,7 @@
       "script": "scripts/audit_plaintext_secrets.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": "{\n  \"kind\": \"plaintext_secret_scan\",\n  \"passed\": true,\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"secret_values_printed\": false,\n  \"scan_scope\": \"git tracked files plus unignored untracked files\",\n  \"scanned_files\": 268,\n  \"skipped_binary_files\": 0,\n  \"pattern_count\": 7,\n  \"hit_count\": 0,\n  \"hits\": [],\n  \"blocking\": [\n    \"如发现命中项，先移除明文凭据并轮换对应 token，再重新运行本审计。\",\n    \"本审计不替代真实平台权限检查；baseline 真实提交仍需要用户目标确认、token、submission id、variant=baseline 和真实 runner 强确认。\"\n  ]\n}\n",
+      "stdout_tail": "{\n  \"kind\": \"plaintext_secret_scan\",\n  \"passed\": true,\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"secret_values_printed\": false,\n  \"scan_scope\": \"git tracked files plus unignored untracked files\",\n  \"scanned_files\": 268,\n  \"skipped_binary_files\": 1,\n  \"pattern_count\": 7,\n  \"hit_count\": 0,\n  \"hits\": [],\n  \"blocking\": [\n    \"如发现命中项，先移除明文凭据并轮换对应 token，再重新运行本审计。\",\n    \"本审计不替代真实平台权限检查；baseline 真实提交仍需要用户目标确认、token、submission id、variant=baseline 和真实 runner 强确认。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "submission_variant_route_packet": {
@@ -513,14 +513,14 @@
       "script": "scripts/render_dashboard_gui_access_packet.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": "l_submission_false\": true,\n    \"dashboard_links_passed\": true,\n    \"dashboard_links_all_reports_exist\": true,\n    \"dashboard_links_all_href_rendered\": true,\n    \"dashboard_links_no_duplicate_titles\": true,\n    \"http_static_preview_passed\": true,\n    \"http_static_preview_loopback\": true,\n    \"http_static_preview_card_count_matches\": true,\n    \"http_static_preview_no_external_hrefs\": true,\n    \"secret_scan_clean\": true\n  },\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false,\n    \"external_network_contacted\": false\n  },\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"GUI HTML 展示入口已固化，且 HTTP loopback 静态预览已通过；Browser 截图接口本轮仍未生成截图。\"\n  ]\n}\n",
+      "stdout_tail": "hboard_links_all_href_rendered\": true,\n    \"dashboard_links_no_duplicate_titles\": true,\n    \"http_static_preview_passed\": true,\n    \"http_static_preview_loopback\": true,\n    \"http_static_preview_card_count_matches\": true,\n    \"http_static_preview_no_external_hrefs\": true,\n    \"browser_screenshot_exists\": true,\n    \"browser_screenshot_png_header_ok\": true,\n    \"browser_screenshot_size_gt_10kb\": true,\n    \"secret_scan_clean\": true\n  },\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false,\n    \"external_network_contacted\": false\n  },\n  \"platform_contacted\": false,\n  \"uploads_performed\": false,\n  \"credentials_read\": false,\n  \"credentials_printed\": false,\n  \"link_values_printed\": false,\n  \"secret_values_printed\": false,\n  \"blocking\": [\n    \"GUI HTML 展示入口、HTTP loopback 静态预览与浏览器首屏 PNG 截图均已固化。\"\n  ]\n}\n",
       "stderr_tail": ""
     },
     "submission_artifact_manifest": {
       "script": "scripts/audit_submission_artifact_manifest.py",
       "returncode": 0,
       "passed": true,
-      "stdout_tail": "ssed\": true,\n    \"dashboard_http_static_preview_loopback\": true,\n    \"dashboard_http_static_preview_card_count_matches\": true,\n    \"dashboard_http_static_preview_no_external_hrefs\": true,\n    \"dashboard_gui_access_packet_passed\": true,\n    \"dashboard_gui_access_html_path_exact\": true,\n    \"dashboard_gui_access_browser_blocked_recorded\": true,\n    \"dashboard_gui_access_screenshot_not_created\": true,\n    \"dashboard_gui_access_card_count_current\": true,\n    \"secret_scan_passed\": true,\n    \"secret_scan_hit_count_zero\": true\n  },\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false,\n    \"external_network_contacted\": false\n  },\n  \"blocking\": [\n    \"提交准备材料 manifest 已完整；baseline runner 仍需要用户目标确认、token、submission id、variant=baseline 和真实 runner 强确认；LoRA 或网页 checkpoint 路线仍需要上传授权和 checkpoint link。\"\n  ]\n}\n",
+      "stdout_tail": "count_matches\": true,\n    \"dashboard_http_static_preview_no_external_hrefs\": true,\n    \"dashboard_gui_access_packet_passed\": true,\n    \"dashboard_gui_access_html_path_exact\": true,\n    \"dashboard_gui_access_browser_not_blocked\": true,\n    \"dashboard_gui_access_screenshot_created\": true,\n    \"dashboard_gui_access_screenshot_path_exact\": true,\n    \"dashboard_gui_access_screenshot_size_current\": true,\n    \"dashboard_gui_access_card_count_current\": true,\n    \"secret_scan_passed\": true,\n    \"secret_scan_hit_count_zero\": true\n  },\n  \"leak_flags\": {\n    \"credentials_printed\": false,\n    \"link_values_printed\": false,\n    \"secret_values_printed\": false\n  },\n  \"contact_flags\": {\n    \"platform_contacted\": false,\n    \"uploads_performed\": false,\n    \"download_host_contacted\": false,\n    \"external_network_contacted\": false\n  },\n  \"blocking\": [\n    \"提交准备材料 manifest 已完整；baseline runner 仍需要用户目标确认、token、submission id、variant=baseline 和真实 runner 强确认；LoRA 或网页 checkpoint 路线仍需要上传授权和 checkpoint link。\"\n  ]\n}\n",
       "stderr_tail": ""
     }
   },

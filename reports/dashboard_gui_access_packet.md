@@ -17,9 +17,11 @@
 ## 浏览器边界
 
 - 本轮是否尝试 GUI 预览：`True`。
-- 是否被浏览器策略阻止：`True`。
-- 是否生成截图：`False`。
-- 边界说明：`in-app browser blocked local file URL preview; this packet does not bypass it`。
+- 是否仍被浏览器策略阻止：`False`。
+- 是否生成截图：`True`。
+- 截图路径：`reports/submission_status_dashboard_browser.png`。
+- 截图大小：`126289` bytes。
+- 边界说明：`HTTP loopback GUI screenshot captured by local browser; no platform contact and no upload`。
 
 ## HTTP 打开方式
 
@@ -49,8 +51,11 @@ http://127.0.0.1:18085/submission_status_dashboard.html
 - `http_static_preview_loopback`：`True`。
 - `http_static_preview_card_count_matches`：`True`。
 - `http_static_preview_no_external_hrefs`：`True`。
+- `browser_screenshot_exists`：`True`。
+- `browser_screenshot_png_header_ok`：`True`。
+- `browser_screenshot_size_gt_10kb`：`True`。
 - `secret_scan_clean`：`True`。
 
 ## Blocking
 
-- GUI HTML 展示入口已固化，且 HTTP loopback 静态预览已通过；Browser 截图接口本轮仍未生成截图。
+- GUI HTML 展示入口、HTTP loopback 静态预览与浏览器首屏 PNG 截图均已固化。

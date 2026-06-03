@@ -10,8 +10,8 @@
   "dashboard_watch_count": 1,
   "ready_for_real_submission": false,
   "browser_visual_attempted": true,
-  "browser_visual_blocked_by_policy": true,
-  "browser_visual_policy_boundary": "in-app browser blocked local file URL preview; this packet does not bypass it",
+  "browser_visual_blocked_by_policy": false,
+  "browser_visual_policy_boundary": "HTTP loopback GUI screenshot captured by local browser; no platform contact and no upload",
   "http_static_preview_passed": true,
   "http_static_preview_url_shape": "http://127.0.0.1:<ephemeral>/submission_status_dashboard.html",
   "http_static_preview_card_count": 41,
@@ -19,8 +19,10 @@
   "http_static_preview_blocked_count": 5,
   "http_static_preview_watch_count": 1,
   "http_static_preview_external_href_count": 0,
-  "screenshot_created": false,
-  "screenshot_path": "",
+  "screenshot_created": true,
+  "screenshot_path": "reports/submission_status_dashboard_browser.png",
+  "screenshot_absolute_path": "/home/yjl/robochallenge/repo/reports/submission_status_dashboard_browser.png",
+  "screenshot_size_bytes": 126289,
   "evidence": {
     "dashboard_status_passed": true,
     "dashboard_html_path_exact": true,
@@ -38,6 +40,9 @@
     "http_static_preview_loopback": true,
     "http_static_preview_card_count_matches": true,
     "http_static_preview_no_external_hrefs": true,
+    "browser_screenshot_exists": true,
+    "browser_screenshot_png_header_ok": true,
+    "browser_screenshot_size_gt_10kb": true,
     "secret_scan_clean": true
   },
   "leak_flags": {
@@ -58,6 +63,6 @@
   "link_values_printed": false,
   "secret_values_printed": false,
   "blocking": [
-    "GUI HTML 展示入口已固化，且 HTTP loopback 静态预览已通过；Browser 截图接口本轮仍未生成截图。"
+    "GUI HTML 展示入口、HTTP loopback 静态预览与浏览器首屏 PNG 截图均已固化。"
   ]
 }

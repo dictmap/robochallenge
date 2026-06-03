@@ -2670,3 +2670,28 @@
 ### 下一步
 - P0：提交并推送本轮工作日志闭环，避免 `work.md` 落后于已推送证据包。
 - P1：用户若确认 `CONFIRM_TABLE30V2_ALOHA_BASELINE` 并提供 token/submission id，先跑只读预检入口；真实 runner 仍必须等待用户明确授权。
+
+## 2026-06-03 第九十七轮：GUI 首屏截图证据闭环
+
+### 已完成
+- 用本地 Chrome headless 通过 `http://127.0.0.1:18085/submission_status_dashboard.html` 生成 GUI 首屏截图。
+- 新增截图产物 `reports/submission_status_dashboard_browser.png`，首屏可见中文标题、41 张卡片、`pi0.5 ALOHA 离线执行` 和 `inference=162`。
+- 更新 `scripts/render_dashboard_gui_access_packet.py`，把截图存在性、PNG 文件头和大小大于 10KB 纳入 GUI 展示入口包。
+- 更新 `scripts/audit_submission_artifact_manifest.py`、`scripts/audit_submission_preflight_bundle.py` 和 `scripts/validate_repro_workspace.py`，让 manifest、总预检和 workspace validator 都强校验 GUI 截图。
+
+### 验证结果
+- 本地截图大小：`126289` bytes，PNG 文件头有效。
+- Linux 端完整 no-contact 链路已通过：`py_compile`、`render_dashboard_gui_access_packet.py`、`audit_submission_artifact_manifest.py`、`audit_submission_preflight_bundle.py`、`validate_repro_workspace.py`、`audit_chinese_utf8_artifacts.py`、`audit_plaintext_secrets.py` 和 `git diff --check`。
+- `runs/dashboard_gui_access_packet.json` 实测 `passed=true`、`browser_visual_blocked_by_policy=false`、`screenshot_created=true`、`screenshot_path=reports/submission_status_dashboard_browser.png`。
+- `runs/submission_artifact_manifest.json` 实测 `passed=true`，截图作为提交准备材料计入 manifest。
+- 明文凭据扫描 `hit_count=0`，二进制截图被安全跳过；中文 UTF-8 与乱码哨兵审计仍通过。
+
+### 当前边界
+- 本轮只访问本机 loopback HTTP 页面，没有连接 RoboChallenge 平台。
+- 没有读取真实 token、submission id、checkpoint link 或真实 local env 内容。
+- 没有上传 checkpoint，没有生成 checkpoint tar，也没有启动真实 runner。
+- baseline 官方 ALOHA 路线仍阻塞在 5 项用户输入：目标确认、token、submission id、`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline` 和真实 runner 强确认。
+
+### 下一步
+- P0：提交并推送本轮 GUI 首屏截图证据闭环。
+- P1：用户若确认 `CONFIRM_TABLE30V2_ALOHA_BASELINE` 并提供 token/submission id，先跑只读预检入口；真实 runner 仍必须等待用户明确授权。

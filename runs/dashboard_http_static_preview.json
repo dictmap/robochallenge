@@ -4,7 +4,7 @@
   "gui_html_path": "reports/submission_status_dashboard.html",
   "http_preview_url_shape": "http://127.0.0.1:<ephemeral>/submission_status_dashboard.html",
   "http_preview_host": "127.0.0.1",
-  "http_preview_port": 42435,
+  "http_preview_port": 59789,
   "http_status_code": 200,
   "http_content_type": "text/html",
   "http_body_length": 21561,

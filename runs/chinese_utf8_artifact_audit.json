@@ -224,7 +224,7 @@
     },
     {
       "path": "reports/dashboard_gui_access_packet.md",
-      "size_bytes": 1916,
+      "size_bytes": 2147,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -536,7 +536,7 @@
     },
     {
       "path": "reports/submission_artifact_manifest.md",
-      "size_bytes": 31766,
+      "size_bytes": 32058,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -576,7 +576,7 @@
     },
     {
       "path": "reports/submission_preflight_bundle.md",
-      "size_bytes": 12414,
+      "size_bytes": 12411,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,

@@ -5,8 +5,8 @@
 - 审计状态：`passed=True`。
 - Dashboard JSON：`runs/submission_status_dashboard.json`。
 - Dashboard HTML：`reports/submission_status_dashboard.html`。
-- 卡片数量：`39`。
-- 已完成 / 阻塞 / 关注：`33` / `5` / `1`。
+- 卡片数量：`40`。
+- 已完成 / 阻塞 / 关注：`34` / `5` / `1`。
 - 真实提交就绪：`False`。
 - 缺失报告链接数：`0`。
 - 非本地报告链接数：`0`。

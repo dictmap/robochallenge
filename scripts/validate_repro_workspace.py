@@ -69,6 +69,7 @@ REQUIRED = [
     "reports/submission_variant_route_packet.md",
     "reports/baseline_submission_quickstart.md",
     "reports/baseline_readonly_preflight_entry.md",
+    "reports/readonly_preflight_jupyter_shell_parity.md",
     "reports/baseline_dry_run_gate.md",
     "reports/baseline_credential_hygiene.md",
     "reports/local_env_permission_contract.md",
@@ -140,6 +141,7 @@ REQUIRED = [
     "runs/submission_variant_route_packet.json",
     "runs/baseline_submission_quickstart.json",
     "runs/baseline_readonly_preflight_entry.json",
+    "runs/readonly_preflight_jupyter_shell_parity.json",
     "runs/baseline_dry_run_gate.json",
     "runs/baseline_credential_hygiene.json",
     "runs/local_env_permission_contract.json",
@@ -211,6 +213,7 @@ REQUIRED = [
     "scripts/render_submission_variant_route_packet.py",
     "scripts/render_baseline_submission_quickstart.py",
     "scripts/render_baseline_readonly_preflight_entry.py",
+    "scripts/audit_readonly_preflight_jupyter_shell_parity.py",
     "scripts/render_baseline_dry_run_gate.py",
     "scripts/render_baseline_credential_hygiene.py",
     "scripts/audit_local_env_permission_contract.py",
@@ -1032,6 +1035,17 @@ def main() -> int:
             in set(dashboard.get("baseline_readonly_preflight_entry_required_ids", [])),
             "ROBOCHALLENGE_REAL_RUN_CONFIRM"
             in set(dashboard.get("baseline_readonly_preflight_entry_excluded_ids", [])),
+            dashboard.get("readonly_preflight_jupyter_shell_parity_passed") is True,
+            dashboard.get("readonly_preflight_routes_converge") is True,
+            dashboard.get("readonly_preflight_shell_command")
+            == "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_authorized_preflight_template.sh",
+            dashboard.get("readonly_preflight_jupyter_command")
+            == "source submission/robochallenge_env.local.sh; bash submission/run_authorized_preflight_template.sh",
+            dashboard.get("readonly_preflight_wrapper_template") == "submission/run_authorized_preflight_template.sh",
+            dashboard.get("readonly_preflight_no_upload") is True,
+            dashboard.get("readonly_preflight_no_link") is True,
+            dashboard.get("readonly_preflight_real_confirm_required_for_readonly") is False,
+            dashboard.get("readonly_preflight_real_confirm_required_for_submission") is True,
             dashboard.get("baseline_dry_run_gate_passed") is True,
             dashboard.get("baseline_dry_run_gate_no_upload") is True,
             dashboard.get("baseline_dry_run_gate_no_link") is True,
@@ -2167,6 +2181,43 @@ def main() -> int:
     ):
         print("baseline 只读预检入口审计未通过")
         return 1
+    readonly_parity = json.loads(
+        (ROOT / "runs/readonly_preflight_jupyter_shell_parity.json").read_text(encoding="utf-8")
+    )
+    readonly_parity_evidence = readonly_parity.get("evidence", {})
+    readonly_parity_leaks = readonly_parity.get("leak_flags", {})
+    readonly_parity_contacts = readonly_parity.get("contact_flags", {})
+    if not all(
+        [
+            readonly_parity.get("kind") == "readonly_preflight_jupyter_shell_parity",
+            readonly_parity.get("passed"),
+            readonly_parity.get("recommended_route") == "baseline_official_aloha",
+            readonly_parity.get("target_confirmation_value") == "CONFIRM_TABLE30V2_ALOHA_BASELINE",
+            readonly_parity.get("target_user_confirmed") is False,
+            readonly_parity.get("shell_readonly_command")
+            == "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_authorized_preflight_template.sh",
+            readonly_parity.get("jupyter_authorized_command")
+            == "source submission/robochallenge_env.local.sh; bash submission/run_authorized_preflight_template.sh",
+            readonly_parity.get("wrapper_template") == "submission/run_authorized_preflight_template.sh",
+            readonly_parity.get("routes_converge_to_same_wrapper") is True,
+            readonly_parity.get("requires_checkpoint_upload") is False,
+            readonly_parity.get("requires_checkpoint_link") is False,
+            readonly_parity.get("real_runner_confirm_required_for_readonly_preflight") is False,
+            readonly_parity.get("real_runner_confirm_required_for_real_submission") is True,
+            all(readonly_parity_evidence.values()),
+            not any(readonly_parity_leaks.values()),
+            not any(readonly_parity_contacts.values()),
+            readonly_parity.get("platform_contacted") is False,
+            readonly_parity.get("uploads_performed") is False,
+            readonly_parity.get("credentials_read") is False,
+            readonly_parity.get("credentials_printed") is False,
+            readonly_parity.get("link_values_printed") is False,
+            readonly_parity.get("secret_values_printed") is False,
+            readonly_parity.get("runner_started") is False,
+        ]
+    ):
+        print("Jupyter/shell 只读预检一致性审计未通过")
+        return 1
     baseline_dry_run_gate = json.loads((ROOT / "runs/baseline_dry_run_gate.json").read_text(encoding="utf-8"))
     dry_run_evidence = baseline_dry_run_gate.get("evidence", {})
     dry_run_bootstrap_evidence = baseline_dry_run_gate.get("bootstrap_evidence", {})
@@ -2947,6 +2998,7 @@ def main() -> int:
         "submission_variant_route_packet",
         "baseline_submission_quickstart",
         "baseline_readonly_preflight_entry",
+        "readonly_preflight_jupyter_shell_parity",
         "baseline_dry_run_gate",
         "baseline_credential_hygiene",
         "local_env_permission_contract",
@@ -3026,6 +3078,16 @@ def main() -> int:
             in set(preflight.get("baseline_readonly_preflight_entry_required_ids", [])),
             "ROBOCHALLENGE_REAL_RUN_CONFIRM"
             in set(preflight.get("baseline_readonly_preflight_entry_excluded_ids", [])),
+            preflight.get("readonly_preflight_jupyter_shell_parity_passed") is True,
+            preflight.get("readonly_preflight_routes_converge") is True,
+            preflight.get("readonly_preflight_shell_command")
+            == "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_authorized_preflight_template.sh",
+            preflight.get("readonly_preflight_jupyter_command")
+            == "source submission/robochallenge_env.local.sh; bash submission/run_authorized_preflight_template.sh",
+            preflight.get("readonly_preflight_wrapper_template") == "submission/run_authorized_preflight_template.sh",
+            preflight.get("readonly_preflight_no_upload") is True,
+            preflight.get("readonly_preflight_no_link") is True,
+            preflight.get("readonly_preflight_real_confirm_required_for_readonly") is False,
             preflight.get("dashboard_gui_access_packet_passed") is True,
             preflight.get("dashboard_gui_access_html_path") == "reports/submission_status_dashboard.html",
             preflight.get("dashboard_gui_access_card_count") == dashboard.get("card_count"),

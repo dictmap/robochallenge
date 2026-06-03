@@ -34,6 +34,7 @@ SOURCE_FILES = {
     "submission_variant_route_packet": RUNS_DIR / "submission_variant_route_packet.json",
     "baseline_submission_quickstart": RUNS_DIR / "baseline_submission_quickstart.json",
     "baseline_readonly_preflight_entry": RUNS_DIR / "baseline_readonly_preflight_entry.json",
+    "readonly_preflight_jupyter_shell_parity": RUNS_DIR / "readonly_preflight_jupyter_shell_parity.json",
     "baseline_dry_run_gate": RUNS_DIR / "baseline_dry_run_gate.json",
     "baseline_credential_hygiene": RUNS_DIR / "baseline_credential_hygiene.json",
     "local_env_permission": RUNS_DIR / "local_env_permission_contract.json",
@@ -113,6 +114,7 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
     route_packet = data["submission_variant_route_packet"]
     baseline_quickstart = data["baseline_submission_quickstart"]
     baseline_readonly_entry = data["baseline_readonly_preflight_entry"]
+    readonly_preflight_parity = data["readonly_preflight_jupyter_shell_parity"]
     baseline_dry_run_gate = data["baseline_dry_run_gate"]
     baseline_credential_hygiene = data["baseline_credential_hygiene"]
     local_env_permission = data["local_env_permission"]
@@ -238,6 +240,21 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
         and baseline_readonly_entry.get("requires_checkpoint_link") is False
         and baseline_readonly_entry.get("real_runner_confirm_required_for_readonly_preflight") is False
         and baseline_readonly_entry.get("real_runner_confirm_required_for_real_submission") is True
+    )
+    readonly_preflight_parity_ready = bool(
+        readonly_preflight_parity.get("passed")
+        and readonly_preflight_parity.get("recommended_route") == "baseline_official_aloha"
+        and readonly_preflight_parity.get("target_confirmation_value") == "CONFIRM_TABLE30V2_ALOHA_BASELINE"
+        and readonly_preflight_parity.get("target_user_confirmed") is False
+        and readonly_preflight_parity.get("routes_converge_to_same_wrapper") is True
+        and readonly_preflight_parity.get("shell_readonly_command")
+        == "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_authorized_preflight_template.sh"
+        and readonly_preflight_parity.get("jupyter_authorized_command")
+        == "source submission/robochallenge_env.local.sh; bash submission/run_authorized_preflight_template.sh"
+        and readonly_preflight_parity.get("requires_checkpoint_upload") is False
+        and readonly_preflight_parity.get("requires_checkpoint_link") is False
+        and readonly_preflight_parity.get("real_runner_confirm_required_for_readonly_preflight") is False
+        and readonly_preflight_parity.get("real_runner_confirm_required_for_real_submission") is True
     )
     baseline_dry_run_gate_ready = bool(
         baseline_dry_run_gate.get("passed")
@@ -584,6 +601,13 @@ def build_cards(data: dict[str, dict[str, Any]]) -> list[dict[str, str]]:
             "reports/baseline_readonly_preflight_entry.md",
         ),
         card(
+            "只读预检入口一致性",
+            "done" if readonly_preflight_parity_ready else "watch",
+            "同一 wrapper",
+            "Jupyter 第 45 节通过 local env，shell 入口通过 inline variant；两者最终进入同一个授权预检 wrapper。",
+            "reports/readonly_preflight_jupyter_shell_parity.md",
+        ),
+        card(
             "Baseline dry-run gate",
             "done" if baseline_dry_run_gate_ready else "watch",
             "先 dry-run",
@@ -739,6 +763,7 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
     route_packet = data["submission_variant_route_packet"]
     baseline_quickstart = data["baseline_submission_quickstart"]
     baseline_readonly_entry = data["baseline_readonly_preflight_entry"]
+    readonly_preflight_parity = data["readonly_preflight_jupyter_shell_parity"]
     baseline_dry_run_gate = data["baseline_dry_run_gate"]
     baseline_credential_hygiene = data["baseline_credential_hygiene"]
     local_env_permission = data["local_env_permission"]
@@ -907,6 +932,20 @@ def build_status(cards: list[dict[str, str]], data: dict[str, dict[str, Any]], h
         "baseline_readonly_preflight_entry_excluded_ids": baseline_readonly_entry.get(
             "excluded_from_readonly_preflight",
             [],
+        ),
+        "readonly_preflight_jupyter_shell_parity_passed": readonly_preflight_parity.get("passed") is True,
+        "readonly_preflight_routes_converge": readonly_preflight_parity.get("routes_converge_to_same_wrapper")
+        is True,
+        "readonly_preflight_shell_command": readonly_preflight_parity.get("shell_readonly_command"),
+        "readonly_preflight_jupyter_command": readonly_preflight_parity.get("jupyter_authorized_command"),
+        "readonly_preflight_wrapper_template": readonly_preflight_parity.get("wrapper_template"),
+        "readonly_preflight_no_upload": readonly_preflight_parity.get("requires_checkpoint_upload") is False,
+        "readonly_preflight_no_link": readonly_preflight_parity.get("requires_checkpoint_link") is False,
+        "readonly_preflight_real_confirm_required_for_readonly": readonly_preflight_parity.get(
+            "real_runner_confirm_required_for_readonly_preflight"
+        ),
+        "readonly_preflight_real_confirm_required_for_submission": readonly_preflight_parity.get(
+            "real_runner_confirm_required_for_real_submission"
         ),
         "baseline_dry_run_gate_passed": baseline_dry_run_gate.get("passed") is True,
         "baseline_dry_run_gate_no_upload": baseline_dry_run_gate.get("requires_checkpoint_upload") is False,

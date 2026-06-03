@@ -36,6 +36,7 @@ SUBCOMMANDS = [
     ("submission_variant_route_packet", "scripts/render_submission_variant_route_packet.py"),
     ("baseline_submission_quickstart", "scripts/render_baseline_submission_quickstart.py"),
     ("baseline_readonly_preflight_entry", "scripts/render_baseline_readonly_preflight_entry.py"),
+    ("readonly_preflight_jupyter_shell_parity", "scripts/audit_readonly_preflight_jupyter_shell_parity.py"),
     ("submission_target_confirmation_packet", "scripts/render_submission_target_confirmation_packet.py"),
     ("submission_target_confirmation_gate", "scripts/audit_submission_target_confirmation_gate.py"),
     ("authorized_execution_checklist", "scripts/audit_authorized_execution_checklist.py"),
@@ -129,6 +130,7 @@ def build_status() -> dict[str, Any]:
     route_packet = read_json(RUNS_DIR / "submission_variant_route_packet.json")
     baseline_quickstart = read_json(RUNS_DIR / "baseline_submission_quickstart.json")
     baseline_readonly_entry = read_json(RUNS_DIR / "baseline_readonly_preflight_entry.json")
+    readonly_preflight_parity = read_json(RUNS_DIR / "readonly_preflight_jupyter_shell_parity.json")
     baseline_dry_run_gate = read_json(RUNS_DIR / "baseline_dry_run_gate.json")
     baseline_credential_hygiene = read_json(RUNS_DIR / "baseline_credential_hygiene.json")
     local_env_permission = read_json(RUNS_DIR / "local_env_permission_contract.json")
@@ -171,6 +173,7 @@ def build_status() -> dict[str, Any]:
                 route_packet,
                 baseline_quickstart,
                 baseline_readonly_entry,
+                readonly_preflight_parity,
                 baseline_dry_run_gate,
                 baseline_credential_hygiene,
                 local_env_permission,
@@ -206,6 +209,7 @@ def build_status() -> dict[str, Any]:
         or bool(route_packet.get("link_values_printed"))
         or bool(baseline_quickstart.get("link_values_printed"))
         or bool(baseline_readonly_entry.get("link_values_printed"))
+        or bool(readonly_preflight_parity.get("link_values_printed"))
         or bool(baseline_dry_run_gate.get("link_values_printed"))
         or bool(baseline_credential_hygiene.get("link_values_printed"))
         or bool(local_env_permission.get("link_values_printed"))
@@ -239,6 +243,7 @@ def build_status() -> dict[str, Any]:
         or bool(route_packet.get("secret_values_printed"))
         or bool(baseline_quickstart.get("secret_values_printed"))
         or bool(baseline_readonly_entry.get("secret_values_printed"))
+        or bool(readonly_preflight_parity.get("secret_values_printed"))
         or bool(baseline_dry_run_gate.get("secret_values_printed"))
         or bool(baseline_credential_hygiene.get("secret_values_printed"))
         or bool(local_env_permission.get("secret_values_printed"))
@@ -282,6 +287,7 @@ def build_status() -> dict[str, Any]:
                 route_packet,
                 baseline_quickstart,
                 baseline_readonly_entry,
+                readonly_preflight_parity,
                 baseline_dry_run_gate,
                 baseline_credential_hygiene,
                 local_env_permission,
@@ -324,6 +330,7 @@ def build_status() -> dict[str, Any]:
                 route_packet,
                 baseline_quickstart,
                 baseline_readonly_entry,
+                readonly_preflight_parity,
                 baseline_dry_run_gate,
                 baseline_credential_hygiene,
                 local_env_permission,
@@ -345,6 +352,7 @@ def build_status() -> dict[str, Any]:
             link_download.get("verification", {}).get("download_host_contacted")
         )
         or bool(baseline_readonly_entry.get("contact_flags", {}).get("download_host_contacted"))
+        or bool(readonly_preflight_parity.get("contact_flags", {}).get("download_host_contacted"))
         or bool(dashboard_gui_access.get("contact_flags", {}).get("download_host_contacted")),
     }
     readiness_blocking = readiness.get("blocking", [])
@@ -477,6 +485,17 @@ def build_status() -> dict[str, Any]:
         "baseline_readonly_preflight_entry_excluded_ids": baseline_readonly_entry.get(
             "excluded_from_readonly_preflight",
             [],
+        ),
+        "readonly_preflight_jupyter_shell_parity_passed": readonly_preflight_parity.get("passed") is True,
+        "readonly_preflight_routes_converge": readonly_preflight_parity.get("routes_converge_to_same_wrapper")
+        is True,
+        "readonly_preflight_shell_command": readonly_preflight_parity.get("shell_readonly_command"),
+        "readonly_preflight_jupyter_command": readonly_preflight_parity.get("jupyter_authorized_command"),
+        "readonly_preflight_wrapper_template": readonly_preflight_parity.get("wrapper_template"),
+        "readonly_preflight_no_upload": readonly_preflight_parity.get("requires_checkpoint_upload") is False,
+        "readonly_preflight_no_link": readonly_preflight_parity.get("requires_checkpoint_link") is False,
+        "readonly_preflight_real_confirm_required_for_readonly": readonly_preflight_parity.get(
+            "real_runner_confirm_required_for_readonly_preflight"
         ),
         "dashboard_gui_access_packet_passed": dashboard_gui_access.get("passed") is True,
         "dashboard_gui_access_html_path": dashboard_gui_access.get("gui_html_path"),
@@ -758,6 +777,11 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         f"- baseline 只读预检是否需要真实 runner 强确认：`{status['baseline_readonly_preflight_entry_real_confirm_required_for_readonly']}`。",
         f"- baseline 真实提交是否仍需要强确认：`{status['baseline_readonly_preflight_entry_real_confirm_required_for_submission']}`。",
         f"- baseline 只读预检目标确认值：`{status['baseline_readonly_preflight_entry_target_confirmation_value']}`。",
+        f"- Jupyter/shell 只读预检一致性：`{status['readonly_preflight_jupyter_shell_parity_passed']}`。",
+        f"- Jupyter/shell 是否收敛到同一 wrapper：`{status['readonly_preflight_routes_converge']}`。",
+        f"- shell 只读预检入口：`{status['readonly_preflight_shell_command']}`。",
+        f"- Jupyter 只读预检入口：`{status['readonly_preflight_jupyter_command']}`。",
+        f"- 共同 wrapper：`{status['readonly_preflight_wrapper_template']}`。",
         f"- GUI 展示入口审计：`{status['dashboard_gui_access_packet_passed']}`。",
         f"- GUI HTML 路径：`{status['dashboard_gui_access_html_path']}`。",
         f"- GUI 卡片数量：`{status['dashboard_gui_access_card_count']}`。",

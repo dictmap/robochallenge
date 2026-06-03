@@ -2595,3 +2595,29 @@
 ### 下一步
 - P0：提交并推送本轮 `pi0.6/pi0.7` 公开复现边界刷新。
 - P1：继续推进 baseline 授权前只读预检入口；用户若确认 `CONFIRM_TABLE30V2_ALOHA_BASELINE` 并提供 token/submission id，先跑只读预检，真实 runner 仍等待用户明确授权。
+
+## 2026-06-03 第九十四轮：Jupyter 与 shell 只读预检入口一致性审计
+
+### 已完成
+- 新增 `scripts/audit_readonly_preflight_jupyter_shell_parity.py`，专门审计 baseline 只读预检的 Jupyter 入口与 shell 入口是否收敛到同一个 wrapper。
+- 新增产物 `runs/readonly_preflight_jupyter_shell_parity.json` 与 `reports/readonly_preflight_jupyter_shell_parity.md`。
+- 审计确认 shell 最短入口为 `ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_authorized_preflight_template.sh`。
+- 审计确认 Jupyter 第 45 节入口为 `source submission/robochallenge_env.local.sh; bash submission/run_authorized_preflight_template.sh`，variant 与目标确认值来自第 44 节安全填写的 local env。
+- 将新审计接入 `scripts/audit_submission_preflight_bundle.py`、`scripts/audit_submission_artifact_manifest.py`、`scripts/render_submission_status_dashboard.py` 和 `scripts/validate_repro_workspace.py`。
+- GUI dashboard 新增 “只读预检入口一致性” 卡片，用于显示 Jupyter/shell 双入口闭环。
+
+### 验证结果
+- Linux 端完整 no-contact 链路已通过：`py_compile`、`audit_readonly_preflight_jupyter_shell_parity.py`、`audit_submission_preflight_bundle.py`、`audit_submission_artifact_manifest.py`、`render_submission_status_dashboard.py`、`audit_submission_dashboard_links.py`、`render_dashboard_gui_access_packet.py`、`validate_repro_workspace.py`、`audit_chinese_utf8_artifacts.py`、`audit_plaintext_secrets.py` 和 `git diff --check`。
+- `runs/readonly_preflight_jupyter_shell_parity.json` 实测 `passed=true`、`routes_converge_to_same_wrapper=true`。
+- GUI dashboard 更新为 `source_count=40`、`card_count=40`、`done_count=34`、`blocked_count=5`、`watch_count=1`、`ready_for_real_submission=false`。
+- GUI 链接审计同步为 `card_count=40`、`missing_report_count=0`、`nonlocal_report_count=0`、`missing_html_href_count=0`。
+- 明文凭据扫描 `hit_count=0`；中文 UTF-8 与乱码哨兵审计 `bad_marker_hit_count=0`。
+
+### 当前边界
+- 本轮没有读取真实 token、submission id、checkpoint link 或真实 local env 内容。
+- 没有连接 RoboChallenge 平台，没有上传 checkpoint，没有生成 checkpoint tar，也没有启动真实 runner。
+- Jupyter 与 shell 只读预检入口已经闭环；真实提交仍阻塞在目标确认、token、submission id、`variant=baseline` 和真实 runner 强确认。
+
+### 下一步
+- P0：提交并推送本轮 Jupyter/shell 只读预检入口一致性审计。
+- P1：用户若确认 `CONFIRM_TABLE30V2_ALOHA_BASELINE` 并提供 token/submission id，先跑只读预检入口；真实 runner 仍等待用户明确授权。

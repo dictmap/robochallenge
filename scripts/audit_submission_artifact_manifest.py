@@ -64,6 +64,7 @@ REQUIRED_ARTIFACTS = [
     "reports/submission_variant_route_packet.md",
     "reports/baseline_submission_quickstart.md",
     "reports/baseline_readonly_preflight_entry.md",
+    "reports/readonly_preflight_jupyter_shell_parity.md",
     "reports/baseline_dry_run_gate.md",
     "reports/baseline_credential_hygiene.md",
     "reports/local_env_permission_contract.md",
@@ -92,6 +93,7 @@ REQUIRED_ARTIFACTS = [
     "scripts/render_submission_variant_route_packet.py",
     "scripts/render_baseline_submission_quickstart.py",
     "scripts/render_baseline_readonly_preflight_entry.py",
+    "scripts/audit_readonly_preflight_jupyter_shell_parity.py",
     "scripts/render_baseline_dry_run_gate.py",
     "scripts/render_baseline_credential_hygiene.py",
     "scripts/audit_local_env_permission_contract.py",
@@ -223,6 +225,7 @@ def build_status() -> dict[str, Any]:
     route_packet = read_json(RUNS_DIR / "submission_variant_route_packet.json")
     baseline_quickstart = read_json(RUNS_DIR / "baseline_submission_quickstart.json")
     baseline_readonly_entry = read_json(RUNS_DIR / "baseline_readonly_preflight_entry.json")
+    readonly_preflight_parity = read_json(RUNS_DIR / "readonly_preflight_jupyter_shell_parity.json")
     baseline_dry_run_gate = read_json(RUNS_DIR / "baseline_dry_run_gate.json")
     baseline_credential_hygiene = read_json(RUNS_DIR / "baseline_credential_hygiene.json")
     local_env_permission = read_json(RUNS_DIR / "local_env_permission_contract.json")
@@ -437,6 +440,11 @@ def build_status() -> dict[str, Any]:
             "target_confirmation_value"
         )
         == "CONFIRM_TABLE30V2_ALOHA_BASELINE",
+        "readonly_preflight_jupyter_shell_parity_passed": readonly_preflight_parity.get("passed") is True,
+        "readonly_preflight_routes_converge": readonly_preflight_parity.get("routes_converge_to_same_wrapper")
+        is True,
+        "readonly_preflight_no_upload": readonly_preflight_parity.get("requires_checkpoint_upload") is False,
+        "readonly_preflight_no_link": readonly_preflight_parity.get("requires_checkpoint_link") is False,
         "baseline_dry_run_gate_passed": baseline_dry_run_gate.get("passed") is True,
         "baseline_dry_run_gate_no_upload": baseline_dry_run_gate.get("requires_checkpoint_upload") is False,
         "baseline_dry_run_gate_no_link": baseline_dry_run_gate.get("requires_checkpoint_link") is False,
@@ -711,6 +719,7 @@ def build_status() -> dict[str, Any]:
                 route_packet,
                 baseline_quickstart,
                 baseline_readonly_entry,
+                readonly_preflight_parity,
                 baseline_dry_run_gate,
                 baseline_credential_hygiene,
                 local_env_permission,
@@ -746,6 +755,7 @@ def build_status() -> dict[str, Any]:
         or bool(route_packet.get("link_values_printed"))
         or bool(baseline_quickstart.get("link_values_printed"))
         or bool(baseline_readonly_entry.get("link_values_printed"))
+        or bool(readonly_preflight_parity.get("link_values_printed"))
         or bool(baseline_dry_run_gate.get("link_values_printed"))
         or bool(baseline_credential_hygiene.get("link_values_printed"))
         or bool(local_env_permission.get("link_values_printed"))
@@ -773,6 +783,7 @@ def build_status() -> dict[str, Any]:
         or bool(route_packet.get("secret_values_printed"))
         or bool(baseline_quickstart.get("secret_values_printed"))
         or bool(baseline_readonly_entry.get("secret_values_printed"))
+        or bool(readonly_preflight_parity.get("secret_values_printed"))
         or bool(baseline_dry_run_gate.get("secret_values_printed"))
         or bool(baseline_credential_hygiene.get("secret_values_printed"))
         or bool(local_env_permission.get("secret_values_printed"))
@@ -810,6 +821,7 @@ def build_status() -> dict[str, Any]:
                 route_packet,
                 baseline_quickstart,
                 baseline_readonly_entry,
+                readonly_preflight_parity,
                 baseline_dry_run_gate,
                 baseline_credential_hygiene,
                 local_env_permission,
@@ -850,6 +862,7 @@ def build_status() -> dict[str, Any]:
                 route_packet,
                 baseline_quickstart,
                 baseline_readonly_entry,
+                readonly_preflight_parity,
                 baseline_dry_run_gate,
                 baseline_credential_hygiene,
                 local_env_permission,
@@ -874,6 +887,7 @@ def build_status() -> dict[str, Any]:
         ),
         "download_host_contacted": bool(preflight.get("contact_flags", {}).get("download_host_contacted"))
         or bool(baseline_readonly_entry.get("contact_flags", {}).get("download_host_contacted"))
+        or bool(readonly_preflight_parity.get("contact_flags", {}).get("download_host_contacted"))
         or bool(dashboard_gui_access.get("contact_flags", {}).get("download_host_contacted")),
     }
     blocking = []

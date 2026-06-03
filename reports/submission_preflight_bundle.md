@@ -40,9 +40,14 @@
 - baseline 只读预检是否需要真实 runner 强确认：`False`。
 - baseline 真实提交是否仍需要强确认：`True`。
 - baseline 只读预检目标确认值：`CONFIRM_TABLE30V2_ALOHA_BASELINE`。
+- Jupyter/shell 只读预检一致性：`True`。
+- Jupyter/shell 是否收敛到同一 wrapper：`True`。
+- shell 只读预检入口：`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_authorized_preflight_template.sh`。
+- Jupyter 只读预检入口：`source submission/robochallenge_env.local.sh; bash submission/run_authorized_preflight_template.sh`。
+- 共同 wrapper：`submission/run_authorized_preflight_template.sh`。
 - GUI 展示入口审计：`True`。
 - GUI HTML 路径：`reports/submission_status_dashboard.html`。
-- GUI 卡片数量：`39`。
+- GUI 卡片数量：`40`。
 - 浏览器 file URL 预览是否被策略阻止：`True`。
 - 本轮是否生成 GUI 截图：`False`。
 - baseline 是否需要 checkpoint link：`False`。
@@ -162,6 +167,7 @@
 - `submission_variant_route_packet`：returncode=`0`，passed=`True`。
 - `baseline_submission_quickstart`：returncode=`0`，passed=`True`。
 - `baseline_readonly_preflight_entry`：returncode=`0`，passed=`True`。
+- `readonly_preflight_jupyter_shell_parity`：returncode=`0`，passed=`True`。
 - `submission_target_confirmation_packet`：returncode=`0`，passed=`True`。
 - `submission_target_confirmation_gate`：returncode=`0`，passed=`True`。
 - `authorized_execution_checklist`：returncode=`0`，passed=`True`。

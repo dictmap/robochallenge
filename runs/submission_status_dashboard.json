@@ -2,9 +2,9 @@
   "kind": "submission_status_dashboard",
   "passed": true,
   "html_path": "reports/submission_status_dashboard.html",
-  "source_count": 39,
-  "card_count": 39,
-  "done_count": 33,
+  "source_count": 40,
+  "card_count": 40,
+  "done_count": 34,
   "blocked_count": 5,
   "watch_count": 1,
   "ready_for_real_submission": false,
@@ -105,6 +105,15 @@
     "CHECKPOINT_ARCHIVE_AUTHORIZATION",
     "ROBOCHALLENGE_CHECKPOINT_LINK"
   ],
+  "readonly_preflight_jupyter_shell_parity_passed": true,
+  "readonly_preflight_routes_converge": true,
+  "readonly_preflight_shell_command": "ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_authorized_preflight_template.sh",
+  "readonly_preflight_jupyter_command": "source submission/robochallenge_env.local.sh; bash submission/run_authorized_preflight_template.sh",
+  "readonly_preflight_wrapper_template": "submission/run_authorized_preflight_template.sh",
+  "readonly_preflight_no_upload": true,
+  "readonly_preflight_no_link": true,
+  "readonly_preflight_real_confirm_required_for_readonly": false,
+  "readonly_preflight_real_confirm_required_for_submission": true,
   "baseline_dry_run_gate_passed": true,
   "baseline_dry_run_gate_no_upload": true,
   "baseline_dry_run_gate_no_link": true,
@@ -429,6 +438,14 @@
       "value": "shell + Jupyter",
       "detail": "用户确认目标并填写 token/submission id 后，先跑第 45 节或 shell 只读预检；不需要 checkpoint link，也不设置真实 runner 强确认。",
       "report": "reports/baseline_readonly_preflight_entry.md"
+    },
+    {
+      "title": "只读预检入口一致性",
+      "state": "done",
+      "state_label": "已完成",
+      "value": "同一 wrapper",
+      "detail": "Jupyter 第 45 节通过 local env，shell 入口通过 inline variant；两者最终进入同一个授权预检 wrapper。",
+      "report": "reports/readonly_preflight_jupyter_shell_parity.md"
     },
     {
       "title": "Baseline dry-run gate",

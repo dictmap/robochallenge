@@ -47,6 +47,7 @@ REQUIRED = [
     "reports/authorized_submission_sequence_audit.md",
     "reports/submission_status_dashboard.html",
     "reports/submission_dashboard_links_audit.md",
+    "reports/dashboard_gui_access_packet.md",
     "reports/checkpoint_upload_channels_audit.md",
     "reports/real_submission_readiness.md",
     "reports/real_submission_readiness_scenarios.md",
@@ -117,6 +118,7 @@ REQUIRED = [
     "runs/authorized_submission_sequence_audit.json",
     "runs/submission_status_dashboard.json",
     "runs/submission_dashboard_links_audit.json",
+    "runs/dashboard_gui_access_packet.json",
     "runs/checkpoint_upload_channels_audit.json",
     "runs/real_submission_readiness.json",
     "runs/real_submission_readiness_scenarios.json",
@@ -188,6 +190,7 @@ REQUIRED = [
     "scripts/audit_authorized_submission_sequence.py",
     "scripts/render_submission_status_dashboard.py",
     "scripts/audit_submission_dashboard_links.py",
+    "scripts/render_dashboard_gui_access_packet.py",
     "scripts/audit_checkpoint_upload_channels.py",
     "scripts/audit_real_submission_readiness.py",
     "scripts/audit_real_submission_readiness_scenarios.py",
@@ -1248,6 +1251,39 @@ def main() -> int:
         ]
     ):
         print("GUI dashboard 链接审计未通过")
+        return 1
+    dashboard_gui = json.loads((ROOT / "runs/dashboard_gui_access_packet.json").read_text(encoding="utf-8"))
+    dashboard_gui_evidence = dashboard_gui.get("evidence", {})
+    dashboard_gui_leaks = dashboard_gui.get("leak_flags", {})
+    dashboard_gui_contacts = dashboard_gui.get("contact_flags", {})
+    if not all(
+        [
+            dashboard_gui.get("kind") == "dashboard_gui_access_packet",
+            dashboard_gui.get("passed"),
+            dashboard_gui.get("gui_html_path") == "reports/submission_status_dashboard.html",
+            (ROOT / dashboard_gui.get("gui_html_path", "")).exists(),
+            dashboard_gui.get("dashboard_card_count") == dashboard.get("card_count"),
+            dashboard_gui.get("dashboard_source_count") == dashboard.get("source_count"),
+            dashboard_gui.get("dashboard_done_count") == dashboard.get("done_count"),
+            dashboard_gui.get("dashboard_blocked_count") == dashboard.get("blocked_count"),
+            dashboard_gui.get("dashboard_watch_count") == dashboard.get("watch_count"),
+            dashboard_gui.get("ready_for_real_submission") is False,
+            dashboard_gui.get("browser_visual_attempted") is True,
+            dashboard_gui.get("browser_visual_blocked_by_policy") is True,
+            dashboard_gui.get("screenshot_created") is False,
+            dashboard_gui.get("screenshot_path") == "",
+            all(dashboard_gui_evidence.values()),
+            not any(dashboard_gui_leaks.values()),
+            not any(dashboard_gui_contacts.values()),
+            dashboard_gui.get("platform_contacted") is False,
+            dashboard_gui.get("uploads_performed") is False,
+            dashboard_gui.get("credentials_read") is False,
+            dashboard_gui.get("credentials_printed") is False,
+            dashboard_gui.get("link_values_printed") is False,
+            dashboard_gui.get("secret_values_printed") is False,
+        ]
+    ):
+        print("GUI dashboard 展示入口包审计未通过")
         return 1
     upload_audit = json.loads((ROOT / "runs/checkpoint_upload_channels_audit.json").read_text(encoding="utf-8"))
     upload_channels = upload_audit.get("channels", {})
@@ -2918,6 +2954,7 @@ def main() -> int:
         "baseline_final_handoff_packet",
         "baseline_final_handoff_rehearsal",
         "route_aware_submission_blockers",
+        "dashboard_gui_access_packet",
         "submission_artifact_manifest",
     }
     if not all(
@@ -2982,6 +3019,11 @@ def main() -> int:
             in set(preflight.get("baseline_readonly_preflight_entry_required_ids", [])),
             "ROBOCHALLENGE_REAL_RUN_CONFIRM"
             in set(preflight.get("baseline_readonly_preflight_entry_excluded_ids", [])),
+            preflight.get("dashboard_gui_access_packet_passed") is True,
+            preflight.get("dashboard_gui_access_html_path") == "reports/submission_status_dashboard.html",
+            preflight.get("dashboard_gui_access_card_count") == dashboard.get("card_count"),
+            preflight.get("dashboard_gui_access_browser_blocked") is True,
+            preflight.get("dashboard_gui_access_screenshot_created") is False,
             preflight.get("local_baseline_runner_ready") is False,
             preflight.get("local_lora_runner_ready") is False,
             preflight.get("verify_download_requested") is False,
@@ -3326,6 +3368,7 @@ def main() -> int:
     print("Checkpoint link 下载校验审计已通过")
     print("用户授权后提交顺序审计已通过")
     print("提交状态 GUI 面板已通过")
+    print("GUI dashboard 展示入口包审计已通过")
     print("Checkpoint 上传通道审计已通过")
     print("真实提交 readiness gate 已通过")
     print("真实提交 readiness 场景 smoke 已通过")

@@ -2544,3 +2544,27 @@
 ### 下一步
 - P0：提交并推送本轮 baseline 只读预检最短入口固化。
 - P1：用户若明确确认 `CONFIRM_TABLE30V2_ALOHA_BASELINE` 并提供 token/submission id，先跑 Jupyter 第 44/45 节或 shell baseline 授权前只读预检；真实 runner 仍必须等待用户明确授权。
+## 2026-06-03 第九十二轮：GUI dashboard 展示入口与浏览器边界审计
+
+### 已完成
+- 尝试用 in-app browser 打开本地 `file:///.../reports/submission_status_dashboard.html` 做可视预览；该动作被 Browser 工具的 URL policy 阻止。
+- 未绕过该浏览器限制，也未改用其它浏览器或间接方式生成截图。
+- 新增 `scripts/render_dashboard_gui_access_packet.py`，把 GUI HTML 展示入口、当前 dashboard 计数、链接完整性和浏览器阻塞边界固化为 no-contact 证据包。
+- 新增产物 `runs/dashboard_gui_access_packet.json` 与 `reports/dashboard_gui_access_packet.md`。
+- 将 GUI 展示入口包接入 `scripts/audit_submission_preflight_bundle.py`、`scripts/audit_submission_artifact_manifest.py` 和 `scripts/validate_repro_workspace.py`；不把它做成 dashboard 卡片，避免 GUI 自引用。
+
+### 验证结果
+- Linux 端完整 no-contact 链路已通过：`py_compile`、`render_dashboard_gui_access_packet.py`、`audit_submission_artifact_manifest.py`、`audit_submission_preflight_bundle.py`、`audit_submission_blockers_summary.py`、`render_submission_status_dashboard.py`、`audit_submission_dashboard_links.py`、`validate_repro_workspace.py`、`audit_chinese_utf8_artifacts.py`、`audit_plaintext_secrets.py` 和 `git diff --check`。
+- `runs/dashboard_gui_access_packet.json` 实测 `passed=true`，`gui_html_path=reports/submission_status_dashboard.html`，`browser_visual_blocked_by_policy=true`，`screenshot_created=false`。
+- `runs/submission_preflight_bundle.json` 实测 `dashboard_gui_access_packet_passed=true`。
+- GUI dashboard 仍为 `source_count=39`、`card_count=39`、`done_count=33`、`blocked_count=5`、`watch_count=1`、`ready_for_real_submission=false`。
+- 明文凭据扫描 `hit_count=0`；中文 UTF-8 与乱码哨兵审计 `bad_marker_hit_count=0`。
+
+### 当前边界
+- 本轮没有读取真实 token、submission id、checkpoint link 或真实 local env 内容。
+- 没有连接 RoboChallenge 平台，没有上传 checkpoint，没有生成 checkpoint tar，也没有启动真实 runner。
+- 浏览器 file URL 预览被工具策略阻止，因此本轮不生成 GUI 截图；可验证的 GUI 入口仍是本地 HTML：`reports/submission_status_dashboard.html`。
+
+### 下一步
+- P0：提交并推送本轮 GUI dashboard 展示入口与浏览器边界审计。
+- P1：用户若明确确认 `CONFIRM_TABLE30V2_ALOHA_BASELINE` 并提供 token/submission id，先跑 Jupyter 第 44/45 节或 shell baseline 授权前只读预检；真实 runner 仍必须等待用户明确授权。

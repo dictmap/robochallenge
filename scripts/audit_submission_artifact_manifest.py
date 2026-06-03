@@ -86,6 +86,7 @@ REQUIRED_ARTIFACTS = [
     "reports/plaintext_secret_scan.md",
     "reports/submission_status_dashboard.html",
     "reports/submission_dashboard_links_audit.md",
+    "reports/dashboard_gui_access_packet.md",
     "scripts/render_next_user_action_packet.py",
     "scripts/render_web_form_field_packet.py",
     "scripts/render_submission_variant_route_packet.py",
@@ -114,6 +115,7 @@ REQUIRED_ARTIFACTS = [
     "scripts/audit_historical_notebook_checkpoint_outputs.py",
     "scripts/audit_chinese_utf8_artifacts.py",
     "scripts/audit_authorized_execution_checklist.py",
+    "scripts/render_dashboard_gui_access_packet.py",
 ]
 
 LOCAL_SECRET_OR_LARGE_PATHS = [
@@ -241,6 +243,7 @@ def build_status() -> dict[str, Any]:
     env_template = read_json(RUNS_DIR / "submission_env_template_audit.json")
     secret_scan = read_json(RUNS_DIR / "plaintext_secret_scan.json")
     dashboard_links = read_json(RUNS_DIR / "submission_dashboard_links_audit.json")
+    dashboard_gui_access = read_json(RUNS_DIR / "dashboard_gui_access_packet.json")
     web_form_route_blocking_names = set(web_form_packet.get("recommended_route_blocking_names", []))
 
     inputs = {
@@ -677,6 +680,15 @@ def build_status() -> dict[str, Any]:
         "dashboard_links_all_local": dashboard_links.get("nonlocal_report_count") == 0,
         "dashboard_links_html_hrefs_rendered": dashboard_links.get("missing_html_href_count") == 0,
         "dashboard_links_card_count": dashboard_links.get("card_count", 0) >= 38,
+        "dashboard_gui_access_packet_passed": dashboard_gui_access.get("passed") is True,
+        "dashboard_gui_access_html_path_exact": dashboard_gui_access.get("gui_html_path")
+        == "reports/submission_status_dashboard.html",
+        "dashboard_gui_access_browser_blocked_recorded": dashboard_gui_access.get(
+            "browser_visual_blocked_by_policy"
+        )
+        is True,
+        "dashboard_gui_access_screenshot_not_created": dashboard_gui_access.get("screenshot_created") is False,
+        "dashboard_gui_access_card_count_current": dashboard_gui_access.get("dashboard_card_count", 0) >= 39,
         "secret_scan_passed": secret_scan.get("passed") is True,
         "secret_scan_hit_count_zero": secret_scan.get("hit_count") == 0,
     }
@@ -717,6 +729,7 @@ def build_status() -> dict[str, Any]:
                 target_confirmation_gate,
                 readiness,
                 env_template,
+                dashboard_gui_access,
             ]
         ),
         "link_values_printed": bool(preflight.get("leak_flags", {}).get("link_values_printed"))
@@ -748,7 +761,8 @@ def build_status() -> dict[str, Any]:
         or bool(baseline_final_handoff_rehearsal.get("link_values_printed"))
         or bool(route_aware_blockers.get("link_values_printed"))
         or bool(target_confirmation.get("link_values_printed"))
-        or bool(target_confirmation_gate.get("link_values_printed")),
+        or bool(target_confirmation_gate.get("link_values_printed"))
+        or bool(dashboard_gui_access.get("link_values_printed")),
         "secret_values_printed": bool(secret_scan.get("secret_values_printed"))
         or bool(jupyter_input.get("secret_values_printed"))
         or bool(jupyter_authorized.get("secret_values_printed"))
@@ -774,7 +788,8 @@ def build_status() -> dict[str, Any]:
         or bool(baseline_final_handoff_rehearsal.get("secret_values_printed"))
         or bool(route_aware_blockers.get("secret_values_printed"))
         or bool(target_confirmation.get("secret_values_printed"))
-        or bool(target_confirmation_gate.get("secret_values_printed")),
+        or bool(target_confirmation_gate.get("secret_values_printed"))
+        or bool(dashboard_gui_access.get("secret_values_printed")),
     }
     contact_flags = {
         "platform_contacted": any(
@@ -814,6 +829,7 @@ def build_status() -> dict[str, Any]:
                 readiness,
                 env_template,
                 secret_scan,
+                dashboard_gui_access,
             ]
         ),
         "uploads_performed": any(
@@ -853,10 +869,12 @@ def build_status() -> dict[str, Any]:
                 readiness,
                 env_template,
                 secret_scan,
+                dashboard_gui_access,
             ]
         ),
         "download_host_contacted": bool(preflight.get("contact_flags", {}).get("download_host_contacted"))
-        or bool(baseline_readonly_entry.get("contact_flags", {}).get("download_host_contacted")),
+        or bool(baseline_readonly_entry.get("contact_flags", {}).get("download_host_contacted"))
+        or bool(dashboard_gui_access.get("contact_flags", {}).get("download_host_contacted")),
     }
     blocking = []
     if missing_required:

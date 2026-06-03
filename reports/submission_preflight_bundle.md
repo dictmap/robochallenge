@@ -40,10 +40,15 @@
 - baseline 只读预检是否需要真实 runner 强确认：`False`。
 - baseline 真实提交是否仍需要强确认：`True`。
 - baseline 只读预检目标确认值：`CONFIRM_TABLE30V2_ALOHA_BASELINE`。
+- GUI 展示入口审计：`True`。
+- GUI HTML 路径：`reports/submission_status_dashboard.html`。
+- GUI 卡片数量：`39`。
+- 浏览器 file URL 预览是否被策略阻止：`True`。
+- 本轮是否生成 GUI 截图：`False`。
 - baseline 是否需要 checkpoint link：`False`。
 - baseline 是否需要 checkpoint upload：`False`。
 - 中文 UTF-8 产物审计：`True`。
-- 中文 UTF-8 扫描文件数：`160`。
+- 中文 UTF-8 扫描文件数：`162`。
 - 中文 UTF-8 解码错误数：`0`。
 - 中文乱码哨兵命中数：`0`。
 - baseline dry-run gate：`True`。
@@ -177,6 +182,7 @@
 - `baseline_final_handoff_packet`：returncode=`0`，passed=`True`。
 - `baseline_final_handoff_rehearsal`：returncode=`0`，passed=`True`。
 - `submission_handoff_docs`：returncode=`0`，passed=`True`。
+- `dashboard_gui_access_packet`：returncode=`0`，passed=`True`。
 - `submission_artifact_manifest`：returncode=`0`，passed=`True`。
 
 ## Baseline 最短路线当前只差

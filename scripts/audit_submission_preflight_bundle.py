@@ -56,6 +56,7 @@ SUBCOMMANDS = [
     ("baseline_final_handoff_packet", "scripts/render_baseline_final_handoff_packet.py"),
     ("baseline_final_handoff_rehearsal", "scripts/render_baseline_final_handoff_rehearsal.py"),
     ("submission_handoff_docs", "scripts/audit_submission_handoff_docs.py"),
+    ("dashboard_gui_access_packet", "scripts/render_dashboard_gui_access_packet.py"),
     ("submission_artifact_manifest", "scripts/audit_submission_artifact_manifest.py"),
 ]
 
@@ -119,6 +120,7 @@ def build_status() -> dict[str, Any]:
     ready_real_runner = read_json(RUNS_DIR / "ready_real_runner_template_audit.json")
     authorized_archive = read_json(RUNS_DIR / "authorized_checkpoint_archive_template_audit.json")
     handoff = read_json(RUNS_DIR / "submission_handoff_docs_audit.json")
+    dashboard_gui_access = read_json(RUNS_DIR / "dashboard_gui_access_packet.json")
     secret_scan = read_json(RUNS_DIR / "plaintext_secret_scan.json")
     action_packet = read_json(RUNS_DIR / "next_user_action_packet.json")
     web_form_packet = read_json(RUNS_DIR / "web_form_field_packet.json")
@@ -160,6 +162,7 @@ def build_status() -> dict[str, Any]:
                 ready_real_runner,
                 authorized_archive,
                 handoff,
+                dashboard_gui_access,
                 secret_scan,
                 action_packet,
                 web_form_packet,
@@ -216,7 +219,8 @@ def build_status() -> dict[str, Any]:
         or bool(baseline_local_env_smoke.get("link_values_printed"))
         or bool(baseline_final_handoff.get("link_values_printed"))
         or bool(baseline_final_handoff_rehearsal.get("link_values_printed"))
-        or bool(route_aware_blockers.get("link_values_printed")),
+        or bool(route_aware_blockers.get("link_values_printed"))
+        or bool(dashboard_gui_access.get("link_values_printed")),
         "secret_values_printed": bool(secret_scan.get("secret_values_printed"))
         or bool(artifact_manifest.get("secret_values_printed"))
         or bool(notebook_structure.get("secret_values_printed"))
@@ -248,7 +252,8 @@ def build_status() -> dict[str, Any]:
         or bool(baseline_local_env_smoke.get("secret_values_printed"))
         or bool(baseline_final_handoff.get("secret_values_printed"))
         or bool(baseline_final_handoff_rehearsal.get("secret_values_printed"))
-        or bool(route_aware_blockers.get("secret_values_printed")),
+        or bool(route_aware_blockers.get("secret_values_printed"))
+        or bool(dashboard_gui_access.get("secret_values_printed")),
     }
     contact_flags = {
         "platform_contacted": any(
@@ -268,6 +273,7 @@ def build_status() -> dict[str, Any]:
                 ready_real_runner,
                 authorized_archive,
                 handoff,
+                dashboard_gui_access,
                 secret_scan,
                 action_packet,
                 web_form_packet,
@@ -309,6 +315,7 @@ def build_status() -> dict[str, Any]:
                 ready_real_runner,
                 authorized_archive,
                 handoff,
+                dashboard_gui_access,
                 secret_scan,
                 action_packet,
                 web_form_packet,
@@ -337,7 +344,8 @@ def build_status() -> dict[str, Any]:
         "download_host_contacted": bool(
             link_download.get("verification", {}).get("download_host_contacted")
         )
-        or bool(baseline_readonly_entry.get("contact_flags", {}).get("download_host_contacted")),
+        or bool(baseline_readonly_entry.get("contact_flags", {}).get("download_host_contacted"))
+        or bool(dashboard_gui_access.get("contact_flags", {}).get("download_host_contacted")),
     }
     readiness_blocking = readiness.get("blocking", [])
     link_blocking = link_intake.get("current_env", {}).get("blocking", [])
@@ -470,6 +478,11 @@ def build_status() -> dict[str, Any]:
             "excluded_from_readonly_preflight",
             [],
         ),
+        "dashboard_gui_access_packet_passed": dashboard_gui_access.get("passed") is True,
+        "dashboard_gui_access_html_path": dashboard_gui_access.get("gui_html_path"),
+        "dashboard_gui_access_card_count": dashboard_gui_access.get("dashboard_card_count"),
+        "dashboard_gui_access_browser_blocked": dashboard_gui_access.get("browser_visual_blocked_by_policy"),
+        "dashboard_gui_access_screenshot_created": dashboard_gui_access.get("screenshot_created"),
         "baseline_requires_checkpoint_link": route_aware_blockers.get("baseline_requires_checkpoint_link"),
         "baseline_requires_checkpoint_upload": route_aware_blockers.get("baseline_requires_checkpoint_upload"),
         "chinese_utf8_artifact_audit_passed": chinese_utf8.get("passed") is True,
@@ -745,6 +758,11 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         f"- baseline 只读预检是否需要真实 runner 强确认：`{status['baseline_readonly_preflight_entry_real_confirm_required_for_readonly']}`。",
         f"- baseline 真实提交是否仍需要强确认：`{status['baseline_readonly_preflight_entry_real_confirm_required_for_submission']}`。",
         f"- baseline 只读预检目标确认值：`{status['baseline_readonly_preflight_entry_target_confirmation_value']}`。",
+        f"- GUI 展示入口审计：`{status['dashboard_gui_access_packet_passed']}`。",
+        f"- GUI HTML 路径：`{status['dashboard_gui_access_html_path']}`。",
+        f"- GUI 卡片数量：`{status['dashboard_gui_access_card_count']}`。",
+        f"- 浏览器 file URL 预览是否被策略阻止：`{status['dashboard_gui_access_browser_blocked']}`。",
+        f"- 本轮是否生成 GUI 截图：`{status['dashboard_gui_access_screenshot_created']}`。",
         f"- baseline 是否需要 checkpoint link：`{status['baseline_requires_checkpoint_link']}`。",
         f"- baseline 是否需要 checkpoint upload：`{status['baseline_requires_checkpoint_upload']}`。",
         f"- 中文 UTF-8 产物审计：`{status['chinese_utf8_artifact_audit_passed']}`。",

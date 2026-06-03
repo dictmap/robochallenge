@@ -1,0 +1,61 @@
+{
+  "kind": "dashboard_http_static_preview",
+  "passed": true,
+  "gui_html_path": "reports/submission_status_dashboard.html",
+  "http_preview_url_shape": "http://127.0.0.1:<ephemeral>/submission_status_dashboard.html",
+  "http_preview_host": "127.0.0.1",
+  "http_preview_port": 33909,
+  "http_status_code": 200,
+  "http_content_type": "text/html",
+  "http_body_length": 21111,
+  "http_h1_text": "RoboChallenge pi0.5 提交状态面板",
+  "http_card_count": 40,
+  "http_done_count": 34,
+  "http_blocked_count": 5,
+  "http_watch_count": 1,
+  "dashboard_card_count": 40,
+  "dashboard_done_count": 34,
+  "dashboard_blocked_count": 5,
+  "dashboard_watch_count": 1,
+  "external_href_count": 0,
+  "external_hrefs": [],
+  "screenshot_created": false,
+  "screenshot_boundary": "本审计验证 HTTP/HTML 可访问性；截图由 Browser 工具另行尝试，失败时不伪造截图。",
+  "evidence": {
+    "dashboard_json_passed": true,
+    "dashboard_html_exists": true,
+    "http_host_loopback": true,
+    "http_status_200": true,
+    "http_content_type_html": true,
+    "http_body_nonempty": true,
+    "http_h1_matches": true,
+    "http_lang_zh_cn": true,
+    "http_card_count_matches_dashboard": true,
+    "http_done_count_matches_dashboard": true,
+    "http_blocked_count_matches_dashboard": true,
+    "http_watch_count_matches_dashboard": true,
+    "http_ready_false_visible": true,
+    "http_no_external_hrefs": true,
+    "secret_scan_clean": true
+  },
+  "leak_flags": {
+    "credentials_printed": false,
+    "link_values_printed": false,
+    "secret_values_printed": false
+  },
+  "contact_flags": {
+    "platform_contacted": false,
+    "uploads_performed": false,
+    "download_host_contacted": false,
+    "external_network_contacted": false
+  },
+  "platform_contacted": false,
+  "uploads_performed": false,
+  "credentials_read": false,
+  "credentials_printed": false,
+  "link_values_printed": false,
+  "secret_values_printed": false,
+  "blocking": [
+    "HTTP GUI 静态预览已通过；dashboard 可经 127.0.0.1 临时服务打开。"
+  ]
+}

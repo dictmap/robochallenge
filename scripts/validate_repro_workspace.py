@@ -47,6 +47,7 @@ REQUIRED = [
     "reports/authorized_submission_sequence_audit.md",
     "reports/submission_status_dashboard.html",
     "reports/submission_dashboard_links_audit.md",
+    "reports/dashboard_http_static_preview.md",
     "reports/dashboard_gui_access_packet.md",
     "reports/checkpoint_upload_channels_audit.md",
     "reports/real_submission_readiness.md",
@@ -119,6 +120,7 @@ REQUIRED = [
     "runs/authorized_submission_sequence_audit.json",
     "runs/submission_status_dashboard.json",
     "runs/submission_dashboard_links_audit.json",
+    "runs/dashboard_http_static_preview.json",
     "runs/dashboard_gui_access_packet.json",
     "runs/checkpoint_upload_channels_audit.json",
     "runs/real_submission_readiness.json",
@@ -192,6 +194,7 @@ REQUIRED = [
     "scripts/audit_authorized_submission_sequence.py",
     "scripts/render_submission_status_dashboard.py",
     "scripts/audit_submission_dashboard_links.py",
+    "scripts/audit_dashboard_http_static_preview.py",
     "scripts/render_dashboard_gui_access_packet.py",
     "scripts/audit_checkpoint_upload_channels.py",
     "scripts/audit_real_submission_readiness.py",
@@ -1272,6 +1275,40 @@ def main() -> int:
         ]
     ):
         print("GUI dashboard 链接审计未通过")
+        return 1
+    dashboard_http = json.loads((ROOT / "runs/dashboard_http_static_preview.json").read_text(encoding="utf-8"))
+    dashboard_http_evidence = dashboard_http.get("evidence", {})
+    dashboard_http_leaks = dashboard_http.get("leak_flags", {})
+    dashboard_http_contacts = dashboard_http.get("contact_flags", {})
+    if not all(
+        [
+            dashboard_http.get("kind") == "dashboard_http_static_preview",
+            dashboard_http.get("passed"),
+            dashboard_http.get("gui_html_path") == "reports/submission_status_dashboard.html",
+            dashboard_http.get("http_preview_host") == "127.0.0.1",
+            dashboard_http.get("http_preview_url_shape")
+            == "http://127.0.0.1:<ephemeral>/submission_status_dashboard.html",
+            dashboard_http.get("http_status_code") == 200,
+            "text/html" in dashboard_http.get("http_content_type", ""),
+            dashboard_http.get("http_h1_text") == "RoboChallenge pi0.5 提交状态面板",
+            dashboard_http.get("http_card_count") == dashboard.get("card_count"),
+            dashboard_http.get("http_done_count") == dashboard.get("done_count"),
+            dashboard_http.get("http_blocked_count") == dashboard.get("blocked_count"),
+            dashboard_http.get("http_watch_count") == dashboard.get("watch_count"),
+            dashboard_http.get("external_href_count") == 0,
+            dashboard_http.get("screenshot_created") is False,
+            all(dashboard_http_evidence.values()),
+            not any(dashboard_http_leaks.values()),
+            not any(dashboard_http_contacts.values()),
+            dashboard_http.get("platform_contacted") is False,
+            dashboard_http.get("uploads_performed") is False,
+            dashboard_http.get("credentials_read") is False,
+            dashboard_http.get("credentials_printed") is False,
+            dashboard_http.get("link_values_printed") is False,
+            dashboard_http.get("secret_values_printed") is False,
+        ]
+    ):
+        print("GUI dashboard HTTP 静态预览审计未通过")
         return 1
     dashboard_gui = json.loads((ROOT / "runs/dashboard_gui_access_packet.json").read_text(encoding="utf-8"))
     dashboard_gui_evidence = dashboard_gui.get("evidence", {})
@@ -3013,6 +3050,7 @@ def main() -> int:
         "baseline_final_handoff_packet",
         "baseline_final_handoff_rehearsal",
         "route_aware_submission_blockers",
+        "dashboard_http_static_preview",
         "dashboard_gui_access_packet",
         "submission_artifact_manifest",
     }
@@ -3088,6 +3126,11 @@ def main() -> int:
             preflight.get("readonly_preflight_no_upload") is True,
             preflight.get("readonly_preflight_no_link") is True,
             preflight.get("readonly_preflight_real_confirm_required_for_readonly") is False,
+            preflight.get("dashboard_http_static_preview_passed") is True,
+            preflight.get("dashboard_http_static_preview_url_shape")
+            == "http://127.0.0.1:<ephemeral>/submission_status_dashboard.html",
+            preflight.get("dashboard_http_static_preview_card_count") == dashboard.get("card_count"),
+            preflight.get("dashboard_http_static_preview_external_href_count") == 0,
             preflight.get("dashboard_gui_access_packet_passed") is True,
             preflight.get("dashboard_gui_access_html_path") == "reports/submission_status_dashboard.html",
             preflight.get("dashboard_gui_access_card_count") == dashboard.get("card_count"),

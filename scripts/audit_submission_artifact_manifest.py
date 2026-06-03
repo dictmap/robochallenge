@@ -87,6 +87,7 @@ REQUIRED_ARTIFACTS = [
     "reports/plaintext_secret_scan.md",
     "reports/submission_status_dashboard.html",
     "reports/submission_dashboard_links_audit.md",
+    "reports/dashboard_http_static_preview.md",
     "reports/dashboard_gui_access_packet.md",
     "scripts/render_next_user_action_packet.py",
     "scripts/render_web_form_field_packet.py",
@@ -117,6 +118,7 @@ REQUIRED_ARTIFACTS = [
     "scripts/audit_historical_notebook_checkpoint_outputs.py",
     "scripts/audit_chinese_utf8_artifacts.py",
     "scripts/audit_authorized_execution_checklist.py",
+    "scripts/audit_dashboard_http_static_preview.py",
     "scripts/render_dashboard_gui_access_packet.py",
 ]
 
@@ -246,6 +248,7 @@ def build_status() -> dict[str, Any]:
     env_template = read_json(RUNS_DIR / "submission_env_template_audit.json")
     secret_scan = read_json(RUNS_DIR / "plaintext_secret_scan.json")
     dashboard_links = read_json(RUNS_DIR / "submission_dashboard_links_audit.json")
+    dashboard_http_preview = read_json(RUNS_DIR / "dashboard_http_static_preview.json")
     dashboard_gui_access = read_json(RUNS_DIR / "dashboard_gui_access_packet.json")
     web_form_route_blocking_names = set(web_form_packet.get("recommended_route_blocking_names", []))
 
@@ -688,6 +691,13 @@ def build_status() -> dict[str, Any]:
         "dashboard_links_all_local": dashboard_links.get("nonlocal_report_count") == 0,
         "dashboard_links_html_hrefs_rendered": dashboard_links.get("missing_html_href_count") == 0,
         "dashboard_links_card_count": dashboard_links.get("card_count", 0) >= 38,
+        "dashboard_http_static_preview_passed": dashboard_http_preview.get("passed") is True,
+        "dashboard_http_static_preview_loopback": dashboard_http_preview.get("http_preview_host") == "127.0.0.1",
+        "dashboard_http_static_preview_card_count_matches": dashboard_http_preview.get("evidence", {}).get(
+            "http_card_count_matches_dashboard"
+        )
+        is True,
+        "dashboard_http_static_preview_no_external_hrefs": dashboard_http_preview.get("external_href_count") == 0,
         "dashboard_gui_access_packet_passed": dashboard_gui_access.get("passed") is True,
         "dashboard_gui_access_html_path_exact": dashboard_gui_access.get("gui_html_path")
         == "reports/submission_status_dashboard.html",
@@ -738,6 +748,7 @@ def build_status() -> dict[str, Any]:
                 target_confirmation_gate,
                 readiness,
                 env_template,
+                dashboard_http_preview,
                 dashboard_gui_access,
             ]
         ),
@@ -772,6 +783,7 @@ def build_status() -> dict[str, Any]:
         or bool(route_aware_blockers.get("link_values_printed"))
         or bool(target_confirmation.get("link_values_printed"))
         or bool(target_confirmation_gate.get("link_values_printed"))
+        or bool(dashboard_http_preview.get("link_values_printed"))
         or bool(dashboard_gui_access.get("link_values_printed")),
         "secret_values_printed": bool(secret_scan.get("secret_values_printed"))
         or bool(jupyter_input.get("secret_values_printed"))
@@ -800,6 +812,7 @@ def build_status() -> dict[str, Any]:
         or bool(route_aware_blockers.get("secret_values_printed"))
         or bool(target_confirmation.get("secret_values_printed"))
         or bool(target_confirmation_gate.get("secret_values_printed"))
+        or bool(dashboard_http_preview.get("secret_values_printed"))
         or bool(dashboard_gui_access.get("secret_values_printed")),
     }
     contact_flags = {
@@ -841,6 +854,7 @@ def build_status() -> dict[str, Any]:
                 readiness,
                 env_template,
                 secret_scan,
+                dashboard_http_preview,
                 dashboard_gui_access,
             ]
         ),
@@ -882,13 +896,18 @@ def build_status() -> dict[str, Any]:
                 readiness,
                 env_template,
                 secret_scan,
+                dashboard_http_preview,
                 dashboard_gui_access,
             ]
         ),
         "download_host_contacted": bool(preflight.get("contact_flags", {}).get("download_host_contacted"))
         or bool(baseline_readonly_entry.get("contact_flags", {}).get("download_host_contacted"))
         or bool(readonly_preflight_parity.get("contact_flags", {}).get("download_host_contacted"))
+        or bool(dashboard_http_preview.get("contact_flags", {}).get("download_host_contacted"))
         or bool(dashboard_gui_access.get("contact_flags", {}).get("download_host_contacted")),
+        "external_network_contacted": bool(
+            dashboard_http_preview.get("contact_flags", {}).get("external_network_contacted")
+        ),
     }
     blocking = []
     if missing_required:

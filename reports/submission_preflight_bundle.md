@@ -45,6 +45,10 @@
 - shell 只读预检入口：`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_authorized_preflight_template.sh`。
 - Jupyter 只读预检入口：`source submission/robochallenge_env.local.sh; bash submission/run_authorized_preflight_template.sh`。
 - 共同 wrapper：`submission/run_authorized_preflight_template.sh`。
+- GUI HTTP 静态预览审计：`True`。
+- GUI HTTP 预览地址形状：`http://127.0.0.1:<ephemeral>/submission_status_dashboard.html`。
+- GUI HTTP 预览卡片数量：`40`。
+- GUI HTTP 外部链接数量：`0`。
 - GUI 展示入口审计：`True`。
 - GUI HTML 路径：`reports/submission_status_dashboard.html`。
 - GUI 卡片数量：`40`。
@@ -53,7 +57,7 @@
 - baseline 是否需要 checkpoint link：`False`。
 - baseline 是否需要 checkpoint upload：`False`。
 - 中文 UTF-8 产物审计：`True`。
-- 中文 UTF-8 扫描文件数：`164`。
+- 中文 UTF-8 扫描文件数：`166`。
 - 中文 UTF-8 解码错误数：`0`。
 - 中文乱码哨兵命中数：`0`。
 - baseline dry-run gate：`True`。
@@ -188,6 +192,7 @@
 - `baseline_final_handoff_packet`：returncode=`0`，passed=`True`。
 - `baseline_final_handoff_rehearsal`：returncode=`0`，passed=`True`。
 - `submission_handoff_docs`：returncode=`0`，passed=`True`。
+- `dashboard_http_static_preview`：returncode=`0`，passed=`True`。
 - `dashboard_gui_access_packet`：returncode=`0`，passed=`True`。
 - `submission_artifact_manifest`：returncode=`0`，passed=`True`。
 

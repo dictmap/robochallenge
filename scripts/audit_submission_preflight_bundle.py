@@ -57,6 +57,7 @@ SUBCOMMANDS = [
     ("baseline_final_handoff_packet", "scripts/render_baseline_final_handoff_packet.py"),
     ("baseline_final_handoff_rehearsal", "scripts/render_baseline_final_handoff_rehearsal.py"),
     ("submission_handoff_docs", "scripts/audit_submission_handoff_docs.py"),
+    ("dashboard_http_static_preview", "scripts/audit_dashboard_http_static_preview.py"),
     ("dashboard_gui_access_packet", "scripts/render_dashboard_gui_access_packet.py"),
     ("submission_artifact_manifest", "scripts/audit_submission_artifact_manifest.py"),
 ]
@@ -121,6 +122,7 @@ def build_status() -> dict[str, Any]:
     ready_real_runner = read_json(RUNS_DIR / "ready_real_runner_template_audit.json")
     authorized_archive = read_json(RUNS_DIR / "authorized_checkpoint_archive_template_audit.json")
     handoff = read_json(RUNS_DIR / "submission_handoff_docs_audit.json")
+    dashboard_http_preview = read_json(RUNS_DIR / "dashboard_http_static_preview.json")
     dashboard_gui_access = read_json(RUNS_DIR / "dashboard_gui_access_packet.json")
     secret_scan = read_json(RUNS_DIR / "plaintext_secret_scan.json")
     action_packet = read_json(RUNS_DIR / "next_user_action_packet.json")
@@ -164,6 +166,7 @@ def build_status() -> dict[str, Any]:
                 ready_real_runner,
                 authorized_archive,
                 handoff,
+                dashboard_http_preview,
                 dashboard_gui_access,
                 secret_scan,
                 action_packet,
@@ -224,6 +227,7 @@ def build_status() -> dict[str, Any]:
         or bool(baseline_final_handoff.get("link_values_printed"))
         or bool(baseline_final_handoff_rehearsal.get("link_values_printed"))
         or bool(route_aware_blockers.get("link_values_printed"))
+        or bool(dashboard_http_preview.get("link_values_printed"))
         or bool(dashboard_gui_access.get("link_values_printed")),
         "secret_values_printed": bool(secret_scan.get("secret_values_printed"))
         or bool(artifact_manifest.get("secret_values_printed"))
@@ -258,6 +262,7 @@ def build_status() -> dict[str, Any]:
         or bool(baseline_final_handoff.get("secret_values_printed"))
         or bool(baseline_final_handoff_rehearsal.get("secret_values_printed"))
         or bool(route_aware_blockers.get("secret_values_printed"))
+        or bool(dashboard_http_preview.get("secret_values_printed"))
         or bool(dashboard_gui_access.get("secret_values_printed")),
     }
     contact_flags = {
@@ -278,6 +283,7 @@ def build_status() -> dict[str, Any]:
                 ready_real_runner,
                 authorized_archive,
                 handoff,
+                dashboard_http_preview,
                 dashboard_gui_access,
                 secret_scan,
                 action_packet,
@@ -321,6 +327,7 @@ def build_status() -> dict[str, Any]:
                 ready_real_runner,
                 authorized_archive,
                 handoff,
+                dashboard_http_preview,
                 dashboard_gui_access,
                 secret_scan,
                 action_packet,
@@ -353,7 +360,11 @@ def build_status() -> dict[str, Any]:
         )
         or bool(baseline_readonly_entry.get("contact_flags", {}).get("download_host_contacted"))
         or bool(readonly_preflight_parity.get("contact_flags", {}).get("download_host_contacted"))
+        or bool(dashboard_http_preview.get("contact_flags", {}).get("download_host_contacted"))
         or bool(dashboard_gui_access.get("contact_flags", {}).get("download_host_contacted")),
+        "external_network_contacted": bool(
+            dashboard_http_preview.get("contact_flags", {}).get("external_network_contacted")
+        ),
     }
     readiness_blocking = readiness.get("blocking", [])
     link_blocking = link_intake.get("current_env", {}).get("blocking", [])
@@ -497,6 +508,10 @@ def build_status() -> dict[str, Any]:
         "readonly_preflight_real_confirm_required_for_readonly": readonly_preflight_parity.get(
             "real_runner_confirm_required_for_readonly_preflight"
         ),
+        "dashboard_http_static_preview_passed": dashboard_http_preview.get("passed") is True,
+        "dashboard_http_static_preview_url_shape": dashboard_http_preview.get("http_preview_url_shape"),
+        "dashboard_http_static_preview_card_count": dashboard_http_preview.get("http_card_count"),
+        "dashboard_http_static_preview_external_href_count": dashboard_http_preview.get("external_href_count"),
         "dashboard_gui_access_packet_passed": dashboard_gui_access.get("passed") is True,
         "dashboard_gui_access_html_path": dashboard_gui_access.get("gui_html_path"),
         "dashboard_gui_access_card_count": dashboard_gui_access.get("dashboard_card_count"),
@@ -782,6 +797,10 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         f"- shell 只读预检入口：`{status['readonly_preflight_shell_command']}`。",
         f"- Jupyter 只读预检入口：`{status['readonly_preflight_jupyter_command']}`。",
         f"- 共同 wrapper：`{status['readonly_preflight_wrapper_template']}`。",
+        f"- GUI HTTP 静态预览审计：`{status['dashboard_http_static_preview_passed']}`。",
+        f"- GUI HTTP 预览地址形状：`{status['dashboard_http_static_preview_url_shape']}`。",
+        f"- GUI HTTP 预览卡片数量：`{status['dashboard_http_static_preview_card_count']}`。",
+        f"- GUI HTTP 外部链接数量：`{status['dashboard_http_static_preview_external_href_count']}`。",
         f"- GUI 展示入口审计：`{status['dashboard_gui_access_packet_passed']}`。",
         f"- GUI HTML 路径：`{status['dashboard_gui_access_html_path']}`。",
         f"- GUI 卡片数量：`{status['dashboard_gui_access_card_count']}`。",

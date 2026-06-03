@@ -12,6 +12,13 @@
   "browser_visual_attempted": true,
   "browser_visual_blocked_by_policy": true,
   "browser_visual_policy_boundary": "in-app browser blocked local file URL preview; this packet does not bypass it",
+  "http_static_preview_passed": true,
+  "http_static_preview_url_shape": "http://127.0.0.1:<ephemeral>/submission_status_dashboard.html",
+  "http_static_preview_card_count": 40,
+  "http_static_preview_done_count": 34,
+  "http_static_preview_blocked_count": 5,
+  "http_static_preview_watch_count": 1,
+  "http_static_preview_external_href_count": 0,
   "screenshot_created": false,
   "screenshot_path": "",
   "evidence": {
@@ -27,6 +34,10 @@
     "dashboard_links_all_reports_exist": true,
     "dashboard_links_all_href_rendered": true,
     "dashboard_links_no_duplicate_titles": true,
+    "http_static_preview_passed": true,
+    "http_static_preview_loopback": true,
+    "http_static_preview_card_count_matches": true,
+    "http_static_preview_no_external_hrefs": true,
     "secret_scan_clean": true
   },
   "leak_flags": {
@@ -37,7 +48,8 @@
   "contact_flags": {
     "platform_contacted": false,
     "uploads_performed": false,
-    "download_host_contacted": false
+    "download_host_contacted": false,
+    "external_network_contacted": false
   },
   "platform_contacted": false,
   "uploads_performed": false,
@@ -46,6 +58,6 @@
   "link_values_printed": false,
   "secret_values_printed": false,
   "blocking": [
-    "GUI HTML 展示入口已固化；本轮 in-app browser 的 file URL 预览被工具策略阻止，未绕过该限制，也未生成截图。"
+    "GUI HTML 展示入口已固化，且 HTTP loopback 静态预览已通过；Browser 截图接口本轮仍未生成截图。"
   ]
 }

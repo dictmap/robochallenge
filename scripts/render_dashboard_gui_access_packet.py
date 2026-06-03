@@ -37,6 +37,7 @@ def read_json(path: Path) -> dict[str, Any]:
 def build_status() -> dict[str, Any]:
     dashboard = read_json(RUNS_DIR / "submission_status_dashboard.json")
     dashboard_links = read_json(RUNS_DIR / "submission_dashboard_links_audit.json")
+    http_preview = read_json(RUNS_DIR / "dashboard_http_static_preview.json")
     secret_scan = read_json(RUNS_DIR / "plaintext_secret_scan.json")
     html_exists = GUI_HTML.exists() and GUI_HTML.is_file()
     html_text = GUI_HTML.read_text(encoding="utf-8") if html_exists else ""
@@ -53,25 +54,34 @@ def build_status() -> dict[str, Any]:
         "dashboard_links_all_reports_exist": dashboard_links.get("missing_report_count") == 0,
         "dashboard_links_all_href_rendered": dashboard_links.get("missing_html_href_count") == 0,
         "dashboard_links_no_duplicate_titles": dashboard_links.get("duplicate_title_count") == 0,
+        "http_static_preview_passed": http_preview.get("passed") is True,
+        "http_static_preview_loopback": http_preview.get("http_preview_host") == "127.0.0.1",
+        "http_static_preview_card_count_matches": http_preview.get("evidence", {}).get(
+            "http_card_count_matches_dashboard"
+        )
+        is True,
+        "http_static_preview_no_external_hrefs": http_preview.get("external_href_count") == 0,
         "secret_scan_clean": secret_scan.get("passed") is True and secret_scan.get("hit_count") == 0,
     }
     leak_flags = {
         "credentials_printed": any(
-            bool(item.get("credentials_printed")) for item in [dashboard, dashboard_links, secret_scan]
+            bool(item.get("credentials_printed")) for item in [dashboard, dashboard_links, http_preview, secret_scan]
         ),
         "link_values_printed": any(
-            bool(item.get("link_values_printed")) for item in [dashboard, dashboard_links, secret_scan]
+            bool(item.get("link_values_printed")) for item in [dashboard, dashboard_links, http_preview, secret_scan]
         ),
         "secret_values_printed": any(
-            bool(item.get("secret_values_printed")) for item in [dashboard, dashboard_links, secret_scan]
+            bool(item.get("secret_values_printed")) for item in [dashboard, dashboard_links, http_preview, secret_scan]
         ),
     }
     contact_flags = {
-        "platform_contacted": any(bool(item.get("platform_contacted")) for item in [dashboard, dashboard_links]),
-        "uploads_performed": any(bool(item.get("uploads_performed")) for item in [dashboard, dashboard_links]),
+        "platform_contacted": any(bool(item.get("platform_contacted")) for item in [dashboard, dashboard_links, http_preview]),
+        "uploads_performed": any(bool(item.get("uploads_performed")) for item in [dashboard, dashboard_links, http_preview]),
         "download_host_contacted": any(
-            bool(item.get("contact_flags", {}).get("download_host_contacted")) for item in [dashboard, dashboard_links]
+            bool(item.get("contact_flags", {}).get("download_host_contacted"))
+            for item in [dashboard, dashboard_links, http_preview]
         ),
+        "external_network_contacted": bool(http_preview.get("contact_flags", {}).get("external_network_contacted")),
     }
     blocking = []
     for name, ok in evidence.items():
@@ -83,7 +93,7 @@ def build_status() -> dict[str, Any]:
         blocking.append("GUI 展示入口证据显示曾连接平台、上传或接触下载 host。")
     if not blocking:
         blocking.append(
-            "GUI HTML 展示入口已固化；本轮 in-app browser 的 file URL 预览被工具策略阻止，未绕过该限制，也未生成截图。"
+            "GUI HTML 展示入口已固化，且 HTTP loopback 静态预览已通过；Browser 截图接口本轮仍未生成截图。"
         )
 
     passed = bool(all(evidence.values()) and not any(leak_flags.values()) and not any(contact_flags.values()))
@@ -101,6 +111,13 @@ def build_status() -> dict[str, Any]:
         "browser_visual_attempted": True,
         "browser_visual_blocked_by_policy": True,
         "browser_visual_policy_boundary": "in-app browser blocked local file URL preview; this packet does not bypass it",
+        "http_static_preview_passed": http_preview.get("passed") is True,
+        "http_static_preview_url_shape": http_preview.get("http_preview_url_shape", ""),
+        "http_static_preview_card_count": http_preview.get("http_card_count"),
+        "http_static_preview_done_count": http_preview.get("http_done_count"),
+        "http_static_preview_blocked_count": http_preview.get("http_blocked_count"),
+        "http_static_preview_watch_count": http_preview.get("http_watch_count"),
+        "http_static_preview_external_href_count": http_preview.get("external_href_count"),
         "screenshot_created": False,
         "screenshot_path": "",
         "evidence": evidence,
@@ -129,6 +146,10 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         f"- 来源数量：`{status['dashboard_source_count']}`。",
         f"- 已完成/待授权/关注：`{status['dashboard_done_count']} / {status['dashboard_blocked_count']} / {status['dashboard_watch_count']}`。",
         f"- 是否已满足真实提交：`{status['ready_for_real_submission']}`。",
+        f"- HTTP loopback 静态预览：`{status['http_static_preview_passed']}`。",
+        f"- HTTP 预览地址形状：`{status['http_static_preview_url_shape']}`。",
+        f"- HTTP 预览卡片数量：`{status['http_static_preview_card_count']}`。",
+        f"- HTTP 外部链接数量：`{status['http_static_preview_external_href_count']}`。",
         "",
         "## 浏览器边界",
         "",
@@ -136,6 +157,16 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         f"- 是否被浏览器策略阻止：`{status['browser_visual_blocked_by_policy']}`。",
         f"- 是否生成截图：`{status['screenshot_created']}`。",
         f"- 边界说明：`{status['browser_visual_policy_boundary']}`。",
+        "",
+        "## HTTP 打开方式",
+        "",
+        "```bash",
+        "python3 -m http.server 18085 --bind 127.0.0.1 --directory reports",
+        "```",
+        "",
+        "```text",
+        "http://127.0.0.1:18085/submission_status_dashboard.html",
+        "```",
         "",
         "## 证据",
         "",

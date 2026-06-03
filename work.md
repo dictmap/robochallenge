@@ -2621,3 +2621,27 @@
 ### 下一步
 - P0：提交并推送本轮 Jupyter/shell 只读预检入口一致性审计。
 - P1：用户若确认 `CONFIRM_TABLE30V2_ALOHA_BASELINE` 并提供 token/submission id，先跑只读预检入口；真实 runner 仍等待用户明确授权。
+## 2026-06-03 第九十五轮：GUI HTTP 静态预览闭环
+
+### 已完成
+- 新增 `scripts/audit_dashboard_http_static_preview.py`，用本机 `127.0.0.1` 临时 HTTP 服务打开 `reports/submission_status_dashboard.html`，验证 GUI dashboard 可通过 HTTP 方式访问。
+- 审计覆盖 HTTP 200、`text/html`、`zh-CN`、H1 标题、卡片数量、done/blocked/watch 数量、无外部链接、无平台接触、无上传、无凭据/链接/secret 明文泄漏。
+- 更新 `scripts/render_dashboard_gui_access_packet.py`，把 HTTP loopback 预览结果写入 GUI 展示入口包；保留 Browser 截图接口未成功的边界，不伪造截图。
+- 更新 `scripts/audit_submission_preflight_bundle.py`、`scripts/audit_submission_artifact_manifest.py` 和 `scripts/validate_repro_workspace.py`，把 HTTP GUI 静态预览纳入总预检、manifest 和总 validator。
+
+### 验证结果
+- Linux 端已通过：`py_compile`、`audit_dashboard_http_static_preview.py`、`render_dashboard_gui_access_packet.py`、`audit_submission_preflight_bundle.py`、`audit_submission_artifact_manifest.py`、`render_submission_status_dashboard.py`、`audit_submission_dashboard_links.py` 和 `validate_repro_workspace.py`。
+- `runs/dashboard_http_static_preview.json` 实测 `passed=true`，`http_card_count=40`，`external_href_count=0`，`platform_contacted=false`，`uploads_performed=false`。
+- `runs/dashboard_gui_access_packet.json` 实测 `passed=true`，`http_static_preview_passed=true`，`http_static_preview_card_count=40`，`screenshot_created=false`。
+- `runs/submission_preflight_bundle.json` 实测 `passed=true`，`dashboard_http_static_preview_passed=true`，`dashboard_http_static_preview_external_href_count=0`。
+- `validate_repro_workspace.py` 最终输出：`工作区最低交接材料检查通过`，且真实提交前预检汇总、manifest、GUI 展示入口包均通过。
+
+### 当前边界
+- 本轮只启动本机 loopback HTTP 服务；没有连接 RoboChallenge 平台，没有上传 checkpoint，没有生成 checkpoint tar，也没有启动真实 runner。
+- 没有读取真实 `ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、checkpoint link 或 `submission/robochallenge_env.local.sh` 内容。
+- Browser DOM 已能打开 `http://127.0.0.1:18085/submission_status_dashboard.html` 并看到 H1 与 40 张卡片；截图接口仍超时，因此本轮仍不声明有截图产物。
+- baseline 官方 ALOHA 路线仍阻塞在 5 项用户输入：目标确认、token、submission id、`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline` 和真实 runner 强确认。
+
+### 下一步
+- P0：提交并推送本轮 GUI HTTP 静态预览闭环。
+- P1：用户若确认 `CONFIRM_TABLE30V2_ALOHA_BASELINE` 并提供 token/submission id，先跑只读预检入口；真实 runner 仍必须等待用户明确授权。

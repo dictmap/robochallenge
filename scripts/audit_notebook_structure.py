@@ -57,6 +57,10 @@ REQUIRED_MARKERS = [
     "RUN_JUPYTER_BASELINE_REAL_RUNNER",
     "scripts/audit_jupyter_final_handoff_template.py",
     "scripts/render_baseline_final_handoff_packet.py",
+    "第 47 节：GUI 首屏截图证据",
+    "RUN_DASHBOARD_GUI_SCREENSHOT_PACKET",
+    "reports/submission_status_dashboard_browser.png",
+    "scripts/render_dashboard_gui_access_packet.py",
 ]
 
 

@@ -14,8 +14,8 @@
 ## 材料清单
 
 - `README.md`：exists=`True`，tracked=`True`，size=`19168`，sha256=`58dff8b9599520d8de819ab2dd636d7e1d46962e276499858d6f51f4151f620c`。
-- `work.md`：exists=`True`，tracked=`True`，size=`236995`，sha256=`813380f18fb5fae7be1e379e4e74cfc94166b9a14fb764453720ebe306ec05ad`。
-- `notebooks/robochallenge_pi05_submit_cn.ipynb`：exists=`True`，tracked=`True`，size=`98951`，sha256=`aa9c8d8b97f6cb05dce400f0fc1068df7b60ad3719ce8c099abdc354f294d607`。
+- `work.md`：exists=`True`，tracked=`True`，size=`239071`，sha256=`46e6dd0661f355d242392114e89718fb67480669d2fd086090ef4239a84e3285`。
+- `notebooks/robochallenge_pi05_submit_cn.ipynb`：exists=`True`，tracked=`True`，size=`101630`，sha256=`b57f3b8aec83262cb0c7de87388d1bc757210775913588f64c18e976fea9a41c`。
 - `submission/README.md`：exists=`True`，tracked=`True`，size=`1966`，sha256=`9661c643ac3a13348b1cdd49a90a200ed9238d063960a4d9c3edad41f7464251`。
 - `submission/REAL_SUBMISSION_HANDOFF.md`：exists=`True`，tracked=`True`，size=`9545`，sha256=`834d5199a5334444b016a352c4698284d9060131ba7794ec5c079514780b0744`。
 - `submission/AUTHORIZED_SUBMISSION_SEQUENCE.md`：exists=`True`，tracked=`True`，size=`8046`，sha256=`ef96ca10a83f67c9bbcfceb54c7f17469d5371d4ff4598e1ba959e879599aa60`。
@@ -43,7 +43,7 @@
 - `reports/real_submission_readiness.md`：exists=`True`，tracked=`True`，size=`1522`，sha256=`ef3d4117b5790c8c1d7283e8d39c3fdd5f907eb57670a61602121ffc6e6bdf4c`。
 - `reports/real_submission_readiness_scenarios.md`：exists=`True`，tracked=`True`，size=`1152`，sha256=`682ba066efc018aaeee94e4064afdbed25a4bab356fedf55ba6562b9889ffb0a`。
 - `reports/submission_env_template_audit.md`：exists=`True`，tracked=`True`，size=`1217`，sha256=`f4c3d723fbee3fea46fddb13a9c9fe2f155e3778b986d9905453e0944c50bfa9`。
-- `reports/notebook_structure_audit.md`：exists=`True`，tracked=`True`，size=`2139`，sha256=`f51df6841f34f9a62d947f0db47425e3d01904d951e25dad25a607e7e722a80e`。
+- `reports/notebook_structure_audit.md`：exists=`True`，tracked=`True`，size=`2369`，sha256=`9b38af8208c734a636d0a2781e74f95cfeb1414899bfc7a27efab94c9b7e99e4`。
 - `reports/jupyter_input_template_audit.md`：exists=`True`，tracked=`True`，size=`4120`，sha256=`907e8f31eaafe212836830d6ba8d70cd9f173386efd0cd57068996cff999e739`。
 - `reports/jupyter_authorized_preflight_template_audit.md`：exists=`True`，tracked=`True`，size=`3025`，sha256=`7c7745d3fc347c80a5854ac005260f3f7770efdfe97bc37f0753ebfecaf7b68b`。
 - `reports/jupyter_final_handoff_template_audit.md`：exists=`True`，tracked=`True`，size=`3099`，sha256=`7c9a4011772d6e2a7bd83cf223f0577b03d4742deb637dd968330ad6fd9685e4`。

@@ -48,7 +48,7 @@
     },
     {
       "path": "notebooks/robochallenge_pi05_submit_cn.ipynb",
-      "size_bytes": 98951,
+      "size_bytes": 101630,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -320,7 +320,7 @@
     },
     {
       "path": "reports/notebook_structure_audit.md",
-      "size_bytes": 2139,
+      "size_bytes": 2369,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -536,7 +536,7 @@
     },
     {
       "path": "reports/submission_artifact_manifest.md",
-      "size_bytes": 32058,
+      "size_bytes": 32059,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,

@@ -2695,3 +2695,26 @@
 ### 下一步
 - P0：提交并推送本轮 GUI 首屏截图证据闭环。
 - P1：用户若确认 `CONFIRM_TABLE30V2_ALOHA_BASELINE` 并提供 token/submission id，先跑只读预检入口；真实 runner 仍必须等待用户明确授权。
+
+## 2026-06-03 第九十八轮：Jupyter GUI 首屏截图入口补齐
+
+### 已完成
+- 在 `notebooks/robochallenge_pi05_submit_cn.ipynb` 末尾新增第 47 节：`GUI 首屏截图证据`。
+- 第 47 节默认运行 `scripts/render_dashboard_gui_access_packet.py`，校验 `runs/dashboard_gui_access_packet.json`，并在 Jupyter 内联显示 `reports/submission_status_dashboard_browser.png`。
+- 更新 `scripts/audit_notebook_structure.py`，把第 47 节标题、`RUN_DASHBOARD_GUI_SCREENSHOT_PACKET`、截图路径和 GUI 展示入口脚本纳入 Notebook 必需标记。
+- 修复一次 PowerShell 写入中文导致的 Notebook 乱码问题，改用 UTF-8 安全脚本重写新增 cell，并删除临时脚本。
+
+### 验证结果
+- 本地 Notebook 审计通过：`cell_count=97`、无缺失 id、无重复 id、无输出、无 `execution_count`、无 CRLF、无乱码哨兵命中。
+- Linux 端完整 no-contact 链路已通过：`py_compile`、`audit_notebook_structure.py`、`audit_submission_artifact_manifest.py`、`audit_submission_preflight_bundle.py`、`validate_repro_workspace.py`、`audit_chinese_utf8_artifacts.py`、`audit_plaintext_secrets.py` 和 `git diff --check`。
+- 远端 `runs/notebook_structure_audit.json` 实测第 47 节全部 marker 为 `true`。
+- 明文凭据扫描 `hit_count=0`；中文 UTF-8 与乱码哨兵审计仍通过。
+
+### 当前边界
+- 本轮只更新 Jupyter 与静态审计，没有读取真实 token、submission id、checkpoint link 或真实 local env 内容。
+- 没有连接 RoboChallenge 平台，没有上传 checkpoint，没有生成 checkpoint tar，也没有启动真实 runner。
+- baseline 官方 ALOHA 路线仍阻塞在目标确认、token、submission id、`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline` 和真实 runner 强确认。
+
+### 下一步
+- P0：提交并推送本轮 Jupyter GUI 首屏截图入口补齐。
+- P1：继续把“授权后只读预检 -> final handoff -> 真实 runner 强确认”这条链路保持在 Jupyter 和 shell 双入口一致状态；真实 runner 仍等待用户明确授权。

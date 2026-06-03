@@ -20,7 +20,7 @@
       "stdout_line_count": 62,
       "stderr_line_count": 0,
       "env_file_present_true": false,
-      "variant_baseline": false,
+      "variant_baseline": true,
       "target_confirmation_present": false,
       "dry_run_called": false,
       "robot_type_aloha": false,

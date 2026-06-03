@@ -10,13 +10,13 @@
 - 错误确认短语时是否停在 runner 前：`True`。
 - 畸形确认短语时是否停在 runner 前：`True`。
 
-## 拿到 token / submission id 后先跑
+## 目标确认、token、submission id、variant 到位后先跑
 
 1. 授权前只读预检：`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_authorized_preflight_template.sh`
 2. baseline wrapper dry-run gate：`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline bash submission/run_ready_real_submission_template.sh`
 3. 真实 runner 强确认命令：`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline ROBOCHALLENGE_REAL_RUN_CONFIRM=RUN_REAL_ROBOCHALLENGE_SUBMISSION bash submission/run_ready_real_submission_template.sh`
 
-第 2 条用于验证 wrapper 和 baseline runner 入口；缺少真实确认短语时只会 dry-run，然后停在真实 runner 前。
+第 2 条用于验证 wrapper 和 baseline runner 入口；缺少真实 runner 强确认短语时只会 dry-run，然后停在真实 runner 前。
 第 3 条只有用户明确授权真实提交时才运行，会连接 RoboChallenge 并启动真实 runner。
 
 ## 路线边界
@@ -76,4 +76,4 @@
 
 ## Blocking
 
-- baseline dry-run gate 已固化；拿到 token/submission id 后先跑只读预检，再跑 dry-run gate，缺少真实确认短语时不会启动 runner。
+- baseline dry-run gate 已固化；目标确认、token、submission id 和 variant=baseline 到位后先跑只读预检，再跑 dry-run gate，缺少真实 runner 强确认短语时不会启动 runner。

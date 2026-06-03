@@ -157,8 +157,8 @@ def build_status() -> dict[str, Any]:
     blocking = []
     if passed:
         blocking.append(
-            "baseline 凭据卫生边界已固化；真实 token/submission id 只应写入 Git 忽略的 local env，"
-            "然后先跑只读预检和 baseline dry-run gate。"
+            "baseline 凭据卫生边界已固化；目标确认、真实 token、submission id 和 variant=baseline "
+            "只应写入 Git 忽略的 local env 或当前 shell，然后先跑只读预检和 baseline dry-run gate。"
         )
     else:
         for key, ok in evidence.items():

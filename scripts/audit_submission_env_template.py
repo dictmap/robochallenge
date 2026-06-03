@@ -123,7 +123,10 @@ def build_status(template_path: Path) -> dict[str, Any]:
     if hits:
         blocking.append("模板疑似包含真实 token、submission id 或第三方密钥模式。")
     if not blocking:
-        blocking.append("无模板侧阻塞；baseline 默认路线仍取决于用户提供凭据、submission id 和真实 runner 强确认。")
+        blocking.append(
+            "无模板侧阻塞；baseline 默认路线仍取决于用户目标确认、token、submission id、"
+            "variant=baseline 和真实 runner 强确认。"
+        )
 
     passed = bool(
         template_exists

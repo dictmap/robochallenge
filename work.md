@@ -2428,3 +2428,25 @@
 ### 下一步
 - P0：提交并推送本轮网页表单与 GUI 目标确认字段闭环。
 - P1：继续检查剩余报告中 “真实提交仍需要用户凭据/submission id” 这类较泛文案，决定是否也要升级为 5 项阻塞口径。
+## 2026-06-03 第八十七轮：中心报告 5 项 baseline 阻塞口径收敛
+
+### 已完成
+- 更新 `scripts/audit_submission_env_template.py`，让模板审计的成功 blocking 明确写成：baseline 仍取决于用户目标确认、token、submission id、variant=baseline 和真实 runner 强确认。
+- 更新 `scripts/audit_submission_artifact_manifest.py`，让 manifest 结论明确区分 baseline 5 项阻塞与 LoRA/网页 checkpoint 的上传/link 阻塞。
+- 更新 `scripts/render_baseline_credential_hygiene.py`、`scripts/render_baseline_dry_run_gate.py` 和 `scripts/render_baseline_submission_quickstart.py`，把 “拿到 token/submission id” 类文案改成目标确认、token、submission id、variant=baseline 到位后再跑 baseline 预检和 dry-run。
+- 更新 `scripts/audit_plaintext_secrets.py`，让明文扫描报告也明确 baseline 真实提交仍需要 5 项用户授权/输入。
+- 重新生成 `reports/submission_env_template_audit.md`、`reports/submission_artifact_manifest.md`、`reports/baseline_credential_hygiene.md`、`reports/baseline_dry_run_gate.md`、`reports/baseline_submission_quickstart.md`、`reports/plaintext_secret_scan.md`、preflight bundle 和 GUI dashboard。
+
+### 验证结果
+- Linux 端核心链路已通过：`py_compile`、`audit_submission_env_template.py`、`audit_plaintext_secrets.py`、`render_baseline_credential_hygiene.py`、`render_baseline_dry_run_gate.py`、`render_baseline_submission_quickstart.py`、`audit_submission_preflight_bundle.py`、`audit_submission_artifact_manifest.py`、`render_submission_status_dashboard.py`、`validate_repro_workspace.py`、`audit_chinese_utf8_artifacts.py` 与 `git diff --check`。
+- 中心旧口径搜索已清空：`baseline 默认路线仍取决于用户提供凭据`、`baseline runner 仍需要用户凭据`、`真实提交仍需要用户提供凭据`、`baseline dry-run gate 已固化；拿到 token/submission id`、`baseline 凭据卫生边界已固化；真实 token/submission id` 均无命中。
+- 新口径已落盘：`reports/submission_env_template_audit.md`、`reports/submission_artifact_manifest.md`、`reports/baseline_submission_quickstart.md`、`reports/plaintext_secret_scan.md` 均包含 “目标确认、token、submission id、variant=baseline 和真实 runner 强确认”。
+
+### 当前边界
+- 本轮没有读取真实 token、submission id、checkpoint link 或真实 local env 内容。
+- 没有连接 RoboChallenge 平台，没有上传 checkpoint，没有生成 checkpoint tar，也没有启动真实 runner。
+- LoRA/checkpoint 分支的历史报告仍可能保留 “token/submission id/checkpoint link” 口径；这些属于网页 checkpoint 分支，不作为 baseline 最短路径的 P0。
+
+### 下一步
+- P0：提交并推送本轮中心报告 5 项 baseline 阻塞口径收敛。
+- P1：继续扫描 LoRA/checkpoint 分支报告，把可能误导为 baseline 必需 checkpoint link 的文案改为 “仅 LoRA/web checkpoint 路线需要”。

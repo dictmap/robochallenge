@@ -168,7 +168,10 @@ def build_status() -> dict[str, Any]:
         if any(contact_flags.values()):
             blocking.append("输入审计显示曾连接平台、接触下载 host 或执行上传。")
     else:
-        blocking.append("baseline 最短路径已固化；真实提交仍等待用户确认目标、token、submission id 和强确认。")
+        blocking.append(
+            "baseline 最短路径已固化；真实提交仍等待用户目标确认、token、submission id、"
+            "variant=baseline 和真实 runner 强确认。"
+        )
 
     return {
         "kind": "baseline_submission_quickstart",

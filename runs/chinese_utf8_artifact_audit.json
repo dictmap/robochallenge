@@ -96,7 +96,7 @@
     },
     {
       "path": "reports/baseline_credential_hygiene.md",
-      "size_bytes": 2313,
+      "size_bytes": 2367,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -104,7 +104,7 @@
     },
     {
       "path": "reports/baseline_dry_run_gate.md",
-      "size_bytes": 3634,
+      "size_bytes": 3717,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -136,7 +136,7 @@
     },
     {
       "path": "reports/baseline_submission_quickstart.md",
-      "size_bytes": 3206,
+      "size_bytes": 3239,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -432,7 +432,7 @@
     },
     {
       "path": "reports/plaintext_secret_scan.md",
-      "size_bytes": 610,
+      "size_bytes": 689,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -488,7 +488,7 @@
     },
     {
       "path": "reports/submission_artifact_manifest.md",
-      "size_bytes": 26999,
+      "size_bytes": 27058,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -504,7 +504,7 @@
     },
     {
       "path": "reports/submission_env_template_audit.md",
-      "size_bytes": 1190,
+      "size_bytes": 1217,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -656,7 +656,7 @@
     },
     {
       "path": "runs/baseline_credential_hygiene.json",
-      "size_bytes": 2361,
+      "size_bytes": 2415,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,
@@ -664,7 +664,7 @@
     },
     {
       "path": "runs/baseline_dry_run_gate.json",
-      "size_bytes": 3627,
+      "size_bytes": 3675,
       "utf8_decode_ok": true,
       "decode_error": "",
       "bad_marker_count": 0,

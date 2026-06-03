@@ -59,4 +59,4 @@
 
 ## Blocking
 
-- baseline 最短路径已固化；真实提交仍等待用户确认目标、token、submission id 和强确认。
+- baseline 最短路径已固化；真实提交仍等待用户目标确认、token、submission id、variant=baseline 和真实 runner 强确认。

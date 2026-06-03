@@ -79,6 +79,6 @@
   "link_values_printed": false,
   "secret_values_printed": false,
   "blocking": [
-    "baseline dry-run gate 已固化；拿到 token/submission id 后先跑只读预检，再跑 dry-run gate，缺少真实确认短语时不会启动 runner。"
+    "baseline dry-run gate 已固化；目标确认、token、submission id 和 variant=baseline 到位后先跑只读预检，再跑 dry-run gate，缺少真实 runner 强确认短语时不会启动 runner。"
   ]
 }

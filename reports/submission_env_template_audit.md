@@ -28,4 +28,4 @@
 
 ## Blocking
 
-- 无模板侧阻塞；baseline 默认路线仍取决于用户提供凭据、submission id 和真实 runner 强确认。
+- 无模板侧阻塞；baseline 默认路线仍取决于用户目标确认、token、submission id、variant=baseline 和真实 runner 强确认。

@@ -20,8 +20,8 @@
       "path": "work.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 203270,
-      "sha256": "899cc4cc93dc64571a75dbac1533f3d266a0bbbd407d730b33a65a2183f98b85"
+      "size_bytes": 206038,
+      "sha256": "1a3959627370fbff4c891f73652d3b88c8777008c92b1d2ebfdc5370783860ef"
     },
     {
       "path": "notebooks/robochallenge_pi05_submit_cn.ipynb",
@@ -216,8 +216,8 @@
       "path": "reports/submission_env_template_audit.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 1190,
-      "sha256": "d5b9c72ede806f85784bd045aa7e6b633762f002508708bece6dce3c08404c9b"
+      "size_bytes": 1217,
+      "sha256": "f4c3d723fbee3fea46fddb13a9c9fe2f155e3778b986d9905453e0944c50bfa9"
     },
     {
       "path": "reports/notebook_structure_audit.md",
@@ -307,22 +307,22 @@
       "path": "reports/baseline_submission_quickstart.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 3206,
-      "sha256": "41ec7900721616b4aca97d5ba86cf8c0fffbb041dd344c38fa9325883f5f4c8d"
+      "size_bytes": 3239,
+      "sha256": "dce4840f3ce21a64b33605d532ee3aef8107e35215df336c5888cef3c020be27"
     },
     {
       "path": "reports/baseline_dry_run_gate.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 3634,
-      "sha256": "580b94e4bae38bb93b89f3f1eb4368e098bf9a0e5108f525f8e47455f2b22b50"
+      "size_bytes": 3717,
+      "sha256": "a9413b2e69533bc03577c38321be0c1444311c7116f37098fbfe8ddce0d58453"
     },
     {
       "path": "reports/baseline_credential_hygiene.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 2313,
-      "sha256": "76ee43531cb291c5c3f0e319aaa439f7ea4651388af0223e9ce6a8e938a0d673"
+      "size_bytes": 2367,
+      "sha256": "3e13e032992f7303524e381671d9ff8fc50fd2f6e1d23f74bbf983eaa5d1a504"
     },
     {
       "path": "reports/local_env_permission_contract.md",
@@ -447,15 +447,15 @@
       "path": "reports/plaintext_secret_scan.md",
       "exists": true,
       "tracked": true,
-      "size_bytes": 610,
-      "sha256": "237e266a50bb711e45d76dc146175b268116c92ae1201c6e8e1cf5c2e274dfa8"
+      "size_bytes": 689,
+      "sha256": "0690aabc180b00fa9832f556ee79a7e300071fc64049a3afababf7d45bf445a7"
     },
     {
       "path": "reports/submission_status_dashboard.html",
       "exists": true,
       "tracked": true,
       "size_bytes": 22564,
-      "sha256": "b025606a4bd91ac070790e6d12bbefbf4250be3c9f7d9669fc79c1762d79661a"
+      "sha256": "94e7446695be367ca71a313a401b6093e8247fef258ae0e26c8ce7a99dddff81"
     },
     {
       "path": "scripts/render_next_user_action_packet.py",
@@ -482,22 +482,22 @@
       "path": "scripts/render_baseline_submission_quickstart.py",
       "exists": true,
       "tracked": true,
-      "size_bytes": 11539,
-      "sha256": "96c98e6b591f20ff19fa414a53e3fe505daa67736fbdae774f807998067cb35e"
+      "size_bytes": 11609,
+      "sha256": "88eec19507b704a425ab25349427735a6c7f0b3bbbf0afa4a997ced637433f45"
     },
     {
       "path": "scripts/render_baseline_dry_run_gate.py",
       "exists": true,
       "tracked": true,
-      "size_bytes": 13906,
-      "sha256": "5c311cffbdacc9c96a9925c942d7d188a9bf397b4479b0ddc4f5a598583d5a07"
+      "size_bytes": 13989,
+      "sha256": "94d7e622979e1b81c29e7ff1ee27fb04adf05d436632502f46764ca6876c8b89"
     },
     {
       "path": "scripts/render_baseline_credential_hygiene.py",
       "exists": true,
       "tracked": true,
-      "size_bytes": 11177,
-      "sha256": "91a8ccbf133f4854092b47a8290a9213a2eb79fa31f43cc0c377d70771e95528"
+      "size_bytes": 11231,
+      "sha256": "bf4974decbc01f8e65bafbf6765139c7dbc54e2b1b5218df6c76a6ffbee910a7"
     },
     {
       "path": "scripts/audit_local_env_permission_contract.py",
@@ -868,6 +868,6 @@
     "download_host_contacted": false
   },
   "blocking": [
-    "提交准备材料 manifest 已完整；baseline runner 仍需要用户凭据和 submission id，LoRA 或网页 checkpoint 路线仍需要上传授权和 checkpoint link。"
+    "提交准备材料 manifest 已完整；baseline runner 仍需要用户目标确认、token、submission id、variant=baseline 和真实 runner 强确认；LoRA 或网页 checkpoint 路线仍需要上传授权和 checkpoint link。"
   ]
 }

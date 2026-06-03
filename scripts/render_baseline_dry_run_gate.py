@@ -164,8 +164,8 @@ def build_status() -> dict[str, Any]:
     blocking = []
     if passed:
         blocking.append(
-            "baseline dry-run gate 已固化；拿到 token/submission id 后先跑只读预检，再跑 dry-run gate，"
-            "缺少真实确认短语时不会启动 runner。"
+            "baseline dry-run gate 已固化；目标确认、token、submission id 和 variant=baseline 到位后先跑只读预检，"
+            "再跑 dry-run gate，缺少真实 runner 强确认短语时不会启动 runner。"
         )
     else:
         for key, ok in evidence.items():
@@ -224,13 +224,13 @@ def write_report(status: dict[str, Any], path: Path) -> None:
         f"- 错误确认短语时是否停在 runner 前：`{status['stops_before_real_runner_with_wrong_confirmation']}`。",
         f"- 畸形确认短语时是否停在 runner 前：`{status['stops_before_real_runner_with_malformed_confirmation']}`。",
         "",
-        "## 拿到 token / submission id 后先跑",
+        "## 目标确认、token、submission id、variant 到位后先跑",
         "",
         f"1. 授权前只读预检：`{status['authorized_preflight_command']}`",
         f"2. baseline wrapper dry-run gate：`{status['dry_run_gate_command']}`",
         f"3. 真实 runner 强确认命令：`{status['real_runner_command']}`",
         "",
-        "第 2 条用于验证 wrapper 和 baseline runner 入口；缺少真实确认短语时只会 dry-run，然后停在真实 runner 前。",
+        "第 2 条用于验证 wrapper 和 baseline runner 入口；缺少真实 runner 强确认短语时只会 dry-run，然后停在真实 runner 前。",
         "第 3 条只有用户明确授权真实提交时才运行，会连接 RoboChallenge 并启动真实 runner。",
         "",
         "## 路线边界",

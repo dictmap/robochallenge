@@ -821,8 +821,8 @@ def build_status() -> dict[str, Any]:
         blocking.append("输入审计显示曾连接平台、上传或接触下载 host。")
     if not blocking:
         blocking.append(
-            "提交准备材料 manifest 已完整；baseline runner 仍需要用户凭据和 submission id，"
-            "LoRA 或网页 checkpoint 路线仍需要上传授权和 checkpoint link。"
+            "提交准备材料 manifest 已完整；baseline runner 仍需要用户目标确认、token、submission id、"
+            "variant=baseline 和真实 runner 强确认；LoRA 或网页 checkpoint 路线仍需要上传授权和 checkpoint link。"
         )
 
     passed = bool(

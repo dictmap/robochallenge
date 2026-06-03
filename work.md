@@ -2645,3 +2645,28 @@
 ### 下一步
 - P0：提交并推送本轮 GUI HTTP 静态预览闭环。
 - P1：用户若确认 `CONFIRM_TABLE30V2_ALOHA_BASELINE` 并提供 token/submission id，先跑只读预检入口；真实 runner 仍必须等待用户明确授权。
+
+## 2026-06-03 第九十六轮：pi0.5 ALOHA 基模离线执行证据包落盘
+
+### 已完成
+- 新增 `scripts/audit_pi05_aloha_baseline_execution_packet.py`，把 pi0.5 基模缓存、Table30v2 ALOHA 数据、32D/50 步转换、短 LeRobot dataloader、官方 ALOHA checkpoint 与本地 mock policy smoke 汇总为一个只读证据包。
+- 新增产物 `runs/pi05_aloha_baseline_execution_packet.json` 与 `reports/pi05_aloha_baseline_execution_packet.md`。
+- 更新 `scripts/render_submission_status_dashboard.py`，GUI dashboard 新增 “pi0.5 ALOHA 离线执行” 卡片，并把目标、转换形状、mock policy 推理次数、no-contact/no-leak 标志写入机器可读状态。
+- 更新 `scripts/audit_submission_artifact_manifest.py`、`scripts/audit_submission_preflight_bundle.py` 与 `scripts/validate_repro_workspace.py`，让 manifest、总预检和 workspace validator 都强校验这份基模证据。
+
+### 验证结果
+- Linux 端完整链路已通过：`audit_pi05_aloha_baseline_execution_packet.py`、`render_submission_status_dashboard.py`、`audit_submission_dashboard_links.py`、`audit_dashboard_http_static_preview.py`、`render_dashboard_gui_access_packet.py`、`audit_submission_artifact_manifest.py`、`audit_submission_preflight_bundle.py` 和 `validate_repro_workspace.py`。
+- `runs/pi05_aloha_baseline_execution_packet.json` 实测 `passed=true`，目标为 `Table30v2 / aloha / pack_the_toothbrush_holder`，`checkpoint_exists=true`。
+- dry-run 形状实测 `state=[5, 32]`、`actions=[5, 50, 32]`；短 LeRobot smoke 实测 `state=[1, 5, 32]`、`actions=[1, 5, 50, 32]`。
+- mock policy smoke 实测 `policy_smoke_exit_code=0`、`policy_smoke_inference_count=162`。
+- GUI dashboard 更新为 `source_count=41`、`card_count=41`、`done_count=35`、`blocked_count=5`、`watch_count=1`、`ready_for_real_submission=false`；本地 HTTP 预览 `http://127.0.0.1:18085/submission_status_dashboard.html` 已确认可访问并包含 41 张卡片。
+- 本轮代码与报告已提交并推送：`3b0c204 add-pi05-aloha-baseline-evidence-packet`。
+
+### 当前边界
+- 本轮没有读取真实 token、submission id、checkpoint link 或真实 local env 内容。
+- 没有连接 RoboChallenge 平台，没有上传 checkpoint，没有生成 checkpoint tar，也没有启动真实 runner。
+- baseline 官方 ALOHA 路线的离线复现证据已经闭环；真实提交仍阻塞在目标确认、`ROBOCHALLENGE_USER_TOKEN`、`ROBOCHALLENGE_SUBMISSION_ID`、`ROBOCHALLENGE_SUBMISSION_VARIANT=baseline` 和真实 runner 强确认。
+
+### 下一步
+- P0：提交并推送本轮工作日志闭环，避免 `work.md` 落后于已推送证据包。
+- P1：用户若确认 `CONFIRM_TABLE30V2_ALOHA_BASELINE` 并提供 token/submission id，先跑只读预检入口；真实 runner 仍必须等待用户明确授权。
